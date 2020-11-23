@@ -1,12 +1,13 @@
 package de.smarthome.command;
 
+import java.util.UUID;
+
 public interface CommandInterpreter{
 
     public Request buildRegisterClientRequest();
     public Request buildUnregisterClientRequest();
-    public Request buildAdjustLightRequest();
-    public Request buildAdjustTemperatureRequest();
-    public Request buildAdjustBlindRequest();
+    public Request buildChangeValueCommand();
+    public Request buildGetValueCommand(UUID id);
     public Request buildSynchronizeRequest();
 
 }

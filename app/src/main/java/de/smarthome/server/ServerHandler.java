@@ -7,5 +7,4 @@ public interface ServerHandler {
 
     public void sendRequest(Command command);
     public String receiveRequest();
-    public void setCommandInterpreter(CommandInterpreter commandInterpreter);
 }
