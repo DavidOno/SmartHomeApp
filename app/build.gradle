@@ -24,6 +24,22 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    android.packagingOptions {
+       exclude 'META-INF/spring.tooling'
+        exclude 'META-INF/spring.handlers'
+        exclude 'META-INF/spring-configuration-metadata.json'
+        exclude 'META-INF/spring.factories'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/web-fragment.xml'
+        exclude 'META-INF/LICENSE.md'
+        exclude 'META-INF/NOTICE.md'
+        exclude 'META-INF/additional-spring-configuration-metadata.json'
+        exclude 'META-INF/spring.schemas'
+        exclude 'META-INF/notice.txt'
+    }
+
 }
 
 dependencies {
@@ -36,11 +52,18 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.4.0'
-    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.4.0'
-    compile group: 'log4j', name: 'log4j', version: '1.2.17'
+//    compile (group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.4.0'){
+//        exclude group: "org.springframework", module:"spring-jcl"
+//    }
+//    testCompile (group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.4.0'){
+//        exclude group: "org.springframework", module:"spring-jcl"
+//    }
+    compile 'org.springframework.android:spring-android-rest-template:1.0.1.RELEASE'
+
+//    compile group: 'log4j', name: 'log4j', version: '1.2.17'
     compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
     compile group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.4.13'
+    compile group: 'javax.xml.stream', name: 'stax-api', version: '1.0-2'
 
 
 }

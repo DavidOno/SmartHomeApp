@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import de.smarthome.command.Command;
 import de.smarthome.command.CommandInterpreter;
@@ -29,6 +30,8 @@ public class ChangeValueCommand implements Command {
 
     @Override
     public List<Request> accept(CommandInterpreter commandInterpreter) {
-        return commandInterpreter.buildChangeValueCommand();
+        return changes.entrySet().stream()
+                .map(entry -> commandInterpreter.buildChangeValueCommand(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
     }
 }
