@@ -16,6 +16,9 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven {
+            url "http://bright.github.io/maven-repo/"
+        }
     }
 }
 

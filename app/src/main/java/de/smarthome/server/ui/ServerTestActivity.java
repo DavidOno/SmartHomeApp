@@ -7,6 +7,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.UUID;
 
 import de.smarthome.R;
@@ -21,6 +24,8 @@ import de.smarthome.server.gira.GiraServerHandler;
 
 public class ServerTestActivity extends AppCompatActivity {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ServerTestActivity.class.getSimpleName());
+
     private ServerHandler sh = new GiraServerHandler(new HomeServerCommandInterpreter());
     private Button testAvailability;
     private Button register;
@@ -34,6 +39,7 @@ public class ServerTestActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LOG.debug("Hello from {} saved instance state {}", this, savedInstanceState);
         setContentView(R.layout.activity_server_test);
 
         getViewsById();

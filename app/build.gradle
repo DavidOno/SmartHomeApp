@@ -57,5 +57,7 @@ dependencies {
     compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
     compile group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.4.13'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.6.0'
-
+    compile('pl.brightinventions:slf4android:0.0.4@aar'){
+        transitive = true
+    }
 }
