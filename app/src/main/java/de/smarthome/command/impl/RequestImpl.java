@@ -17,6 +17,7 @@ import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 import de.smarthome.command.Request;
@@ -43,6 +44,7 @@ public class RequestImpl implements Request {
     @Override
     public ResponseEntity execute() {
         RestTemplate restTemplate = createRestTemplate();
+        restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
         return restTemplate.exchange(uri, httpMethod, entity, responseType);
     }
 

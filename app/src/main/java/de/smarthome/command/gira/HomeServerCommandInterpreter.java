@@ -1,7 +1,7 @@
 package de.smarthome.command.gira;
 
 
-import org.springframework.http.CacheControl;
+import org.springframework.http.HttpBasicAuthentication;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -15,6 +15,7 @@ import de.smarthome.command.impl.RequestImpl;
 
 public class HomeServerCommandInterpreter implements CommandInterpreter {
 
+    private static final String NO_CACHE = "no-cache";
     private String token;
     private String uriPrefix;
 
@@ -23,8 +24,8 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
         String uri = uriPrefix + "/api/v2/clients";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBasicAuth(username, pwd);
-        headers.setCacheControl(CacheControl.noCache());
+        headers.setAuthorization(new HttpBasicAuthentication(username, pwd));
+        headers.setCacheControl(NO_CACHE);
 
         String jsonBody = "{\"client\": \"de.haw.la.msp.db\"}";
 
