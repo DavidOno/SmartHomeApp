@@ -28,17 +28,19 @@ public class RequestImpl implements Request {
     private HttpMethod httpMethod;
     private HttpEntity entity;
     private Class responseType;
-    private boolean avoidSSL;
+    private boolean isSSLVerificationSkipped;
 
     public RequestImpl(String uri, HttpMethod httpMethod, HttpEntity entity, Class responseType) {
         this.uri = uri;
         this.httpMethod = httpMethod;
         this.entity = entity;
         this.responseType = responseType;
+        isSSLVerificationSkipped = true;
     }
 
-    public void setAvoidSSL() {
-        avoidSSL = true;
+    public Request performSkipSSLVerification() {
+        isSSLVerificationSkipped = false;
+        return this;
     }
 
     @Override
@@ -49,13 +51,13 @@ public class RequestImpl implements Request {
     }
 
     private RestTemplate createRestTemplate() {
-        if(avoidSSL){
-            return new RestTemplate(avoidSSL());
+        if(isSSLVerificationSkipped){
+            return new RestTemplate(avoidSSLVerification());
         }
         return new RestTemplate();
     }
 
-    private HttpComponentsClientHttpRequestFactory avoidSSL() {
+    private HttpComponentsClientHttpRequestFactory avoidSSLVerification() {
         HttpComponentsClientHttpRequestFactory requestFactory = null; //TODO: avoid null
         try {
             TrustStrategy acceptingTrustStrategy = new TrustStrategy() {

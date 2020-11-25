@@ -38,6 +38,8 @@ android {
         exclude 'META-INF/additional-spring-configuration-metadata.json'
         exclude 'META-INF/spring.schemas'
         exclude 'META-INF/notice.txt'
+        exclude 'META-INF/INDEX.LIST'
+        exclude 'org/springframework/context/config/spring-context.gif'
     }
 
 }
@@ -60,4 +62,18 @@ dependencies {
     compile('pl.brightinventions:slf4android:0.0.4@aar'){
         transitive = true
     }
+    compile (group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.4.0'){
+        exclude group: "org.springframework", module:"spring-jcl"
+        exclude group: "org.springframework", module:"spring-beans"
+        exclude group: "org.springframework", module:"spring-core"
+        exclude group: "org.springframework", module:"spring-web"
+        exclude group: "ch.qos.logback", module:"logback-classic"
+    }
+    compile (group: 'org.springframework', name: 'org.springframework.web', version: '3.1.0.RELEASE'){
+        exclude group: "org.springframework", module: "org.springframework.web" //potentially unnecessary
+    }
+    compile group: 'org.springframework', name: 'spring-webmvc', version: '5.3.1'
+
+
+
 }
