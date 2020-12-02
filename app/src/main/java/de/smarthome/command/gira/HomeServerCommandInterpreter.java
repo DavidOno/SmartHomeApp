@@ -63,7 +63,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
         String uri = uriPrefix + "/api/v2/uiconfig?token=" + token;
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        return new RequestImpl(uri, HttpMethod.GET, entity, String.class);
+        return new RequestImpl(uri, HttpMethod.GET, entity, String.class);//TODO: change String.class to UIConfig.class
     }
 
     @Override
