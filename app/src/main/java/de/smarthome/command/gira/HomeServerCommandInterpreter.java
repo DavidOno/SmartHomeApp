@@ -16,8 +16,8 @@ import de.smarthome.command.impl.RequestImpl;
 public class HomeServerCommandInterpreter implements CommandInterpreter {
 
     private static final String NO_CACHE = "no-cache";
-    private String token;
-    private String uriPrefix;
+    private String token = "2kF0AOoL1JHgmoy6b1W9UJAr3GDUSbux";
+    private String uriPrefix = "https://192.168.132.101";
 
     @Override
     public Request buildRegisterClientRequest(String username, String pwd) {
@@ -39,7 +39,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
     }
 
     @Override
-    public Request buildChangeValueCommand(UUID id, Integer value) {
+    public Request buildChangeValueCommand(String id, Integer value) {
         String uri = uriPrefix + "/api/v2/values/" + id + "?token=" + token;
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -51,7 +51,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
     }
 
     @Override
-    public Request buildGetValueCommand(UUID id) {
+    public Request buildGetValueCommand(String id) {
         String uri = uriPrefix + "/api/v2/values/" + id + "?token=" + token;
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> entity = new HttpEntity<>(headers);

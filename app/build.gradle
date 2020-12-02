@@ -14,6 +14,10 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+//    configurations {
+//        all*.exclude group: 'javax.realtime'
+//    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -23,6 +27,10 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    android {
+        useLibrary 'org.apache.http.legacy'
+
     }
 
     android.packagingOptions {
@@ -54,26 +62,33 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-    compile 'org.springframework.android:spring-android-rest-template:1.0.1.RELEASE'
-//    compile group: 'log4j', name: 'log4j', version: '1.2.17'
-    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
-    compile group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.4.13'
+    compile ('org.springframework.android:spring-android-rest-template:1.0.1.RELEASE'){
+
+    }
+    implementation ('org.apache.httpcomponents:httpclient-android:4.3.5.1')
     compile 'com.fasterxml.jackson.core:jackson-databind:2.6.0'
     compile('pl.brightinventions:slf4android:0.0.4@aar'){
         transitive = true
     }
     compile (group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.4.0'){
-        exclude group: "org.springframework", module:"spring-jcl"
+//        exclude group: "org.springframework", module:"spring-jcl"
         exclude group: "org.springframework", module:"spring-beans"
         exclude group: "org.springframework", module:"spring-core"
         exclude group: "org.springframework", module:"spring-web"
         exclude group: "ch.qos.logback", module:"logback-classic"
     }
-    compile (group: 'org.springframework', name: 'org.springframework.web', version: '3.1.0.RELEASE'){
-        exclude group: "org.springframework", module: "org.springframework.web" //potentially unnecessary
+//    compile (group: 'org.springframework', name: 'org.springframework.web', version: '3.1.0.RELEASE'){
+//        exclude group: "org.springframework", module: "org.springframework.context"
+//        exclude group: "org.springframework", module: "org.springframework.beans"
+//        exclude group: "org.aopalliance", module: "com.springsource.org.aopalliance"
+//        exclude group: "org.springframework", module: "org.springframework.aop"
+//        exclude group: "org.springframework", module: "org.springframework.core"
+//        exclude group: "org.springframework", module: "org.springframework.web"
+//    }
+    compile (group: 'org.springframework', name: 'spring-webmvc', version: '5.3.1'){
+//        exclude group: "org.springframework", module:"spring-jcl"
+        exclude group: "org.springframework", module:"spring-beans"
+        exclude group: "org.springframework", module:"spring-core"
+        exclude group: "org.springframework", module:"spring-web"
     }
-    compile group: 'org.springframework', name: 'spring-webmvc', version: '5.3.1'
-
-
-
 }

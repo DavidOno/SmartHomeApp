@@ -12,17 +12,17 @@ import de.smarthome.command.Request;
 
 public class GetValueCommand implements Command {
 
-    private List<UUID> idOfRequestedValues;
+    private List<String> idOfRequestedValues;
 
-    public GetValueCommand(List<UUID> idOfRequestedValues) {
+    public GetValueCommand(List<String> idOfRequestedValues) {
         this.idOfRequestedValues = new ArrayList<>(idOfRequestedValues);
     }
 
-    public GetValueCommand(UUID idOfRequestedValue){
+    public GetValueCommand(String idOfRequestedValue){
         this(Arrays.asList(idOfRequestedValue));
     }
 
-    public List<UUID> getIdOfRequestedValues(){
+    public List<String> getIdOfRequestedValues(){
         return idOfRequestedValues;
     }
 

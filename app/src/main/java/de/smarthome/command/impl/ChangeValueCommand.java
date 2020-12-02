@@ -3,7 +3,6 @@ package de.smarthome.command.impl;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import de.smarthome.command.Command;
@@ -12,18 +11,18 @@ import de.smarthome.command.Request;
 
 public class ChangeValueCommand implements Command {
 
-    private Map<UUID, Integer> changes;
+    private Map<String, Integer> changes;
 
-    public ChangeValueCommand(Map<UUID, Integer> changes) {
+    public ChangeValueCommand(Map<String, Integer> changes) {
         this.changes = changes;
     }
 
-    public ChangeValueCommand(UUID id, Integer change){
+    public ChangeValueCommand(String id, Integer change){
         this(transformToMap(id, change));
     }
 
-    private static Map<UUID, Integer> transformToMap(UUID id, Integer change) {
-        Map<UUID, Integer> changeMap = new HashMap<>();
+    private static Map<String, Integer> transformToMap(String id, Integer change) {
+        Map<String, Integer> changeMap = new HashMap<>();
         changeMap.put(id, change);
         return changeMap;
     }

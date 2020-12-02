@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,8 +33,8 @@ public class ServerTestActivity extends AppCompatActivity {
     private Button getUIConfig;
     private Button getValue;
     private Button setValue;
-    private TextView id;
-    private TextView value;
+    private EditText id;
+    private EditText value;
     private TextView displayText;
 
     @Override
@@ -58,12 +59,12 @@ public class ServerTestActivity extends AppCompatActivity {
         });
 
         getValue.setOnClickListener(v -> {
-            Command getValueCommand = new GetValueCommand(UUID.fromString(id.getText().toString()));
+            Command getValueCommand = new GetValueCommand(id.getText().toString());
             sh.sendRequest(getValueCommand);
         });
 
         setValue.setOnClickListener(v -> {
-            Command setValueCommand = new ChangeValueCommand(UUID.fromString(id.getText().toString()), Integer.parseInt(value.getText().toString()));
+            Command setValueCommand = new ChangeValueCommand(id.getText().toString(), Integer.parseInt(value.getText().toString()));
             sh.sendRequest(setValueCommand);
         });
 

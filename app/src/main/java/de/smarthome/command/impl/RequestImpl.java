@@ -1,5 +1,7 @@
 package de.smarthome.command.impl;
 
+import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
+import org.apache.http.conn.ssl.SSLContexts;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -11,16 +13,18 @@ import java.security.cert.X509Certificate;
 
 import javax.net.ssl.SSLContext;
 
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
+//import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
 import de.smarthome.command.Request;
+import de.smarthome.server.impl.StandardErrorHandler;
 
 public class RequestImpl implements Request {
 
@@ -29,6 +33,7 @@ public class RequestImpl implements Request {
     private HttpEntity entity;
     private Class responseType;
     private boolean isSSLVerificationSkipped;
+    private ResponseErrorHandler errorHandler = new StandardErrorHandler();
 
     public RequestImpl(String uri, HttpMethod httpMethod, HttpEntity entity, Class responseType) {
         this.uri = uri;
@@ -38,7 +43,7 @@ public class RequestImpl implements Request {
         isSSLVerificationSkipped = true;
     }
 
-    public Request performSkipSSLVerification() {
+    public Request checkSSLCertificate() {
         isSSLVerificationSkipped = false;
         return this;
     }
@@ -51,10 +56,12 @@ public class RequestImpl implements Request {
     }
 
     private RestTemplate createRestTemplate() {
+        RestTemplate restTemplate = new RestTemplate();
         if(isSSLVerificationSkipped){
-            return new RestTemplate(avoidSSLVerification());
+            restTemplate = new RestTemplate(avoidSSLVerification());
         }
-        return new RestTemplate();
+        restTemplate.setErrorHandler(errorHandler);
+        return restTemplate;
     }
 
     private HttpComponentsClientHttpRequestFactory avoidSSLVerification() {
@@ -66,8 +73,8 @@ public class RequestImpl implements Request {
                     return true;
                 }
             };
-            SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy).build();
-            SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext, new NoopHostnameVerifier());
+            SSLContext sslContext = SSLContexts.custom().loadTrustMaterial(null, (TrustStrategy) acceptingTrustStrategy).build();
+            SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext, new AllowAllHostnameVerifier());
             CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
             requestFactory = new HttpComponentsClientHttpRequestFactory();
             requestFactory.setHttpClient(httpClient);
@@ -75,5 +82,9 @@ public class RequestImpl implements Request {
             //TODO: proper exception management
         }
         return requestFactory;
+    }
+
+    public void setErrorHandler(ResponseErrorHandler errorHandler){
+        this.errorHandler = errorHandler;
     }
 }

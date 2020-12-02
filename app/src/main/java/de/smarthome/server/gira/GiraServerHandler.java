@@ -27,7 +27,8 @@ public class GiraServerHandler implements ServerHandler {
     public void sendRequest(Command command) {
         List<Request> requests = command.accept(commandInterpreter);
 //        ResponseEntity<String> result = request.execute(); //TODO: Check generic String: has to be improved
-        List<ResponseEntity> results = requests.stream().map(Request::execute).collect(Collectors.toList());
+        List<ResponseEntity
+                > results = requests.stream().map(Request::execute).collect(Collectors.toList());
     }
 
     @Override
