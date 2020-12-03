@@ -15,7 +15,9 @@ android {
     }
 
 //    configurations {
-//        all*.exclude group: 'javax.realtime'
+////        all*.exclude group: 'javax.realtime'
+//        implementation.exclude group: "org.springframework"
+//        exclude module: "spring-web"
 //    }
 
     buildTypes {
@@ -63,7 +65,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     compile ('org.springframework.android:spring-android-rest-template:1.0.1.RELEASE'){
-
+//        exclude group: "org.springframework.android", module: "spring-android-rest-template"
     }
     implementation ('org.apache.httpcomponents:httpclient-android:4.3.5.1')
     compile 'com.fasterxml.jackson.core:jackson-databind:2.6.0'
@@ -71,10 +73,10 @@ dependencies {
         transitive = true
     }
     compile (group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.4.0'){
-//        exclude group: "org.springframework", module:"spring-jcl"
+        exclude group: "org.springframework", module:"spring-jcl"
         exclude group: "org.springframework", module:"spring-beans"
         exclude group: "org.springframework", module:"spring-core"
-        exclude group: "org.springframework", module:"spring-web"
+//        exclude group: "org.springframework", module:"spring-web"
         exclude group: "ch.qos.logback", module:"logback-classic"
     }
 //    compile (group: 'org.springframework', name: 'org.springframework.web', version: '3.1.0.RELEASE'){
@@ -85,10 +87,12 @@ dependencies {
 //        exclude group: "org.springframework", module: "org.springframework.core"
 //        exclude group: "org.springframework", module: "org.springframework.web"
 //    }
+
     compile (group: 'org.springframework', name: 'spring-webmvc', version: '5.3.1'){
-//        exclude group: "org.springframework", module:"spring-jcl"
+        exclude group: "org.springframework", module:"spring-jcl"
         exclude group: "org.springframework", module:"spring-beans"
         exclude group: "org.springframework", module:"spring-core"
         exclude group: "org.springframework", module:"spring-web"
     }
+
 }
