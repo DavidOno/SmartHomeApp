@@ -1,5 +1,25 @@
 
-_
-java:S2094"BRemove this empty class, write its code or make it an "interface".(ÔÅÅ8ó­²ıß.
-]	java:S125"<This block of commented-out lines of code should be removed.(ÎéË¼úÿÿÿÿ8ó­²ıß.
-]	java:S125"<This block of commented-out lines of code should be removed.(ì›ºüÿÿÿÿ8ª¦»¤à.
+H
+java:S1481"&Remove this unused "m" local variable.(Ëß­µşÿÿÿÿ8‡‹ùó÷.
+T	java:S106$"9Replace this use of System.out or System.err by a logger.(ŠÄë8‡‹ùó÷.
+®
+java:S1130"‹Remove the declaration of thrown exception 'com.fasterxml.jackson.core.JsonProcessingException', as it cannot be thrown from method's body.(áÉ§âùÿÿÿÿ8‡‹ùó÷.
+©
+java:S1130"‹Remove the declaration of thrown exception 'com.fasterxml.jackson.core.JsonProcessingException', as it cannot be thrown from method's body.(İÍ·µ8‡‹ùó÷.
+W
+java:S1854"5Remove this useless assignment to local variable "m".(Ëß­µşÿÿÿÿ8‡‹ùó÷.
+T	java:S106"9Replace this use of System.out or System.err by a logger.(ŠÄë8‡‹ùó÷.
+
+java:S4144"dUpdate this method so that its implementation is not identical to "receiveCallBackValue" on line 19.(İÍ·µ8‡‹ùó÷.
+T	java:S106"9Replace this use of System.out or System.err by a logger.(ŠÄë8‡‹ùó÷.
+W	java:S125"<This block of commented-out lines of code should be removed.(²w8‡‹ùó÷.
+]	java:S125"<This block of commented-out lines of code should be removed.(«ìæ›şÿÿÿÿ8‡‹ùó÷.
+Ğ
+java:S1130"­Remove the declaration of thrown exception 'com.fasterxml.jackson.databind.JsonMappingException' which is a subclass of 'com.fasterxml.jackson.core.JsonProcessingException'.(áÉ§âùÿÿÿÿ8‡‹ùó÷.
+W
+java:S1854"5Remove this useless assignment to local variable "m".(Ëß­µşÿÿÿÿ8‡‹ùó÷.
+Ë
+java:S1130"­Remove the declaration of thrown exception 'com.fasterxml.jackson.databind.JsonMappingException' which is a subclass of 'com.fasterxml.jackson.core.JsonProcessingException'.(İÍ·µ8‡‹ùó÷.
+]	java:S125*"<This block of commented-out lines of code should be removed.(—ûÔæşÿÿÿÿ8‡‹ùó÷.
+H
+java:S1481"&Remove this unused "m" local variable.(Ëß­µşÿÿÿÿ8‡‹ùó÷.

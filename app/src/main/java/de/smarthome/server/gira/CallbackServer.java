@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RequestMapping("/")
 @RestController
 public class CallbackServer {
-	
+
 	@PostMapping(path="value")
 	public void receiveCallBackValue(@RequestBody String body) throws JsonMappingException, JsonProcessingException {
 		System.out.println(body);
@@ -22,7 +22,7 @@ public class CallbackServer {
 //		Set<DeviceImpl> products = m.readValue(body, new TypeReference<Set<DeviceImpl>>() {});
 //		products.forEach(p -> System.out.println(p));
 	}
-	
+
 	@PostMapping(path="error")
 	public void receiveCallBackError(@RequestBody String body) throws JsonMappingException, JsonProcessingException {
 		System.out.println(body);
@@ -30,14 +30,14 @@ public class CallbackServer {
 //		Set<ServerError> products = m.readValue(body, new TypeReference<Set<ServerError>>() {});
 //		products.forEach(p -> System.out.println(p));
 	}
-	
+
 	@PostMapping(path="service")
 	public void receiveCallBackService(@RequestBody String body) {
 		System.out.println(body);
-		
+
 	}
-	
-	
+
+
 //	@PostMapping(path="json")
 //	public void receiveJson(@RequestBody DeviceImpl body) {
 //		System.out.println(body);

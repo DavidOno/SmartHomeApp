@@ -52,7 +52,8 @@ public class RequestImpl implements Request {
     public ResponseEntity execute() {
         RestTemplate restTemplate = createRestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-        return restTemplate.exchange(uri, httpMethod, entity, responseType);
+        return restTemplate.exchange(uri, httpMethod, entity, responseType);//TODO: fix this, instead of "return null"
+//        return null;
     }
 
     private RestTemplate createRestTemplate() {

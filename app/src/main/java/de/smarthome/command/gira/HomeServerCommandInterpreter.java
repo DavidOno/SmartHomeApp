@@ -24,7 +24,10 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
         String uri = uriPrefix + "/api/v2/clients";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAuthorization(new HttpBasicAuthentication(username, pwd));
+        //TODO:
+//        headers.setAuthorization(new HttpBasicAuthentication(username, pwd));
+        //Possible Fix:
+        //https://stackoverflow.com/questions/52784834/setting-authorization-header-in-spring-resttemplate
         headers.setCacheControl(NO_CACHE);
 
         String jsonBody = "{\"client\": \"de.haw.la.msp.db\"}";

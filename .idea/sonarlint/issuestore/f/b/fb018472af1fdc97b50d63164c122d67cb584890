@@ -1,18 +1,23 @@
 
+Q
+java:S3740&"/Provide the parametrized type for this generic.(Æëà¡øÿÿÿÿ8“‰»õ÷.
+X	java:S1258"<This block of commented-out lines of code should be removed.(„§ñ£8ƒ•Êõ÷.
+Q
+java:S3740&"/Provide the parametrized type for this generic.(Æëà¡øÿÿÿÿ8†÷¶¦à.
 T
-java:S1135L"2Complete the task associated to this TODO comment.(´‹Òßúÿÿÿÿ8†÷¶¦à.
-L
-java:S3740"/Provide the parametrized type for this generic.(Ûó’Ò8ƒ•Å‹ß.
-Q
-java:S3740"/Provide the parametrized type for this generic.(…ÅŠÞýÿÿÿÿ8†÷¶¦à.
-Q
-java:S3740""/Provide the parametrized type for this generic.(Æëà¡øÿÿÿÿ8†÷¶¦à.
-Q
-java:S3740""/Provide the parametrized type for this generic.(Æëà¡øÿÿÿÿ8†÷¶¦à.
+java:S1135S"2Complete the task associated to this TODO comment.(´‹Òßúÿÿÿÿ8†÷¶¦à.
+O
+java:S11357"2Complete the task associated to this TODO comment.(ÐýÐÁ8é¿»õ÷.
+T
+java:S1135E"2Complete the task associated to this TODO comment.(ê˜­¸ÿÿÿÿÿ8†÷¶¦à.
+M
+java:S1905M"0Remove this unnecessary cast to "TrustStrategy".(¢ðÒ8“‰»õ÷.
 ]
-java:S1874G"@Remove this use of "AllowAllHostnameVerifier"; it is deprecated.(šÙÇ8òŸ¸¦à.
+java:S1874N"@Remove this use of "AllowAllHostnameVerifier"; it is deprecated.(šÙÇ8ÑÆù¡â.
+]	java:S125"<This block of commented-out lines of code should be removed.(µ±­»ûÿÿÿÿ8»‡¹¦à.
+L
+java:S3740""/Provide the parametrized type for this generic.(Ûó’Ò8ƒ•Å‹ß.
 Q
-java:S37400"/Provide the parametrized type for this generic.(õ…¹ðøÿÿÿÿ8†÷¶¦à.
-T
-java:S1135>"2Complete the task associated to this TODO comment.(ê˜­¸ÿÿÿÿÿ8†÷¶¦à.
-]	java:S125"<This block of commented-out lines of code should be removed.(µ±­»ûÿÿÿÿ8»‡¹¦à.
+java:S3740!"/Provide the parametrized type for this generic.(…ÅŠÞýÿÿÿÿ8“‰»õ÷.
+¦
+java:S4449>"ˆAnnotate the parameter with @javax.annotation.Nullable in constructor declaration, or make sure that null can not be passed as argument.(ðäíÂ8“‰»õ÷.

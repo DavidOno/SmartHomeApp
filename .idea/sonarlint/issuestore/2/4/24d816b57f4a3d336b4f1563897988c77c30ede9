@@ -1,7 +1,7 @@
 
-]
-java:S1128"@Remove this unused import 'org.springframework.http.HttpEntity'.(ÂéÓ8Ù§Œß.
 b
 java:S1128"@Remove this unused import 'org.springframework.http.HttpMethod'.(Ê¨Ä¡øÿÿÿÿ8Ù§Œß.
 Q
 java:S3740	"/Provide the parametrized type for this generic.(ÕÕË¸ûÿÿÿÿ8¿õóüß.
+]
+java:S1128"@Remove this unused import 'org.springframework.http.HttpEntity'.(ÂéÓ8Ù§Œß.
