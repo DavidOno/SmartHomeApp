@@ -1,17 +1,0 @@
-
-Z	java:S106D"9Replace this use of System.out or System.err by a logger.(ÉÇÓßÿÿÿÿÿ8Ÿ»×¥ß.
-O
-java:S1135"2Complete the task associated to this TODO comment.(ÚÔœü8¯š¶Œß.
-L
-java:S3740"/Provide the parametrized type for this generic.(ıÍí•8áÓâ¬ß.
-U
-java:S1128"8Remove this unused import 'org.apache.http.HttpHeaders'.(Öæìí8õµŒß.
-U	java:S106G"9Replace this use of System.out or System.err by a logger.(êõ¾¯8Ÿ»×¥ß.
-X
-java:S1854";Remove this useless assignment to local variable "results".(ıÍí•8£è“ß.
-I
-java:S1481",Remove this unused "results" local variable.(ıÍí•8£è“ß.
-Q
-java:S1128"4Remove this unused import 'java.lang.reflect.Array'.(‡¡É˜8Ñƒæ¥ß.
-E
-java:S1604;"(Make this anonymous inner class a lambda(ÉãÃ®8Ÿ»×¥ß.
