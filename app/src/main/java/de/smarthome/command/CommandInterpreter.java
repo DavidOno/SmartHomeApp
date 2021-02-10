@@ -1,6 +1,9 @@
 package de.smarthome.command;
 
 
+import java.util.List;
+import java.util.function.Consumer;
+
 public interface CommandInterpreter{
 
     Request buildRegisterClientRequest(String username, String pwd);
@@ -12,5 +15,5 @@ public interface CommandInterpreter{
     Request buildSynchronizeRequest();
     void setIP(String ip);
     void setToken(String token);
-
+    void buildRegisterCallbackCommand(String ip, Consumer<List<Request>> callback);
 }

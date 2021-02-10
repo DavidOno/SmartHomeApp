@@ -1,15 +1,15 @@
 package de.smarthome.server.gira;
 
-import org.apache.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
-import java.lang.reflect.Array;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import de.smarthome.command.AsyncCommand;
 import de.smarthome.command.Command;
 import de.smarthome.command.CommandInterpreter;
 import de.smarthome.command.Request;
@@ -39,6 +39,14 @@ public class GiraServerHandler implements ServerHandler {
 		Set<DeviceImpl> products = m.readValue(body, new TypeReference<Set<DeviceImpl>>() {});
 		products.forEach(p -> System.out.println(p));
          */
+    }
+
+    @Override
+    public void sendRequest(AsyncCommand command){
+        Consumer<List<Request>> requestsCallback = requests -> {
+            List<ResponseEntity> results = requests.stream().map(Request::execute).collect(Collectors.toList());
+        };
+        command.accept(commandInterpreter, requestsCallback);
     }
 
     @Override

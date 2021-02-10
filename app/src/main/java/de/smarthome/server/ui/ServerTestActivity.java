@@ -14,11 +14,13 @@ import org.slf4j.LoggerFactory;
 import java.util.UUID;
 
 import de.smarthome.R;
+import de.smarthome.command.AsyncCommand;
 import de.smarthome.command.Command;
 import de.smarthome.command.gira.HomeServerCommandInterpreter;
 import de.smarthome.command.impl.ChangeValueCommand;
 import de.smarthome.command.impl.CheckAvailabilityCommand;
 import de.smarthome.command.impl.GetValueCommand;
+import de.smarthome.command.impl.RegisterCallback;
 import de.smarthome.command.impl.UIConfigCommand;
 import de.smarthome.server.ServerHandler;
 import de.smarthome.server.gira.GiraServerHandler;
@@ -33,6 +35,7 @@ public class ServerTestActivity extends AppCompatActivity {
     private Button getUIConfig;
     private Button getValue;
     private Button setValue;
+    private Button registerCallbackButton;
     private EditText id;
     private EditText value;
     private TextView displayText;
@@ -68,6 +71,11 @@ public class ServerTestActivity extends AppCompatActivity {
             sh.sendRequest(setValueCommand);
         });
 
+        registerCallbackButton.setOnClickListener(v -> {
+            AsyncCommand register = new RegisterCallback("localhost:8443");
+            sh.sendRequest(register);
+        });
+
     }
 
     private void getViewsById() {
@@ -79,5 +87,6 @@ public class ServerTestActivity extends AppCompatActivity {
         id = findViewById(R.id.id);
         value = findViewById(R.id.value);
         displayText = findViewById(R.id.display);
+        registerCallbackButton = findViewById(R.id.register_callback_button);
     }
 }

@@ -1,13 +1,19 @@
 package de.smarthome.command.gira;
 
 
+import android.util.Log;
+
+import com.google.firebase.messaging.FirebaseMessaging;
+
 import org.springframework.http.HttpBasicAuthentication;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 import de.smarthome.command.CommandInterpreter;
 import de.smarthome.command.Request;
@@ -16,6 +22,7 @@ import de.smarthome.command.impl.RequestImpl;
 public class HomeServerCommandInterpreter implements CommandInterpreter {
 
     private static final String NO_CACHE = "no-cache";
+    private static final String TAG = "HOMESERVERCOMMANDINTERPRETER";
     private String token = "2kF0AOoL1JHgmoy6b1W9UJAr3GDUSbux";
     private String uriPrefix = "https://192.168.132.101";
 
@@ -83,6 +90,46 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
     @Override
     public void setToken(String token) {
         this.token = token;
+    }
+
+    @Override
+    public void buildRegisterCallbackCommand(String ip, Consumer<List<Request>> requestsCallback) {
+        List<Request> requests = new ArrayList<>();
+        //send callback ip to homeserver
+        //send token to callbackserver, for communication: callback -> app
+        Consumer<Request> tokenCallback = request -> {
+            requests.add(request);
+            requestsCallback.accept(requests);
+        };
+        getFirebaseTokenToCallbackServer(ip, tokenCallback);
+
+    }
+
+    private void getFirebaseTokenToCallbackServer(String ip, Consumer<Request> callback) {
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                        return;
+                    }
+                    token = task.getResult();
+                    Log.d(TAG, token);
+                    buildFirebaseTokenRequest(ip, token);
+                });
+    }
+
+    private Request buildFirebaseTokenRequest(String ip, String token) {
+        String uri = "https://"+ip+"/register";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        String jsonBody = "[{\n" +
+                "    \"token\": "+token+",\n" +
+                "    ]\n" +
+                "}]";
+        HttpEntity<String> entity = new HttpEntity<>(jsonBody, headers);
+        return new RequestImpl(uri, HttpMethod.POST, entity, String.class);
+
     }
 
     @Override
