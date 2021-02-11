@@ -127,11 +127,9 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        String jsonBody = "[{" +
-                "    \"token\": "+token +
-                "}]";
+        String jsonBody = "[{\"token\": \""+token +"\"}]";
         HttpEntity<String> entity = new HttpEntity<>(jsonBody, headers);
-        return new RequestImpl(uri, HttpMethod.POST, entity, String.class);
+        return new RequestImpl(uri, HttpMethod.POST, entity, String.class);   
     }
 
     @Override

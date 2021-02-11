@@ -1,10 +1,17 @@
 package de.smarthome.command.impl;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.util.Log;
+
 import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
 import org.apache.http.conn.ssl.SSLContexts;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+
+import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -12,6 +19,8 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import javax.net.ssl.SSLContext;
 
@@ -53,12 +62,33 @@ public class RequestImpl implements Request {
 
     @Override
     public ResponseEntity execute() {
+        checkNetworkConnection();
         Future<ResponseEntity> future = SmartHomeApplication.executerService.submit(() -> {
             RestTemplate restTemplate = createRestTemplate();
             restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
             return restTemplate.exchange(uri, httpMethod, entity, responseType);
         });
         return getResponseEntity(future);
+    }
+
+    private void checkNetworkConnection() {
+        boolean online = isOnline();
+        if(!online){
+            Log.d("Request", "WARNING: No Network Connection");
+        }
+    }
+
+    public boolean isOnline() {
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
+            int     exitValue = ipProcess.waitFor();
+            return (exitValue == 0);
+        }
+        catch (IOException e)          { e.printStackTrace(); }
+        catch (InterruptedException e) { e.printStackTrace(); }
+
+        return false;
     }
 
     private ResponseEntity getResponseEntity(Future<ResponseEntity> future) {
