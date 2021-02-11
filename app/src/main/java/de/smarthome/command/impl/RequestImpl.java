@@ -10,6 +10,8 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import javax.net.ssl.SSLContext;
 
@@ -23,6 +25,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
+import de.smarthome.SmartHomeApplication;
 import de.smarthome.command.Request;
 import de.smarthome.server.impl.StandardErrorHandler;
 
@@ -50,9 +53,24 @@ public class RequestImpl implements Request {
 
     @Override
     public ResponseEntity execute() {
-        RestTemplate restTemplate = createRestTemplate();
-        restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-        return restTemplate.exchange(uri, httpMethod, entity, responseType);
+        Future<ResponseEntity> future = SmartHomeApplication.executerService.submit(() -> {
+            RestTemplate restTemplate = createRestTemplate();
+            restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+            return restTemplate.exchange(uri, httpMethod, entity, responseType);
+        });
+        return getResponseEntity(future);
+    }
+
+    private ResponseEntity getResponseEntity(Future<ResponseEntity> future) {
+        ResponseEntity responseEntity = null;
+        try {
+             responseEntity = future.get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return responseEntity;
     }
 
     private RestTemplate createRestTemplate() {

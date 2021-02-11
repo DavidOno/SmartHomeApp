@@ -99,7 +99,9 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
         //send token to callbackserver, for communication: callback -> app
         Consumer<Request> tokenCallback = request -> {
             requests.add(request);
+            Log.d(TAG, "Callback0");
             requestsCallback.accept(requests);
+            Log.d(TAG, "Callback1");
         };
         getFirebaseTokenToCallbackServer(ip, tokenCallback);
 
@@ -114,22 +116,22 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
                     }
                     token = task.getResult();
                     Log.d(TAG, token);
-                    buildFirebaseTokenRequest(ip, token);
+                    Request request = buildFirebaseTokenRequest(ip, token);
+                    callback.accept(request);
                 });
     }
 
     private Request buildFirebaseTokenRequest(String ip, String token) {
-        String uri = "https://"+ip+"/register";
+//        String uri = "https://"+ip+"/register";
+        String uri = "https://10.59.2.45:8443/register";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        String jsonBody = "[{\n" +
-                "    \"token\": "+token+",\n" +
-                "    ]\n" +
+        String jsonBody = "[{" +
+                "    \"token\": "+token +
                 "}]";
         HttpEntity<String> entity = new HttpEntity<>(jsonBody, headers);
         return new RequestImpl(uri, HttpMethod.POST, entity, String.class);
-
     }
 
     @Override

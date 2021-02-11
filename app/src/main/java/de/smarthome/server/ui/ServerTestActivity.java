@@ -3,6 +3,7 @@ package de.smarthome.server.ui;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -72,10 +73,11 @@ public class ServerTestActivity extends AppCompatActivity {
         });
 
         registerCallbackButton.setOnClickListener(v -> {
-            AsyncCommand register = new RegisterCallback("localhost:8443");
+            AsyncCommand register = new RegisterCallback(":8443");//TODO: change to correct ip:port
             sh.sendRequest(register);
         });
-
+        Log.d("Main", "Started");
+        Toast.makeText(this, "Started", Toast.LENGTH_SHORT).show();
     }
 
     private void getViewsById() {

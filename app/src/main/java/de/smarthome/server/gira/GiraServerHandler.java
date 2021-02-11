@@ -1,14 +1,18 @@
 package de.smarthome.server.gira;
 
+import android.util.Log;
+
 import org.springframework.http.ResponseEntity;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import de.smarthome.SmartHomeApplication;
 import de.smarthome.command.AsyncCommand;
 import de.smarthome.command.Command;
 import de.smarthome.command.CommandInterpreter;
@@ -25,28 +29,34 @@ public class GiraServerHandler implements ServerHandler {
 
     @Override
     public void sendRequest(Command command) {
-        List<Request> requests = command.accept(commandInterpreter);
-//        ResponseEntity<String> result = request.execute(); //TODO: Check generic String: has to be improved
-        List<ResponseEntity> results = requests.stream().map(Request::execute).collect(Collectors.toList());
-        /*
-        If result is of type UIConfig then execute following:
-        import com.fasterxml.jackson.core.JsonProcessingException;
-        import com.fasterxml.jackson.core.type.TypeReference;
-        import com.fasterxml.jackson.databind.JsonMappingException;
-        import com.fasterxml.jackson.databind.ObjectMapper;
+        SmartHomeApplication.executerService.execute(() -> {
+            List<Request> requests = command.accept(commandInterpreter);
+            //        ResponseEntity<String> result = request.execute(); //TODO: Check generic String: has to be improved
+            List<ResponseEntity> results = requests.stream().map(Request::execute).collect(Collectors.toList());
+            /*
+            If result is of type UIConfig then execute following:
+            import com.fasterxml.jackson.core.JsonProcessingException;
+            import com.fasterxml.jackson.core.type.TypeReference;
+            import com.fasterxml.jackson.databind.JsonMappingException;
+            import com.fasterxml.jackson.databind.ObjectMapper;
 
-        ObjectMapper m = new ObjectMapper();
-		Set<DeviceImpl> products = m.readValue(body, new TypeReference<Set<DeviceImpl>>() {});
-		products.forEach(p -> System.out.println(p));
-         */
+            ObjectMapper m = new ObjectMapper();
+            Set<DeviceImpl> products = m.readValue(body, new TypeReference<Set<DeviceImpl>>() {});
+            products.forEach(p -> System.out.println(p));
+             */
+        });
     }
 
     @Override
     public void sendRequest(AsyncCommand command){
-        Consumer<List<Request>> requestsCallback = requests -> {
-            List<ResponseEntity> results = requests.stream().map(Request::execute).collect(Collectors.toList());
-        };
-        command.accept(commandInterpreter, requestsCallback);
+        Thread t = new Thread(() -> {
+            Consumer<List<Request>> requestsCallback = requests -> {
+                List<ResponseEntity> results = requests.stream().map(Request::execute).collect(Collectors.toList());
+                Log.d("GIRAServerHandler", "Callback3");
+            };
+            command.accept(commandInterpreter, requestsCallback);
+        });
+        t.start();
     }
 
     @Override

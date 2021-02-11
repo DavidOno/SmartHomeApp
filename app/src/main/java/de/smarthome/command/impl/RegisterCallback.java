@@ -1,5 +1,7 @@
 package de.smarthome.command.impl;
 
+import android.util.Log;
+
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -19,6 +21,7 @@ public class RegisterCallback implements AsyncCommand {
     public void accept(CommandInterpreter commandInterpreter, Consumer<List<Request>> requestsCallback) {
         Consumer<List<Request>> callback = list -> {
             requestsCallback.accept(list);
+            Log.d("RegisterCallback", "Callback2");
         };
         commandInterpreter.buildRegisterCallbackCommand(ip, callback);
     }
