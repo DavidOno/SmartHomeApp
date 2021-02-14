@@ -1,5 +1,8 @@
 package de.smarthome.server;
 
+import android.content.Context;
+
+import java.net.InetAddress;
 import java.util.List;
 
 import de.smarthome.command.AsyncCommand;
@@ -10,6 +13,6 @@ public interface ServerHandler {
     void sendRequest(Command command);
     void sendRequest(AsyncCommand command);
     String receiveRequest();
-    List<String> showDeviceIPs();
+    List<InetAddress> showReachableInetAdresses(Context context);
     void selectServer(String ip);
 }

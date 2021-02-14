@@ -1,14 +1,16 @@
 package de.smarthome.server.gira;
 
+import android.content.Context;
+import android.net.wifi.WifiManager;
 import android.util.Log;
 
 import org.springframework.http.ResponseEntity;
 
+import java.io.IOException;
+import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -21,6 +23,7 @@ import de.smarthome.server.ServerHandler;
 
 public class GiraServerHandler implements ServerHandler {
 
+    private static final String TAG = "GIRA_SERVER_HANDLER";
     private CommandInterpreter commandInterpreter;
 
     public GiraServerHandler(CommandInterpreter commandInterpreter) {
@@ -64,10 +67,7 @@ public class GiraServerHandler implements ServerHandler {
         return null;
     }
 
-    @Override
-    public List<String> showDeviceIPs() {
-        return getNetworkIPs();
-    }
+
 
     @Override
     public void selectServer(String ip) {
@@ -75,36 +75,59 @@ public class GiraServerHandler implements ServerHandler {
     }
 
 
-    private List<String> getNetworkIPs() {
-        final byte[] ip;
-        try {
-            ip = InetAddress.getLocalHost().getAddress();
-        } catch (Exception e) {
-            return Collections.emptyList();     // exit method, otherwise "ip might not have been initialized"
-        }
-        List<String> ips = new ArrayList<>();
-        for(int i=1;i<=254;i++) {
+    @Override
+    public List<InetAddress> showReachableInetAdresses(Context context) {
+        List<InetAddress> reachableDevicesAdresses = new ArrayList<>();
+        new Thread(() -> {
+            WifiManager mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+            String subnet = getSubnetAddress(mWifiManager.getDhcpInfo().gateway);
+            reachableDevicesAdresses.addAll(getReachableHosts(subnet));
+        }).start();
+        return reachableDevicesAdresses;
+    }
+
+    private List<InetAddress> getReachableHosts(String subnet) {
+        List<InetAddress> reachableDeviceAdresses = new ArrayList<>();
+        int timeout=3000;
+        for (int i=1;i<255;i++) {
             final int j = i;
-            new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        ip[3] = (byte)j;
-                        InetAddress address = InetAddress.getByAddress(ip);
-//	                    address.getAddress()
-//	                    address.getHostName()
-                        String output = address.toString().substring(1);
-                        if (address.isReachable(5000)) {
-                            System.out.println(output + " is on the network");
-                            ips.add(output);
-                        } else {
-                            System.out.println("Not Reachable: "+output);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
+            new Thread(()-> {
+                String host = subnet + "." + j;
+                try {
+                    InetAddress address = InetAddress.getByName(host);
+                    if (address.isReachable(timeout)) {
+                        Log.d(TAG, "checkHosts() :: "+host+"("+ address.getHostName()+")"+ " is reachable");
+                        reachableDeviceAdresses.add(address);
                     }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }).start();
         }
-        return ips;
+        return reachableDeviceAdresses;
+    }
+
+    //TODO: Assumes that only the last part is variable in local net
+    private String getSubnetAddress(int address) {
+        String ipString = String.format(
+                "%d.%d.%d",
+                (address & 0xff),
+                (address >> 8 & 0xff),
+                (address >> 16 & 0xff));
+        return ipString;
+    }
+
+    private void checkIfReachable(byte[] ip, List<InetAddress> ips, byte j) throws IOException {
+        ip[3] = j;
+        InetAddress address = Inet4Address.getByAddress(ip);
+        String output = address.toString().substring(1);
+        if (address.isReachable(5000)) {
+            System.out.println(output + " is on the network");
+//            System.out.println(address.getAddress()+", "+address.getHostAddress()+", "+address.getCanonicalHostName()+", "+address.getHostName());
+//            System.out.println(address.getHostName());
+            ips.add(address);
+        } else {
+            System.out.println("Not Reachable: "+output);
+        }
     }
 }

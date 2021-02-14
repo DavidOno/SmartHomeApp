@@ -97,4 +97,15 @@
         app:layout_constraintEnd_toEndOf="@+id/availability"
         app:layout_constraintStart_toStartOf="@+id/availability"
         app:layout_constraintTop_toBottomOf="@+id/availability" />
+
+    <Button
+        android:id="@+id/showDeviceIps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:text="Show IPs"
+        app:layout_constraintBottom_toTopOf="@+id/availability"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/display" />
 </androidx.constraintlayout.widget.ConstraintLayout>

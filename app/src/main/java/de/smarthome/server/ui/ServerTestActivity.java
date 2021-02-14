@@ -12,7 +12,8 @@ import android.widget.Toast;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.UUID;
+import java.net.InetAddress;
+import java.util.List;
 
 import de.smarthome.R;
 import de.smarthome.command.AsyncCommand;
@@ -37,6 +38,7 @@ public class ServerTestActivity extends AppCompatActivity {
     private Button getValue;
     private Button setValue;
     private Button registerCallbackButton;
+    private Button showDeviceIPs;
     private EditText id;
     private EditText value;
     private TextView displayText;
@@ -76,6 +78,12 @@ public class ServerTestActivity extends AppCompatActivity {
             AsyncCommand register = new RegisterCallback(":8443");//TODO: change to correct ip:port
             sh.sendRequest(register);
         });
+
+        showDeviceIPs.setOnClickListener(v -> {
+            Log.d("Main", "Started scanning IPs");
+            new GiraServerHandler(null).showReachableInetAdresses(getApplicationContext());
+        });
+
         Log.d("Main", "Started");
         Toast.makeText(this, "Started", Toast.LENGTH_SHORT).show();
     }
@@ -90,5 +98,6 @@ public class ServerTestActivity extends AppCompatActivity {
         value = findViewById(R.id.value);
         displayText = findViewById(R.id.display);
         registerCallbackButton = findViewById(R.id.register_callback_button);
+        showDeviceIPs = findViewById(R.id.showDeviceIps);
     }
 }
