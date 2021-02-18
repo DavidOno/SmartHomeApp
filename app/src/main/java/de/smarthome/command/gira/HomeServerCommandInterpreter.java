@@ -3,6 +3,7 @@ package de.smarthome.command.gira;
 
 import android.util.Log;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.springframework.http.HttpBasicAuthentication;
@@ -18,12 +19,13 @@ import java.util.function.Consumer;
 import de.smarthome.command.CommandInterpreter;
 import de.smarthome.command.Request;
 import de.smarthome.command.impl.RequestImpl;
+import de.smarthome.model.impl.UIConfig;
 
 public class HomeServerCommandInterpreter implements CommandInterpreter {
 
     private static final String NO_CACHE = "no-cache";
     private static final String TAG = "HOMESERVERCOMMANDINTERPRETER";
-    private String token = "2kF0AOoL1JHgmoy6b1W9UJAr3GDUSbux";
+    private String token = "53Tg8Xdu6XgIW855pEkIB5tvrD5ODmyc";
     private String uriPrefix = "https://192.168.132.101";
 
     @Override
@@ -67,10 +69,10 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
 
     @Override
     public Request buildUIConfigRequest() {
-        String uri = uriPrefix + "/api/v2/uiconfig?token=" + token;
+        String uri = uriPrefix + "/api/v2/uiconfig?expand=locations&token=" + token;
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        return new RequestImpl(uri, HttpMethod.GET, entity, String.class);//TODO: change String.class to UIConfig.class
+        return new RequestImpl(uri, HttpMethod.GET, entity, UIConfig.class);//TODO: change String.class to UIConfig.class
     }
 
     @Override
@@ -95,8 +97,6 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
     @Override
     public void buildRegisterCallbackCommand(String ip, Consumer<List<Request>> requestsCallback) {
         List<Request> requests = new ArrayList<>();
-        //send callback ip to homeserver
-        //send token to callbackserver, for communication: callback -> app
         Consumer<Request> tokenCallback = request -> {
             requests.add(request);
             Log.d(TAG, "Callback0");
@@ -104,7 +104,6 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
             Log.d(TAG, "Callback1");
         };
         getFirebaseTokenToCallbackServer(ip, tokenCallback);
-
     }
 
     private void getFirebaseTokenToCallbackServer(String ip, Consumer<Request> callback) {
@@ -122,8 +121,8 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
     }
 
     private Request buildFirebaseTokenRequest(String ip, String token) {
-//        String uri = "https://"+ip+"/register";
-        String uri = "https://10.59.2.45:8443/register";
+//        String uri = "https://"+ip+"/register"; //TODO: change to generic solution, via argument
+        String uri = "https://192.168.132.212:8443/register";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 

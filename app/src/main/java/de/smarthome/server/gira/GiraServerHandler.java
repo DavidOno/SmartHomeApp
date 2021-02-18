@@ -7,7 +7,6 @@ import android.util.Log;
 import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
-import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +23,7 @@ import de.smarthome.server.ServerHandler;
 public class GiraServerHandler implements ServerHandler {
 
     private static final String TAG = "GIRA_SERVER_HANDLER";
+    private static final int TIMEOUT = 3000;
     private CommandInterpreter commandInterpreter;
 
     public GiraServerHandler(CommandInterpreter commandInterpreter) {
@@ -32,10 +32,9 @@ public class GiraServerHandler implements ServerHandler {
 
     @Override
     public void sendRequest(Command command) {
-        SmartHomeApplication.executerService.execute(() -> {
             List<Request> requests = command.accept(commandInterpreter);
-            //        ResponseEntity<String> result = request.execute(); //TODO: Check generic String: has to be improved
-            List<ResponseEntity> results = requests.stream().map(Request::execute).collect(Collectors.toList());
+        List<ResponseEntity> results = requests.stream().map(Request::execute).collect(Collectors.toList());
+        Log.d(TAG, results.toString());
             /*
             If result is of type UIConfig then execute following:
             import com.fasterxml.jackson.core.JsonProcessingException;
@@ -47,19 +46,17 @@ public class GiraServerHandler implements ServerHandler {
             Set<DeviceImpl> products = m.readValue(body, new TypeReference<Set<DeviceImpl>>() {});
             products.forEach(p -> System.out.println(p));
              */
-        });
+//        });
     }
 
     @Override
     public void sendRequest(AsyncCommand command){
-        Thread t = new Thread(() -> {
-            Consumer<List<Request>> requestsCallback = requests -> {
+        Consumer<List<Request>> requestsCallback = requests -> {
+            new Thread(() -> {
                 List<ResponseEntity> results = requests.stream().map(Request::execute).collect(Collectors.toList());
-                Log.d("GIRAServerHandler", "Callback3");
-            };
-            command.accept(commandInterpreter, requestsCallback);
-        });
-        t.start();
+            }).start();
+        };
+        command.accept(commandInterpreter, requestsCallback);
     }
 
     @Override
@@ -67,28 +64,25 @@ public class GiraServerHandler implements ServerHandler {
         return null;
     }
 
-
-
     @Override
     public void selectServer(String ip) {
         commandInterpreter.setIP(ip);
     }
 
-
     @Override
     public List<InetAddress> showReachableInetAdresses(Context context) {
         List<InetAddress> reachableDevicesAdresses = new ArrayList<>();
-        new Thread(() -> {
+//        new Thread(() -> {
             WifiManager mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
             String subnet = getSubnetAddress(mWifiManager.getDhcpInfo().gateway);
             reachableDevicesAdresses.addAll(getReachableHosts(subnet));
-        }).start();
+//        }).start();
         return reachableDevicesAdresses;
     }
 
     private List<InetAddress> getReachableHosts(String subnet) {
         List<InetAddress> reachableDeviceAdresses = new ArrayList<>();
-        int timeout=3000;
+        int timeout= TIMEOUT;
         for (int i=1;i<255;i++) {
             final int j = i;
             new Thread(()-> {
@@ -107,7 +101,6 @@ public class GiraServerHandler implements ServerHandler {
         return reachableDeviceAdresses;
     }
 
-    //TODO: Assumes that only the last part is variable in local net
     private String getSubnetAddress(int address) {
         String ipString = String.format(
                 "%d.%d.%d",
@@ -115,19 +108,5 @@ public class GiraServerHandler implements ServerHandler {
                 (address >> 8 & 0xff),
                 (address >> 16 & 0xff));
         return ipString;
-    }
-
-    private void checkIfReachable(byte[] ip, List<InetAddress> ips, byte j) throws IOException {
-        ip[3] = j;
-        InetAddress address = Inet4Address.getByAddress(ip);
-        String output = address.toString().substring(1);
-        if (address.isReachable(5000)) {
-            System.out.println(output + " is on the network");
-//            System.out.println(address.getAddress()+", "+address.getHostAddress()+", "+address.getCanonicalHostName()+", "+address.getHostName());
-//            System.out.println(address.getHostName());
-            ips.add(address);
-        } else {
-            System.out.println("Not Reachable: "+output);
-        }
     }
 }

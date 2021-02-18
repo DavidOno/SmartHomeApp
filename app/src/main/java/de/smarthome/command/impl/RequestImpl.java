@@ -1,8 +1,5 @@
 package de.smarthome.command.impl;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.util.Log;
 
 import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
@@ -19,8 +16,6 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import javax.net.ssl.SSLContext;
 
@@ -63,7 +58,8 @@ public class RequestImpl implements Request {
     @Override
     public ResponseEntity execute() {
         checkNetworkConnection();
-        Future<ResponseEntity> future = SmartHomeApplication.executerService.submit(() -> {
+        //TODO: Check if this is really necessary:
+        Future<ResponseEntity> future = SmartHomeApplication.executorService.submit(() -> {
             RestTemplate restTemplate = createRestTemplate();
             restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
             return restTemplate.exchange(uri, httpMethod, entity, responseType);

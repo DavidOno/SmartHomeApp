@@ -51,8 +51,10 @@ public class ServerTestActivity extends AppCompatActivity {
 
         getViewsById();
         testAvailability.setOnClickListener(v -> {
-            Command availability = new CheckAvailabilityCommand();
-            sh.sendRequest(availability);
+            new Thread(() -> {
+                Command availability = new CheckAvailabilityCommand();
+                sh.sendRequest(availability);
+            }).start();
         });
 
         register.setOnClickListener(v -> {
@@ -60,28 +62,38 @@ public class ServerTestActivity extends AppCompatActivity {
         });
 
         getUIConfig.setOnClickListener(v -> {
-            Command getConfig = new UIConfigCommand();
-            sh.sendRequest(getConfig);
+            new Thread(() -> {
+                Command getConfig = new UIConfigCommand();
+                sh.sendRequest(getConfig);
+            }).start();
         });
 
         getValue.setOnClickListener(v -> {
-            Command getValueCommand = new GetValueCommand(id.getText().toString());
-            sh.sendRequest(getValueCommand);
+            new Thread(() -> {
+                Command getValueCommand = new GetValueCommand(id.getText().toString());
+                sh.sendRequest(getValueCommand);
+            }).start();
         });
 
         setValue.setOnClickListener(v -> {
-            Command setValueCommand = new ChangeValueCommand(id.getText().toString(), Integer.parseInt(value.getText().toString()));
-            sh.sendRequest(setValueCommand);
+            new Thread(() -> {
+                Command setValueCommand = new ChangeValueCommand(id.getText().toString(), Integer.parseInt(value.getText().toString()));
+                sh.sendRequest(setValueCommand);
+            }).start();
         });
 
         registerCallbackButton.setOnClickListener(v -> {
-            AsyncCommand register = new RegisterCallback(":8443");//TODO: change to correct ip:port
-            sh.sendRequest(register);
+            new Thread(() -> {
+                AsyncCommand register = new RegisterCallback(":8443");//TODO: change to correct ip:port
+                sh.sendRequest(register);
+            }).start();
         });
 
         showDeviceIPs.setOnClickListener(v -> {
-            Log.d("Main", "Started scanning IPs");
-            new GiraServerHandler(null).showReachableInetAdresses(getApplicationContext());
+            new Thread(() -> {
+                Log.d("Main", "Started scanning IPs");
+                new GiraServerHandler(null).showReachableInetAdresses(getApplicationContext());
+            }).start();
         });
 
         Log.d("Main", "Started");

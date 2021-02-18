@@ -7,5 +7,5 @@ import java.util.concurrent.Executors;
 
 public class SmartHomeApplication extends Application {
 
-    public static final ExecutorService executerService = Executors.newFixedThreadPool(4);
+    public static final ExecutorService executorService = Executors.newFixedThreadPool(4);
 }
