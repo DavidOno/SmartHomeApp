@@ -20,6 +20,9 @@ import de.smarthome.command.CommandInterpreter;
 import de.smarthome.command.Request;
 import de.smarthome.command.impl.RequestImpl;
 import de.smarthome.model.impl.UIConfig;
+import de.smarthome.model.responses.AvailabilityResponse;
+import de.smarthome.model.responses.GetValueReponse;
+import de.smarthome.model.responses.RegisterResponse;
 
 public class HomeServerCommandInterpreter implements CommandInterpreter {
 
@@ -39,7 +42,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
         String jsonBody = "{\"client\": \"de.haw.la.msp.db\"}";
 
         HttpEntity<String> entity = new HttpEntity<>(jsonBody, headers);
-        return new RequestImpl(uri, HttpMethod.POST, entity, String.class);
+        return new RequestImpl(uri, HttpMethod.POST, entity, RegisterResponse.class);
     }
 
     @Override
@@ -56,7 +59,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
         String jsonBody = "{\"value\": "+value+"}";
 
         HttpEntity<String> entity = new HttpEntity<>(jsonBody, headers);
-        return new RequestImpl(uri, HttpMethod.PUT, entity, String.class);
+        return new RequestImpl(uri, HttpMethod.PUT, entity, JsonNode.class);
     }
 
     @Override
@@ -64,7 +67,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
         String uri = uriPrefix + "/api/v2/values/" + id + "?token=" + token;
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        return new RequestImpl(uri, HttpMethod.GET, entity, String.class);
+        return new RequestImpl(uri, HttpMethod.GET, entity, GetValueReponse.class);
     }
 
     @Override
@@ -72,7 +75,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
         String uri = uriPrefix + "/api/v2/uiconfig?expand=locations&token=" + token;
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        return new RequestImpl(uri, HttpMethod.GET, entity, UIConfig.class);//TODO: change String.class to UIConfig.class
+        return new RequestImpl(uri, HttpMethod.GET, entity, UIConfig.class);
     }
 
     @Override
@@ -80,7 +83,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
         String uri = uriPrefix + "/api";
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        return new RequestImpl(uri, HttpMethod.GET, entity, String.class);
+        return new RequestImpl(uri, HttpMethod.GET, entity, AvailabilityResponse.class);
     }
 
 
