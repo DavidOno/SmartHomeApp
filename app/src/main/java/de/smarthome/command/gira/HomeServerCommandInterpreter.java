@@ -86,6 +86,13 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
         return new RequestImpl(uri, HttpMethod.GET, entity, AvailabilityResponse.class);
     }
 
+    @Override
+    public Request buildUnregisterUserRequest(){
+        String uri = uriPrefix+"/api/clients/"+token;
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        return new RequestImpl(uri, HttpMethod.DELETE, entity, JsonNode.class);
+    }
 
     @Override
     public Request buildSynchronizeRequest() {

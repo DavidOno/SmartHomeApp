@@ -12,6 +12,7 @@ public interface CommandInterpreter{
     Request buildGetValueCommand(String id);
     Request buildUIConfigRequest();
     Request buildAvailabilityCheckRequest();
+    Request buildUnregisterUserRequest();
     Request buildSynchronizeRequest();
     void setIP(String ip);
     void setToken(String token);

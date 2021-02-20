@@ -11,6 +11,6 @@ import de.smarthome.command.Request;
 public class CheckAvailabilityCommand implements Command {
     @Override
     public List<Request> accept(CommandInterpreter commandInterpreter) {
-        return Arrays.asList(commandInterpreter.buildUIConfigRequest());
+        return Arrays.asList(commandInterpreter.buildAvailabilityCheckRequest());
     }
 }
