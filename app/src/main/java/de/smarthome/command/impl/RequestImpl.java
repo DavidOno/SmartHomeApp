@@ -35,6 +35,7 @@ import de.smarthome.server.impl.StandardErrorHandler;
 
 public class RequestImpl implements Request {
 
+    private static final String TAG = "RequestImpl";
     private String uri;
     private HttpMethod httpMethod;
     private HttpEntity entity;
@@ -109,21 +110,17 @@ public class RequestImpl implements Request {
     }
 
     private HttpComponentsClientHttpRequestFactory avoidSSLVerification() {
-        HttpComponentsClientHttpRequestFactory requestFactory = null; //TODO: avoid null
+        HttpComponentsClientHttpRequestFactory requestFactory = null;
         try {
-            TrustStrategy acceptingTrustStrategy = new TrustStrategy() {
-                @Override
-                public boolean isTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
-                    return true;
-                }
-            };
-            SSLContext sslContext = SSLContexts.custom().loadTrustMaterial(null, (TrustStrategy) acceptingTrustStrategy).build();
+            TrustStrategy acceptingTrustStrategy = (x509Certificates, s) -> true;
+            SSLContext sslContext = SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy).build();
             SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext, new AllowAllHostnameVerifier());
             CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
             requestFactory = new HttpComponentsClientHttpRequestFactory();
             requestFactory.setHttpClient(httpClient);
         }catch(KeyManagementException | NoSuchAlgorithmException | KeyStoreException ex){
-            //TODO: proper exception management
+            Log.d(TAG, "Avoiding SSL-Verification failed");
+            ex.printStackTrace();
         }
         return requestFactory;
     }

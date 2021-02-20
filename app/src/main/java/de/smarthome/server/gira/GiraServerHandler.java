@@ -32,21 +32,9 @@ public class GiraServerHandler implements ServerHandler {
 
     @Override
     public void sendRequest(Command command) {
-            List<Request> requests = command.accept(commandInterpreter);
+        List<Request> requests = command.accept(commandInterpreter);
         List<ResponseEntity> results = requests.stream().map(Request::execute).collect(Collectors.toList());
         Log.d(TAG, results.toString());
-            /*
-            If result is of type UIConfig then execute following:
-            import com.fasterxml.jackson.core.JsonProcessingException;
-            import com.fasterxml.jackson.core.type.TypeReference;
-            import com.fasterxml.jackson.databind.JsonMappingException;
-            import com.fasterxml.jackson.databind.ObjectMapper;
-
-            ObjectMapper m = new ObjectMapper();
-            Set<DeviceImpl> products = m.readValue(body, new TypeReference<Set<DeviceImpl>>() {});
-            products.forEach(p -> System.out.println(p));
-             */
-//        });
     }
 
     @Override
