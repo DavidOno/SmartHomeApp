@@ -18,8 +18,11 @@ public class StandardErrorHandler implements ResponseErrorHandler {
 
     @Override
     public void handleError(ClientHttpResponse response) throws IOException {
-        Log.d(TAG, "Status text: " + response.getStatusText());
-        Log.d(TAG, "Status raw code: " + response.getRawStatusCode());
+        Log.d(TAG, "Status text: " + getStatusText(response));
         Log.d(TAG, "Status code: " + response.getStatusCode().value());
+    }
+
+    private String getStatusText(ClientHttpResponse response) throws IOException {
+        return response.getStatusText().isEmpty() ? "<No status text available>" : response.getStatusText();
     }
 }

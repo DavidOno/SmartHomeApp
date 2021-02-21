@@ -1,8 +1,9 @@
 package de.smarthome.command;
 
 
-import java.util.List;
 import java.util.function.Consumer;
+
+import de.smarthome.model.impl.UIConfig;
 
 public interface CommandInterpreter{
 
@@ -13,8 +14,9 @@ public interface CommandInterpreter{
     Request buildUIConfigRequest();
     Request buildAvailabilityCheckRequest();
     Request buildUnregisterUserRequest();
-    Request buildSynchronizeRequest();
+    Request buildGetAllValuesRequest(String locationID, UIConfig uiConfig);
     void setIP(String ip);
     void setToken(String token);
-    void buildRegisterCallbackCommand(String ip, Consumer<List<Request>> callback);
+    void buildRegisterCallbackCommand(String ip, Consumer<Request> callback);
+    void buildUnRegisterCallbackCommand(String ip, Consumer<Request> callback);
 }

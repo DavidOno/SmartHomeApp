@@ -21,6 +21,7 @@ import de.smarthome.command.impl.CheckAvailabilityCommand;
 import de.smarthome.command.impl.GetValueCommand;
 import de.smarthome.command.impl.RegisterCallback;
 import de.smarthome.command.impl.UIConfigCommand;
+import de.smarthome.command.impl.UnRegisterCallback;
 import de.smarthome.server.ServerHandler;
 import de.smarthome.server.gira.GiraServerHandler;
 
@@ -39,6 +40,7 @@ public class ServerTestActivity extends AppCompatActivity {
     private EditText id;
     private EditText value;
     private TextView displayText;
+    private boolean registerToogle = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,10 +82,21 @@ public class ServerTestActivity extends AppCompatActivity {
         });
 
         registerCallbackButton.setOnClickListener(v -> {
-            new Thread(() -> {
-                AsyncCommand register = new RegisterCallback(":8443");//TODO: change to correct ip:port
-                sh.sendRequest(register);
-            }).start();
+            if(!registerToogle) {
+                new Thread(() -> {
+                    AsyncCommand register = new RegisterCallback(":8443");//TODO: change to correct ip:port
+                    sh.sendRequest(register);
+                }).start();
+                registerToogle = !registerToogle;
+                registerCallbackButton.setText("Unregister Callback");
+            }else{
+                new Thread(() -> {
+                    AsyncCommand register = new UnRegisterCallback(":8443");//TODO: change to correct ip:port
+                    sh.sendRequest(register);
+                }).start();
+                registerToogle = !registerToogle;
+                registerCallbackButton.setText("Register Callback");
+            }
         });
 
         showDeviceIPs.setOnClickListener(v -> {

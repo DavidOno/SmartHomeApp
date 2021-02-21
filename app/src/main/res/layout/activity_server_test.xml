@@ -102,7 +102,7 @@
         android:id="@+id/showDeviceIps"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="80dp"
         android:text="Show IPs"
         app:layout_constraintBottom_toTopOf="@+id/availability"
         app:layout_constraintEnd_toEndOf="parent"

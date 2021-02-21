@@ -5,5 +5,5 @@ import java.util.function.Consumer;
 
 public interface AsyncCommand {
 
-    void accept(CommandInterpreter commandInterpreter, Consumer<List<Request>> callback);
+    void accept(CommandInterpreter commandInterpreter, Consumer<Request> callback);
 }

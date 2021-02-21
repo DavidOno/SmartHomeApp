@@ -12,9 +12,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import de.smarthome.command.CommandInterpreter;
 import de.smarthome.command.Request;
@@ -27,7 +26,7 @@ import de.smarthome.model.responses.RegisterResponse;
 public class HomeServerCommandInterpreter implements CommandInterpreter {
 
     private static final String NO_CACHE = "no-cache";
-    private static final String TAG = "HOMESERVERCOMMANDINTERPRETER";
+    private static final String TAG = "HomeServerCommandInterpreter";
     private String token = "53Tg8Xdu6XgIW855pEkIB5tvrD5ODmyc";
     private String uriPrefix = "https://192.168.132.101";
 
@@ -95,8 +94,14 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
     }
 
     @Override
-    public Request buildSynchronizeRequest() {
+    public Request buildGetAllValuesRequest(String locationID, UIConfig uiConfig) {
         return null;
+    }
+
+    @Override
+    public void buildUnRegisterCallbackCommand(String ip, Consumer<Request> callback) {
+        Function<String, Request> postExecutable = firebaseToken -> buildUnregisterRequest(ip, firebaseToken);
+        getFirebaseTokenToCallbackServer(ip, postExecutable, callback);
     }
 
     @Override
@@ -105,18 +110,12 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
     }
 
     @Override
-    public void buildRegisterCallbackCommand(String ip, Consumer<List<Request>> requestsCallback) {
-        List<Request> requests = new ArrayList<>();
-        Consumer<Request> tokenCallback = request -> {
-            requests.add(request);
-            Log.d(TAG, "Callback0");
-            requestsCallback.accept(requests);
-            Log.d(TAG, "Callback1");
-        };
-        getFirebaseTokenToCallbackServer(ip, tokenCallback);
+    public void buildRegisterCallbackCommand(String ip,  Consumer<Request> callback) {
+        Function<String, Request> postExecutable = firebaseToken -> buildRegisterRequest(ip, firebaseToken);
+        getFirebaseTokenToCallbackServer(ip, postExecutable, callback);
     }
 
-    private void getFirebaseTokenToCallbackServer(String ip, Consumer<Request> callback) {
+    private void getFirebaseTokenToCallbackServer(String ip, Function<String,Request> postExecutable, Consumer<Request> callback) {
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(task -> {
                     if (!task.isSuccessful()) {
@@ -125,20 +124,31 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
                     }
                     token = task.getResult();
                     Log.d(TAG, token);
-                    Request request = buildFirebaseTokenRequest(ip, token);
+                    Request request = postExecutable.apply(token);
                     callback.accept(request);
                 });
     }
 
-    private Request buildFirebaseTokenRequest(String ip, String token) {
+    private Request buildRegisterRequest(String ip, String token) {
 //        String uri = "https://"+ip+"/register"; //TODO: change to generic solution, via argument
-        String uri = "https://192.168.132.212:8443/register";
+        String uri = "https://10.59.2.45:8443/register";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         String jsonBody = "[{\"token\": \""+token +"\"}]";
         HttpEntity<String> entity = new HttpEntity<>(jsonBody, headers);
         return new RequestImpl(uri, HttpMethod.POST, entity, String.class);   
+    }
+
+    private Request buildUnregisterRequest(String ip, String token){
+//        String uri = "https://"+ip+"/register"; //TODO: change to generic solution, via argument
+//        String uri = "https://192.168.132.212:8443/unregister";
+        String uri = "https://10.59.2.45:8443/unregister?firebaseToken="+token;
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        return new RequestImpl(uri, HttpMethod.DELETE, entity, JsonNode.class);
     }
 
     @Override
