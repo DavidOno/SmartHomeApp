@@ -9,9 +9,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import de.smarthome.R;
 import de.smarthome.command.AsyncCommand;
 import de.smarthome.command.Command;
@@ -27,7 +24,6 @@ import de.smarthome.server.gira.GiraServerHandler;
 
 public class ServerTestActivity extends AppCompatActivity {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ServerTestActivity.class.getSimpleName());
 
     private ServerHandler sh = new GiraServerHandler(new HomeServerCommandInterpreter());
     private Button testAvailability;
@@ -45,7 +41,6 @@ public class ServerTestActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LOG.debug("Hello from {} saved instance state {}", this, savedInstanceState);
         setContentView(R.layout.activity_server_test);
 
         getViewsById();
@@ -100,10 +95,11 @@ public class ServerTestActivity extends AppCompatActivity {
         });
 
         showDeviceIPs.setOnClickListener(v -> {
-            new Thread(() -> {
-                Log.d("Main", "Started scanning IPs");
-                new GiraServerHandler(null).showReachableInetAdresses(getApplicationContext());
-            }).start();
+//            new Thread(() -> {
+//                Log.d("Main", "Started scanning IPs");
+//                new GiraServerHandler(null).showReachableInetAdresses(getApplicationContext());
+//            }).start();
+            //is not required anymore
         });
 
         Log.d("Main", "Started");

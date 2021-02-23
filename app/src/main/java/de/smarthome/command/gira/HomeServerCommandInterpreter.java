@@ -123,7 +123,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
                         return;
                     }
                     token = task.getResult();
-                    Log.d(TAG, token);
+                    Log.d(TAG, "Firebase-Token retrieved: "+token);
                     Request request = postExecutable.apply(token);
                     callback.accept(request);
                 });

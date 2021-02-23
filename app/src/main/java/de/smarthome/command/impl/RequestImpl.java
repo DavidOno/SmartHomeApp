@@ -67,7 +67,7 @@ public class RequestImpl implements Request {
     private void checkNetworkConnection() {
         boolean online = isOnline();
         if(!online){
-            Log.d("Request", "WARNING: No Network Connection");
+            Log.d(TAG, "WARNING: No Network Connection");
         }
     }
 

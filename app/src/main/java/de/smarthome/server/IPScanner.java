@@ -1,6 +1,11 @@
 package de.smarthome.server;
 
+import android.content.Context;
+
+import java.net.InetAddress;
+import java.util.List;
+
 public interface IPScanner {
 
-    void getNetworkIPs(); //TODO: replace void with INetAdress?
+    List<InetAddress> showReachableInetAdresses(Context context);
 }

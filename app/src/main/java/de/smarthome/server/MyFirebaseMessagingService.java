@@ -12,7 +12,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d(TAG, "From: " + remoteMessage.getFrom());
         handleDataPayLoad(remoteMessage);
         handleNotification(remoteMessage);
@@ -38,10 +37,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         return remoteMessage.getData().size() > 0;
     }
 
-    //TODO: This can probably be deleted
     @Override
     public void onNewToken(@NonNull String s) {
         super.onNewToken(s);
-        Log.d(TAG, "New Token: "+s);
+        Log.d(TAG, "New Firebase-Token: "+s);
     }
 }

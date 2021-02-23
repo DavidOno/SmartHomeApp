@@ -12,7 +12,7 @@ public interface ServerHandler {
 
     void sendRequest(Command command);
     void sendRequest(AsyncCommand command);
-    String receiveRequest();
-    List<InetAddress> showReachableInetAdresses(Context context);
     void selectServer(String ip);
+    void setIpScanner(IPScanner ipScanner);
+    List<InetAddress> scanForReachableDevices(Context context);
 }

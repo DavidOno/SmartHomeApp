@@ -1,40 +1,59 @@
 package de.smarthome.server.impl;
 
+import android.content.Context;
+import android.net.wifi.WifiManager;
+import android.util.Log;
+
+import java.io.IOException;
 import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.List;
 
 import de.smarthome.server.IPScanner;
 
 public class IPScannerImpl implements IPScanner {
 
-    public void getNetworkIPs() {
-        final byte[] ip;
-        try {
-            ip = InetAddress.getLocalHost().getAddress();
-        } catch (Exception e) {
-            return;
-        }
 
-        for(int i=1;i<=254;i++) {
+    private static final int TIMEOUT = 5000;
+    private static final String TAG = "IPScannerImpl";
+
+    @Override
+    public List<InetAddress> showReachableInetAdresses(Context context) {
+        List<InetAddress> reachableDevicesAdresses;
+        WifiManager mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        String subnet = getSubnetAddress(mWifiManager.getDhcpInfo().gateway);
+        reachableDevicesAdresses = new ArrayList<>(getReachableHosts(subnet));
+        return reachableDevicesAdresses;
+    }
+
+
+    private List<InetAddress> getReachableHosts(String subnet) {
+        List<InetAddress> reachableDeviceAdresses = new ArrayList<>();
+        for (int i = 1; i < 255; i++) {
             final int j = i;
-            new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        ip[3] = (byte)j;
-                        InetAddress address = InetAddress.getByAddress(ip);
-//	                    address.getAddress()
-//	                    address.getHostName()
-                        String output = address.toString().substring(1);
-                        if (address.isReachable(5000)) {
-                            System.out.println(output + " is on the network");
-                        } else {
-                            System.out.println("Not Reachable: "+output);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
+            new Thread(() -> {
+                String host = subnet + "." + j;
+                try {
+                    InetAddress address = InetAddress.getByName(host);
+                    if (address.isReachable(TIMEOUT)) {
+                        Log.d(TAG, "checkHosts() :: " + host + "(" + address.getHostName() + ")" + " is reachable");
+                        reachableDeviceAdresses.add(address);
                     }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }).start();
         }
+        return reachableDeviceAdresses;
     }
+
+    private String getSubnetAddress(int address) {
+        return String.format(
+                "%d.%d.%d",
+                (address & 0xff),
+                (address >> 8 & 0xff),
+                (address >> 16 & 0xff));
+    }
+
 }
 
