@@ -1,12 +1,23 @@
 package de.smarthome.command;
 
+
+import java.util.function.Consumer;
+
+import de.smarthome.model.impl.UIConfig;
+
 public interface CommandInterpreter{
 
-    public Request buildRegisterClientRequest();
-    public Request buildUnregisterClientRequest();
-    public Request buildAdjustLightRequest();
-    public Request buildAdjustTemperatureRequest();
-    public Request buildAdjustBlindRequest();
-    public Request buildSynchronizeRequest();
+    Request buildAvailabilityCheckRequest();
+    Request buildRegisterClientRequest(String username, String pwd);
+    Request buildUnregisterClientRequest();
+    Request buildChangeValueCommand(String id, Integer value);
+    Request buildGetValueCommand(String id);
+    Request buildUIConfigRequest();
+    Request buildRegisterCallbackServerAtGiraServer(String ipCallbackServer);
+    Request buildUnRegisterCallbackServerAtGiraServer();
+    void setIP(String ip);
+    void setToken(String token);
+    void buildRegisterAtCallbackServerCommand(String ip, Consumer<Request> callback);
+    void buildUnRegisterAtCallbackServerCommand(String ip, Consumer<Request> callback);
 
 }

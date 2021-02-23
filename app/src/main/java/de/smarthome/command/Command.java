@@ -1,6 +1,8 @@
 package de.smarthome.command;
 
+import java.util.List;
+
 public interface Command {
 
-    public Request accept(CommandInterpreter commandInterpreter);
+    List<Request> accept(CommandInterpreter commandInterpreter);
 }

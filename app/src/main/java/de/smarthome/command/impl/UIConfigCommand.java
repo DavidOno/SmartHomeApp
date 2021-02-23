@@ -7,10 +7,11 @@ import de.smarthome.command.Command;
 import de.smarthome.command.CommandInterpreter;
 import de.smarthome.command.Request;
 
-public class UnregisterClientCommand implements Command {
+public class UIConfigCommand implements Command {
+
+
     @Override
     public List<Request> accept(CommandInterpreter commandInterpreter) {
-        return Arrays.asList(commandInterpreter.buildUnregisterClientRequest());
+        return Arrays.asList(commandInterpreter.buildUIConfigRequest());
     }
 }
-

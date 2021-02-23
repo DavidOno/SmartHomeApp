@@ -7,10 +7,11 @@ import de.smarthome.command.Command;
 import de.smarthome.command.CommandInterpreter;
 import de.smarthome.command.Request;
 
-public class UnregisterClientCommand implements Command {
+public class UnRegisterCallbackServerAtGiraServer implements Command {
+
     @Override
     public List<Request> accept(CommandInterpreter commandInterpreter) {
-        return Arrays.asList(commandInterpreter.buildUnregisterClientRequest());
+        Request request = commandInterpreter.buildUnRegisterCallbackServerAtGiraServer();
+        return Arrays.asList(request);
     }
 }
-
