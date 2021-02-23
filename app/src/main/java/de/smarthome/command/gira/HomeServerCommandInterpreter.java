@@ -29,7 +29,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
 
     private static final String NO_CACHE = "no-cache";
     private static final String TAG = "HomeServerCommandInterpreter";
-    private String token = "53Tg8Xdu6XgIW855pEkIB5tvrD5ODmyc"; //TODO: remove this hard coded token
+    private String token;
     private String uriPrefix = "https://192.168.132.101";
 
     @Override

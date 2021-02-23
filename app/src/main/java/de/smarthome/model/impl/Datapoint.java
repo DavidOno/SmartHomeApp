@@ -6,6 +6,7 @@ public class Datapoint {
 
     private final String ID;
     private final String name;
+    private Object value;
 
     public Datapoint(@JsonProperty("uid") String ID,
                      @JsonProperty("name") String name) {
@@ -19,6 +20,14 @@ public class Datapoint {
 
     public String getID() {
         return null;
+    }
+
+    public Object getValue() {
+        return value;
+    }
+
+    public void setValue(Object value) {
+        this.value = value;
     }
 
     @Override

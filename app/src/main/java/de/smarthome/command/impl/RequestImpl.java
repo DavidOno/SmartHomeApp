@@ -22,6 +22,8 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import javax.net.ssl.SSLContext;
 
@@ -55,7 +57,6 @@ public class RequestImpl implements Request {
     @Override
     public ResponseEntity execute() {
         checkNetworkConnection();
-        //TODO: Check if this is really necessary:
         Future<ResponseEntity> future = SmartHomeApplication.executorService.submit(() -> {
             RestTemplate restTemplate = createRestTemplate();
             restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
@@ -87,8 +88,9 @@ public class RequestImpl implements Request {
     private ResponseEntity getResponseEntity(Future<ResponseEntity> future) {
         ResponseEntity responseEntity = null;
         try {
-             responseEntity = future.get();
-        } catch (ExecutionException | InterruptedException e) {
+             responseEntity = future.get(5, TimeUnit.SECONDS);
+        } catch (ExecutionException | InterruptedException | TimeoutException e) {
+            Log.d(TAG, "Request took too long");
             e.printStackTrace();
         }
         return responseEntity;
