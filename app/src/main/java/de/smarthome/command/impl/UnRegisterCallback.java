@@ -16,6 +16,6 @@ public class UnRegisterCallback implements AsyncCommand {
 
     @Override
     public void accept(CommandInterpreter commandInterpreter, Consumer<Request> requestCallback) {
-        commandInterpreter.buildUnRegisterCallbackCommand(ip, requestCallback);
+        commandInterpreter.buildUnRegisterAtCallbackServerCommand(ip, requestCallback);
     }
 }

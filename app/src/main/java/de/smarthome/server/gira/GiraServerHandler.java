@@ -30,14 +30,14 @@ public class GiraServerHandler implements ServerHandler {
     @Override
     public void sendRequest(Command command) {
         List<Request> requests = command.accept(commandInterpreter);
-        List<ResponseEntity> results = requests.stream().map(Request::execute).collect(Collectors.toList()); //TODO: is there a meaningfull result
+        List<ResponseEntity> results = requests.stream().map(Request::execute).collect(Collectors.toList()); //TODO: parse and send result
         Log.d(TAG, results.toString());
     }
 
     @Override
     public void sendRequest(AsyncCommand command){
         Consumer<Request> requestCallback = request -> new Thread(() -> {
-            ResponseEntity result = request.execute();//TODO: is there a meaningfull result
+            ResponseEntity result = request.execute();//parse & send result
         }).start();
         command.accept(commandInterpreter, requestCallback);
     }

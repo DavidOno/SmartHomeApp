@@ -7,16 +7,17 @@ import de.smarthome.model.impl.UIConfig;
 
 public interface CommandInterpreter{
 
+    Request buildAvailabilityCheckRequest();
     Request buildRegisterClientRequest(String username, String pwd);
     Request buildUnregisterClientRequest();
     Request buildChangeValueCommand(String id, Integer value);
     Request buildGetValueCommand(String id);
     Request buildUIConfigRequest();
-    Request buildAvailabilityCheckRequest();
-    Request buildUnregisterUserRequest();
-    Request buildGetAllValuesRequest(String locationID, UIConfig uiConfig);
+    Request buildRegisterCallbackServerAtGiraServer(String ipCallbackServer);
+    Request buildUnRegisterCallbackServerAtGiraServer();
     void setIP(String ip);
     void setToken(String token);
-    void buildRegisterCallbackCommand(String ip, Consumer<Request> callback);
-    void buildUnRegisterCallbackCommand(String ip, Consumer<Request> callback);
+    void buildRegisterAtCallbackServerCommand(String ip, Consumer<Request> callback);
+    void buildUnRegisterAtCallbackServerCommand(String ip, Consumer<Request> callback);
+
 }

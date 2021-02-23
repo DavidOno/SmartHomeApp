@@ -8,14 +8,14 @@ import de.smarthome.command.Request;
 
 public class RegisterCallback implements AsyncCommand {
 
-    private String ip;
+    private String ipOfCallbackServer;
 
-    public RegisterCallback(String ip) {
-        this.ip = ip;
+    public RegisterCallback(String ipOfCallbackServer) {
+        this.ipOfCallbackServer = ipOfCallbackServer;
     }
 
     @Override
     public void accept(CommandInterpreter commandInterpreter, Consumer<Request> callback) {
-        commandInterpreter.buildRegisterCallbackCommand(ip, callback);
+        commandInterpreter.buildRegisterAtCallbackServerCommand(ipOfCallbackServer, callback);
     }
 }

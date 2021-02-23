@@ -108,4 +108,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/display" />
+
+    <Button
+        android:id="@+id/registerCallbackAtHomeServer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="RCAH"
+        app:layout_constraintBottom_toTopOf="@+id/register"
+        app:layout_constraintEnd_toStartOf="@+id/showDeviceIps"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/id" />
 </androidx.constraintlayout.widget.ConstraintLayout>

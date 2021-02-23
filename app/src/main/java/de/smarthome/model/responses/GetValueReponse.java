@@ -11,4 +11,11 @@ public class GetValueReponse {
     public GetValueReponse(@JsonProperty("values") List<UID_Value> values) {
         this.values = values;
     }
+
+    @Override
+    public String toString() {
+        return "GetValueReponse{" +
+                "values=" + values +
+                '}';
+    }
 }

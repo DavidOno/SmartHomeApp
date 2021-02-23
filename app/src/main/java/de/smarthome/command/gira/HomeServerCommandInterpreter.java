@@ -12,6 +12,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -27,7 +29,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
 
     private static final String NO_CACHE = "no-cache";
     private static final String TAG = "HomeServerCommandInterpreter";
-    private String token = "53Tg8Xdu6XgIW855pEkIB5tvrD5ODmyc";
+    private String token = "53Tg8Xdu6XgIW855pEkIB5tvrD5ODmyc"; //TODO: remove this hard coded token
     private String uriPrefix = "https://192.168.132.101";
 
     @Override
@@ -38,15 +40,11 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
         headers.setAuthorization(new HttpBasicAuthentication(username, pwd));
         headers.setCacheControl(NO_CACHE);
 
-        String jsonBody = "{\"client\": \"de.haw.la.msp.db\"}";
+        Map<Object, Object> jsonBody = new LinkedHashMap<>();
+        jsonBody.put("client", "de.haw.la.msp.db");
 
-        HttpEntity<String> entity = new HttpEntity<>(jsonBody, headers);
+        HttpEntity<Map<Object, Object>> entity = new HttpEntity<>(jsonBody, headers);
         return new RequestImpl(uri, HttpMethod.POST, entity, RegisterResponse.class);
-    }
-
-    @Override
-    public Request buildUnregisterClientRequest() {
-        return null;
     }
 
     @Override
@@ -55,9 +53,10 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        String jsonBody = "{\"value\": "+value+"}";
+        Map<Object, Object> jsonBody = new LinkedHashMap<>();
+        jsonBody.put("value", value);
 
-        HttpEntity<String> entity = new HttpEntity<>(jsonBody, headers);
+        HttpEntity<Map<Object, Object>> entity = new HttpEntity<>(jsonBody, headers);
         return new RequestImpl(uri, HttpMethod.PUT, entity, JsonNode.class);
     }
 
@@ -86,22 +85,45 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
     }
 
     @Override
-    public Request buildUnregisterUserRequest(){
-        String uri = uriPrefix+"/api/clients/"+token;
+    public Request buildUnregisterClientRequest(){
+        String uri = uriPrefix+"/api/v2/clients/"+token;
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> entity = new HttpEntity<>(headers);
         return new RequestImpl(uri, HttpMethod.DELETE, entity, JsonNode.class);
     }
 
     @Override
-    public Request buildGetAllValuesRequest(String locationID, UIConfig uiConfig) {
-        return null;
+    public Request buildRegisterCallbackServerAtGiraServer(String ipCallbackServer) {
+        String uri = uriPrefix+"/api/v2/clients/"+token+"/callbacks";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        String serviceURI = "https://"+ipCallbackServer+"/service";
+        String valueURI = "https://"+ipCallbackServer+"/value";
+
+        Map<Object, Object> jsonBody = new LinkedHashMap();
+        jsonBody.put("serviceCallback", serviceURI);
+        jsonBody.put("valueCallback", valueURI);
+        jsonBody.put("testCallbacks", true);
+
+        HttpEntity<Map<Object, Object>> entity = new HttpEntity<>(jsonBody, headers);
+        return new RequestImpl(uri, HttpMethod.POST, entity, JsonNode.class);
     }
 
     @Override
-    public void buildUnRegisterCallbackCommand(String ip, Consumer<Request> callback) {
+    public Request buildUnRegisterCallbackServerAtGiraServer() {
+        String uri = uriPrefix+"/api/v2/clients/"+token+"/callbacks";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        return new RequestImpl(uri, HttpMethod.DELETE, entity, JsonNode.class);
+    }
+
+    @Override
+    public void buildUnRegisterAtCallbackServerCommand(String ip, Consumer<Request> callback) {
         Function<String, Request> postExecutable = firebaseToken -> buildUnregisterRequest(ip, firebaseToken);
-        getFirebaseTokenToCallbackServer(ip, postExecutable, callback);
+        getFirebaseTokenToCallbackServer(postExecutable, callback);
     }
 
     @Override
@@ -110,28 +132,27 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
     }
 
     @Override
-    public void buildRegisterCallbackCommand(String ip,  Consumer<Request> callback) {
+    public void buildRegisterAtCallbackServerCommand(String ip, Consumer<Request> callback) {
         Function<String, Request> postExecutable = firebaseToken -> buildRegisterRequest(ip, firebaseToken);
-        getFirebaseTokenToCallbackServer(ip, postExecutable, callback);
+        getFirebaseTokenToCallbackServer(postExecutable, callback);
     }
 
-    private void getFirebaseTokenToCallbackServer(String ip, Function<String,Request> postExecutable, Consumer<Request> callback) {
+    private void getFirebaseTokenToCallbackServer(Function<String,Request> postExecutable, Consumer<Request> callback) {
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(task -> {
                     if (!task.isSuccessful()) {
                         Log.w(TAG, "Fetching FCM registration token failed", task.getException());
                         return;
                     }
-                    token = task.getResult();
-                    Log.d(TAG, "Firebase-Token retrieved: "+token);
-                    Request request = postExecutable.apply(token);
+                    String firebaseToken = task.getResult();
+                    Log.d(TAG, "Firebase-Token retrieved: "+firebaseToken);
+                    Request request = postExecutable.apply(firebaseToken);
                     callback.accept(request);
                 });
     }
 
     private Request buildRegisterRequest(String ip, String token) {
-//        String uri = "https://"+ip+"/register"; //TODO: change to generic solution, via argument
-        String uri = "https://10.59.2.45:8443/register";
+        String uri = "https://"+ip+"/register";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -141,9 +162,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
     }
 
     private Request buildUnregisterRequest(String ip, String token){
-//        String uri = "https://"+ip+"/register"; //TODO: change to generic solution, via argument
-//        String uri = "https://192.168.132.212:8443/unregister";
-        String uri = "https://10.59.2.45:8443/unregister?firebaseToken="+token;
+        String uri = "https://"+ip+"/unregister?firebaseToken="+token;
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
