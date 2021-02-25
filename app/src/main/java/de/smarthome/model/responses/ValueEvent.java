@@ -5,13 +5,13 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Event {
+public class ValueEvent {
 	
 	private final String uid;
 	private final Object value;
 	
 	
-	public Event(@JsonProperty("uid") String uid, @JsonProperty("value") Object value) {
+	public ValueEvent(@JsonProperty("uid") String uid, @JsonProperty("value") Object value) {
 		super();
 		this.uid = uid;
 		this.value = value;

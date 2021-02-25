@@ -11,7 +11,7 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import java.io.IOException;
 
-import de.smarthome.model.responses.CallbackInput;
+import de.smarthome.model.responses.CallbackValueInput;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static String TAG = "MyFirebaseMessagingService";
@@ -43,10 +43,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private void handleDataPayLoad(RemoteMessage remoteMessage) {
         if (hasData(remoteMessage)) {
 //            try {
-                Log.d(TAG, "Message data payload: " + remoteMessage.getData());
+//                Log.d(TAG, "Message data payload: " + remoteMessage.getData());
 //                ObjectMapper m = new ObjectMapper();
-//                CallbackInput callbackInput = m.readValue(remoteMessage.getData(), new TypeReference<CallbackInput>() {});
-//                valueObserver.notify(callbackInput);
+//                CallbackValueInput callbackValueInput = m.readValue(remoteMessage.getData(), new TypeReference<CallbackValueInput>() {});
+//                valueObserver.notify(callbackValueInput);
 //            } catch (IOException e) {
 //                e.printStackTrace();
 //            }

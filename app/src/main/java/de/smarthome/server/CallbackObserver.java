@@ -3,7 +3,8 @@ package de.smarthome.server;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.smarthome.model.responses.CallbackInput;
+import de.smarthome.model.responses.CallBackServiceInput;
+import de.smarthome.model.responses.CallbackValueInput;
 
 public class CallbackObserver {
 
@@ -17,7 +18,11 @@ public class CallbackObserver {
         subscribers.remove(subscriber);
     }
 
-    public void notify(CallbackInput input){
+    public void notify(CallbackValueInput input){
+        subscribers.forEach(s -> s.update(input));
+    }
+
+    public void notify(CallBackServiceInput input){
         subscribers.forEach(s -> s.update(input));
     }
 
