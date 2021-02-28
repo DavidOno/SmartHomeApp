@@ -1,15 +1,21 @@
 package de.smarthome;
 
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import android.view.View;
+
+import android.view.Menu;
+import android.view.MenuItem;
+
+import java.util.Arrays;
+
+import de.smarthome.beacons.BeaconMonitoringActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,6 +33,11 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+        System.out.println(">>>> CREATE ACTIVITY");
+
+        BeaconMonitoringActivity var1 = new BeaconMonitoringActivity(this);
+        var1.startRanging();
+        var1.onResume();
     }
 
     @Override
