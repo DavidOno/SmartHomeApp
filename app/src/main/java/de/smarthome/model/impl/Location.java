@@ -2,6 +2,10 @@ package de.smarthome.model.impl;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -45,9 +49,22 @@ public class Location {
         return type;
     }
 
-    public List<String> getFunctionsID() {
+    private List<String> getFunctionsID() {
         return functionsID;
     }
+
+
+    public List<Function> getFunctions(UIConfig uiConfig) {
+        List<Function> result = new ArrayList<>();
+        List<Function> functions = uiConfig.getFunctions();
+        for (Function function : functions) {
+            if (functionsID.contains(function.getID())) {
+                result.add(function);
+            }
+        }
+        return result;
+    }
+
 
     @Override
     public String toString() {

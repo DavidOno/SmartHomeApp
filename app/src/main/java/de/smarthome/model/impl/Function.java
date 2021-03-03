@@ -2,6 +2,11 @@ package de.smarthome.model.impl;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class Function {
@@ -33,7 +38,6 @@ public class Function {
     }
 
 
-
     public List<Datapoint> getDataPoints() {
         return datapoints;
     }
@@ -55,5 +59,9 @@ public class Function {
                 "\n, functionType='" + functionType + '\'' +
                 "\n, datapoints=" + datapoints +
                 "\n}";
+    }
+
+    public boolean isStatusFunction() {
+        return name.toLowerCase().endsWith("_status");
     }
 }
