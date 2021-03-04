@@ -28,6 +28,12 @@ public class UIConfig {
         return locations;
     }
 
+    public void initParentLocations(){
+        for(Location root : getLocations()){
+            root.initParentLocation(Location.ROOT);
+        }
+    }
+
     @Override
     public String toString() {
         return "UIConfig{\n" +

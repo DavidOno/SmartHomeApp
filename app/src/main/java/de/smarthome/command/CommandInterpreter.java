@@ -3,8 +3,6 @@ package de.smarthome.command;
 
 import java.util.function.Consumer;
 
-import de.smarthome.model.impl.UIConfig;
-
 public interface CommandInterpreter{
 
     Request buildAvailabilityCheckRequest();

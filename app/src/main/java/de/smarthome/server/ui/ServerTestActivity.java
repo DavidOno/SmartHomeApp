@@ -17,14 +17,19 @@ import de.smarthome.command.impl.ChangeValueCommand;
 import de.smarthome.command.impl.CheckAvailabilityCommand;
 import de.smarthome.command.impl.GetValueCommand;
 import de.smarthome.command.impl.RegisterCallback;
+import de.smarthome.command.impl.RegisterCallbackServerAtGiraServer;
+import de.smarthome.command.impl.RegisterClientCommand;
 import de.smarthome.command.impl.UIConfigCommand;
 import de.smarthome.command.impl.UnRegisterCallback;
+import de.smarthome.command.impl.UnRegisterCallbackServerAtGiraServer;
 import de.smarthome.server.ServerHandler;
 import de.smarthome.server.gira.GiraServerHandler;
 
 public class ServerTestActivity extends AppCompatActivity {
 
-
+    private static final String USERNAME = "";
+    private static final String PWD = "";
+    private static final String ipOfCallbackServer = "192.168.132.211:8443";
     private ServerHandler sh = new GiraServerHandler(new HomeServerCommandInterpreter());
     private Button testAvailability;
     private Button register;
@@ -32,11 +37,13 @@ public class ServerTestActivity extends AppCompatActivity {
     private Button getValue;
     private Button setValue;
     private Button registerCallbackButton;
+    private Button rcah;
     private Button showDeviceIPs;
     private EditText id;
     private EditText value;
     private TextView displayText;
     private boolean registerToogle = false;
+    private boolean registerCAHToogle = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +59,10 @@ public class ServerTestActivity extends AppCompatActivity {
         });
 
         register.setOnClickListener(v -> {
-            Toast.makeText(this, "is not supported", Toast.LENGTH_LONG).show();
+            new Thread(() -> {
+                Command register = new RegisterClientCommand(USERNAME, PWD);
+                sh.sendRequest(register);
+            }).start();
         });
 
         getUIConfig.setOnClickListener(v -> {
@@ -79,18 +89,36 @@ public class ServerTestActivity extends AppCompatActivity {
         registerCallbackButton.setOnClickListener(v -> {
             if(!registerToogle) {
                 new Thread(() -> {
-                    AsyncCommand register = new RegisterCallback(":8443");//TODO: change to correct ip:port
+                    AsyncCommand register = new RegisterCallback(ipOfCallbackServer);//TODO: change to correct ip:port
                     sh.sendRequest(register);
                 }).start();
                 registerToogle = !registerToogle;
                 registerCallbackButton.setText("Unregister Callback");
             }else{
                 new Thread(() -> {
-                    AsyncCommand register = new UnRegisterCallback(":8443");//TODO: change to correct ip:port
+                    AsyncCommand register = new UnRegisterCallback(ipOfCallbackServer);//TODO: change to correct ip:port
                     sh.sendRequest(register);
                 }).start();
                 registerToogle = !registerToogle;
                 registerCallbackButton.setText("Register Callback");
+            }
+        });
+
+        rcah.setOnClickListener(v -> {
+            if(!registerCAHToogle) {
+                new Thread(() -> {
+                    Command register = new RegisterCallbackServerAtGiraServer(ipOfCallbackServer);
+                    sh.sendRequest(register);
+                }).start();
+                registerCAHToogle = !registerCAHToogle;
+                rcah.setText("URCAH");
+            }else{
+                new Thread(() -> {
+                    Command register = new UnRegisterCallbackServerAtGiraServer();
+                    sh.sendRequest(register);
+                }).start();
+                registerCAHToogle = !registerCAHToogle;
+                rcah.setText("RCAH");
             }
         });
 
@@ -117,5 +145,6 @@ public class ServerTestActivity extends AppCompatActivity {
         displayText = findViewById(R.id.display);
         registerCallbackButton = findViewById(R.id.register_callback_button);
         showDeviceIPs = findViewById(R.id.showDeviceIps);
+        rcah = findViewById(R.id.registerCallbackAtHomeServer);
     }
 }

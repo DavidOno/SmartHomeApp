@@ -2,18 +2,24 @@ package de.smarthome.model.impl;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Collections;
 import java.util.List;
 
 
 public class Location {
 
-    private final String name;
-    private final String ID;
-    private final String type;
-    private final String locationType;
-    private final List<String> functionsID;
-    private final List<Location> locations;
+    public static final Location ROOT = new Location();
+
+    private String name;
+    private String ID;
+    private String type;
+    private String locationType;
+    private List<String> functionsID;
+    private List<Location> locations;
+    private Location parentLocation;
+
+    private Location(){
+
+    }
 
     public Location(@JsonProperty("displayName") String name,
                     @JsonProperty("uid") String ID,
@@ -49,6 +55,17 @@ public class Location {
         return functionsID;
     }
 
+    public Location getParentLocation(){
+        return parentLocation;
+    }
+
+    public void initParentLocation(Location parent){
+        this.parentLocation = parent;
+        for(Location child : getLocations()){
+            child.initParentLocation(this);
+        }
+    }
+
     @Override
     public String toString() {
         return "Location{" +
@@ -60,4 +77,5 @@ public class Location {
                 "\n, locations=" + locations +
                 "\n}";
     }
+
 }
