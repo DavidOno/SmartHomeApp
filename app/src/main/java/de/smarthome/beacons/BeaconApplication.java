@@ -1,6 +1,6 @@
 package de.smarthome.beacons;
 
-import android.app.Application;
+import android.content.Context;
 import android.util.Log;
 
 import org.altbeacon.beacon.BeaconManager;
@@ -10,17 +10,18 @@ import org.altbeacon.beacon.powersave.BackgroundPowerSaver;
 import org.altbeacon.beacon.startup.BootstrapNotifier;
 import org.altbeacon.beacon.startup.RegionBootstrap;
 
-public class BeaconApplication extends Application implements BootstrapNotifier {
+public class BeaconApplication implements BootstrapNotifier {
     private static final String TAG = "BeaconReferenceApp";
     private RegionBootstrap regionBootstrap;
     private BackgroundPowerSaver backgroundPowerSaver;
-    private BeaconMonitoringActivity monitoringActivity = null;
-    private String cumulativeLog = "";
+    private Context context;
 
-    @Override
+    public BeaconApplication(Context context) {
+        this.context = context;
+    }
+
     public void onCreate() {
-        super.onCreate();
-        BeaconManager beaconManager = BeaconManager.getInstanceForApplication(this);
+        BeaconManager beaconManager = BeaconManager.getInstanceForApplication(context);
 
         System.out.println(">>>> APPLICATION CREATED");
 
@@ -34,7 +35,7 @@ public class BeaconApplication extends Application implements BootstrapNotifier 
         Region region = new Region("backgroundRegion",
                 null, null, null);
         regionBootstrap = new RegionBootstrap(this, region);
-        backgroundPowerSaver = new BackgroundPowerSaver(this);
+        backgroundPowerSaver = new BackgroundPowerSaver(context);
     }
 
     public void disableMonitoring() {
@@ -56,72 +57,16 @@ public class BeaconApplication extends Application implements BootstrapNotifier 
     @Override
     public void didEnterRegion(Region arg0) {
         System.out.println(">>>> DID ENTER REGION");
-//        Log.d(TAG, "did enter region.");
-//        Log.d(TAG, "Sending notification.");
-        //sendNotification();
-//        if (monitoringActivity != null) {
-//            logToDisplay("I see a beacon again" );
-//        }
     }
 
     @Override
-    public void didExitRegion(Region region) {
-//        logToDisplay("Beacon left Region");
-    }
+    public void didExitRegion(Region region) {}
 
     @Override
-    public void didDetermineStateForRegion(int state, Region region) {
-//        logToDisplay("Current region state is: " + (state == 1 ? "INSIDE" : "OUTSIDE ("+state+")"));
-    }
+    public void didDetermineStateForRegion(int state, Region region) {}
 
-//    private void sendNotification() {
-//        NotificationManager notificationManager =
-//                (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-//        Notification.Builder builder;
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            NotificationChannel channel = new NotificationChannel("Beacon Reference Notifications",
-//                    "Beacon Reference Notifications", NotificationManager.IMPORTANCE_HIGH);
-//            channel.enableLights(true);
-//            channel.enableVibration(true);
-//            channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
-//            notificationManager.createNotificationChannel(channel);
-//            builder = new Notification.Builder(this, channel.getId());
-//        }
-//        else {
-//            builder = new Notification.Builder(this);
-//            builder.setPriority(Notification.PRIORITY_HIGH);
-//        }
-//
-//        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-//        stackBuilder.addNextIntent(new Intent(this, MonitoringActivity.class));
-//        PendingIntent resultPendingIntent =
-//                stackBuilder.getPendingIntent(
-//                        0,
-//                        PendingIntent.FLAG_UPDATE_CURRENT
-//                );
-//
-//        // Show message on log screen
-//        builder.setSmallIcon(R.drawable.ic_launcher);
-//        builder.setContentTitle("I detect a beacon");
-//        builder.setContentText("Tap here to see details in the reference app");
-//        builder.setContentIntent(resultPendingIntent);
-//        notificationManager.notify(1, builder.build());
-//    }
-
-    public void setMonitoringActivity(BeaconMonitoringActivity activity) {
-        System.out.println(">>>> SET MONITORING");
-
-        this.monitoringActivity = activity;
-    }
-
-//    private void logToDisplay(String line) {
-//        cumulativeLog += (line + "\n");
-//        if (this.monitoringActivity != null) {
-//            this.monitoringActivity.updateLog(cumulativeLog);
-//        }
-//    }
-
-    public String getLog() {
-        return cumulativeLog;
+    @Override
+    public Context getApplicationContext() {
+        return context;
     }
 }

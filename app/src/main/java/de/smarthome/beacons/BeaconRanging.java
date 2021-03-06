@@ -15,12 +15,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BeaconRangingActivity implements BeaconConsumer {
+public class BeaconRanging implements BeaconConsumer {
     private final BeaconManager beaconManager;
     private BeaconLocationManager beaconLocationManager = new BeaconLocationManager();
     private Context context;
 
-    public BeaconRangingActivity(Context context) {
+    public BeaconRanging(Context context) {
         this.context = context;
         beaconManager = BeaconManager.getInstanceForApplication(context);
     }

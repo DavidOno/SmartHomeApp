@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="de.smarthome.beacons.BeaconMonitoringActivity" >
+    tools:context="de.smarthome.beacons.BeaconMonitoring" >
 
     <TextView
         android:id="@+id/textView1"
@@ -28,23 +28,4 @@
         android:autofillHints="Bigos">
         <requestFocus/>
     </EditText>
-
-    <Button
-        android:id="@+id/startButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:onClick="onRangingClicked"
-        android:layout_below="@+id/monitoringText"
-        android:text="Start Monitoring" />
-
-    <Button
-        android:id="@+id/stopButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="onEnableClicked"
-        android:layout_below="@+id/monitoringText"
-        android:layout_toRightOf="@id/startButton"
-        android:text="Stop Monitoring" />
-
 </RelativeLayout>

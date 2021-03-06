@@ -1,17 +1,16 @@
 package de.smarthome.server.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import de.smarthome.R;
-import de.smarthome.beacons.BeaconMonitoringActivity;
+import de.smarthome.beacons.BeaconApplication;
+import de.smarthome.beacons.BeaconMonitoring;
 import de.smarthome.command.AsyncCommand;
 import de.smarthome.command.Command;
 import de.smarthome.command.gira.HomeServerCommandInterpreter;
@@ -27,7 +26,7 @@ import de.smarthome.server.gira.GiraServerHandler;
 public class ServerTestActivity extends AppCompatActivity {
 
     private ServerHandler sh = new GiraServerHandler(new HomeServerCommandInterpreter());
-    private BeaconMonitoringActivity beaconMonitoring;
+    private BeaconMonitoring beaconMonitoring;
 
     private Button testAvailability;
     private Button register;
@@ -46,7 +45,10 @@ public class ServerTestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-         beaconMonitoring = new BeaconMonitoringActivity(this, getApplication());
+        BeaconApplication beaconApplication = new BeaconApplication(getApplication());
+        beaconApplication.onCreate();
+
+         beaconMonitoring = new BeaconMonitoring(this, beaconApplication);
 
         setContentView(R.layout.activity_server_test);
 
