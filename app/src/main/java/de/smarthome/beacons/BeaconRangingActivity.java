@@ -1,10 +1,9 @@
 package de.smarthome.beacons;
 
-import android.app.Activity;
-import android.os.Bundle;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.RemoteException;
-import android.util.Log;
-import android.widget.EditText;
 
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconConsumer;
@@ -16,33 +15,21 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.smarthome.R;
-
-public class BeaconRangingActivity extends Activity implements BeaconConsumer {
-    protected static final String TAG = "RangingActivity";
-    private final BeaconManager beaconManager = BeaconManager.getInstanceForApplication(this);
+public class BeaconRangingActivity implements BeaconConsumer {
+    private final BeaconManager beaconManager;
     private BeaconLocationManager beaconLocationManager = new BeaconLocationManager();
+    private Context context;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ranging);
+    BeaconRangingActivity(Context context) {
+        this.context = context;
+        beaconManager = BeaconManager.getInstanceForApplication(context);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
+    public void onPause() {
         beaconManager.unbind(this);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+    public void onResume() {
         beaconManager.bind(this);
     }
 
@@ -50,14 +37,13 @@ public class BeaconRangingActivity extends Activity implements BeaconConsumer {
     public void onBeaconServiceConnect() {
         RangeNotifier rangeNotifier = (beacons, region) -> {
             if (!beacons.isEmpty()) {
-                Log.d(TAG, "didRangeBeaconsInRegion called with beacon count:  " + beacons.size());
-                Log.d("RANGING>> ", Arrays.toString(beacons.toArray(new Beacon[]{})));
+                System.out.println("didRangeBeaconsInRegion called with beacon count:  " + beacons.size());
+                System.out.println(">>>> RANGING " + Arrays.toString(beacons.toArray(new Beacon[]{})));
 
                 Beacon[] beaconsArray = beacons.toArray(new Beacon[]{});
                 Map<BeaconID, Integer> beaconsOverview = new HashMap<>();
 
                 for (Beacon b : beaconsArray) {
-                    logToDisplay( b.toString() + " has freq. " + b.getRssi());
                     beaconsOverview.put(new BeaconID(b.getId1(), b.getId2(), b.getId3()), b.getRssi());
                 }
                 beaconLocationManager.addNewBeaconStatus(beaconsOverview);
@@ -76,10 +62,18 @@ public class BeaconRangingActivity extends Activity implements BeaconConsumer {
         }
     }
 
-    private void logToDisplay(final String line) {
-        runOnUiThread(() -> {
-            EditText editText = BeaconRangingActivity.this.findViewById(R.id.rangingText);
-            editText.append(line+"\n");
-        });
+    @Override
+    public Context getApplicationContext() {
+        return context;
+    }
+
+    @Override
+    public void unbindService(ServiceConnection serviceConnection) {
+        context.unbindService(serviceConnection);
+    }
+
+    @Override
+    public boolean bindService(Intent intent, ServiceConnection serviceConnection, int i) {
+        return context.bindService(intent, serviceConnection, i);
     }
 }

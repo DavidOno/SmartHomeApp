@@ -1,16 +1,8 @@
 package de.smarthome.beacons;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -19,6 +11,7 @@ import org.altbeacon.beacon.BeaconManager;
 import de.smarthome.R;
 
 public class BeaconMonitoringActivity extends Activity {
+    private BeaconRangingActivity ranging = new BeaconRangingActivity(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,8 +21,7 @@ public class BeaconMonitoringActivity extends Activity {
     }
 
     public void onRangingClicked(View view) {
-        Intent myIntent = new Intent(this, BeaconRangingActivity.class);
-        this.startActivity(myIntent);
+        ranging.onResume();
     }
 
     @SuppressLint("SetTextI18n")
@@ -37,10 +29,11 @@ public class BeaconMonitoringActivity extends Activity {
         MainActivity application = ((MainActivity) this.getApplicationContext());
         if (BeaconManager.getInstanceForApplication(this).getMonitoredRegions().size() > 0) {
             application.disableMonitoring();
-        } else {
+            ranging.onPause();
+        }
+        else {
             application.enableMonitoring();
         }
-
     }
 
     @Override
