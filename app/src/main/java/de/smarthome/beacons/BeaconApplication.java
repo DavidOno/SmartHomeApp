@@ -10,7 +10,7 @@ import org.altbeacon.beacon.powersave.BackgroundPowerSaver;
 import org.altbeacon.beacon.startup.BootstrapNotifier;
 import org.altbeacon.beacon.startup.RegionBootstrap;
 
-public class MainActivity extends Application implements BootstrapNotifier {
+public class BeaconApplication extends Application implements BootstrapNotifier {
     private static final String TAG = "BeaconReferenceApp";
     private RegionBootstrap regionBootstrap;
     private BackgroundPowerSaver backgroundPowerSaver;
@@ -55,26 +55,23 @@ public class MainActivity extends Application implements BootstrapNotifier {
 
     @Override
     public void didEnterRegion(Region arg0) {
-        // TODO: To comment
         System.out.println(">>>> DID ENTER REGION");
 //        Log.d(TAG, "did enter region.");
 //        Log.d(TAG, "Sending notification.");
         //sendNotification();
-        if (monitoringActivity != null) {
-            logToDisplay("I see a beacon again" );
-        }
+//        if (monitoringActivity != null) {
+//            logToDisplay("I see a beacon again" );
+//        }
     }
 
     @Override
     public void didExitRegion(Region region) {
-        // TODO: To comment
-        logToDisplay("Beacon left Region");
+//        logToDisplay("Beacon left Region");
     }
 
     @Override
     public void didDetermineStateForRegion(int state, Region region) {
-        // TODO: To comment
-        logToDisplay("Current region state is: " + (state == 1 ? "INSIDE" : "OUTSIDE ("+state+")"));
+//        logToDisplay("Current region state is: " + (state == 1 ? "INSIDE" : "OUTSIDE ("+state+")"));
     }
 
 //    private void sendNotification() {
@@ -117,13 +114,12 @@ public class MainActivity extends Application implements BootstrapNotifier {
         this.monitoringActivity = activity;
     }
 
-    private void logToDisplay(String line) {
-        // TODO: To comment
-        cumulativeLog += (line + "\n");
-        if (this.monitoringActivity != null) {
-            this.monitoringActivity.updateLog(cumulativeLog);
-        }
-    }
+//    private void logToDisplay(String line) {
+//        cumulativeLog += (line + "\n");
+//        if (this.monitoringActivity != null) {
+//            this.monitoringActivity.updateLog(cumulativeLog);
+//        }
+//    }
 
     public String getLog() {
         return cumulativeLog;

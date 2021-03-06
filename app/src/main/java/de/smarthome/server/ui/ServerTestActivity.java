@@ -104,8 +104,8 @@ public class ServerTestActivity extends AppCompatActivity {
             //is not required anymore
         });
 
-        Intent intent = new Intent(this, BeaconMonitoringActivity.class);
-        startActivity(intent);
+        BeaconMonitoringActivity beaconMonitoring = new BeaconMonitoringActivity(this, getApplication());
+        beaconMonitoring.startMonitoring();
 
         Log.d("Main", "Started");
         Toast.makeText(this, "Started", Toast.LENGTH_SHORT).show();

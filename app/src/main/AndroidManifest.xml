@@ -18,7 +18,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:name=".beacons.MainActivity">
+        android:name=".beacons.BeaconApplication">
         <activity android:name=".MainActivity"></activity>
         <activity
             android:name=".server.ui.ServerTestActivity"
@@ -29,14 +29,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name="de.smarthome.beacons.BeaconMonitoringActivity"
-            android:label="@string/app_name" >
-        </activity>
-        <activity
-            android:name="de.smarthome.beacons.BeaconRangingActivity"
-            android:label="@string/app_name" >
         </activity>
         <service
             android:name=".server.MyFirebaseMessagingService"

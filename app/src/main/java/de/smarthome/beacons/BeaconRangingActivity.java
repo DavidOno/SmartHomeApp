@@ -20,7 +20,7 @@ public class BeaconRangingActivity implements BeaconConsumer {
     private BeaconLocationManager beaconLocationManager = new BeaconLocationManager();
     private Context context;
 
-    BeaconRangingActivity(Context context) {
+    public BeaconRangingActivity(Context context) {
         this.context = context;
         beaconManager = BeaconManager.getInstanceForApplication(context);
     }

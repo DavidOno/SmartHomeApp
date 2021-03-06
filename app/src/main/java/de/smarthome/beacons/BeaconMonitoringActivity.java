@@ -1,61 +1,41 @@
 package de.smarthome.beacons;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.os.Bundle;
+import android.app.Application;
+import android.content.Context;
 import android.view.View;
-import android.widget.EditText;
 
 import org.altbeacon.beacon.BeaconManager;
 
-import de.smarthome.R;
+public class BeaconMonitoringActivity {
+    private Context context;
+    private BeaconRangingActivity ranging;
+    private Application application;
 
-public class BeaconMonitoringActivity extends Activity {
-    private BeaconRangingActivity ranging = new BeaconRangingActivity(this);
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        System.out.println(">>>> MONITORING CREATED");
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_monitoring);
+    public BeaconMonitoringActivity(Context context, Application application) {
+        this.context = context;
+        this.ranging = new BeaconRangingActivity(context);
+        this.application = application;
     }
 
-    public void onRangingClicked(View view) {
+    public void startMonitoring() {
         ranging.onResume();
     }
 
     @SuppressLint("SetTextI18n")
     public void onEnableClicked(View view) {
-        MainActivity application = ((MainActivity) this.getApplicationContext());
-        if (BeaconManager.getInstanceForApplication(this).getMonitoredRegions().size() > 0) {
-            application.disableMonitoring();
+        if (BeaconManager.getInstanceForApplication(context).getMonitoredRegions().size() > 0) {
+            ((BeaconApplication)application).disableMonitoring();
             ranging.onPause();
         }
         else {
-            application.enableMonitoring();
+            ((BeaconApplication)application).enableMonitoring();
         }
     }
 
-    @Override
     public void onResume() {
         System.out.println(">>>> RESUME MONITORING");
 
-        super.onResume();
-        MainActivity application = ((MainActivity) this.getApplicationContext());
-        application.setMonitoringActivity(this);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        ((MainActivity) this.getApplicationContext()).setMonitoringActivity(null);
-    }
-
-    public void updateLog(final String log) {
-        runOnUiThread(() -> {
-            EditText editText = (EditText) BeaconMonitoringActivity.this
-                    .findViewById(R.id.monitoringText);
-            editText.setText(log);
-        });
+        ((BeaconApplication)application).setMonitoringActivity(this);
     }
 }
