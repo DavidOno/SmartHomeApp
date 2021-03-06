@@ -1,5 +1,6 @@
 package de.smarthome.server.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import de.smarthome.R;
+import de.smarthome.beacons.BeaconMonitoringActivity;
 import de.smarthome.command.AsyncCommand;
 import de.smarthome.command.Command;
 import de.smarthome.command.gira.HomeServerCommandInterpreter;
@@ -101,6 +103,9 @@ public class ServerTestActivity extends AppCompatActivity {
 //            }).start();
             //is not required anymore
         });
+
+        Intent intent = new Intent(this, BeaconMonitoringActivity.class);
+        startActivity(intent);
 
         Log.d("Main", "Started");
         Toast.makeText(this, "Started", Toast.LENGTH_SHORT).show();
