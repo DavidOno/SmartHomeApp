@@ -13,14 +13,14 @@ import org.altbeacon.beacon.startup.RegionBootstrap;
 
 import java.sql.SQLOutput;
 
-public class MainApplication implements BootstrapNotifier {
+public class BeaconHandler implements BootstrapNotifier {
     private static final String TAG = "BeaconReferenceApp";
     private RegionBootstrap regionBootstrap;
     private BackgroundPowerSaver backgroundPowerSaver;
     private BeaconMonitoringActivity monitoringActivity = null;
     private Context context;
 
-    public MainApplication(Context context) {
+    public BeaconHandler(Context context) {
         this.context = context;
 
         BeaconManager beaconManager = BeaconManager.getInstanceForApplication(context);
@@ -75,5 +75,11 @@ public class MainApplication implements BootstrapNotifier {
     @Override
     public Context getApplicationContext() {
         return context;
+    }
+
+    public void start() {
+        BeaconMonitoringActivity monitoring = new BeaconMonitoringActivity(context, this);
+        monitoring.onResume();
+        monitoring.startRanging();
     }
 }

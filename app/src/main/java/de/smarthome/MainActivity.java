@@ -13,8 +13,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import java.util.Arrays;
-
+import de.smarthome.beacons.BeaconHandler;
 import de.smarthome.beacons.BeaconMonitoringActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -35,9 +34,8 @@ public class MainActivity extends AppCompatActivity {
         });
         System.out.println(">>>> CREATE ACTIVITY");
 
-        BeaconMonitoringActivity var1 = new BeaconMonitoringActivity(this);
-        var1.startRanging();
-        var1.onResume();
+        BeaconHandler handler = new BeaconHandler(this);
+        handler.start();
     }
 
     @Override

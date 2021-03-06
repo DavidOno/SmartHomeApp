@@ -1,28 +1,21 @@
 package de.smarthome.beacons;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.view.View;
-
-import org.altbeacon.beacon.BeaconManager;
-
-import de.smarthome.MainActivity;
 
 public class BeaconMonitoringActivity {
     protected static final String TAG = "MonitoringActivity";
     private static final int PERMISSION_REQUEST_FINE_LOCATION = 1;
     private static final int PERMISSION_REQUEST_BACKGROUND_LOCATION = 2;
     private Context context;
-    private MainApplication application;
+    private BeaconHandler application;
     private BeaconRangingActivity rangingActivity;
 
-    public BeaconMonitoringActivity(Context context) {
+    public BeaconMonitoringActivity(Context context, BeaconHandler application) {
         System.out.println(">>>> MONITORING CREATED");
 
         this.context = context;
-        this.application = new MainApplication(context);
+        this.application = application;
     }
 
     public void startRanging() {
