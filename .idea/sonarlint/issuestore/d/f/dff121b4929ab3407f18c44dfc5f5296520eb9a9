@@ -1,0 +1,19 @@
+
+O
+java:S1128"3Remove this unused import 'android.content.Intent'.(³ğ‹G8íù›Ëş.
+U	java:S1063"9Replace this use of System.out or System.err by a logger.(Øƒø×8ŸÿİÎş.
+]	java:S125)"<This block of commented-out lines of code should be removed.(©ÿıµùÿÿÿÿ8”¤ÂËş.
+P
+java:S1128".Remove this unused import 'android.view.View'.(Ø½­äşÿÿÿÿ8µé‚Ëş.
+]	java:S125/"<This block of commented-out lines of code should be removed.(éØ»Úûÿÿÿÿ8ŸÿİÎş.
+]	java:S1254"<This block of commented-out lines of code should be removed.(©ÿıµùÿÿÿÿ8ËçÁËş.
+Z	java:S106 "9Replace this use of System.out or System.err by a logger.(“Ë€­ùÿÿÿÿ8Û¢ôËş.
+Z	java:S106"9Replace this use of System.out or System.err by a logger.(ÖÙ§Îûÿÿÿÿ8ŸÿİÎş.
+e
+java:S1068"JRemove this unused "PERMISSION_REQUEST_BACKGROUND_LOCATION" private field.(‚ôêãúÿÿÿÿ
+S
+java:S1128"6Remove this unused import 'de.smarthome.MainActivity'.(Ó÷¹’8ó±ûÊş.
+N
+java:S1128"1Remove this unused import 'android.app.Activity'.(‡ÊÍÆ8œ¯à„ı.
+Z
+java:S1068"DRemove this unused "PERMISSION_REQUEST_FINE_LOCATION" private field.(¡î¾Ÿ

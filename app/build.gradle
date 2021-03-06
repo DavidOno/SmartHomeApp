@@ -69,4 +69,6 @@ dependencies {
     implementation('pl.brightinventions:slf4android:0.0.4@aar') {
         transitive = true
     }
+    implementation 'org.altbeacon:android-beacon-library:2+'
+    implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
 }
