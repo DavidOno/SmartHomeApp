@@ -3,7 +3,6 @@ package de.smarthome.beacons;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
-import android.view.View;
 
 import org.altbeacon.beacon.BeaconManager;
 
@@ -23,7 +22,7 @@ public class BeaconMonitoringActivity {
     }
 
     @SuppressLint("SetTextI18n")
-    public void onEnableClicked(View view) {
+    public void stopMonitoring() {
         if (BeaconManager.getInstanceForApplication(context).getMonitoredRegions().size() > 0) {
             ((BeaconApplication)application).disableMonitoring();
             ranging.onPause();

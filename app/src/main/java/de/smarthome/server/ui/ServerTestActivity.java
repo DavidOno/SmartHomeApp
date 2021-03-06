@@ -26,8 +26,9 @@ import de.smarthome.server.gira.GiraServerHandler;
 
 public class ServerTestActivity extends AppCompatActivity {
 
-
     private ServerHandler sh = new GiraServerHandler(new HomeServerCommandInterpreter());
+    private BeaconMonitoringActivity beaconMonitoring;
+
     private Button testAvailability;
     private Button register;
     private Button getUIConfig;
@@ -35,14 +36,18 @@ public class ServerTestActivity extends AppCompatActivity {
     private Button setValue;
     private Button registerCallbackButton;
     private Button showDeviceIPs;
+    private Button startMonitoring;
+    private Button stopMonitoring;
     private EditText id;
     private EditText value;
-    private TextView displayText;
     private boolean registerToogle = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+         beaconMonitoring = new BeaconMonitoringActivity(this, getApplication());
+
         setContentView(R.layout.activity_server_test);
 
         getViewsById();
@@ -104,8 +109,17 @@ public class ServerTestActivity extends AppCompatActivity {
             //is not required anymore
         });
 
-        BeaconMonitoringActivity beaconMonitoring = new BeaconMonitoringActivity(this, getApplication());
-        beaconMonitoring.startMonitoring();
+        startMonitoring.setOnClickListener(v -> {
+            new Thread(() -> {
+                beaconMonitoring.startMonitoring();
+            }).start();
+        });
+
+        stopMonitoring.setOnClickListener(v -> {
+            new Thread(() -> {
+                beaconMonitoring.stopMonitoring();
+            }).start();
+        });
 
         Log.d("Main", "Started");
         Toast.makeText(this, "Started", Toast.LENGTH_SHORT).show();
@@ -119,8 +133,9 @@ public class ServerTestActivity extends AppCompatActivity {
         getValue = findViewById(R.id.getvalue);
         id = findViewById(R.id.id);
         value = findViewById(R.id.value);
-        displayText = findViewById(R.id.display);
         registerCallbackButton = findViewById(R.id.register_callback_button);
         showDeviceIPs = findViewById(R.id.showDeviceIps);
+        startMonitoring = findViewById(R.id.startMonitoring);
+        stopMonitoring = findViewById(R.id.stopMonitoring);
     }
 }
