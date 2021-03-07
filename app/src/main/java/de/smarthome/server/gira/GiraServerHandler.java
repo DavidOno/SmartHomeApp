@@ -7,12 +7,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import de.smarthome.command.AsyncCommand;
 import de.smarthome.command.Command;
+import de.smarthome.command.CommandChain;
 import de.smarthome.command.CommandInterpreter;
 import de.smarthome.command.Request;
 import de.smarthome.model.responses.RegisterResponse;
@@ -30,6 +32,31 @@ public class GiraServerHandler implements ServerHandler {
     }
 
     @Override
+    public List<ResponseEntity> sendRequest(CommandChain commandChain) {
+        List<ResponseEntity> result = new ArrayList<>();
+        sendRequest(commandChain, result);
+        return result;
+    }
+
+    private void sendRequest(CommandChain commandChain, List<ResponseEntity> result) {
+        if(commandChain.hasNext()) {
+            Object nextCommand = commandChain.getNext();
+            if(nextCommand instanceof Command){
+                sendRequest((Command) nextCommand, commandChain, result);
+            }else if(nextCommand instanceof AsyncCommand){
+                sendRequest((AsyncCommand) nextCommand, commandChain, result);
+            }
+        }
+    }
+
+
+    private void sendRequest(Command command, CommandChain commandChain, List<ResponseEntity> result) {
+        List<ResponseEntity> responseEntities = sendRequest(command);
+        result.addAll(responseEntities);
+        sendRequest(commandChain, result);
+    }
+
+    @Override
     public List<ResponseEntity> sendRequest(Command command) {
         List<Request> requests = command.accept(commandInterpreter);
         List<ResponseEntity> results = requests.stream().map(Request::execute).collect(Collectors.toList());
@@ -40,8 +67,8 @@ public class GiraServerHandler implements ServerHandler {
     }
 
     private void checkIfTokenWasRevocted(List<ResponseEntity> results) {
-        for(ResponseEntity response : results){
-            if(response == null){
+        for (ResponseEntity response : results) {
+            if (response == null) {
                 continue;
             }
             if (wasRevocted(response)) {
@@ -51,8 +78,8 @@ public class GiraServerHandler implements ServerHandler {
     }
 
     private void checkIfNewTokenWasGiven(List<ResponseEntity> results) {
-        for(ResponseEntity response : results){
-            if(response == null){
+        for (ResponseEntity response : results) {
+            if (response == null) {
                 continue;
             }
             if (containsToken(response)) {
@@ -68,6 +95,18 @@ public class GiraServerHandler implements ServerHandler {
 
     private boolean wasRevocted(ResponseEntity response) {
         return response.getStatusCode() == HttpStatus.NO_CONTENT;
+    }
+
+
+    private void sendRequest(AsyncCommand command, CommandChain commandChain, List<ResponseEntity> results) {
+        Consumer<Request> requestCallback = request ->
+                new Thread(() -> {  //this thread is required since the callback gets executed on main-thread.
+                    ResponseEntity result = request.execute();
+                    Log.d(TAG, result != null ? result.toString() : "Result is null");
+                    results.add(result);
+                    sendRequest(commandChain, results);
+                }).start();
+        command.accept(commandInterpreter, requestCallback);
     }
 
     @Override
