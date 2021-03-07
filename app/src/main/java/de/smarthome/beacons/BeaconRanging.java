@@ -47,8 +47,6 @@ public class BeaconRanging implements BeaconConsumer {
                     beaconsOverview.put(new BeaconID(b.getId1(), b.getId2(), b.getId3()), b.getRssi());
                 }
                 beaconLocationManager.addNewBeaconStatus(beaconsOverview);
-
-                //TODO: Get Location
             }
         };
 
@@ -75,5 +73,9 @@ public class BeaconRanging implements BeaconConsumer {
     @Override
     public boolean bindService(Intent intent, ServiceConnection serviceConnection, int i) {
         return context.bindService(intent, serviceConnection, i);
+    }
+
+    public void setObserver(BeaconObserverImplementation beaconObserverImplementation) {
+        beaconLocationManager.setObserver(beaconObserverImplementation);
     }
 }

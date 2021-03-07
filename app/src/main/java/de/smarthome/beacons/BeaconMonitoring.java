@@ -84,4 +84,8 @@ public class BeaconMonitoring {
             application.enableMonitoring();
         }
     }
+
+    public void setObserver(BeaconObserverImplementation beaconObserverImplementation) {
+        ranging.setObserver(beaconObserverImplementation);
+    }
 }

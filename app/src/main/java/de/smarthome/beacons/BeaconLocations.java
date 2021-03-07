@@ -12,17 +12,16 @@ public class BeaconLocations {
         this.beaconLocationList = beaconLocationList;
     }
 
-//    public Optional<String> getRoomUID(BeaconID beaconID) {
-//        for(BeaconLocation location : beaconLocationList) {
-//            if(location.getBeaconId().equals(beaconID.getId())) {
-//                return Optional.of(location.getRoomUID());
-//            }
-//        }
-//        System.out.println("BeaconID unknown: " + beaconID);
-//
-//        return Optional.empty();
-//    }
+    public Optional<String> getRoomUID(BeaconID beaconID) {
+        for(BeaconLocation location : beaconLocationList) {
+            if(location.getBeaconId().equals(beaconID.toString())) {
+                return Optional.of(location.getRoomUID());
+            }
+        }
+        System.out.println("BeaconID unknown: " + beaconID);
 
+        return Optional.empty();
+    }
 
     @Override
     public String toString() {
