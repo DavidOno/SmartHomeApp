@@ -1,5 +1,9 @@
 package de.smarthome.beacons;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -21,6 +25,16 @@ public class BeaconLocationManager {
     //TODO: Initialise
     private BeaconLocations locationConfig;
     private BeaconObserver beaconObserver;
+
+    public BeaconLocationManager() {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            uiConfig = mapper.readValue(uiConfigString, new TypeReference<UIConfig>(){});
+            locationConfig = mapper.readValue(locationConfigString, new TypeReference<BeaconLocations>(){});
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     void addNewBeaconStatus(Map<BeaconID, Integer> map) {
         System.out.println("MAPSIZE:::"+map.size());
@@ -79,4 +93,172 @@ public class BeaconLocationManager {
     public void setObserver(BeaconObserverImplementation beaconObserverImplementation) {
         this.beaconObserver = beaconObserverImplementation;
     }
+
+    private String uiConfigString = "{\n" +
+            "    \"functions\": [\n" +
+            "        {\n" +
+            "            \"functionType\": \"de.gira.schema.functions.Switch\",\n" +
+            "            \"channelType\": \"de.gira.schema.channels.Switch\",\n" +
+            "            \"displayName\": \"Tischleuchte_schalten\",\n" +
+            "            \"uid\": \"aael\",\n" +
+            "            \"dataPoints\": [\n" +
+            "                {\n" +
+            "                    \"uid\": \"aauy\",\n" +
+            "                    \"name\": \"OnOff\"\n" +
+            "                }\n" +
+            "            ]\n" +
+            "        },\n" +
+            "        {\n" +
+            "            \"functionType\": \"de.gira.schema.functions.Switch\",\n" +
+            "            \"channelType\": \"de.gira.schema.channels.Switch\",\n" +
+            "            \"displayName\": \"Tischleuchte_Status\",\n" +
+            "            \"uid\": \"aae4\",\n" +
+            "            \"dataPoints\": [\n" +
+            "                {\n" +
+            "                    \"uid\": \"aajc\",\n" +
+            "                    \"name\": \"OnOff\"\n" +
+            "                }\n" +
+            "            ]\n" +
+            "        },\n" +
+            "        {\n" +
+            "            \"functionType\": \"de.gira.schema.functions.Switch\",\n" +
+            "            \"channelType\": \"de.gira.schema.channels.Switch\",\n" +
+            "            \"displayName\": \"Stehleuchte_schalten\",\n" +
+            "            \"uid\": \"aaet\",\n" +
+            "            \"dataPoints\": [\n" +
+            "                {\n" +
+            "                    \"uid\": \"aat8\",\n" +
+            "                    \"name\": \"OnOff\"\n" +
+            "                }\n" +
+            "            ]\n" +
+            "        },\n" +
+            "        {\n" +
+            "            \"functionType\": \"de.gira.schema.functions.Switch\",\n" +
+            "            \"channelType\": \"de.gira.schema.channels.Switch\",\n" +
+            "            \"displayName\": \"Stehleuchte_Status\",\n" +
+            "            \"uid\": \"aae2\",\n" +
+            "            \"dataPoints\": [\n" +
+            "                {\n" +
+            "                    \"uid\": \"aajb\",\n" +
+            "                    \"name\": \"OnOff\"\n" +
+            "                }\n" +
+            "            ]\n" +
+            "        },\n" +
+            "        {\n" +
+            "            \"functionType\": \"de.gira.schema.functions.KNX.HeatingCooling\",\n" +
+            "            \"channelType\": \"de.gira.schema.channels.RoomTemperatureSwitchable\",\n" +
+            "            \"displayName\": \"Temperatur_Wohnen\",\n" +
+            "            \"uid\": \"aae8\",\n" +
+            "            \"dataPoints\": [\n" +
+            "                {\n" +
+            "                    \"uid\": \"aajf\",\n" +
+            "                    \"name\": \"Set-Point\"\n" +
+            "                }\n" +
+            "            ]\n" +
+            "        },\n" +
+            "        {\n" +
+            "            \"functionType\": \"de.gira.schema.functions.Covering\",\n" +
+            "            \"channelType\": \"de.gira.schema.channels.BlindWithPos\",\n" +
+            "            \"displayName\": \"Markise_bewegen\",\n" +
+            "            \"uid\": \"aafe\",\n" +
+            "            \"dataPoints\": [\n" +
+            "                {\n" +
+            "                    \"uid\": \"aajv\",\n" +
+            "                    \"name\": \"Step-Up-Down\"\n" +
+            "                },\n" +
+            "                {\n" +
+            "                    \"uid\": \"aaju\",\n" +
+            "                    \"name\": \"Up-Down\"\n" +
+            "                },\n" +
+            "                {\n" +
+            "                    \"uid\": \"aajw\",\n" +
+            "                    \"name\": \"Position\"\n" +
+            "                }\n" +
+            "            ]\n" +
+            "        },\n" +
+            "        {\n" +
+            "            \"functionType\": \"de.gira.schema.functions.Covering\",\n" +
+            "            \"channelType\": \"de.gira.schema.channels.BlindWithPos\",\n" +
+            "            \"displayName\": \"Markise_Status\",\n" +
+            "            \"uid\": \"aafg\",\n" +
+            "            \"dataPoints\": [\n" +
+            "                {\n" +
+            "                    \"uid\": \"aajv\",\n" +
+            "                    \"name\": \"Step-Up-Down\"\n" +
+            "                },\n" +
+            "                {\n" +
+            "                    \"uid\": \"aaju\",\n" +
+            "                    \"name\": \"Up-Down\"\n" +
+            "                },\n" +
+            "                {\n" +
+            "                    \"uid\": \"aajx\",\n" +
+            "                    \"name\": \"Position\"\n" +
+            "                }\n" +
+            "            ]\n" +
+            "        }\n" +
+            "    ],\n" +
+            "    \"uid\": \"cczk\",\n" +
+            "    \"locations\": [\n" +
+            "        {\n" +
+            "            \"functions\": [],\n" +
+            "            \"displayName\": \"Shop\",\n" +
+            "            \"uid\": \"aaei\",\n" +
+            "            \"$type\": \"4\",\n" +
+            "            \"locations\": [\n" +
+            "                {\n" +
+            "                    \"functions\": [\n" +
+            "                        \"aael\",\n" +
+            "                        \"aae4\"\n" +
+            "                    ],\n" +
+            "                    \"displayName\": \"Bereich Essen\",\n" +
+            "                    \"uid\": \"aaej\",\n" +
+            "                    \"$type\": \"4\",\n" +
+            "                    \"locations\": [],\n" +
+            "                    \"locationType\": \"Room\"\n" +
+            "                },\n" +
+            "                {\n" +
+            "                    \"functions\": [\n" +
+            "                        \"aaet\",\n" +
+            "                        \"aae2\",\n" +
+            "                        \"aae8\"\n" +
+            "                    ],\n" +
+            "                    \"displayName\": \"Bereich Wohnen\",\n" +
+            "                    \"uid\": \"aaex\",\n" +
+            "                    \"$type\": \"4\",\n" +
+            "                    \"locations\": [],\n" +
+            "                    \"locationType\": \"Room\"\n" +
+            "                },\n" +
+            "                {\n" +
+            "                    \"functions\": [\n" +
+            "                        \"aafe\",\n" +
+            "                        \"aafg\"\n" +
+            "                    ],\n" +
+            "                    \"displayName\": \"Terrasse\",\n" +
+            "                    \"uid\": \"aafb\",\n" +
+            "                    \"$type\": \"4\",\n" +
+            "                    \"locations\": [],\n" +
+            "                    \"locationType\": \"Room\"\n" +
+            "                }\n" +
+            "            ],\n" +
+            "            \"locationType\": \"Floor\"\n" +
+            "        }\n" +
+            "    ]\n" +
+            "}";
+
+    private String locationConfigString = "{\n" +
+            "\t\"locations\": [\n" +
+            "\t\t{\n" +
+            "\t\t\t\"roomUID\": \"aaei\",\n" +
+            "\t\t\t\"beaconId\": \"7b44b47b-52a1-5381-90c2-f09b6838c5d409\"\n" +
+            "\t\t},\n" +
+            "\t\t{\n" +
+            "\t\t\t\"roomUID\": \"aacads\",\n" +
+            "\t\t\t\"beaconId\": \"xyz\"\n" +
+            "\t\t},\n" +
+            "\t\t{\n" +
+            "\t\t\t\"roomUID\": \"fdasdf\",\n" +
+            "\t\t\t\"beaconId\": \"qwert\"\n" +
+            "\t\t}\n" +
+            "\t]\n" +
+            "}";
 }

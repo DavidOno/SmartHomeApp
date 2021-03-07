@@ -36,7 +36,7 @@ public class BeaconObserverImplementation implements BeaconObserver {
 
     public void subscribe(BeaconObserverSubscriber subscriber) {
         this.subscriber = subscriber;
-
+        System.out.println(">>>> SUBSCRIBE");
         beaconMonitoring.startMonitoring();
     }
 

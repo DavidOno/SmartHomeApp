@@ -14,7 +14,7 @@ public class BeaconLocations {
 
     public Optional<String> getRoomUID(BeaconID beaconID) {
         for(BeaconLocation location : beaconLocationList) {
-            if(location.getBeaconId().equals(beaconID.toString())) {
+            if(location.getBeaconId().equals(beaconID.getId())) {
                 return Optional.of(location.getRoomUID());
             }
         }

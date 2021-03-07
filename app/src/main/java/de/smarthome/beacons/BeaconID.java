@@ -24,6 +24,10 @@ public class BeaconID {
                 '}';
     }
 
+    public String getId() {
+        return uuid.toString() + major.toString() + minor.toString();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
