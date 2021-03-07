@@ -14,13 +14,15 @@ public class CommandChainImpl implements CommandChain {
     private List<Object> commands = new ArrayList<>();
 
     @Override
-    public void add(Command command) {
+    public CommandChain add(Command command) {
         commands.add(command);
+        return this;
     }
 
     @Override
-    public void add(AsyncCommand asyncCommand) {
+    public CommandChain add(AsyncCommand asyncCommand) {
         commands.add(asyncCommand);
+        return this;
     }
 
     @Override

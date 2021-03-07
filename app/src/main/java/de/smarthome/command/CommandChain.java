@@ -6,8 +6,8 @@ package de.smarthome.command;
  */
 public interface CommandChain {
 
-    void add(Command command);
-    void add(AsyncCommand asyncCommand);
+    CommandChain add(Command command);
+    CommandChain add(AsyncCommand asyncCommand);
     boolean hasNext();
     Object getNext();
 }
