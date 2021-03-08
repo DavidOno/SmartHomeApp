@@ -3,6 +3,7 @@ package de.smarthome.model.impl;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
+import java.util.Optional;
 
 public class UIConfig {
 
@@ -31,6 +32,16 @@ public class UIConfig {
     public void initParentLocations(){
         for(Location root : getLocations()){
             root.initParentLocation(Location.ROOT);
+        }
+    }
+
+    public void updateValue(String id, Object value){
+        for(Function function: getFunctions()){
+            Optional<Datapoint> correspondingDataPoint = function.getCorrespondingDataPoint(id);
+            if(correspondingDataPoint.isPresent()){
+                correspondingDataPoint.get().setValue(value);
+                return;
+            }
         }
     }
 
