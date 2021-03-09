@@ -54,6 +54,10 @@ public class Function {
         return Optional.empty();
     }
 
+    public boolean isStatusFunction() {
+        return name.toLowerCase().endsWith("_status");
+    }
+
     @Override
     public String toString() {
         return "Function{" +

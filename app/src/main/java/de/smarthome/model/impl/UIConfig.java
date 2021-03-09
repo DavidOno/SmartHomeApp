@@ -37,10 +37,12 @@ public class UIConfig {
 
     public void updateValue(String id, Object value){
         for(Function function: getFunctions()){
-            Optional<Datapoint> correspondingDataPoint = function.getCorrespondingDataPoint(id);
-            if(correspondingDataPoint.isPresent()){
-                correspondingDataPoint.get().setValue(value);
-                return;
+            if(function.isStatusFunction()) {
+                Optional<Datapoint> correspondingDataPoint = function.getCorrespondingDataPoint(id);
+                if (correspondingDataPoint.isPresent()) {
+                    correspondingDataPoint.get().setValue(value);
+                    return;
+                }
             }
         }
     }

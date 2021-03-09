@@ -10,9 +10,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import de.smarthome.R;
+import de.smarthome.command.AdditionalConfigs;
 import de.smarthome.command.AsyncCommand;
 import de.smarthome.command.Command;
 import de.smarthome.command.gira.HomeServerCommandInterpreter;
+import de.smarthome.command.impl.AdditionalConfigCommand;
 import de.smarthome.command.impl.ChangeValueCommand;
 import de.smarthome.command.impl.CheckAvailabilityCommand;
 import de.smarthome.command.impl.GetValueCommand;
@@ -29,7 +31,7 @@ public class ServerTestActivity extends AppCompatActivity {
 
     private static final String USERNAME = "";
     private static final String PWD = "";
-    private static final String ipOfCallbackServer = "192.168.132.211:8443";
+    private static final String ipOfCallbackServer = "127.0.0.1"; //192.168.132.211:8443
     private ServerHandler sh = new GiraServerHandler(new HomeServerCommandInterpreter());
     private Button testAvailability;
     private Button register;
@@ -91,6 +93,12 @@ public class ServerTestActivity extends AppCompatActivity {
                 new Thread(() -> {
                     AsyncCommand register = new RegisterCallback(ipOfCallbackServer);//TODO: change to correct ip:port
                     sh.sendRequest(register);
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    sh.sendRequest(new AdditionalConfigCommand(ipOfCallbackServer, AdditionalConfigs.CHANNEL));
                 }).start();
                 registerToogle = !registerToogle;
                 registerCallbackButton.setText("Unregister Callback");
