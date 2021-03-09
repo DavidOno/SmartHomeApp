@@ -13,6 +13,7 @@ public interface CommandInterpreter{
     Request buildUIConfigRequest();
     Request buildRegisterCallbackServerAtGiraServer(String ipCallbackServer);
     Request buildUnRegisterCallbackServerAtGiraServer();
+    Request buildAdditionalConfigRequest(String ip, AdditionalConfigs additionalConfigs);
     void setIP(String ip);
     void setToken(String token);
     void buildRegisterAtCallbackServerCommand(String ip, Consumer<Request> callback);
