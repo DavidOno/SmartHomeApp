@@ -18,4 +18,12 @@ public class BeaconLocation {
     public String getBeaconId() {
         return beaconId;
     }
+
+    @Override
+    public String toString() {
+        return "BeaconLocation{" +
+                "roomUID='" + roomUID + '\'' +
+                ", beaconId='" + beaconId + '\'' +
+                '}';
+    }
 }

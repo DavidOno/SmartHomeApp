@@ -15,4 +15,11 @@ public class ChannelConfig {
     public List<Channel> getChannels() {
         return channels;
     }
+
+    @Override
+    public String toString() {
+        return "ChannelConfig{" +
+                "channels=" + channels +
+                '}';
+    }
 }

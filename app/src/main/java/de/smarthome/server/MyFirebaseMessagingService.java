@@ -34,7 +34,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private void handleNotification(RemoteMessage remoteMessage) {
         if (hasNotification(remoteMessage)) {
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-            //TODO: Add serviceObserver.notify()
+            Log.d(TAG, "This notification is currently not forwarded to anyone");
         }
     }
 

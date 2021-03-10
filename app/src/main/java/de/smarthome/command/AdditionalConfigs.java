@@ -1,12 +1,13 @@
 package de.smarthome.command;
 
 import de.smarthome.beacons.BeaconLocation;
+import de.smarthome.beacons.BeaconLocations;
 import de.smarthome.model.configs.BoundariesConfig;
 import de.smarthome.model.configs.ChannelConfig;
 
 public enum AdditionalConfigs {
 
-    LOCATION("location_config", BeaconLocation.class),
+    LOCATION("location_config", BeaconLocations.class),
     CHANNEL("channel_config", ChannelConfig.class),
     BOUNDARIES("boundaries_config", BoundariesConfig.class);
 

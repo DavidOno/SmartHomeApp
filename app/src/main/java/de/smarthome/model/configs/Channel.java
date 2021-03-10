@@ -21,4 +21,12 @@ public class Channel {
     public List<Datapoint> getDatapoints() {
         return datapoints;
     }
+
+    @Override
+    public String toString() {
+        return "Channel{" +
+                "channelID='" + channelID + '\'' +
+                ", datapoints=" + datapoints +
+                '}';
+    }
 }

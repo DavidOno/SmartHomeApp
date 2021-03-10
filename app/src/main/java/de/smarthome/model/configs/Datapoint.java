@@ -24,4 +24,13 @@ public class Datapoint {
     public DatapointAccess getAccess() {
         return access;
     }
+
+    @Override
+    public String toString() {
+        return "Datapoint{" +
+                "name='" + name + '\'' +
+                ", type=" + type +
+                ", access=" + access +
+                '}';
+    }
 }
