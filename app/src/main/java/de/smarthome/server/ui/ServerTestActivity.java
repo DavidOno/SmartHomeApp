@@ -17,6 +17,7 @@ import de.smarthome.command.gira.HomeServerCommandInterpreter;
 import de.smarthome.command.impl.AdditionalConfigCommand;
 import de.smarthome.command.impl.ChangeValueCommand;
 import de.smarthome.command.impl.CheckAvailabilityCommand;
+import de.smarthome.command.impl.CommandChainImpl;
 import de.smarthome.command.impl.GetValueCommand;
 import de.smarthome.command.impl.RegisterCallback;
 import de.smarthome.command.impl.RegisterCallbackServerAtGiraServer;
@@ -91,14 +92,10 @@ public class ServerTestActivity extends AppCompatActivity {
         registerCallbackButton.setOnClickListener(v -> {
             if(!registerToogle) {
                 new Thread(() -> {
-                    AsyncCommand register = new RegisterCallback(ipOfCallbackServer);//TODO: change to correct ip:port
-                    sh.sendRequest(register);
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    sh.sendRequest(new AdditionalConfigCommand(ipOfCallbackServer, AdditionalConfigs.CHANNEL));
+                    AsyncCommand register = new RegisterCallback(ipOfCallbackServer);
+                    Command channelConfig = new AdditionalConfigCommand(ipOfCallbackServer, AdditionalConfigs.CHANNEL);
+                    Command locationConfig = new AdditionalConfigCommand(ipOfCallbackServer, AdditionalConfigs.LOCATION);
+                    sh.sendRequest(new CommandChainImpl().add(register).add(channelConfig).add(locationConfig));
                 }).start();
                 registerToogle = !registerToogle;
                 registerCallbackButton.setText("Unregister Callback");
