@@ -19,7 +19,7 @@ public class AdditionalConfigCommand implements Command {
     }
 
     @Override
-    public List<Request> accept(CommandInterpreter commandInterpreter) {
-        return Arrays.asList(commandInterpreter.buildAdditionalConfigRequest(ip, config));
+    public Request accept(CommandInterpreter commandInterpreter) {
+        return commandInterpreter.buildAdditionalConfigRequest(ip, config);
     }
 }

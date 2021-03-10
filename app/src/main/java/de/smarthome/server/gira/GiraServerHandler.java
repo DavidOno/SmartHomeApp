@@ -10,7 +10,6 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import de.smarthome.command.AsyncCommand;
 import de.smarthome.command.Command;
@@ -53,49 +52,46 @@ public class GiraServerHandler implements ServerHandler {
 
 
     private void sendRequest(Command command, CommandChain commandChain, List<ResponseEntity> result) {
-        List<ResponseEntity> responseEntities = sendRequest(command);
-        result.addAll(responseEntities);
+        ResponseEntity responseEntitiy = sendRequest(command);
+        result.add(responseEntitiy);
         sendRequest(commandChain, result);
     }
 
     @Override
-    public List<ResponseEntity> sendRequest(Command command) {
-        List<Request> requests = command.accept(commandInterpreter);
-        List<ResponseEntity> results = requests.stream().map(Request::execute).collect(Collectors.toList());
-        checkIfNewTokenWasGiven(results);
-        checkIfTokenWasRevocted(results);
-        Log.d(TAG, results.toString());
-        return results;
+    public ResponseEntity sendRequest(Command command) {
+        Request request = command.accept(commandInterpreter);
+        ResponseEntity result = request.execute();
+        checkIfNewTokenWasGiven(result);
+        checkIfTokenWasRevoked(result);
+        Log.d(TAG, result == null ? "null" : result.toString());
+        return result;
     }
 
-    private void checkIfTokenWasRevocted(List<ResponseEntity> results) {
-        for (ResponseEntity response : results) {
-            if (response == null) {
-                continue;
-            }
-            if (wasRevocted(response)) {
-                commandInterpreter.setToken(null);
-            }
+    private void checkIfTokenWasRevoked(ResponseEntity result) {
+        if (wasRevoked(result)) {
+            commandInterpreter.setToken(null);
         }
+        
     }
 
-    private void checkIfNewTokenWasGiven(List<ResponseEntity> results) {
-        for (ResponseEntity response : results) {
-            if (response == null) {
-                continue;
-            }
-            if (containsToken(response)) {
-                RegisterResponse registerResponse = (RegisterResponse) response.getBody();
-                commandInterpreter.setToken(registerResponse.getToken());
-            }
+    private void checkIfNewTokenWasGiven(ResponseEntity result) {
+        if (containsToken(result)) {
+            RegisterResponse registerResponse = (RegisterResponse) result.getBody();
+            commandInterpreter.setToken(registerResponse.getToken());
         }
     }
 
     private boolean containsToken(ResponseEntity response) {
+        if(response == null){
+            return false;
+        }
         return response.getStatusCode() == HttpStatus.OK && response.getBody() instanceof RegisterResponse;
     }
 
-    private boolean wasRevocted(ResponseEntity response) {
+    private boolean wasRevoked(ResponseEntity response) {
+        if(response == null){
+            return false;
+        }
         return response.getStatusCode() == HttpStatus.NO_CONTENT;
     }
 

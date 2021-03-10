@@ -11,7 +11,7 @@ public class UIConfigCommand implements Command {
 
 
     @Override
-    public List<Request> accept(CommandInterpreter commandInterpreter) {
-        return Arrays.asList(commandInterpreter.buildUIConfigRequest());
+    public Request accept(CommandInterpreter commandInterpreter) {
+        return commandInterpreter.buildUIConfigRequest();
     }
 }

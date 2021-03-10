@@ -18,7 +18,7 @@ public class RegisterClientCommand implements Command {
     }
 
     @Override
-    public List<Request> accept(CommandInterpreter commandInterpreter) {
-        return Arrays.asList(commandInterpreter.buildRegisterClientRequest(username, pwd));
+    public Request accept(CommandInterpreter commandInterpreter) {
+        return commandInterpreter.buildRegisterClientRequest(username, pwd);
     }
 }

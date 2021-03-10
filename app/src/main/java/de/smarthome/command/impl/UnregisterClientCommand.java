@@ -9,8 +9,8 @@ import de.smarthome.command.Request;
 
 public class UnregisterClientCommand implements Command {
     @Override
-    public List<Request> accept(CommandInterpreter commandInterpreter) {
-        return Arrays.asList(commandInterpreter.buildUnregisterClientRequest());
+    public Request accept(CommandInterpreter commandInterpreter) {
+        return commandInterpreter.buildUnregisterClientRequest();
     }
 }
 

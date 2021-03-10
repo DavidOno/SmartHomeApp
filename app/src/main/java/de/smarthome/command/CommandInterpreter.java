@@ -8,7 +8,7 @@ public interface CommandInterpreter{
     Request buildAvailabilityCheckRequest();
     Request buildRegisterClientRequest(String username, String pwd);
     Request buildUnregisterClientRequest();
-    Request buildChangeValueCommand(String id, Integer value);
+    Request buildChangeValueCommand(String id, Object value);
     Request buildGetValueCommand(String id);
     Request buildUIConfigRequest();
     Request buildRegisterCallbackServerAtGiraServer(String ipCallbackServer);

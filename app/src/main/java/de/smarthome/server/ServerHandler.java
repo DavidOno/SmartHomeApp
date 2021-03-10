@@ -13,7 +13,7 @@ import de.smarthome.command.CommandChain;
 
 public interface ServerHandler {
 
-    List<ResponseEntity> sendRequest(Command command);
+    ResponseEntity sendRequest(Command command);
     void sendRequest(AsyncCommand command);
     List<ResponseEntity> sendRequest(CommandChain commandChain);
     void selectServer(String ip);

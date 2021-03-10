@@ -49,7 +49,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
     }
 
     @Override
-    public Request buildChangeValueCommand(String id, Integer value) {
+    public Request buildChangeValueCommand(String id, Object value) {
         String uri = uriPrefix + "/api/v2/values/" + id + "?token=" + token;
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
