@@ -11,8 +11,8 @@ public enum Events {
         switch (event.toLowerCase()){
             case "restart": return RESTART;
             case "startup": return STARTUP;
-            case "projectConfigChanged": return PROJECT_CONFIG_CHANGED;
-            case "uiConfigChanged": return UI_CONFIG_CHANGED;
+            case "projectconfigchanged": return PROJECT_CONFIG_CHANGED;
+            case "uiconfigchanged": return UI_CONFIG_CHANGED;
             case "test": return TEST;
             default: throw new IllegalArgumentException(event+" is an unknown event");
         }
