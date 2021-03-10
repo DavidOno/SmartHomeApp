@@ -44,7 +44,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
             ObjectMapper m = new ObjectMapper();
             CallbackValueInput callbackValueInput = m.convertValue(remoteMessage.getData(), new TypeReference<CallbackValueInput>() {});
-            valueObserver.notify(callbackValueInput);
+            if(callbackValueInput.getValue() != null){
+                valueObserver.notify(callbackValueInput);
+            }
+            if(callbackValueInput.getEvent() != null){
+                serviceObserver.notify(callbackValueInput);
+            }
         }
     }
 

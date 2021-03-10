@@ -43,8 +43,8 @@ public class CallbackValueInput {
 		return value;
 	}
 
-	public String getEvent() {
-		return event.toString();
+	public Events getEvent() {
+		return event;
 	}
 
 	@Override
