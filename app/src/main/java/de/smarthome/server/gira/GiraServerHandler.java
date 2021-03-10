@@ -21,6 +21,8 @@ import de.smarthome.model.responses.RegisterResponse;
 import de.smarthome.server.IPScanner;
 import de.smarthome.server.ServerHandler;
 
+import static de.smarthome.SmartHomeApplication.EXECUTOR_SERVICE;
+
 public class GiraServerHandler implements ServerHandler {
 
     private static final String TAG = "GiraServerHandler";
@@ -100,22 +102,22 @@ public class GiraServerHandler implements ServerHandler {
 
     private void sendRequest(AsyncCommand command, CommandChain commandChain, List<ResponseEntity> results) {
         Consumer<Request> requestCallback = request ->
-                new Thread(() -> {  //this thread is required since the callback gets otherwise executed on main-thread.
+                EXECUTOR_SERVICE.execute(() -> {  //this thread is required since the callback gets otherwise executed on main-thread.
                     ResponseEntity result = request.execute();
                     Log.d(TAG, result != null ? result.toString() : "Result is null");
                     results.add(result);
                     sendRequest(commandChain, results);
-                }).start();
+                });
         command.accept(commandInterpreter, requestCallback);
     }
 
     @Override
     public void sendRequest(AsyncCommand command) {
         Consumer<Request> requestCallback = request ->
-                new Thread(() -> {  //this thread is required since the callback gets executed on main-thread.
+                EXECUTOR_SERVICE.execute(() -> {  //this thread is required since the callback gets executed on main-thread.
                     ResponseEntity result = request.execute();
                     Log.d(TAG, result != null ? result.toString() : "Result is null");
-                }).start();
+                });
         command.accept(commandInterpreter, requestCallback);
     }
 
