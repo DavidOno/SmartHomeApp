@@ -14,24 +14,10 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="-1dp"
-        android:layout_marginTop="113dp"
-        android:layout_marginEnd="1dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="112dp"
+        android:layout_marginEnd="0dp"
         android:background="#000000" />
-
-    <androidx.appcompat.widget.SwitchCompat
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-
-
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="317dp"
-        android:layout_marginLeft="317dp"
-        android:layout_marginTop="119dp"
-        android:thumb="@drawable/thumb1"
-        app:track="@drawable/track" />
 
     <TextView
         android:id="@+id/textView"
@@ -39,11 +25,11 @@
         android:layout_height="29dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="26dp"
-        android:layout_marginTop="129dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="125dp"
         android:layout_marginEnd="170dp"
 
-        android:text="Flugmodus"
+        android:text="Regulation"
         android:textColor="#FFFFFF"
         android:textSize="18sp" />
 
@@ -55,9 +41,22 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="39dp"
-        android:layout_marginTop="130dp"
-        android:layout_marginEnd="10dp"
-        app:srcCompat="@drawable/ic_baseline_keyboard_arrow_right_24" />
+        android:layout_marginTop="121dp"
+        android:layout_marginEnd="56dp"
+        app:srcCompat="@drawable/ic_baseline_minimize_24" />
+
+
+    <ImageView
+        android:id="@+id/imageView_second"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="39dp"
+        android:layout_marginTop="127dp"
+        android:layout_marginEnd="26dp"
+        app:srcCompat="@drawable/ic_baseline_add_24" />
 
 
 </RelativeLayout>

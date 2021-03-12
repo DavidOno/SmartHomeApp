@@ -28,7 +28,7 @@
         android:layout_marginStart="28dp"
         android:layout_marginTop="125dp"
         android:layout_marginEnd="170dp"
-        android:layout_toStartOf="@+id/null"
+
         android:text="Mobilfunk"
         android:textColor="#FFFFFF"
         android:textSize="18sp" />
@@ -37,7 +37,7 @@
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/null"
+
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="39dp"

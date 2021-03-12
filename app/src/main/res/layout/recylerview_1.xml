@@ -14,9 +14,9 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="-1dp"
-        android:layout_marginTop="113dp"
-        android:layout_marginEnd="1dp"
+        android:layout_marginStart="-3dp"
+        android:layout_marginTop="111dp"
+        android:layout_marginEnd="3dp"
         android:background="#000000" />
 
     <androidx.appcompat.widget.SwitchCompat
@@ -27,9 +27,9 @@
 
 
         android:layout_alignParentTop="true"
-        android:layout_marginStart="320dp"
-        android:layout_marginLeft="320dp"
-        android:layout_marginTop="132dp"
+        android:layout_marginStart="319dp"
+        android:layout_marginLeft="319dp"
+        android:layout_marginTop="119dp"
         android:thumb="@drawable/thumb1"
         app:track="@drawable/track" />
 
@@ -42,7 +42,7 @@
         android:layout_marginStart="26dp"
         android:layout_marginTop="129dp"
         android:layout_marginEnd="170dp"
-        android:layout_toStartOf="@+id/null"
+
         android:text="Flugmodus"
         android:textColor="#FFFFFF"
         android:textSize="18sp" />
