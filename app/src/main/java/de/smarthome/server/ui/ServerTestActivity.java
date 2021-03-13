@@ -17,6 +17,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import de.smarthome.R;
 import de.smarthome.beacons.BeaconApplication;
 import de.smarthome.beacons.BeaconMonitoring;
+import de.smarthome.beacons.BeaconObserverImplementation;
+import de.smarthome.beacons.BeaconObserverSubscriber;
 import de.smarthome.command.AsyncCommand;
 import de.smarthome.command.Command;
 import de.smarthome.command.gira.HomeServerCommandInterpreter;
@@ -26,6 +28,7 @@ import de.smarthome.command.impl.GetValueCommand;
 import de.smarthome.command.impl.RegisterCallback;
 import de.smarthome.command.impl.UIConfigCommand;
 import de.smarthome.command.impl.UnRegisterCallback;
+import de.smarthome.model.impl.Location;
 import de.smarthome.server.ServerHandler;
 import de.smarthome.server.gira.GiraServerHandler;
 
@@ -130,6 +133,15 @@ public class ServerTestActivity extends AppCompatActivity {
             new Thread(() -> {
                 beaconMonitoring.stopMonitoring();
             }).start();
+        });
+
+        BeaconObserverImplementation beaconObserverImplementation = new BeaconObserverImplementation(getApplication(), this);
+        beaconObserverImplementation.init();
+        beaconObserverImplementation.subscribe(new BeaconObserverSubscriber() {
+            @Override
+            public void update(Location newLocation) {
+                System.out.println("New Location: " + newLocation);
+            }
         });
 
         Log.d("Main", "Started");

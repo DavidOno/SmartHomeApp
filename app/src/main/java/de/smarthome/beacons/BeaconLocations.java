@@ -14,6 +14,11 @@ public class BeaconLocations {
 
     public Optional<String> getRoomUID(BeaconID beaconID) {
         for(BeaconLocation location : beaconLocationList) {
+            System.out.println(">>>> INFOS: \n" +
+                            location.getBeaconId() + "\n" +
+                            beaconID.getId() + "\n"
+                            );
+
             if(location.getBeaconId().equals(beaconID.getId())) {
                 return Optional.of(location.getRoomUID());
             }

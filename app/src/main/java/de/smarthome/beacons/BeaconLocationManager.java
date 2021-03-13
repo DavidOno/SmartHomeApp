@@ -56,6 +56,8 @@ public class BeaconLocationManager {
 
         Optional<Location> currentLocation = getLocation(nearestBeacon);
 
+        System.out.println(">>>> NEAREST BEACON: " + nearestBeacon);
+
         beaconObserver.updateLocation(currentLocation);
         }
 
@@ -249,7 +251,7 @@ public class BeaconLocationManager {
             "\t\"locations\": [\n" +
             "\t\t{\n" +
             "\t\t\t\"roomUID\": \"aaei\",\n" +
-            "\t\t\t\"beaconId\": \"7b44b47b-52a1-5381-90c2-f09b6838c5d409\"\n" +
+            "\t\t\t\"beaconId\": \"ebefd083-70a2-47c8-9837-e7b5634df55570\"\n" +
             "\t\t},\n" +
             "\t\t{\n" +
             "\t\t\t\"roomUID\": \"aacads\",\n" +
