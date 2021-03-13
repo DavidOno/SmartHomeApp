@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface Command {
 
-    List<Request> accept(CommandInterpreter commandInterpreter);
+    Request accept(CommandInterpreter commandInterpreter);
 }

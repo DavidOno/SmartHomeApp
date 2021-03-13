@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import de.smarthome.command.AdditionalConfigs;
 import de.smarthome.command.CommandInterpreter;
 import de.smarthome.command.Request;
 import de.smarthome.command.impl.RequestImpl;
@@ -48,7 +49,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
     }
 
     @Override
-    public Request buildChangeValueCommand(String id, Integer value) {
+    public Request buildChangeValueCommand(String id, Object value) {
         String uri = uriPrefix + "/api/v2/values/" + id + "?token=" + token;
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -168,6 +169,16 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
         return new RequestImpl(uri, HttpMethod.DELETE, entity, JsonNode.class);
+    }
+
+    @Override
+    public Request buildAdditionalConfigRequest(String ip, AdditionalConfigs additionalConfigs) {
+        String uri = "https://"+ip+"/"+additionalConfigs.getResource();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        return new RequestImpl(uri, HttpMethod.GET, entity, additionalConfigs.getCorrespondingPOJO());
     }
 
     @Override

@@ -3,6 +3,7 @@ package de.smarthome.model.impl;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
+import java.util.Optional;
 
 public class Function {
 
@@ -32,8 +33,6 @@ public class Function {
         return ID;
     }
 
-
-
     public List<Datapoint> getDataPoints() {
         return datapoints;
     }
@@ -44,6 +43,19 @@ public class Function {
 
     public String getFunctionType() {
         return functionType;
+    }
+
+    public Optional<Datapoint> getCorrespondingDataPoint(String id){
+        for(Datapoint datapoint: getDataPoints()){
+            if(datapoint.getID().equals(id)) {
+                return Optional.of(datapoint);
+            }
+        }
+        return Optional.empty();
+    }
+
+    public boolean isStatusFunction() {
+        return name.toLowerCase().endsWith("_status");
     }
 
     @Override

@@ -3,14 +3,17 @@ package de.smarthome.model.responses;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ValueEvent {
 	
 	private final String uid;
 	private final Object value;
-	
-	
+
+
 	public ValueEvent(@JsonProperty("uid") String uid, @JsonProperty("value") Object value) {
 		super();
 		this.uid = uid;

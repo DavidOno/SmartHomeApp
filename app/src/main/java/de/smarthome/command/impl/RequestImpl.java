@@ -57,7 +57,7 @@ public class RequestImpl implements Request {
     @Override
     public ResponseEntity execute() {
         checkNetworkConnection();
-        Future<ResponseEntity> future = SmartHomeApplication.executorService.submit(() -> {
+        Future<ResponseEntity> future = SmartHomeApplication.EXECUTOR_SERVICE.submit(() -> {
             RestTemplate restTemplate = createRestTemplate();
             restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
             return restTemplate.exchange(uri, httpMethod, entity, responseType);

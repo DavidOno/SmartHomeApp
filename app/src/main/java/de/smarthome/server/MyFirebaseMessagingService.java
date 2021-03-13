@@ -6,10 +6,9 @@ import androidx.annotation.NonNull;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.android.gms.common.api.Response;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-
-import java.io.IOException;
 
 import de.smarthome.model.responses.CallbackValueInput;
 
@@ -36,20 +35,21 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private void handleNotification(RemoteMessage remoteMessage) {
         if (hasNotification(remoteMessage)) {
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-            //TODO: Add serviceObserver.notify()
+            Log.d(TAG, "This notification is currently not forwarded to anyone");
         }
     }
 
     private void handleDataPayLoad(RemoteMessage remoteMessage) {
         if (hasData(remoteMessage)) {
-//            try {
-//                Log.d(TAG, "Message data payload: " + remoteMessage.getData());
-//                ObjectMapper m = new ObjectMapper();
-//                CallbackValueInput callbackValueInput = m.readValue(remoteMessage.getData(), new TypeReference<CallbackValueInput>() {});
-//                valueObserver.notify(callbackValueInput);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
+            Log.d(TAG, "Message data payload: " + remoteMessage.getData());
+            ObjectMapper m = new ObjectMapper();
+            CallbackValueInput callbackValueInput = m.convertValue(remoteMessage.getData(), new TypeReference<CallbackValueInput>() {});
+            if(callbackValueInput.getValue() != null){
+                valueObserver.notify(callbackValueInput);
+            }
+            if(callbackValueInput.getEvent() != null){
+                serviceObserver.notify(callbackValueInput);
+            }
         }
     }
 

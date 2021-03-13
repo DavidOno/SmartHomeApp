@@ -3,18 +3,28 @@ package de.smarthome.model.responses;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CallbackValueInput {
 
 	private final int failures;
 	private final String token;
-	private final List<ValueEvent> valueEvents;
+	private final String uid;
+	private final Object value;
+	public final Events event;
 	
-	public CallbackValueInput(@JsonProperty("failure") int failures, @JsonProperty("token") String token, @JsonProperty("events") List<ValueEvent> valueEvents) {
+	public CallbackValueInput(@JsonProperty("failures") int failures,
+							  @JsonProperty("token") String token,
+							  @JsonProperty("uid") String uid,
+							  @JsonProperty("value") Object value,
+							  @JsonProperty("event") String event) {
 		this.failures = failures;
 		this.token = token;
-		this.valueEvents = new ArrayList<>(valueEvents);
+		this.uid = uid;
+		this.value = value;
+		this.event = Events.convert(event);
 	}
 
 	public int getFailures() {
@@ -25,13 +35,21 @@ public class CallbackValueInput {
 		return token;
 	}
 
-	public List<ValueEvent> getValueEvents() {
-		return valueEvents;
+	public String getUid() {
+		return uid;
+	}
+
+	public Object getValue() {
+		return value;
+	}
+
+	public Events getEvent() {
+		return event;
 	}
 
 	@Override
 	public String toString() {
-		return "CallbackInput [failures=" + failures + ", token=" + token + ", events=" + valueEvents + "]";
+		return "CallbackInput [failures=" + failures + ", token=" + token + ", value= "+value+", uid="+uid+", event:"+((event == null) ? "null" : event.toString())+"]";
 	}
 	
 	

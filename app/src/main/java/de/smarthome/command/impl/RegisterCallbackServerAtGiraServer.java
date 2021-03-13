@@ -16,8 +16,8 @@ public class RegisterCallbackServerAtGiraServer implements Command {
     }
 
     @Override
-    public List<Request> accept(CommandInterpreter commandInterpreter) {
+    public Request accept(CommandInterpreter commandInterpreter) {
         Request request = commandInterpreter.buildRegisterCallbackServerAtGiraServer(ipOfCallbackServer);
-        return Arrays.asList(request);
+        return request;
     }
 }
