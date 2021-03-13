@@ -1,15 +1,0 @@
-
-P
-java:S1128"4Remove this unused import 'android.app.Application'.(¢¶ÿI8ä ¨Ëş.
-U
-java:S1068"8Remove this unused "backgroundPowerSaver" private field.(‚Ù»Û8°Ù„ı.
-X
-java:S1068"6Remove this unused "monitoringActivity" private field.(ŞíÆùÿÿÿÿ8ßÛ„ı.
-ƒ
-java:S1450"aRemove the "monitoringActivity" field and declare it as a local variable in the relevant methods.(ŞíÆùÿÿÿÿ8ßÛ„ı.
-Q
-java:S1128"/Remove this unused import 'java.sql.SQLOutput'.(ê¤òÃùÿÿÿÿ8œÿİÎş.
-Z	java:S106"9Replace this use of System.out or System.err by a logger.(ÊÙòøÿÿÿÿ8œÿİÎş.
-Z	java:S106,"9Replace this use of System.out or System.err by a logger.(›Ô¬Şùÿÿÿÿ8œÿİÎş.
-U	java:S1064"9Replace this use of System.out or System.err by a logger.(ıº¯8œÿİÎş.
-Z	java:S106F"9Replace this use of System.out or System.err by a logger.(àòˆáÿÿÿÿÿ8œÿİÎş.

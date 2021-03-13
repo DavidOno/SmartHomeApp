@@ -1,7 +1,0 @@
-
-X	java:S110"<This class has 9 parents which is greater than 5 authorized.(²Ú±8öû¯Îş.
-J
-java:S1604"(Make this anonymous inner class a lambda(ù‘’Øüÿÿÿÿ8öû¯Îş.
-„
-java:S3252"gUse static access with "com.google.android.material.snackbar.BaseTransientBottomBar" for "LENGTH_LONG".(õ‰¯à8öû¯Îş.
-Z	java:S106""9Replace this use of System.out or System.err by a logger.(ë¼àÅşÿÿÿÿ8öû¯Îş.

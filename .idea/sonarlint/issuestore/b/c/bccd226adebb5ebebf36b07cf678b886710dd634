@@ -1,11 +1,0 @@
-
-J
-java:S1068"-Remove this unused "locations" private field.(ÈÉœÙ8ş‰ÌÈş.
-U	java:S106"9Replace this use of System.out or System.err by a logger.(øØßÍ8ªïùËş.
-y
-java:S1450"\Remove the "nearestBeacon" field and declare it as a local variable in the relevant methods.(Ûùœğ8·ïÓıı.
-Z	java:S106!"9Replace this use of System.out or System.err by a logger.(ù¹Ìúÿÿÿÿ8ªïùËş.
-H
-java:S1135>"2Complete the task associated to this TODO comment.(†³¡Ï
-U	java:S106?"9Replace this use of System.out or System.err by a logger.(«üğó8›ÿŠÉş.
-T	java:S106 "9Replace this use of System.out or System.err by a logger.(Íé²~8ªïùËş.
