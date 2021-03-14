@@ -7,9 +7,9 @@ import java.util.List;
 
 public class Channel {
     private final String channelID;
-    private final List<Datapoint> datapoints;
+    private final List<ChannelDatapoint> datapoints;
 
-    public Channel(@JsonProperty("channel") String channelID, @JsonProperty("datapoints") List<Datapoint> datapoints) {
+    public Channel(@JsonProperty("channel") String channelID, @JsonProperty("datapoints") List<ChannelDatapoint> datapoints) {
         this.channelID = channelID;
         this.datapoints = datapoints;
     }
@@ -18,7 +18,7 @@ public class Channel {
         return channelID;
     }
 
-    public List<Datapoint> getDatapoints() {
+    public List<ChannelDatapoint> getDatapoints() {
         return datapoints;
     }
 
