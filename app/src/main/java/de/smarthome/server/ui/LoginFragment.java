@@ -19,8 +19,11 @@ import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.gms.auth.api.credentials.Credential;
+import com.google.android.gms.auth.api.credentials.CredentialRequest;
+import com.google.android.gms.auth.api.credentials.CredentialRequestResponse;
 import com.google.android.gms.auth.api.credentials.Credentials;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
+import com.google.android.gms.auth.api.credentials.CredentialsOptions;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -43,10 +46,6 @@ public class LoginFragment extends Fragment {
 
     private final String TAG = "LoginFragment";
 
-    private CredentialsClient credentialsClient;
-    private Credential userCredential;
-    private boolean gotCredential = false;
-
     public static LoginFragment newInstance() {
         return new LoginFragment();
     }
@@ -56,15 +55,13 @@ public class LoginFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
         findViewsByID(view);
-        credentialsClient = Credentials.getClient(this.getActivity());
-        //checkForSavedCredential();
 
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        buttonLogin.setOnClickListener(v -> loginUser());
+        buttonLogin.setOnClickListener(v -> registerNewUser());
         //buttonReset.setOnClickListener(v -> deleteCredential(getSavedCredential()));
         buttonDummy.setOnClickListener(v -> navigateToRoomsFragment());
 
@@ -77,6 +74,16 @@ public class LoginFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
         loginViewModel = new ViewModelProvider(requireActivity()).get(LoginViewModel.class);
+
+        getSavedCredentials();
+    }
+
+    public Credential buildCredential(String Username, String pwd) {
+        Credential credential = new Credential.Builder(Username)
+                .setPassword(pwd)
+                .build();
+
+        return credential;
     }
 
     private boolean getCredentialsFromUI(){
@@ -91,17 +98,18 @@ public class LoginFragment extends Fragment {
         return true;
     }
 
-    private void loginUser(){
+    private void registerNewUser(){
         if(getCredentialsFromUI()){
-            //loginViewModel.registerUser(userName, password);
-            loginViewModel.registerUser("?????", "?????");
-            //saveCredential(userName, password);
+            loginViewModel.registerUser(userName, password);
+            //loginViewModel.registerUser("?????", "?????");
+            saveCredential(buildCredential(userName, password));
             navigateToRoomsFragment();
         }
     }
 
-    private void autoLoginUser(String savedUserName, String savedPassword){
+    private void registerExistingUser(String savedUserName, String savedPassword){
         loginViewModel.registerUser(savedUserName, savedPassword);
+        navigateToRoomsFragment();
     }
 
 
@@ -122,11 +130,12 @@ public class LoginFragment extends Fragment {
 
     }
 
-    public void saveCredential(String userName, String password){
-        userCredential = new Credential.Builder(userName)
-                //.setAccountType("GIRA") Account type must be a valid Http/Https URI
-                .setPassword(password)
+    public void saveCredential(Credential userCredential){
+        CredentialsOptions options = new CredentialsOptions.Builder()
+                .forceEnableSaveDialog()
                 .build();
+
+        CredentialsClient credentialsClient = Credentials.getClient(this.getActivity(), options);
 
         credentialsClient.save(userCredential).addOnCompleteListener(new OnCompleteListener() {
             @Override
@@ -139,24 +148,31 @@ public class LoginFragment extends Fragment {
 
                 Exception e = task.getException();
                 if (e instanceof ResolvableApiException) {
-
+                    // Try to resolve the save request. This will prompt the user if
+                    // the credential is new.
                     ResolvableApiException rae = (ResolvableApiException) e;
                     try {
                         //can not start in VM
                         rae.startResolutionForResult(getActivity(), 1);
 
                     } catch (IntentSender.SendIntentException exception) {
+                        // Could not resolve the request
                         Log.e(TAG, "Failed to send resolution.", exception);
                         Toast.makeText(getActivity(), "Save failed", Toast.LENGTH_SHORT).show();
                     }
                 } else {
+                    // Request has no resolution
                     Toast.makeText(getActivity(), "Save failed", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
+
+    //not here has to be moved into "OptionsFragment"
     public void deleteCredential(Credential credential){
+        CredentialsClient credentialsClient = Credentials.getClient(this.getActivity());
+
         credentialsClient.delete(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -168,13 +184,33 @@ public class LoginFragment extends Fragment {
 
     }
 
+    public void getSavedCredentials() {
+        CredentialRequest credentialRequest = new CredentialRequest.Builder()
+                .setPasswordLoginSupported(true)
+                .build();
+
+        CredentialsClient credentialsClient = Credentials.getClient(this.getActivity());
+
+        credentialsClient.request(credentialRequest).addOnCompleteListener(new OnCompleteListener<CredentialRequestResponse>() {
+                    @Override
+                    public void onComplete(@NonNull Task<CredentialRequestResponse> task) {
+
+                        if (task.isSuccessful()) {
+                            // See "Handle successful credential requests"
+                            onCredentialRetrieved(task.getResult().getCredential());
+                        }
+                        // See "Handle unsuccessful and incomplete credential requests"
+                        // ...
+                    }
+                });
+    }
 
     private void onCredentialRetrieved(Credential credential) {
         String accountType = credential.getAccountType();
         if (accountType == null) {
-            Log.d(TAG, "onCredentialRetrieved username: " + credential.getId() + " password " + credential.getPassword());
-            gotCredential = true;
-            autoLoginUser(credential.getId(), credential.getPassword());
+            //TODO: Remove Log!!
+            Log.d(TAG, "Username: " + credential.getId() + ", password: "  + credential.getPassword());
+            registerExistingUser(credential.getId(), credential.getPassword());
         }
     }
 }
