@@ -1,6 +1,7 @@
 package de.smarthome.server.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import de.smarthome.R;
 import de.smarthome.model.impl.Function;
 import de.smarthome.model.viewmodel.RoomOverviewViewModel;
 import de.smarthome.server.adapter.RoomOverviewAdapter;
+import de.smarthome.server.adapter.TestAdapter;
 
 public class RoomOverviewFragment extends Fragment {
     private  final String TAG = "RoomOverviewFragment";
@@ -30,8 +32,8 @@ public class RoomOverviewFragment extends Fragment {
 
     private String roomName;
     private String roomUID;
-    private RoomOverviewAdapter adapter;
-    //private TestAdapter adapter;
+    //private RoomOverviewAdapter adapter;
+    private TestAdapter adapter;
 
     public static RoomOverviewFragment newInstance() {
         RoomOverviewFragment fragment = new RoomOverviewFragment();
@@ -67,8 +69,8 @@ public class RoomOverviewFragment extends Fragment {
         recyclerViewRoom.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewRoom.setHasFixedSize(true);
 
-        adapter = new RoomOverviewAdapter();
-        //adapter = new TestAdapter();
+        //adapter = new RoomOverviewAdapter();
+        adapter = new TestAdapter();
         recyclerViewRoom.setAdapter(adapter);
 
         roomOverviewViewModel.getUsableRoomFunctions().observe(getViewLifecycleOwner(), new Observer<List<Function>>() {
@@ -78,10 +80,29 @@ public class RoomOverviewFragment extends Fragment {
             }
         });
 
-        adapter.setOnItemClickListener(new RoomOverviewAdapter.OnItemClickListener() {
+        /*adapter.setOnItemClickListener(new RoomOverviewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Function function) {
                 navigateToRegulationFragment(roomName, function.getID());
+            }
+        });*/
+        adapter.setOnItemClickListener(new TestAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Function function) {
+               if(!roomOverviewViewModel.isChannelInputOnlyBinary(function)){
+                    navigateToRegulationFragment(roomName, function.getID());
+                }
+            }
+        });
+
+        adapter.setOnSwitchClickListener(new TestAdapter.OnSwitchClickListener() {
+            @Override
+            public void onItemClick(Function function, boolean isChecked) {
+                if(isChecked){
+                    roomOverviewViewModel.requestSetValue(function.getID(), "1");
+                }else{
+                    roomOverviewViewModel.requestSetValue(function.getID(), "0");
+                }
             }
         });
     }
