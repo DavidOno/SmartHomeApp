@@ -4,7 +4,11 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 
+import java.util.List;
+
+import de.smarthome.model.configs.ChannelDatapoint;
 import de.smarthome.model.impl.Function;
 import de.smarthome.model.repository.Repository;
 
@@ -28,5 +32,9 @@ public class RegulationViewModel extends AndroidViewModel {
 
     public Function getFunctionByUID(String UID){
         return repository.getFunctionByUID(UID);
+    }
+
+    public LiveData<List<ChannelDatapoint>> getFunctionChannelDatapoints(Function function){
+        return repository.getChannelDatapoints(function);
     }
 }
