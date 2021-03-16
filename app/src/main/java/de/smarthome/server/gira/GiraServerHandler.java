@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.net.InetAddress;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -33,28 +32,22 @@ public class GiraServerHandler implements ServerHandler {
     }
 
     @Override
-    public List<ResponseEntity> sendRequest(CommandChain commandChain) {
-        List<ResponseEntity> result = new ArrayList<>();
-        sendRequest(commandChain, result);
-        return result;
-    }
-
-    private void sendRequest(CommandChain commandChain, List<ResponseEntity> result) {
+    public void sendRequest(CommandChain commandChain) {
         if(commandChain.hasNext()) {
             Object nextCommand = commandChain.getNext();
             if(nextCommand instanceof Command){
-                sendRequest((Command) nextCommand, commandChain, result);
+                sendRequest((Command) nextCommand, commandChain);
             }else if(nextCommand instanceof AsyncCommand){
-                sendRequest((AsyncCommand) nextCommand, commandChain, result);
+                sendRequest((AsyncCommand) nextCommand, commandChain);
             }
         }
     }
 
 
-    private void sendRequest(Command command, CommandChain commandChain, List<ResponseEntity> result) {
+    private void sendRequest(Command command, CommandChain commandChain) {
         ResponseEntity responseEntitiy = sendRequest(command);
-        result.add(responseEntitiy);
-        sendRequest(commandChain, result);
+        commandChain.putResult(responseEntitiy);
+        sendRequest(commandChain);
     }
 
     @Override
@@ -96,13 +89,13 @@ public class GiraServerHandler implements ServerHandler {
     }
 
 
-    private void sendRequest(AsyncCommand command, CommandChain commandChain, List<ResponseEntity> results) {
+    private void sendRequest(AsyncCommand command, CommandChain commandChain) {
         Consumer<Request> requestCallback = request ->
                 EXECUTOR_SERVICE.execute(() -> {  //this thread is required since the callback gets otherwise executed on main-thread.
                     ResponseEntity result = request.execute();
                     Log.d(TAG, result != null ? result.toString() : "Result is null");
-                    results.add(result);
-                    sendRequest(commandChain, results);
+                    commandChain.putResult(result);
+                    sendRequest(commandChain);
                 });
         command.accept(commandInterpreter, requestCallback);
     }

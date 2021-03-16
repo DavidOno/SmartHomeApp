@@ -15,7 +15,7 @@ public interface ServerHandler {
 
     ResponseEntity sendRequest(Command command);
     void sendRequest(AsyncCommand command);
-    List<ResponseEntity> sendRequest(CommandChain commandChain);
+    void sendRequest(CommandChain commandChain);
     void selectServer(String ip);
     void setIpScanner(IPScanner ipScanner);
     List<InetAddress> scanForReachableDevices(Context context);
