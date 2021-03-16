@@ -29,4 +29,12 @@ public class RoomOverviewViewModel  extends AndroidViewModel {
     public LiveData<List<Function>> getRoomStatusFunctions(){
         return repository.getRoomStatusFunctions();
     }
+
+    public boolean isChannelInputOnlyBinary(Function function){
+        return repository.getChannelConfig().isOnlyBinary(function);
+    }
+
+    public void requestSetValue(String ID, String value){
+        repository.requestSetValue(ID, value);
+    }
 }
