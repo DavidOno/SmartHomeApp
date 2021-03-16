@@ -25,7 +25,7 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.UI
     @Override
     public UIHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_room_overview_switch, parent, false);
+                .inflate(R.layout.item_switch, parent, false);
 
         return new UIHolder(itemView);
     }
