@@ -15,17 +15,17 @@ import de.smarthome.model.impl.Function;
 import de.smarthome.server.adapter.TestAdapter;
 
 
-public class SwitchViewHolder extends TestAdapter.ViewHolder{
+public class SwitchArrowViewHolder extends TestAdapter.ViewHolder{
     private SwitchCompat binarySwitch;
     private TextView textView;
     private TestAdapter adapter;
     private TestAdapter.OnItemClickListener onItemClickListener;
     private TestAdapter.OnSwitchClickListener onSwitchClickListener;
 
-    public SwitchViewHolder(@NonNull View itemView,
-                            @NonNull TestAdapter.OnItemClickListener onItemClickListener,
-                            @NonNull TestAdapter.OnSwitchClickListener onSwitchClickListener,
-                            @NonNull TestAdapter adapter) {
+    public SwitchArrowViewHolder(@NonNull View itemView,
+                                 @NonNull TestAdapter.OnItemClickListener onItemClickListener,
+                                 @NonNull TestAdapter.OnSwitchClickListener onSwitchClickListener,
+                                 @NonNull TestAdapter adapter) {
         super(itemView);
         textView = itemView.findViewById(R.id.textView_item);
         binarySwitch = itemView.findViewById(R.id.switch_item);
@@ -40,7 +40,7 @@ public class SwitchViewHolder extends TestAdapter.ViewHolder{
                 Log.d("SwitchViewHolder", "Switch pressed");
                 int position = getAdapterPosition();
                 if (onSwitchClickListener != null && position != RecyclerView.NO_POSITION) {
-                    onSwitchClickListener.onItemClick(adapter.getFunctionAt(position), binarySwitch.isChecked());
+                    onSwitchClickListener.onItemClick(adapter.getFunctionAt(position),  binarySwitch.isChecked());
                 }
             }
         });
@@ -62,3 +62,4 @@ public class SwitchViewHolder extends TestAdapter.ViewHolder{
         this.textView.setText(function.getName());
     }
 }
+

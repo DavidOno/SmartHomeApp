@@ -41,7 +41,7 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
     public View getFunctionView(@NonNull ViewGroup parent, int viewType){
         View itemView = null;
 
-        switch (viewType){
+        /*switch (viewType){
             case 1:
                 itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_room_overview_switch, parent, false);
                 break;
@@ -51,7 +51,7 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
             default:
                 itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_room_overview_default, parent, false);
                 break;
-        }
+        }*/
 
 
         return itemView;
