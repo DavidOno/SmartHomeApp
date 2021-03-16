@@ -1,8 +1,15 @@
 package de.smarthome.command;
 
-import java.util.List;
+import org.springframework.http.ResponseEntity;
 
-public interface Command {
+import de.smarthome.server.ServerHandler;
+
+public interface Command extends CommandChainable{
 
     Request accept(CommandInterpreter commandInterpreter);
+
+    @Override
+    default void proceedInChain(ServerHandler handler, CommandChain commandChain) {
+        handler.proceedInChain(this, commandChain);
+    }
 }

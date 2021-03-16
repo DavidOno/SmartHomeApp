@@ -13,6 +13,7 @@ import java.util.function.Consumer;
 import de.smarthome.command.AsyncCommand;
 import de.smarthome.command.Command;
 import de.smarthome.command.CommandChain;
+import de.smarthome.command.CommandChainable;
 import de.smarthome.command.CommandInterpreter;
 import de.smarthome.command.Request;
 import de.smarthome.model.responses.RegisterResponse;
@@ -34,21 +35,36 @@ public class GiraServerHandler implements ServerHandler {
     @Override
     public void sendRequest(CommandChain commandChain) {
         if(commandChain.hasNext()) {
-            Object nextCommand = commandChain.getNext();
-            if(nextCommand instanceof Command){
-                sendRequest((Command) nextCommand, commandChain);
-            }else if(nextCommand instanceof AsyncCommand){
-                sendRequest((AsyncCommand) nextCommand, commandChain);
-            }
+            CommandChainable nextCommand = commandChain.getNext();
+            nextCommand.proceedInChain(this, commandChain);
         }
     }
 
-
-    private void sendRequest(Command command, CommandChain commandChain) {
+    @Override
+    public void proceedInChain(Command command, CommandChain commandChain) {
         ResponseEntity responseEntitiy = sendRequest(command);
         commandChain.putResult(responseEntitiy);
         sendRequest(commandChain);
     }
+
+    @Override
+    public void proceedInChain(AsyncCommand command, CommandChain commandChain) {
+        Consumer<Request> requestCallback = request ->
+                EXECUTOR_SERVICE.execute(() -> {  //this thread is required since the callback gets otherwise executed on main-thread.
+                    ResponseEntity result = request.execute();
+                    Log.d(TAG, result != null ? result.toString() : "Result is null");
+                    commandChain.putResult(result);
+                    sendRequest(commandChain);
+                });
+        command.accept(commandInterpreter, requestCallback);
+    }
+
+
+//    public void sendRequest(Command command, CommandChain commandChain) {
+//        ResponseEntity responseEntitiy = sendRequest(command);
+//        commandChain.putResult(responseEntitiy);
+//        sendRequest(commandChain);
+//    }
 
     @Override
     public ResponseEntity sendRequest(Command command) {
@@ -89,16 +105,16 @@ public class GiraServerHandler implements ServerHandler {
     }
 
 
-    private void sendRequest(AsyncCommand command, CommandChain commandChain) {
-        Consumer<Request> requestCallback = request ->
-                EXECUTOR_SERVICE.execute(() -> {  //this thread is required since the callback gets otherwise executed on main-thread.
-                    ResponseEntity result = request.execute();
-                    Log.d(TAG, result != null ? result.toString() : "Result is null");
-                    commandChain.putResult(result);
-                    sendRequest(commandChain);
-                });
-        command.accept(commandInterpreter, requestCallback);
-    }
+//    private void sendRequest(AsyncCommand command, CommandChain commandChain) {
+//        Consumer<Request> requestCallback = request ->
+//                EXECUTOR_SERVICE.execute(() -> {  //this thread is required since the callback gets otherwise executed on main-thread.
+//                    ResponseEntity result = request.execute();
+//                    Log.d(TAG, result != null ? result.toString() : "Result is null");
+//                    commandChain.putResult(result);
+//                    sendRequest(commandChain);
+//                });
+//        command.accept(commandInterpreter, requestCallback);
+//    }
 
     @Override
     public void sendRequest(AsyncCommand command) {
@@ -108,19 +124,5 @@ public class GiraServerHandler implements ServerHandler {
                     Log.d(TAG, result != null ? result.toString() : "Result is null");
                 });
         command.accept(commandInterpreter, requestCallback);
-    }
-
-    @Override
-    public void selectServer(String ip) {
-        commandInterpreter.setIP(ip);
-    }
-
-    public void setIpScanner(IPScanner ipScanner) {
-        this.ipScanner = ipScanner;
-    }
-
-    @Override
-    public List<InetAddress> scanForReachableDevices(Context context) {
-        return ipScanner.showReachableInetAdresses(context);
     }
 }

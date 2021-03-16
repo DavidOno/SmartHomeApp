@@ -9,6 +9,6 @@ import org.springframework.http.ResponseEntity;
 public interface CommandChain {
 
     boolean hasNext();
-    Object getNext();
+    CommandChainable getNext();
     void putResult(ResponseEntity responseEntity);
 }

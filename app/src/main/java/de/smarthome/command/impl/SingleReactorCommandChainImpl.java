@@ -9,11 +9,12 @@ import java.util.List;
 import de.smarthome.command.AsyncCommand;
 import de.smarthome.command.Command;
 import de.smarthome.command.CommandChain;
+import de.smarthome.command.CommandChainable;
 
 public class SingleReactorCommandChainImpl implements SingleReactorCommandChain {
 
-    private Iterator<Object> iterator;
-    private List<Object> commands = new ArrayList<>();
+    private Iterator<CommandChainable> iterator;
+    private List<CommandChainable> commands = new ArrayList<>();
     private ResponseReactor reactor;
 
     public SingleReactorCommandChainImpl(ResponseReactor reactor){
@@ -42,7 +43,7 @@ public class SingleReactorCommandChainImpl implements SingleReactorCommandChain 
     }
 
     @Override
-    public Object getNext() {
+    public CommandChainable getNext() {
        return iterator.next();
     }
 
