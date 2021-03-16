@@ -54,8 +54,6 @@ public class Repository implements CallbackSubscriber {
 
     private static final String ipOfCallbackServer = "192.168.132.211:8443";
 
-    //private CallbackSubscriber callbackSubscriber;
-
     public Repository(){
         System.out.println("\t\t\t\tTHREAD::::"+Thread.currentThread().getName());
     }
@@ -73,6 +71,9 @@ public class Repository implements CallbackSubscriber {
         return instance;
     }
 
+    public ChannelConfig getChannelConfig(){
+        return channelConfig;
+    }
     private void getNewUIConfig() {
 
         fillWithDummyValuesUIConfig();
@@ -234,6 +235,14 @@ public class Repository implements CallbackSubscriber {
         return data;
     }
 
+    public MutableLiveData<List<ChannelDatapoint>> getChannelDatapoints(Function function){
+        MutableLiveData<List<ChannelDatapoint>> data = new MutableLiveData<>();
+
+        data.setValue(channelConfig.findChannelByName(function).getDatapoints());
+
+        return data;
+    }
+
     public Function getFunctionByUID(String UID){
         for(Function function : selectedLocation.getFunctions(uiConfig)){
             if(function.getID().equals(UID)){
@@ -253,7 +262,7 @@ public class Repository implements CallbackSubscriber {
                     System.out.println(responseEntity.getStatusCode());
                 }
         }catch(Exception e){
-            Log.d(TAG, "Response handle exception: " + e.toString());
+            Log.d(TAG, "handleResponseEntities, Exerptíon: " + e.toString());
         }
     }
 
@@ -368,22 +377,23 @@ public class Repository implements CallbackSubscriber {
             channelDatapoints.add(new ChannelDatapoint("OnOff", "Binary", "rwe"));
             Channel c1 = new Channel("de.gira.schema.channels.Switch", channelDatapoints);
             channelList.add(c1);
-            channelDatapoints.clear();
 
 
-            channelDatapoints.add(new ChannelDatapoint("Current", "Float", "re"));
-            channelDatapoints.add(new ChannelDatapoint("Set-Point", "Float", "rwe"));
-            channelDatapoints.add(new ChannelDatapoint("OnOff", "Binary", "rwe"));
-            Channel c2 = new Channel("de.gira.schema.channels.RoomTemperatureSwitchable", channelDatapoints);
+            List<ChannelDatapoint> channelDatapoints2 = new ArrayList<>();
+            channelDatapoints2.add(new ChannelDatapoint("Current", "Float", "re"));
+            channelDatapoints2.add(new ChannelDatapoint("Set-Point", "Float", "rwe"));
+            channelDatapoints2.add(new ChannelDatapoint("OnOff", "Binary", "rwe"));
+            Channel c2 = new Channel("de.gira.schema.channels.RoomTemperatureSwitchable", channelDatapoints2);
             channelList.add(c2);
-            channelDatapoints.clear();
 
-            channelDatapoints.add(new ChannelDatapoint("Step-Up-Down", "Binary", "w"));
-            channelDatapoints.add(new ChannelDatapoint("Up-Down", "Binary", "w"));
-            channelDatapoints.add(new ChannelDatapoint("Movement", "Binary", "re"));
-            channelDatapoints.add(new ChannelDatapoint("Position", "Percent", "rwe"));
-            channelDatapoints.add(new ChannelDatapoint("Slat-Position", "Percent", "rwe"));
-            Channel c3 = new Channel("de.gira.schema.channels.RoomTemperatureSwitchable", channelDatapoints);
+
+            List<ChannelDatapoint> channelDatapoints3 = new ArrayList<>();
+            channelDatapoints3.add(new ChannelDatapoint("Step-Up-Down", "Binary", "w"));
+            channelDatapoints3.add(new ChannelDatapoint("Up-Down", "Binary", "w"));
+            channelDatapoints3.add(new ChannelDatapoint("Movement", "Binary", "re"));
+            channelDatapoints3.add(new ChannelDatapoint("Position", "Percent", "rwe"));
+            channelDatapoints3.add(new ChannelDatapoint("Slat-Position", "Percent", "rwe"));
+            Channel c3 = new Channel("de.gira.schema.channels.BlindWithPos", channelDatapoints3);
             channelList.add(c3);
 
             ChannelConfig output = new ChannelConfig(channelList);
