@@ -11,7 +11,7 @@ import org.altbeacon.beacon.startup.BootstrapNotifier;
 import org.altbeacon.beacon.startup.RegionBootstrap;
 
 public class BeaconApplication implements BootstrapNotifier {
-    private static final String TAG = "BeaconReferenceApp";
+    private static final String TAG = "BeaconApplication";
     private RegionBootstrap regionBootstrap;
     private BackgroundPowerSaver backgroundPowerSaver;
     private Context context;
@@ -22,8 +22,6 @@ public class BeaconApplication implements BootstrapNotifier {
 
     public void onCreate() {
         BeaconManager beaconManager = BeaconManager.getInstanceForApplication(context);
-
-        System.out.println(">>>> APPLICATION CREATED");
 
         beaconManager.getBeaconParsers().clear();
         beaconManager.getBeaconParsers().add(new BeaconParser().
@@ -39,16 +37,14 @@ public class BeaconApplication implements BootstrapNotifier {
     }
 
     public void disableMonitoring() {
-        System.out.println(">>>> DISABLE MONITORING");
-
+        Log.d(TAG, "disabling monitoring");
         if (regionBootstrap != null) {
             regionBootstrap.disable();
             regionBootstrap = null;
         }
     }
     public void enableMonitoring() {
-        System.out.println(">>>> ENABLE MONITORING");
-
+        Log.d(TAG, "enabling monitoring");
         Region region = new Region("backgroundRegion",
                 null, null, null);
         regionBootstrap = new RegionBootstrap(this, region);
@@ -56,11 +52,13 @@ public class BeaconApplication implements BootstrapNotifier {
 
     @Override
     public void didEnterRegion(Region arg0) {
-        System.out.println(">>>> DID ENTER REGION");
+        Log.d(TAG, "enter beacon region");
     }
 
     @Override
-    public void didExitRegion(Region region) {}
+    public void didExitRegion(Region region) {
+        Log.d(TAG, "exit beacon region");
+    }
 
     @Override
     public void didDetermineStateForRegion(int state, Region region) {}

@@ -1,5 +1,7 @@
 package de.smarthome.beacons;
 
+import android.util.Log;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -15,6 +17,7 @@ import de.smarthome.model.impl.Location;
 import de.smarthome.model.impl.UIConfig;
 
 public class BeaconLocationManager {
+    private static final String TAG = "BeaconLocationManager";
     private static final int N = 5;
 
     private BeaconID nearestBeacon;
@@ -37,7 +40,6 @@ public class BeaconLocationManager {
     }
 
     void addNewBeaconStatus(Map<BeaconID, Integer> map) {
-        System.out.println("MAPSIZE:::"+map.size());
         for(Map.Entry<BeaconID, Integer> entry: map.entrySet()) {
             BeaconID beaconID = entry.getKey();
             Integer signalStrength = entry.getValue();
@@ -47,16 +49,9 @@ public class BeaconLocationManager {
             signalStrengthAvg.put(beaconID, average);
         }
         nearestBeacon = retrieveBeaconIDWithMaximumSignalStrength(signalStrengthAvg);
-        System.out.println("NEAREST::"+nearestBeacon.toString());
-        System.out.println("RSSI_AVG::" + signalStrengthAvg.toString());
-        System.out.println("LIST::" + beacons2SignalStrength.toString());
-        //Log.d("BeaconLocationManager", nearestBeacon.toString());
-        //Log.d("BeaconLocationManager", signalStrengthAvg.toString());
-        //Log.d("BeaconLocationManager", beacons2Signalstrength.toString());
+        Log.d(TAG, "nearestBeacon " + nearestBeacon.toString());
 
         Optional<Location> currentLocation = getLocation(nearestBeacon);
-
-        System.out.println(">>>> NEAREST BEACON: " + nearestBeacon);
 
         beaconObserver.updateLocation(currentLocation);
         }
@@ -67,10 +62,8 @@ public class BeaconLocationManager {
 
     private List<Integer> addSignalStrength(BeaconID beaconID, Integer signalStrength, List<Integer> signalStrenghts) {
         if(signalStrenghts == null) {
-            System.out.println("New Array List\n");
             signalStrenghts = new ArrayList<>();
         }else {
-            System.out.println(signalStrenghts.size());
             if(signalStrenghts.size() == N) {
                 signalStrenghts.remove(0);
             }

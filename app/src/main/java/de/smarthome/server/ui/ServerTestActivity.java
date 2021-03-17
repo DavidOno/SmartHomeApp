@@ -165,7 +165,6 @@ public class ServerTestActivity extends AppCompatActivity {
                                 requestPermissions(new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION},
                                         PERMISSION_REQUEST_BACKGROUND_LOCATION);
                             }
-
                         });
                         builder.show();
                     } else {

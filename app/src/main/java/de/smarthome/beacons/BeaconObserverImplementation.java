@@ -2,6 +2,7 @@ package de.smarthome.beacons;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
 import java.util.Optional;
 
@@ -36,13 +37,13 @@ public class BeaconObserverImplementation implements BeaconObserver {
 
     public void subscribe(BeaconObserverSubscriber subscriber) {
         this.subscriber = subscriber;
-        System.out.println(">>>> SUBSCRIBE");
+        Log.d("Observer", "subscription");
         beaconMonitoring.startMonitoring();
     }
 
     public void unsubscribe() {
         this.subscriber = null;
-
+        Log.d("Observer", "unsubscribe");
         beaconMonitoring.stopMonitoring();
     }
 

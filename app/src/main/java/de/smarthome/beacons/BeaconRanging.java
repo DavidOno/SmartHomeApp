@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.RemoteException;
+import android.util.Log;
 
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconConsumer;
@@ -37,8 +38,7 @@ public class BeaconRanging implements BeaconConsumer {
     public void onBeaconServiceConnect() {
         RangeNotifier rangeNotifier = (beacons, region) -> {
             if (!beacons.isEmpty()) {
-                System.out.println("didRangeBeaconsInRegion called with beacon count:  " + beacons.size());
-                System.out.println(">>>> RANGING " + Arrays.toString(beacons.toArray(new Beacon[]{})));
+                Log.d("BeaconRanging","called with beacon count: " + beacons.size());
 
                 Beacon[] beaconsArray = beacons.toArray(new Beacon[]{});
                 Map<BeaconID, Integer> beaconsOverview = new HashMap<>();
