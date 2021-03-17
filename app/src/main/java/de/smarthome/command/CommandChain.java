@@ -1,13 +1,14 @@
 package de.smarthome.command;
 
+import org.springframework.http.ResponseEntity;
+
 /**
  * Allows to execute multiple commands in a strict order.
  * A CommandChain can only be executed once.
  */
 public interface CommandChain {
 
-    CommandChain add(Command command);
-    CommandChain add(AsyncCommand asyncCommand);
     boolean hasNext();
-    Object getNext();
+    CommandChainable getNext();
+    void putResult(ResponseEntity responseEntity);
 }

@@ -7,13 +7,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.net.InetAddress;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
 import de.smarthome.command.AsyncCommand;
 import de.smarthome.command.Command;
 import de.smarthome.command.CommandChain;
+import de.smarthome.command.CommandChainable;
 import de.smarthome.command.CommandInterpreter;
 import de.smarthome.command.Request;
 import de.smarthome.model.responses.RegisterResponse;
@@ -33,29 +33,38 @@ public class GiraServerHandler implements ServerHandler {
     }
 
     @Override
-    public List<ResponseEntity> sendRequest(CommandChain commandChain) {
-        List<ResponseEntity> result = new ArrayList<>();
-        sendRequest(commandChain, result);
-        return result;
-    }
-
-    private void sendRequest(CommandChain commandChain, List<ResponseEntity> result) {
+    public void sendRequest(CommandChain commandChain) {
         if(commandChain.hasNext()) {
-            Object nextCommand = commandChain.getNext();
-            if(nextCommand instanceof Command){
-                sendRequest((Command) nextCommand, commandChain, result);
-            }else if(nextCommand instanceof AsyncCommand){
-                sendRequest((AsyncCommand) nextCommand, commandChain, result);
-            }
+            CommandChainable nextCommand = commandChain.getNext();
+            nextCommand.proceedInChain(this, commandChain);
         }
     }
 
-
-    private void sendRequest(Command command, CommandChain commandChain, List<ResponseEntity> result) {
+    @Override
+    public void proceedInChain(Command command, CommandChain commandChain) {
         ResponseEntity responseEntitiy = sendRequest(command);
-        result.add(responseEntitiy);
-        sendRequest(commandChain, result);
+        commandChain.putResult(responseEntitiy);
+        sendRequest(commandChain);
     }
+
+    @Override
+    public void proceedInChain(AsyncCommand command, CommandChain commandChain) {
+        Consumer<Request> requestCallback = request ->
+                EXECUTOR_SERVICE.execute(() -> {  //this thread is required since the callback gets otherwise executed on main-thread.
+                    ResponseEntity result = request.execute();
+                    Log.d(TAG, result != null ? result.toString() : "Result is null");
+                    commandChain.putResult(result);
+                    sendRequest(commandChain);
+                });
+        command.accept(commandInterpreter, requestCallback);
+    }
+
+
+//    public void sendRequest(Command command, CommandChain commandChain) {
+//        ResponseEntity responseEntitiy = sendRequest(command);
+//        commandChain.putResult(responseEntitiy);
+//        sendRequest(commandChain);
+//    }
 
     @Override
     public ResponseEntity sendRequest(Command command) {
@@ -96,16 +105,16 @@ public class GiraServerHandler implements ServerHandler {
     }
 
 
-    private void sendRequest(AsyncCommand command, CommandChain commandChain, List<ResponseEntity> results) {
-        Consumer<Request> requestCallback = request ->
-                EXECUTOR_SERVICE.execute(() -> {  //this thread is required since the callback gets otherwise executed on main-thread.
-                    ResponseEntity result = request.execute();
-                    Log.d(TAG, result != null ? result.toString() : "Result is null");
-                    results.add(result);
-                    sendRequest(commandChain, results);
-                });
-        command.accept(commandInterpreter, requestCallback);
-    }
+//    private void sendRequest(AsyncCommand command, CommandChain commandChain) {
+//        Consumer<Request> requestCallback = request ->
+//                EXECUTOR_SERVICE.execute(() -> {  //this thread is required since the callback gets otherwise executed on main-thread.
+//                    ResponseEntity result = request.execute();
+//                    Log.d(TAG, result != null ? result.toString() : "Result is null");
+//                    commandChain.putResult(result);
+//                    sendRequest(commandChain);
+//                });
+//        command.accept(commandInterpreter, requestCallback);
+//    }
 
     @Override
     public void sendRequest(AsyncCommand command) {
@@ -115,19 +124,5 @@ public class GiraServerHandler implements ServerHandler {
                     Log.d(TAG, result != null ? result.toString() : "Result is null");
                 });
         command.accept(commandInterpreter, requestCallback);
-    }
-
-    @Override
-    public void selectServer(String ip) {
-        commandInterpreter.setIP(ip);
-    }
-
-    public void setIpScanner(IPScanner ipScanner) {
-        this.ipScanner = ipScanner;
-    }
-
-    @Override
-    public List<InetAddress> scanForReachableDevices(Context context) {
-        return ipScanner.showReachableInetAdresses(context);
     }
 }
