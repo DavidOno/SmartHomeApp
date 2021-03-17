@@ -23,13 +23,13 @@ public class SingleReactorCommandChainImpl implements SingleReactorCommandChain 
 
 
     @Override
-    public CommandChain add(Command command) {
+    public SingleReactorCommandChain add(Command command) {
         commands.add(command);
         return this;
     }
 
     @Override
-    public CommandChain add(AsyncCommand command) {
+    public SingleReactorCommandChain add(AsyncCommand command) {
         commands.add(command);
         return this;
     }

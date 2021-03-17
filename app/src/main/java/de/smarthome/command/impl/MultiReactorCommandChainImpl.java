@@ -19,14 +19,14 @@ public class MultiReactorCommandChainImpl implements MultiReactorCommandChain {
     private int resultCounter = 0;
 
     @Override
-    public CommandChain add(Command command, ResponseReactor reactor) {
+    public MultiReactorCommandChain add(Command command, ResponseReactor reactor) {
         commands.add(command);
         reactors.add(reactor);
         return this;
     }
 
     @Override
-    public CommandChain add(AsyncCommand command, ResponseReactor reactor) {
+    public MultiReactorCommandChain add(AsyncCommand command, ResponseReactor reactor) {
         commands.add(command);
         reactors.add(reactor);
         return this;
