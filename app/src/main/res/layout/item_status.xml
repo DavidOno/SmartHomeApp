@@ -39,7 +39,8 @@
         android:layout_marginTop="15dp"
         android:layout_marginEnd="170dp"
         android:textColor="#585B5C"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:text="Status"/>
 
     <ImageView
         android:id="@+id/imageView_item"
