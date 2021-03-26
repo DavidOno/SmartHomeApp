@@ -9,7 +9,9 @@ import androidx.lifecycle.LiveData;
 import java.util.List;
 
 import de.smarthome.model.configs.ChannelDatapoint;
+import de.smarthome.model.impl.Datapoint;
 import de.smarthome.model.impl.Function;
+import de.smarthome.model.impl.Location;
 import de.smarthome.model.repository.Repository;
 
 public class RegulationViewModel extends AndroidViewModel {
@@ -30,11 +32,12 @@ public class RegulationViewModel extends AndroidViewModel {
         repository.requestSetValue(ID, value);
     }
 
-    public Function getFunctionByUID(String UID){
-        return repository.getFunctionByUID(UID);
+    public Function getFunctionByUID(String UID, Location location){
+        return repository.getFunctionByUID(UID, location);
     }
 
-    public LiveData<List<ChannelDatapoint>> getFunctionChannelDatapoints(Function function){
-        return repository.getChannelDatapoints(function);
+    public LiveData<List<Datapoint>> getDatapoints(){
+        return repository.getDataPoints();
     }
+
 }
