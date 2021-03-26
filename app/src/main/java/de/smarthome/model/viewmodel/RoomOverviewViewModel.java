@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData;
 import java.util.List;
 
 import de.smarthome.model.impl.Function;
+import de.smarthome.model.impl.Location;
 import de.smarthome.model.repository.Repository;
 
 public class RoomOverviewViewModel  extends AndroidViewModel {
@@ -22,7 +23,6 @@ public class RoomOverviewViewModel  extends AndroidViewModel {
     }
 
     public LiveData<List<Function>> getUsableRoomFunctions(){
-
         return repository.getRoomUsableFunctions();
     }
 
@@ -31,10 +31,14 @@ public class RoomOverviewViewModel  extends AndroidViewModel {
     }
 
     public boolean isChannelInputOnlyBinary(Function function){
-        return repository.getChannelConfig().isOnlyBinary(function);
+        return repository.getSmartHomeChannelConfig().isOnlyBinary(function);
     }
 
     public void requestSetValue(String ID, String value){
         repository.requestSetValue(ID, value);
+    }
+
+    public void setSelectedFunction(Function function){
+        repository.setSelectedFunction(function);
     }
 }
