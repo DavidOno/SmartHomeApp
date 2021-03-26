@@ -1,23 +1,13 @@
 package de.smarthome.model.configs;
 
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import de.smarthome.R;
 import de.smarthome.model.impl.Function;
-import de.smarthome.server.adapter.TestAdapter;
-import de.smarthome.server.adapter.viewholder.SwitchViewHolder;
+import de.smarthome.server.adapter.RegulationAdapter;
+import de.smarthome.server.adapter.RoomOverviewAdapter;
 
 public class ChannelConfig {
     private final List<Channel> channels;
@@ -73,46 +63,41 @@ public class ChannelConfig {
         if(channel.getDatapoints().size() == 1){
             if(channel.getDatapoints().get(0).getType().equals(DatapointType.BINARY)
                     && channel.getDatapoints().get(0).getAccess().equals(DatapointAccess.READ_WRITE)){
-                return TestAdapter.SWITCH_VIEW_HOLDER;
+                return RoomOverviewAdapter.SWITCH_VIEW_HOLDER;
             }
         }else{
             if(channel.getDatapoints().get(0).getType().equals(DatapointType.BINARY)){
                 if(channel.getDatapoints().get(0).getAccess().equals(DatapointAccess.READ_WRITE)){
-                    return TestAdapter.SWITCH_ARROW_HOLDER;
+                    return RoomOverviewAdapter.SWITCH_ARROW_HOLDER;
+                }
+            }else{
+                if(channel.getDatapoints().get(0).getAccess().equals(DatapointAccess.READ_WRITE)){
+                    return RoomOverviewAdapter.STATUS_VIEW_HOLDER;
                 }
             }
         }
-        return TestAdapter.DEFAULT_VIEW_HOLDER;
+        return RoomOverviewAdapter.DEFAULT_VIEW_HOLDER;
     }
 
-    public int getRegulationViewHolderUI(ChannelDatapoint channelDatapoint){
+
+    public int getRegulationItemViewType(ChannelDatapoint channelDatapoint){
         switch (channelDatapoint.getType()){
             case BINARY:
-                return R.layout.item_switch;
+                if(channelDatapoint.getAccess().equals(DatapointAccess.READ_WRITE)){
+                    return RegulationAdapter.SWITCH_VIEW_HOLDER;
+                }if(channelDatapoint.getAccess().equals(DatapointAccess.WRITE)){
+                return RegulationAdapter.STEP_VIEW_HOLDER;
+            }
             case PERCENT:
-                return R.layout.item_slider;
+                return RegulationAdapter.SLIDER_VIEW_HOLDER;
             case INTEGER:
             case FLOAT:
             case STRING:
             case BYTE:
-                return R.layout.item_read;
+                return RegulationAdapter.READ_VIEW_HOLDER;
 
             default: throw new IllegalArgumentException("Type: "+ channelDatapoint.getType().toString() +" is unknown");
         }
-    }
-
-    public RecyclerView.ViewHolder getViewHolder(@NonNull ViewGroup parent,
-                                                 @NonNull View itemView,
-                                                 @NonNull TestAdapter.OnItemClickListener onItemClickListener,
-                                                 @Nullable TestAdapter.OnSwitchClickListener onSwitchClickListener,
-                                                 @NonNull TestAdapter adapter){
-
-        return new SwitchViewHolder(
-                LayoutInflater.from(parent.getContext()).inflate(R.layout.item_switch, parent, false),
-                onItemClickListener,
-                onSwitchClickListener,
-                adapter
-        );
     }
 
     @Override
