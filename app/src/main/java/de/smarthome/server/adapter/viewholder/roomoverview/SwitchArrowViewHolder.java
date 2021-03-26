@@ -1,10 +1,10 @@
-package de.smarthome.server.adapter.viewholder;
+package de.smarthome.server.adapter.viewholder.roomoverview;
 
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Switch;
+import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SwitchCompat;
@@ -12,21 +12,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import de.smarthome.R;
 import de.smarthome.model.impl.Function;
-import de.smarthome.server.adapter.TestAdapter;
+import de.smarthome.server.adapter.RoomOverviewAdapter;
 
 
-public class SwitchArrowViewHolder extends TestAdapter.ViewHolder{
+public class SwitchArrowViewHolder extends RoomOverviewAdapter.ViewHolder{
     private SwitchCompat binarySwitch;
     private TextView textView;
-    private TestAdapter adapter;
-    private TestAdapter.OnItemClickListener onItemClickListener;
-    private TestAdapter.OnSwitchClickListener onSwitchClickListener;
+    private RoomOverviewAdapter adapter;
+    private RoomOverviewAdapter.OnItemClickListener onItemClickListener;
+    private RoomOverviewAdapter.OnSwitchClickListener onSwitchClickListener;
 
-    public SwitchArrowViewHolder(@NonNull View itemView,
-                                 @NonNull TestAdapter.OnItemClickListener onItemClickListener,
-                                 @NonNull TestAdapter.OnSwitchClickListener onSwitchClickListener,
-                                 @NonNull TestAdapter adapter) {
-        super(itemView);
+    public SwitchArrowViewHolder(@NonNull ViewGroup parent,
+                                 @NonNull RoomOverviewAdapter.OnItemClickListener onItemClickListener,
+                                 @NonNull RoomOverviewAdapter.OnSwitchClickListener onSwitchClickListener,
+                                 @NonNull RoomOverviewAdapter adapter) {
+        super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_switch_arrow, parent, false));
+
         textView = itemView.findViewById(R.id.textView_item);
         binarySwitch = itemView.findViewById(R.id.switch_item);
 
@@ -58,7 +59,7 @@ public class SwitchArrowViewHolder extends TestAdapter.ViewHolder{
     }
 
     @Override
-    public void onBindViewHolder(TestAdapter.ViewHolder holder, int position, Function function) {
+    public void onBindViewHolder(RoomOverviewAdapter.ViewHolder holder, int position, Function function) {
         this.textView.setText(function.getName());
     }
 }

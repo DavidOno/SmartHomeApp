@@ -1,6 +1,8 @@
-package de.smarthome.server.adapter.viewholder;
+package de.smarthome.server.adapter.viewholder.roomoverview;
 
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -8,17 +10,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import de.smarthome.R;
 import de.smarthome.model.impl.Function;
-import de.smarthome.server.adapter.TestAdapter;
+import de.smarthome.server.adapter.RoomOverviewAdapter;
 
-public class DefaultViewHolder extends TestAdapter.ViewHolder{
+public class DefaultViewHolder extends RoomOverviewAdapter.ViewHolder{
     private TextView textView;
-    private TestAdapter adapter;
-    private TestAdapter.OnItemClickListener onItemClickListener;
+    private RoomOverviewAdapter adapter;
+    private RoomOverviewAdapter.OnItemClickListener onItemClickListener;
 
-    public DefaultViewHolder(@NonNull View itemView,
-                             @NonNull TestAdapter.OnItemClickListener onItemClickListener,
-                             @NonNull TestAdapter adapter) {
-        super(itemView);
+    public DefaultViewHolder(@NonNull ViewGroup parent,
+                             @NonNull RoomOverviewAdapter.OnItemClickListener onItemClickListener,
+                             @NonNull RoomOverviewAdapter adapter) {
+        super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_default, parent, false));
+
         textView = itemView.findViewById(R.id.textView_item);
 
         this.onItemClickListener = onItemClickListener;
@@ -36,7 +39,7 @@ public class DefaultViewHolder extends TestAdapter.ViewHolder{
     }
 
     @Override
-    public void onBindViewHolder(TestAdapter.ViewHolder holder, int position, Function function) {
+    public void onBindViewHolder(RoomOverviewAdapter.ViewHolder holder, int position, Function function) {
         this.textView.setText(function.getName());
     }
 }
