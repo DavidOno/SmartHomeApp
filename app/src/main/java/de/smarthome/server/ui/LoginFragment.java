@@ -13,6 +13,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
@@ -29,7 +31,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 import de.smarthome.R;
+import de.smarthome.SmartHomeApplication;
 import de.smarthome.model.viewmodel.LoginViewModel;
+import de.smarthome.utility.ToastUtility;
 
 
 public class LoginFragment extends Fragment {
@@ -65,6 +69,7 @@ public class LoginFragment extends Fragment {
         //buttonReset.setOnClickListener(v -> deleteCredential(getSavedCredential()));
         buttonDummy.setOnClickListener(v -> navigateToRoomsFragment());
 
+
         super.onViewCreated(view, savedInstanceState);
     }
 
@@ -72,7 +77,7 @@ public class LoginFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate");
+
         loginViewModel = new ViewModelProvider(requireActivity()).get(LoginViewModel.class);
 
         getSavedCredentials();
@@ -91,17 +96,17 @@ public class LoginFragment extends Fragment {
         password = editTextPwd.getText().toString();
 
         if(userName.isEmpty() || password.isEmpty()){
-            Toast.makeText(getActivity(), "Username or Password is empty!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Username or Password is empty!", Toast.LENGTH_LONG).show();
             return false;
         }
 
         return true;
     }
 
+    //TODO: Data needs to be verified before it gets saved!
     private void registerNewUser(){
         if(getCredentialsFromUI()){
             loginViewModel.registerUser(userName, password);
-            //loginViewModel.registerUser("?????", "?????");
             saveCredential(buildCredential(userName, password));
             navigateToRoomsFragment();
         }
