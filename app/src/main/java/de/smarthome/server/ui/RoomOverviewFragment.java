@@ -1,10 +1,10 @@
 package de.smarthome.server.ui;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,7 +23,7 @@ import de.smarthome.R;
 import de.smarthome.model.impl.Function;
 import de.smarthome.model.viewmodel.RoomOverviewViewModel;
 import de.smarthome.server.adapter.RoomOverviewAdapter;
-import de.smarthome.server.adapter.TestAdapter;
+import de.smarthome.utility.ToastUtility;
 
 public class RoomOverviewFragment extends Fragment {
     private  final String TAG = "RoomOverviewFragment";
@@ -32,8 +32,8 @@ public class RoomOverviewFragment extends Fragment {
 
     private String roomName;
     private String roomUID;
-    //private RoomOverviewAdapter adapter;
-    private TestAdapter adapter;
+
+    private RoomOverviewAdapter adapter;
 
     public static RoomOverviewFragment newInstance() {
         RoomOverviewFragment fragment = new RoomOverviewFragment();
@@ -44,7 +44,6 @@ public class RoomOverviewFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -65,12 +64,10 @@ public class RoomOverviewFragment extends Fragment {
         roomName = RoomOverviewFragmentArgs.fromBundle(getArguments()).getNameSelectedRoom();
 
 
-        recyclerViewRoom  = view.findViewById(R.id.recycler_view_room_overview);
         recyclerViewRoom.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewRoom.setHasFixedSize(true);
 
-        //adapter = new RoomOverviewAdapter();
-        adapter = new TestAdapter();
+        adapter = new RoomOverviewAdapter();
         recyclerViewRoom.setAdapter(adapter);
 
         roomOverviewViewModel.getUsableRoomFunctions().observe(getViewLifecycleOwner(), new Observer<List<Function>>() {
@@ -80,31 +77,27 @@ public class RoomOverviewFragment extends Fragment {
             }
         });
 
-        /*adapter.setOnItemClickListener(new RoomOverviewAdapter.OnItemClickListener() {
+        adapter.setOnItemClickListener(new RoomOverviewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Function function) {
+                roomOverviewViewModel.setSelectedFunction(function);
                 navigateToRegulationFragment(roomName, function.getID());
             }
-        });*/
-        adapter.setOnItemClickListener(new TestAdapter.OnItemClickListener() {
+        });
+
+        adapter.setOnSwitchClickListener(new RoomOverviewAdapter.OnSwitchClickListener() {
             @Override
-            public void onItemClick(Function function) {
-               if(!roomOverviewViewModel.isChannelInputOnlyBinary(function)){
-                    navigateToRegulationFragment(roomName, function.getID());
+            public void onItemClick(Function function, boolean isChecked) {
+                //There is only a switch if binary is the first (!) input type. So the first DataPoint is needed.
+                if(isChecked){
+                    roomOverviewViewModel.requestSetValue(function.getDataPoints().get(0).getID(), "1");
+                }else{
+                    roomOverviewViewModel.requestSetValue(function.getDataPoints().get(0).getID(), "0");
                 }
             }
         });
 
-        adapter.setOnSwitchClickListener(new TestAdapter.OnSwitchClickListener() {
-            @Override
-            public void onItemClick(Function function, boolean isChecked) {
-                if(isChecked){
-                    roomOverviewViewModel.requestSetValue(function.getID(), "1");
-                }else{
-                    roomOverviewViewModel.requestSetValue(function.getID(), "0");
-                }
-            }
-        });
+
     }
 
     public void navigateToRegulationFragment(String roomName, String functionUID) {
