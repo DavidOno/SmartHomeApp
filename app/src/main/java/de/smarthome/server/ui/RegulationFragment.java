@@ -1,6 +1,7 @@
 package de.smarthome.server.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,30 +13,30 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.List;
 
 import de.smarthome.R;
+import de.smarthome.model.configs.ChannelDatapoint;
+import de.smarthome.model.impl.Datapoint;
 import de.smarthome.model.impl.Function;
 import de.smarthome.model.viewmodel.RegulationViewModel;
+import de.smarthome.server.adapter.RegulationAdapter;
 
 public class RegulationFragment extends Fragment {
-    private  final String TAG = "RegulationFragment";
+    private final String TAG = "RegulationFragment";
     private RegulationViewModel regulationViewModel;
 
-    private String roomName;
-    private String functionUID;
+    private RecyclerView recyclerViewRegulation;
 
-    private Function usedFunction;
+    private RegulationAdapter adapter;
 
-    private TextView textView;
-    private Switch switchBinary;
-    private Button buttonConfirm;
-    private EditText editTextInput;
-
-    public static RoomOverviewFragment newInstance(String param1, String param2) {
-        RoomOverviewFragment fragment = new RoomOverviewFragment();
-
-        return fragment;
+    public static RoomOverviewFragment newInstance() {
+        return new RoomOverviewFragment();
     }
 
     @Override
@@ -46,32 +47,10 @@ public class RegulationFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_regulation_number, container, false);
+        View view = inflater.inflate(R.layout.fragment_regulation, container, false);
 
+        recyclerViewRegulation = view.findViewById(R.id.recycler_view_regulation);
         regulationViewModel = new ViewModelProvider(requireActivity()).get(RegulationViewModel.class);
-        roomName = RegulationFragmentArgs.fromBundle(getArguments()).getNameSelectedRoom();
-        functionUID = RegulationFragmentArgs.fromBundle(getArguments()).getSelectedFunctionUID();
-
-        usedFunction = regulationViewModel.getFunctionByUID(functionUID);
-
-        if(usedFunction.getFunctionType().contains(".Covering")){
-            view = inflater.inflate(R.layout.fragment_regulation_number, container, false);
-            buttonConfirm = view.findViewById(R.id.button_input_regulation);
-            editTextInput = view.findViewById(R.id.edit_text_regulation);
-
-        }
-        if(usedFunction.getFunctionType().contains(".HeatingCooling")){
-            view = inflater.inflate(R.layout.fragment_regulation_percentage, container, false);
-            buttonConfirm = view.findViewById(R.id.button_input_regulation);
-            editTextInput = view.findViewById(R.id.edit_text_regulation);
-
-        }
-        if(usedFunction.getFunctionType().contains(".Switch")){
-            view = inflater.inflate(R.layout.fragment_regulation_binary, container, false);
-            switchBinary = view.findViewById(R.id.switch_regulation);
-        }
-
-        textView = view.findViewById(R.id.text_view_name_regulation);
 
         return view;
     }
@@ -80,30 +59,34 @@ public class RegulationFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if(usedFunction.getFunctionType().contains(".Switch")){
-            switchBinary.setOnClickListener(v -> setValueSwitch());
-        }
-        if(usedFunction.getFunctionType().contains(".HeatingCooling")){
-            buttonConfirm.setOnClickListener(v -> setValue(editTextInput.getText().toString()));
-        }
-        if(usedFunction.getFunctionType().contains(".Covering")){
-            buttonConfirm.setOnClickListener(v -> setValue(editTextInput.getText().toString()));
-        }
-    }
+        recyclerViewRegulation.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerViewRegulation.setHasFixedSize(true);
 
-    private void setValueSwitch(){
-        String value = "0";
-        if (switchBinary.isChecked()){
-            value = "1";
-        }
-        setValue(value);
-    }
+        adapter = new RegulationAdapter();
+        recyclerViewRegulation.setAdapter(adapter);
 
-    private void setValue(String value){
-        textView.setText(value);
-        //TODO: NOT STABLE! CHANGE IS REQUIRED!
-        regulationViewModel.requestSetValue(usedFunction.getDataPoints().get(0).getID(), value);
-        //Log.d(TAG, usedFunction.toString());
-        //Log.d(TAG, usedFunction.getDataPoints().toString());
+        regulationViewModel.getDatapoints().observe(getViewLifecycleOwner(), new Observer<List<Datapoint>>() {
+            @Override
+            public void onChanged(@NonNull List<Datapoint> dataPoints) {
+                adapter.setDatapointList(dataPoints);
+            }
+        });
+
+        adapter.setOnItemClickListener(new RegulationAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Datapoint datapoint, String value) {
+                //TODO: Check with David if this is acceptable or if it should be different listeners (compare: RoomOverviewFragment)
+                if(value.equals("true")) {
+                    Log.d("Hello", "Holder value:" + 1 + ", UID " + datapoint.getID());
+                    regulationViewModel.requestSetValue(datapoint.getID(), "1");
+                }else if(value.equals("false")){
+                    Log.d("Hello", "Holder value:" + 0 + ", UID " + datapoint.getID());
+                    regulationViewModel.requestSetValue(datapoint.getID(), "0");
+                }else{
+                    Log.d("Hello", "Holder value:" + value + ", UID " + datapoint.getID());
+                    regulationViewModel.requestSetValue(datapoint.getID(), value);
+                }
+            }
+        });
     }
 }
