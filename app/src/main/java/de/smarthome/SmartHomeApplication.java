@@ -8,9 +8,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.NavGraph;
 import androidx.navigation.NavInflater;
@@ -18,6 +20,8 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import de.smarthome.utility.ToastUtility;
 
 public class SmartHomeApplication extends AppCompatActivity {
     public static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(4);
@@ -28,6 +32,7 @@ public class SmartHomeApplication extends AppCompatActivity {
     private NavController navController;
     private NavHostFragment navHostFragment;
 
+    ToastUtility toastUtility;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +41,19 @@ public class SmartHomeApplication extends AppCompatActivity {
 
         checkBeaconPermissions();
 
+        toastUtility = ToastUtility.getInstance();
+        toastUtility.getNewToast().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if(aBoolean){
+                    Toast.makeText(getApplicationContext(), toastUtility.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
         navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         navController = NavHostFragment.findNavController(navHostFragment);
+
         selectStartFragment();
     }
 
