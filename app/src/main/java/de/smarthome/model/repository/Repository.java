@@ -365,6 +365,7 @@ public class Repository implements CallbackSubscriber {
     }
 
     //TODO: Some cases still need to do something, like "RESTART". Questionable if both "update" methods need to react
+    //value or event can be null but never both change bei value != null status changed
     @Override
     public void update(CallbackValueInput input) {
         switch(input.getEvent()){
