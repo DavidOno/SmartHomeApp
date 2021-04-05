@@ -5,12 +5,13 @@ import android.util.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import de.smarthome.beacons.BeaconLocations;
 import de.smarthome.model.impl.UIConfig;
 import de.smarthome.model.repository.Repository;
 
 public class ResponseReactorBeaconConfig implements ResponseReactor{
     private final String TAG = "ResponseReactorBeaconConfig";
-    private UIConfig responseUIConfig;
+    private BeaconLocations responseBeaconConfig;
     private Repository parentRepository;
 
     public ResponseReactorBeaconConfig(Repository parentRepository) {
@@ -21,11 +22,11 @@ public class ResponseReactorBeaconConfig implements ResponseReactor{
     public void react(ResponseEntity responseEntity) {
         try {
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
-                System.out.println("response received UIConfig");
+                System.out.println("response received BeaconConfig");
                 System.out.println(responseEntity.getBody());
 
-                responseUIConfig = (UIConfig) responseEntity.getBody();
-                sendUIConfigToRepo(responseUIConfig);
+                responseBeaconConfig = (BeaconLocations) responseEntity.getBody();
+                sendBeaconLocationsToRepo(responseBeaconConfig);
 
                 Log.d(TAG, "Communication with Server possible.\nStatus: " + responseEntity.getStatusCode());
             } else {
@@ -38,11 +39,11 @@ public class ResponseReactorBeaconConfig implements ResponseReactor{
         }
     }
 
-    public UIConfig getResponseUIConfig() {
-        return responseUIConfig;
+    public BeaconLocations getResponseBeaconLocations() {
+        return responseBeaconConfig;
     }
 
-    public void sendUIConfigToRepo(UIConfig newUIConfig){
-        parentRepository.setUIConfig(newUIConfig);
+    public void sendBeaconLocationsToRepo(BeaconLocations newBeaconConfig){
+        parentRepository.setBeaconConfig(newBeaconConfig);
     }
 }
