@@ -1,6 +1,7 @@
 package de.smarthome.server.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,10 +30,9 @@ public class HomeOverviewFragment extends Fragment {
     private HomeOverviewViewModel homeOverviewViewModel;
 
     private HomeOverviewAdapter adapter;
-    public static HomeOverviewFragment newInstance(String param1, String param2) {
-        HomeOverviewFragment fragment = new HomeOverviewFragment();
 
-        return fragment;
+    public static HomeOverviewFragment newInstance() {
+        return new HomeOverviewFragment();
     }
 
     @Override
@@ -70,8 +70,7 @@ public class HomeOverviewFragment extends Fragment {
             @Override
             public void onItemClick(Location location) {
                 homeOverviewViewModel.setSelectedLocation(location);
-                String selectedRoomName = location.getName();
-                navigateToRoomOverviewFragment(selectedRoomName);
+                navigateToRoomOverviewFragment();
             }
 
         });
@@ -79,15 +78,12 @@ public class HomeOverviewFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
-    private void navigateToRoomOverviewFragment(String selectedRoomName) {
+    private void navigateToRoomOverviewFragment() {
         NavController navController = NavHostFragment.findNavController(this);
 
-        HomeOverviewFragmentDirections.ActionRoomsFragmentToRoomOverviewFragment toRoomOverviewFragment =
-                HomeOverviewFragmentDirections.actionRoomsFragmentToRoomOverviewFragment();
+        /*HomeOverviewFragmentDirections.ActionRoomsFragmentToRoomOverviewFragment toRoomOverviewFragment =
+                HomeOverviewFragmentDirections.actionRoomsFragmentToRoomOverviewFragment();*/
 
-        toRoomOverviewFragment.setIDSelectedRoom("TestID set in HomeOverviewFragment");
-        toRoomOverviewFragment.setNameSelectedRoom(selectedRoomName);
-
-        navController.navigate(toRoomOverviewFragment);
+        navController.navigate(R.id.action_homeOverviewFragment_to_roomOverviewFragment);
     }
 }
