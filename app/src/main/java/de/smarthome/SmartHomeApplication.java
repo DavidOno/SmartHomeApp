@@ -2,14 +2,21 @@ package de.smarthome;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
@@ -18,9 +25,18 @@ import androidx.navigation.NavGraph;
 import androidx.navigation.NavInflater;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.google.android.gms.auth.api.credentials.Credential;
+import com.google.android.gms.auth.api.credentials.CredentialRequest;
+import com.google.android.gms.auth.api.credentials.CredentialRequestResponse;
+import com.google.android.gms.auth.api.credentials.Credentials;
+import com.google.android.gms.auth.api.credentials.CredentialsClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import de.smarthome.model.repository.Repository;
 import de.smarthome.utility.ToastUtility;
 
 public class SmartHomeApplication extends AppCompatActivity {
@@ -32,7 +48,10 @@ public class SmartHomeApplication extends AppCompatActivity {
     private NavController navController;
     private NavHostFragment navHostFragment;
 
-    ToastUtility toastUtility;
+    private Repository repository;
+    private ToastUtility toastUtility;
+
+    private Boolean test = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +59,7 @@ public class SmartHomeApplication extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         checkBeaconPermissions();
+        repository = Repository.getInstance(this.getApplication());
 
         toastUtility = ToastUtility.getInstance();
         toastUtility.getNewToast().observe(this, new Observer<Boolean>() {
@@ -47,6 +67,16 @@ public class SmartHomeApplication extends AppCompatActivity {
             public void onChanged(Boolean aBoolean) {
                 if(aBoolean){
                     Toast.makeText(getApplicationContext(), toastUtility.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        repository.checkBeacon().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if(aBoolean){
+                    repository.initBeaconCheck();
+                    startBeaconDialog();
                 }
             }
         });
@@ -75,25 +105,91 @@ public class SmartHomeApplication extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void startBeaconDialog(){
+        Dialog dialog = new Dialog(SmartHomeApplication.this);
+        dialog.setContentView(R.layout.dialog_beacon);
+
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+
+        Button buttonYes = dialog.findViewById(R.id.button_left);
+        Button buttonNo = dialog.findViewById(R.id.button_right);
+
+        buttonYes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toastUtility.prepareToast("Room switched!");
+                dialog.dismiss();
+                goToRoomOverviewFragment();
+            }
+        });
+
+        buttonNo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
+
+    private void goToRoomOverviewFragment(){
+        NavInflater navInflater = navController.getNavInflater();
+        NavGraph graph = navInflater.inflate(R.navigation.nav_graph);
+
+        graph.setStartDestination(R.id.roomOverviewFragment);
+        navController.setGraph(graph);
+    }
+
     private void selectStartFragment() {
         NavInflater navInflater = navController.getNavInflater();
         NavGraph graph = navInflater.inflate(R.navigation.nav_graph);
 
-        /*if (navHostFragment.getChildFragmentManager().getBackStackEntryCount() == 0) {
-            if (dummyToken.isEmpty()) {
-                graph.setStartDestination(R.id.loginFragment);
+        if (navHostFragment.getChildFragmentManager().getBackStackEntryCount() == 0) {
+            //TODO: Autologin does not work because it updates boolean to slowly
+            if (test){//getSavedCredentials()) {
+                graph.setStartDestination(R.id.HomeOverviewFragment);
 
             } else {
-                graph.setStartDestination(R.id.roomsFragment);
+                graph.setStartDestination(R.id.loginFragment);
             }
-        }*/
+        }
 
-        graph.setStartDestination(R.id.loginFragment);
+        //graph.setStartDestination(R.id.loginFragment);
         navController.setGraph(graph);
-
     }
 
-    public void checkBeaconPermissions(){
+    public Boolean getSavedCredentials() {
+        CredentialRequest credentialRequest = new CredentialRequest.Builder()
+                .setPasswordLoginSupported(true)
+                .build();
+
+        CredentialsClient credentialsClient = Credentials.getClient(this);
+
+        credentialsClient.request(credentialRequest).addOnCompleteListener(new OnCompleteListener<CredentialRequestResponse>() {
+            @Override
+            public void onComplete(@NonNull Task<CredentialRequestResponse> task) {
+
+                if (task.isSuccessful()) {
+                    // See "Handle successful credential requests"
+                    test = true;
+                    onCredentialRetrieved(task.getResult().getCredential());
+                }
+                // See "Handle unsuccessful and incomplete credential requests"
+                // ...
+            }
+        });
+        return test;
+    }
+
+    private void onCredentialRetrieved(Credential credential) {
+        String accountType = credential.getAccountType();
+        if (accountType == null) {
+            test = true;
+            repository.requestRegisterUser(credential.getId(), credential.getPassword());
+        }
+    }
+
+    private void checkBeaconPermissions(){
         if (this.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
