@@ -7,9 +7,9 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
+import java.util.Map;
 
 import de.smarthome.model.impl.Function;
-import de.smarthome.model.impl.Location;
 import de.smarthome.model.repository.Repository;
 
 public class RoomOverviewViewModel  extends AndroidViewModel {
@@ -19,14 +19,14 @@ public class RoomOverviewViewModel  extends AndroidViewModel {
     public RoomOverviewViewModel(@NonNull Application application)  {
         super(application);
 
-        repository = Repository.getInstance();
+        repository = Repository.getInstance(application);
     }
 
-    public LiveData<List<Function>> getUsableRoomFunctions(){
+    public LiveData<Map<Function, Function>> getUsableRoomFunctions(){
         return repository.getRoomUsableFunctions();
     }
 
-    public LiveData<List<Function>> getRoomStatusFunctions(){
+    public LiveData<Map<Function, Function>> getRoomStatusFunctions(){
         return repository.getRoomStatusFunctions();
     }
 
@@ -39,6 +39,11 @@ public class RoomOverviewViewModel  extends AndroidViewModel {
     }
 
     public void setSelectedFunction(Function function){
-        repository.setSelectedFunction(function);
+        repository.setSelectedFunctionForDataPoints(function);
     }
+
+    public LiveData<Map<String, String>> getStatusList(){
+        return repository.getStatusList();
+    }
+
 }
