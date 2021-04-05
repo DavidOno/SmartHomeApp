@@ -1,10 +1,10 @@
 package de.smarthome.server.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,20 +18,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import de.smarthome.R;
 import de.smarthome.model.impl.Function;
+import de.smarthome.model.responses.CallbackValueInput;
 import de.smarthome.model.viewmodel.RoomOverviewViewModel;
 import de.smarthome.server.adapter.RoomOverviewAdapter;
-import de.smarthome.utility.ToastUtility;
 
 public class RoomOverviewFragment extends Fragment {
     private  final String TAG = "RoomOverviewFragment";
     private RoomOverviewViewModel roomOverviewViewModel;
     private RecyclerView recyclerViewRoom;
-
-    private String roomName;
-    private String roomUID;
 
     private RoomOverviewAdapter adapter;
 
@@ -60,20 +58,25 @@ public class RoomOverviewFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        roomUID = RoomOverviewFragmentArgs.fromBundle(getArguments()).getIDSelectedRoom();
-        roomName = RoomOverviewFragmentArgs.fromBundle(getArguments()).getNameSelectedRoom();
-
-
         recyclerViewRoom.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewRoom.setHasFixedSize(true);
 
         adapter = new RoomOverviewAdapter();
         recyclerViewRoom.setAdapter(adapter);
 
-        roomOverviewViewModel.getUsableRoomFunctions().observe(getViewLifecycleOwner(), new Observer<List<Function>>() {
+        roomOverviewViewModel.getUsableRoomFunctions().observe(getViewLifecycleOwner(), new Observer<Map<Function, Function>>() {
             @Override
-            public void onChanged(@Nullable List<Function> functions) {
-                adapter.setFunctionList(functions);
+            public void onChanged(@Nullable Map<Function, Function> functions) {
+                adapter.setFunctionList(functions, getActivity().getApplication());
+            }
+        });
+
+        roomOverviewViewModel.getStatusList().observe(getViewLifecycleOwner(), new Observer<Map<String, String>>() {
+            @Override
+            public void onChanged(Map<String, String> stringStringMap) {
+                //TODO: REWORK LOOKS TERRIBLE!
+                adapter.updateStatusValue(stringStringMap.keySet().iterator().next(),
+                        stringStringMap.get(stringStringMap.keySet().iterator().next()));
             }
         });
 
@@ -81,7 +84,7 @@ public class RoomOverviewFragment extends Fragment {
             @Override
             public void onItemClick(Function function) {
                 roomOverviewViewModel.setSelectedFunction(function);
-                navigateToRegulationFragment(roomName, function.getID());
+                navigateToRegulationFragment();
             }
         });
 
@@ -100,16 +103,13 @@ public class RoomOverviewFragment extends Fragment {
 
     }
 
-    public void navigateToRegulationFragment(String roomName, String functionUID) {
+    public void navigateToRegulationFragment() {
         NavController navController = NavHostFragment.findNavController(this);
 
-        RoomOverviewFragmentDirections.ActionRoomOverviewFragmentToRegulationFragment toRegulationFragment =
-                RoomOverviewFragmentDirections.actionRoomOverviewFragmentToRegulationFragment();
+        /*RoomOverviewFragmentDirections.ActionRoomOverviewFragmentToRegulationFragment toRegulationFragment =
+                RoomOverviewFragmentDirections.actionRoomOverviewFragmentToRegulationFragment();*/
 
-        toRegulationFragment.setNameSelectedRoom(roomName);
-        toRegulationFragment.setSelectedFunctionUID(functionUID);
-
-        navController.navigate(toRegulationFragment);
+        navController.navigate(R.id.action_roomOverviewFragment_to_regulationFragment);
     }
 
 

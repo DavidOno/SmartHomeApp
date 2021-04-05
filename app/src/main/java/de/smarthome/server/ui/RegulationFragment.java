@@ -5,10 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Switch;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,14 +14,15 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.List;
+import java.util.Map;
 
 import de.smarthome.R;
-import de.smarthome.model.configs.ChannelDatapoint;
 import de.smarthome.model.impl.Datapoint;
 import de.smarthome.model.impl.Function;
+import de.smarthome.model.responses.CallbackValueInput;
 import de.smarthome.model.viewmodel.RegulationViewModel;
 import de.smarthome.server.adapter.RegulationAdapter;
+import de.smarthome.server.adapter.RoomOverviewAdapter;
 
 public class RegulationFragment extends Fragment {
     private final String TAG = "RegulationFragment";
@@ -65,27 +62,29 @@ public class RegulationFragment extends Fragment {
         adapter = new RegulationAdapter();
         recyclerViewRegulation.setAdapter(adapter);
 
-        regulationViewModel.getDatapoints().observe(getViewLifecycleOwner(), new Observer<List<Datapoint>>() {
+        regulationViewModel.getDataPoints().observe(getViewLifecycleOwner(), new Observer<Map<Datapoint, Datapoint>>() {
             @Override
-            public void onChanged(@NonNull List<Datapoint> dataPoints) {
-                adapter.setDatapointList(dataPoints);
+            public void onChanged(Map<Datapoint, Datapoint> dataPoints) {
+                adapter.setDataPointList(dataPoints, getActivity().getApplication());
             }
         });
+
+        regulationViewModel.getStatusList().observe(getViewLifecycleOwner(), new Observer<Map<String, String>>() {
+            @Override
+            public void onChanged(Map<String, String> stringStringMap) {
+                //TODO: REWORK LOOKS TERRIBLE!
+                adapter.updateStatusValue(stringStringMap.keySet().iterator().next(),
+                        stringStringMap.get(stringStringMap.keySet().iterator().next()));
+            }
+        });
+
+        //CallbackValueInput input = new CallbackValueInput(1, "2", "aajx", "70", null);
 
         adapter.setOnItemClickListener(new RegulationAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Datapoint datapoint, String value) {
-                //TODO: Check with David if this is acceptable or if it should be different listeners (compare: RoomOverviewFragment)
-                if(value.equals("true")) {
-                    Log.d("Hello", "Holder value:" + 1 + ", UID " + datapoint.getID());
-                    regulationViewModel.requestSetValue(datapoint.getID(), "1");
-                }else if(value.equals("false")){
-                    Log.d("Hello", "Holder value:" + 0 + ", UID " + datapoint.getID());
-                    regulationViewModel.requestSetValue(datapoint.getID(), "0");
-                }else{
-                    Log.d("Hello", "Holder value:" + value + ", UID " + datapoint.getID());
-                    regulationViewModel.requestSetValue(datapoint.getID(), value);
-                }
+                regulationViewModel.requestSetValue(datapoint.getID(), value);
+                //regulationViewModel.repository.update(input);
             }
         });
     }
