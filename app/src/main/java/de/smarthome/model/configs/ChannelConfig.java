@@ -85,15 +85,27 @@ public class ChannelConfig {
             case BINARY:
                 if(channelDatapoint.getAccess().equals(DatapointAccess.READ_WRITE)){
                     return RegulationAdapter.SWITCH_VIEW_HOLDER;
-                }if(channelDatapoint.getAccess().equals(DatapointAccess.WRITE)){
-                return RegulationAdapter.STEP_VIEW_HOLDER;
-            }
+                }
+                if(channelDatapoint.getAccess().equals(DatapointAccess.WRITE)){
+                    return RegulationAdapter.STEP_VIEW_HOLDER;
+                }
             case PERCENT:
-                return RegulationAdapter.SLIDER_VIEW_HOLDER;
+                if(channelDatapoint.getAccess().equals(DatapointAccess.READ_WRITE)){
+                    return RegulationAdapter.SLIDER_VIEW_HOLDER;
+                }
+                if(channelDatapoint.getAccess().equals(DatapointAccess.WRITE)){
+                    return RegulationAdapter.STEP_VIEW_HOLDER;
+                }
             case INTEGER:
             case FLOAT:
-            case STRING:
             case BYTE:
+                if(channelDatapoint.getAccess().equals(DatapointAccess.READ_WRITE)){
+                    return RegulationAdapter.SLIDER_VIEW_HOLDER;
+                }
+                if(channelDatapoint.getAccess().equals(DatapointAccess.WRITE)){
+                    return RegulationAdapter.STEP_VIEW_HOLDER;
+                }
+            case STRING:
                 return RegulationAdapter.READ_VIEW_HOLDER;
 
             default: throw new IllegalArgumentException("Type: "+ channelDatapoint.getType().toString() +" is unknown");
