@@ -13,16 +13,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LifecycleObserver;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.gms.auth.api.credentials.Credential;
-import com.google.android.gms.auth.api.credentials.CredentialRequest;
-import com.google.android.gms.auth.api.credentials.CredentialRequestResponse;
 import com.google.android.gms.auth.api.credentials.Credentials;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.auth.api.credentials.CredentialsOptions;
@@ -31,7 +26,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 import de.smarthome.R;
-import de.smarthome.SmartHomeApplication;
 import de.smarthome.model.viewmodel.LoginViewModel;
 import de.smarthome.utility.ToastUtility;
 
@@ -50,6 +44,8 @@ public class LoginFragment extends Fragment {
 
     private final String TAG = "LoginFragment";
 
+    ToastUtility toastUtility;
+
     public static LoginFragment newInstance() {
         return new LoginFragment();
     }
@@ -67,7 +63,7 @@ public class LoginFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         buttonLogin.setOnClickListener(v -> registerNewUser());
         //buttonReset.setOnClickListener(v -> deleteCredential(getSavedCredential()));
-        buttonDummy.setOnClickListener(v -> navigateToRoomsFragment());
+        buttonDummy.setOnClickListener(v -> navigateToHomeOverviewFragment());
 
 
         super.onViewCreated(view, savedInstanceState);
@@ -79,8 +75,7 @@ public class LoginFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         loginViewModel = new ViewModelProvider(requireActivity()).get(LoginViewModel.class);
-
-        getSavedCredentials();
+        toastUtility = ToastUtility.getInstance();
     }
 
     public Credential buildCredential(String Username, String pwd) {
@@ -108,20 +103,15 @@ public class LoginFragment extends Fragment {
         if(getCredentialsFromUI()){
             loginViewModel.registerUser(userName, password);
             saveCredential(buildCredential(userName, password));
-            navigateToRoomsFragment();
+            navigateToHomeOverviewFragment();
         }
     }
 
-    private void registerExistingUser(String savedUserName, String savedPassword){
-        loginViewModel.registerUser(savedUserName, savedPassword);
-        navigateToRoomsFragment();
-    }
-
-
-    private void navigateToRoomsFragment() {
+    private void navigateToHomeOverviewFragment() {
         NavController navController = NavHostFragment.findNavController(this);
-        NavDirections toRoomsFragment = LoginFragmentDirections.actionLoginFragmentToRoomsFragment();
-        navController.navigate(toRoomsFragment);
+        //NavDirections toRoomsFragment = LoginFragmentDirections.actionLoginFragmentToRoomsFragment();
+
+        navController.navigate(R.id.action_loginFragment_to_homeOverviewFragment);
     }
 
     private void findViewsByID(View view) {
@@ -147,7 +137,7 @@ public class LoginFragment extends Fragment {
             public void onComplete(@NonNull Task task) {
                 if (task.isSuccessful()) {
                     Log.d(TAG, "SAVE: OK");
-                    Toast.makeText(getActivity(), "Credentials saved", Toast.LENGTH_SHORT).show();
+                    toastUtility.prepareToast("Credentials saved");
                     return;
                 }
 
@@ -163,11 +153,11 @@ public class LoginFragment extends Fragment {
                     } catch (IntentSender.SendIntentException exception) {
                         // Could not resolve the request
                         Log.e(TAG, "Failed to send resolution.", exception);
-                        Toast.makeText(getActivity(), "Save failed", Toast.LENGTH_SHORT).show();
+                        toastUtility.prepareToast("Save failed");
                     }
                 } else {
                     // Request has no resolution
-                    Toast.makeText(getActivity(), "Save failed", Toast.LENGTH_SHORT).show();
+                    toastUtility.prepareToast("Save failed");
                 }
             }
         });
@@ -182,40 +172,10 @@ public class LoginFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(getActivity(), "Login data deleted", Toast.LENGTH_SHORT).show();
+                    toastUtility.prepareToast("Login data deleted");
                 }
             }
         });
 
-    }
-
-    public void getSavedCredentials() {
-        CredentialRequest credentialRequest = new CredentialRequest.Builder()
-                .setPasswordLoginSupported(true)
-                .build();
-
-        CredentialsClient credentialsClient = Credentials.getClient(this.getActivity());
-
-        credentialsClient.request(credentialRequest).addOnCompleteListener(new OnCompleteListener<CredentialRequestResponse>() {
-                    @Override
-                    public void onComplete(@NonNull Task<CredentialRequestResponse> task) {
-
-                        if (task.isSuccessful()) {
-                            // See "Handle successful credential requests"
-                            onCredentialRetrieved(task.getResult().getCredential());
-                        }
-                        // See "Handle unsuccessful and incomplete credential requests"
-                        // ...
-                    }
-                });
-    }
-
-    private void onCredentialRetrieved(Credential credential) {
-        String accountType = credential.getAccountType();
-        if (accountType == null) {
-            //TODO: Remove Log!!
-            Log.d(TAG, "Username: " + credential.getId() + ", password: "  + credential.getPassword());
-            registerExistingUser(credential.getId(), credential.getPassword());
-        }
     }
 }
