@@ -14,13 +14,13 @@ import de.smarthome.model.repository.Repository;
 
 public class HomeOverviewViewModel extends AndroidViewModel {
     private  final String TAG = "HomeOverviewViewmodel";
-    MutableLiveData<List<Location>> roomSet;
-    Repository repository;
+    private  MutableLiveData<List<Location>> roomSet;
+    private  Repository repository;
 
     public HomeOverviewViewModel(@NonNull Application application)  {
         super(application);
 
-        repository = Repository.getInstance();
+        repository = Repository.getInstance(application);
         roomSet = repository.getRooms();
     }
 
@@ -31,4 +31,5 @@ public class HomeOverviewViewModel extends AndroidViewModel {
     public void setSelectedLocation(Location location){
         repository.setSelectedLocation(location);
     }
+
 }
