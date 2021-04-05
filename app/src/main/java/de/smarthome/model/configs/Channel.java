@@ -3,6 +3,9 @@ package de.smarthome.model.configs;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
+import java.util.Optional;
+
+import de.smarthome.model.impl.Datapoint;
 
 
 public class Channel {
@@ -20,6 +23,15 @@ public class Channel {
 
     public List<ChannelDatapoint> getDatapoints() {
         return datapoints;
+    }
+
+    public Optional<ChannelDatapoint> getCorrespondingChannelDataPoint(Datapoint datapoint){
+        for(ChannelDatapoint channelDataPoint : datapoints){
+            if(channelDataPoint.getName().equals(datapoint.getName())){
+                return Optional.of(channelDataPoint);
+            }
+        }
+        return Optional.empty();
     }
 
     @Override
