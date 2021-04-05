@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="410dp"
+    android:layout_width="match_parent"
     android:layout_height="55dp">
 
 
@@ -15,7 +15,6 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
         android:background="#000000" />
 
     <TextView
@@ -32,24 +31,22 @@
 
     <ImageView
         android:id="@+id/imageView_minus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="35dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="39dp"
-        android:layout_marginTop="6dp"
-        android:layout_marginEnd="56dp"
+        android:layout_marginEnd="90dp"
         app:srcCompat="@drawable/ic_baseline_minimize_24" />
 
 
     <ImageView
         android:id="@+id/imageView_plus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="39dp"
-        android:layout_marginTop="15dp"
+
         android:layout_marginEnd="26dp"
         app:srcCompat="@drawable/ic_baseline_add_24" />
 

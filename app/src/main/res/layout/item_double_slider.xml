@@ -15,7 +15,6 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="0dp"
-        android:layout_marginEnd="1dp"
         android:background="#000000" />
 
     <com.google.android.material.slider.RangeSlider
@@ -30,7 +29,6 @@
         android:layout_marginStart="-3dp"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="27dp"
-        android:layout_marginBottom="660dp"
         android:value="20"
         android:valueFrom="0"
         android:valueTo="100"
@@ -56,7 +54,7 @@
         android:layout_marginTop="15dp"
         android:layout_marginEnd="186dp"
         android:textColor="#FFFFFF"
-        android:textSize="18sp" />
+        android:textSize="18sp"/>
 
 
 </RelativeLayout>
