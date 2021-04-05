@@ -88,13 +88,13 @@ public class ServerTestActivity extends AppCompatActivity {
             }).start();
         });
 
-        registerCallbackButton.setOnClickListener(v -> {
+        /*registerCallbackButton.setOnClickListener(v -> {
             if(!registerToogle) {
                 new Thread(() -> {
                     AsyncCommand register = new RegisterCallback(ipOfCallbackServer);
                     Command channelConfig = new AdditionalConfigCommand(ipOfCallbackServer, AdditionalConfigs.CHANNEL);
                     Command locationConfig = new AdditionalConfigCommand(ipOfCallbackServer, AdditionalConfigs.LOCATION);
-                    //sh.sendRequest(new CommandChainImpl().add(register).add(channelConfig).add(locationConfig));
+                    sh.sendRequest(new CommandChainImpl().add(register).add(channelConfig).add(locationConfig));
                 }).start();
                 registerToogle = !registerToogle;
                 registerCallbackButton.setText("Unregister Callback");
@@ -106,7 +106,7 @@ public class ServerTestActivity extends AppCompatActivity {
                 registerToogle = !registerToogle;
                 registerCallbackButton.setText("Register Callback");
             }
-        });
+        });*/
 
         rcah.setOnClickListener(v -> {
             if(!registerCAHToogle) {
@@ -146,7 +146,7 @@ public class ServerTestActivity extends AppCompatActivity {
         getValue = findViewById(R.id.getvalue);
         id = findViewById(R.id.id);
         value = findViewById(R.id.value);
-        displayText = findViewById(R.id.display);
+        //displayText = findViewById(R.id.display);
         registerCallbackButton = findViewById(R.id.register_callback_button);
         showDeviceIPs = findViewById(R.id.showDeviceIps);
         rcah = findViewById(R.id.registerCallbackAtHomeServer);
