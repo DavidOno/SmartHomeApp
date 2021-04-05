@@ -4,17 +4,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/roomsFragment">
+    app:startDestination="@id/HomeOverviewFragment">
     <fragment
-        android:id="@+id/roomsFragment"
+        android:id="@+id/HomeOverviewFragment"
         android:name="de.smarthome.server.ui.HomeOverviewFragment"
         android:label="fragment_rooms"
         tools:layout="@layout/fragment_home_overview" >
         <action
-            android:id="@+id/action_roomsFragment_to_roomOverviewFragment"
+            android:id="@+id/action_homeOverviewFragment_to_roomOverviewFragment"
             app:destination="@id/roomOverviewFragment" />
         <action
-            android:id="@+id/action_roomsFragment_to_optionsFragment"
+            android:id="@+id/action_homeOverviewFragment_to_optionsFragment"
             app:destination="@id/optionsFragment" />
     </fragment>
     <fragment
@@ -23,9 +23,9 @@
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
         <action
-            android:id="@+id/action_loginFragment_to_roomsFragment"
-            app:destination="@id/roomsFragment"
-            app:popUpTo="@id/roomsFragment" />
+            android:id="@+id/action_loginFragment_to_homeOverviewFragment"
+            app:destination="@id/HomeOverviewFragment"
+            app:popUpTo="@id/HomeOverviewFragment" />
     </fragment>
     <fragment
         android:id="@+id/optionsFragment"
@@ -40,25 +40,11 @@
         <action
             android:id="@+id/action_roomOverviewFragment_to_regulationFragment"
             app:destination="@id/regulationFragment" />
-        <argument android:name="IDSelectedRoom"
-            app:argType="string"
-            android:defaultValue="-1" />
-        <argument android:name="NameSelectedRoom"
-            app:argType="string"
-            android:defaultValue="Default" />
 
     </fragment>
     <fragment
         android:id="@+id/regulationFragment"
         android:name="de.smarthome.server.ui.RegulationFragment"
         android:label="fragment_regulation"
-        tools:layout="@layout/fragment_regulation_number" >
-        <argument android:name="selectedFunctionUID"
-            app:argType="string"
-            android:defaultValue="-1" />
-        <argument
-            android:name="nameSelectedRoom"
-            app:argType="string"
-            android:defaultValue="Default" />
-    </fragment>
+        tools:layout="@layout/fragment_regulation_number" />
 </navigation>
