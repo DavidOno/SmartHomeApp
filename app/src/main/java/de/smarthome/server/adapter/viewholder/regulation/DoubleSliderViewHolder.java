@@ -6,19 +6,21 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.slider.RangeSlider;
 import com.google.android.material.slider.Slider;
 
+import java.util.Optional;
+
 import de.smarthome.R;
-import de.smarthome.model.configs.ChannelDatapoint;
 import de.smarthome.model.impl.Datapoint;
-import de.smarthome.model.impl.Function;
 import de.smarthome.server.adapter.RegulationAdapter;
 
 public class DoubleSliderViewHolder extends RegulationAdapter.ViewHolder{
     private TextView textView;
-    private Slider slider;
+    private RangeSlider slider;
     private RegulationAdapter adapter;
     private RegulationAdapter.OnItemClickListener onItemClickListener;
 
@@ -38,14 +40,17 @@ public class DoubleSliderViewHolder extends RegulationAdapter.ViewHolder{
             public void onClick(View v) {
                 int position = getAdapterPosition();
                 if (onItemClickListener != null && position != RecyclerView.NO_POSITION) {
-                    onItemClickListener.onItemClick(adapter.getDatapointAt(position), String.valueOf(slider.getValue()));
+                    //TODO: Right now all sliders are usable! Need to know witch one should be used for inputting new value!!
+                    onItemClickListener.onItemClick(adapter.getDataPointAt(position), String.valueOf(slider.getValues().get(0)));
                 }
             }
         });
     }
 
     @Override
-    public void onBindViewHolder(RegulationAdapter.ViewHolder holder, int position, Datapoint datapoint) {
+    public void onBindViewHolder(RegulationAdapter.ViewHolder holder, int position, Datapoint datapoint, Optional<String> value) {
         this.textView.setText(datapoint.getName());
+
+        //value.ifPresent(s -> slider.setValues(Integer.parseInt(s)));
     }
 }

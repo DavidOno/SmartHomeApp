@@ -1,6 +1,5 @@
 package de.smarthome.server.adapter.viewholder.regulation;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,12 +7,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Optional;
+
 import de.smarthome.R;
-import de.smarthome.model.configs.ChannelDatapoint;
 import de.smarthome.model.impl.Datapoint;
-import de.smarthome.model.impl.Function;
 import de.smarthome.server.adapter.RegulationAdapter;
 
 public class StepViewHolder extends RegulationAdapter.ViewHolder{
@@ -40,7 +40,7 @@ public class StepViewHolder extends RegulationAdapter.ViewHolder{
             public void onClick(View v) {
                 int position = getAdapterPosition();
                 if (onItemClickListener != null && position != RecyclerView.NO_POSITION) {
-                    onItemClickListener.onItemClick(adapter.getDatapointAt(position), "1");
+                    onItemClickListener.onItemClick(adapter.getDataPointAt(position), "1");
                 }
             }
         });
@@ -50,14 +50,14 @@ public class StepViewHolder extends RegulationAdapter.ViewHolder{
             public void onClick(View v) {
                 int position = getAdapterPosition();
                 if (onItemClickListener != null && position != RecyclerView.NO_POSITION) {
-                    onItemClickListener.onItemClick(adapter.getDatapointAt(position), "0");
+                    onItemClickListener.onItemClick(adapter.getDataPointAt(position), "0");
                 }
             }
         });
     }
 
     @Override
-    public void onBindViewHolder(RegulationAdapter.ViewHolder holder, int position, Datapoint datapoint) {
+    public void onBindViewHolder(RegulationAdapter.ViewHolder holder, int position, Datapoint datapoint, Optional<String> value) {
         this.textView.setText(datapoint.getName());
     }
 }

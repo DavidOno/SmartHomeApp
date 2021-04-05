@@ -6,7 +6,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.Optional;
 
 import de.smarthome.R;
 import de.smarthome.model.impl.Function;
@@ -39,7 +42,7 @@ public class DefaultViewHolder extends RoomOverviewAdapter.ViewHolder{
     }
 
     @Override
-    public void onBindViewHolder(RoomOverviewAdapter.ViewHolder holder, int position, Function function) {
+    public void onBindViewHolder(RoomOverviewAdapter.ViewHolder holder, int position, Function function, Optional<String> value ) {
         this.textView.setText(function.getName());
     }
 }

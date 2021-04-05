@@ -1,8 +1,6 @@
 package de.smarthome.server.adapter.viewholder.regulation;
 
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -11,10 +9,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.slider.Slider;
 
+import java.util.Optional;
+
 import de.smarthome.R;
-import de.smarthome.model.configs.ChannelDatapoint;
 import de.smarthome.model.impl.Datapoint;
-import de.smarthome.model.impl.Function;
 import de.smarthome.server.adapter.RegulationAdapter;
 
 public class SliderViewHolder extends RegulationAdapter.ViewHolder{
@@ -44,14 +42,16 @@ public class SliderViewHolder extends RegulationAdapter.ViewHolder{
             public void onStopTrackingTouch(@NonNull Slider slider) {
                 int position = getAdapterPosition();
                 if (onItemClickListener != null && position != RecyclerView.NO_POSITION) {
-                    onItemClickListener.onItemClick(adapter.getDatapointAt(position), String.valueOf(slider.getValue()));
+                    onItemClickListener.onItemClick(adapter.getDataPointAt(position), String.valueOf(slider.getValue()));
                 }
             }
         });
     }
 
     @Override
-    public void onBindViewHolder(RegulationAdapter.ViewHolder holder, int position, Datapoint datapoint) {
-        this.textView.setText(datapoint.getName());
+    public void onBindViewHolder(RegulationAdapter.ViewHolder holder, int position, Datapoint datapoint, Optional<String> value) {
+        textView.setText(datapoint.getName());
+
+        value.ifPresent(s -> slider.setValue(Integer.parseInt(s)));
     }
 }

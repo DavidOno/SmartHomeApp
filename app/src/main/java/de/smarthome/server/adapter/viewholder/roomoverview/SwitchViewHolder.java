@@ -7,8 +7,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.Optional;
 
 import de.smarthome.R;
 import de.smarthome.model.impl.Function;
@@ -45,7 +48,16 @@ public class SwitchViewHolder extends RoomOverviewAdapter.ViewHolder{
     }
 
     @Override
-    public void onBindViewHolder(RoomOverviewAdapter.ViewHolder holder, int position, Function function) {
+    public void onBindViewHolder(RoomOverviewAdapter.ViewHolder holder, int position, Function function, Optional<String> value) {
         this.textView.setText(function.getName());
+
+        if(value.isPresent()){
+            if(value.get().equals("1")){
+                binarySwitch.setChecked(true);
+
+            }else if (value.get().equals("0")){
+                binarySwitch.setChecked(false);
+            }
+        }
     }
 }
