@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.android.gms.auth.api.credentials.Credential;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,18 +56,17 @@ import de.smarthome.model.impl.Location;
 import de.smarthome.model.impl.UIConfig;
 import de.smarthome.model.responses.CallBackServiceInput;
 import de.smarthome.model.responses.CallbackValueInput;
-import de.smarthome.model.responses.Events;
 import de.smarthome.model.responses.ServiceEvent;
 import de.smarthome.server.CallbackSubscriber;
 import de.smarthome.server.MyFirebaseMessagingService;
 import de.smarthome.server.ServerHandler;
 import de.smarthome.server.gira.GiraServerHandler;
+import de.smarthome.utility.ToastUtility;
 
 public class Repository implements CallbackSubscriber, BeaconObserverSubscriber {
     private  final String TAG = "Repository";
     private static Repository instance;
-
-    private Map<Location, List<Function>> roomIDToIDs = new HashMap<>();
+    private final ToastUtility toastUtility = ToastUtility.getInstance();
 
     private final ServerHandler serverHandler = new GiraServerHandler(new HomeServerCommandInterpreter());
     private BeaconObserverImplementation beaconObserver;
@@ -77,9 +77,10 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     private BeaconLocations smartHomeBeaconLocations;
     //private BoundariesConfig smartHomeBoundariesConfig;
 
-    private String userName;
-    private String userPwd;
+    private Credential userCredential;
 
+    private Location selectedLocation;
+    //Used to check type of ChannelDataPoint
     private Function selectedFunction;
 
     private static final String IP_OF_CALLBACK_SERVER = "192.168.132.213:8443";
@@ -111,8 +112,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         fillWithDummyValueBeaconConfig();
     }
 
-    //TODO: Refactor. Name is not readable
-    public void setSelectedFunctionForDataPoints(Function function){
+    public void setSelectedFunction(Function function){
         this.selectedFunction = function;
         updateDataPointList(function);
     }
@@ -143,9 +143,9 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         initBeaconCheck();
     }
 
-    //TODO: Relic from earlier Build. Refactor or delete
-    public void setSelectedLocation(Location selectedLocation) {
-        updateUsableFunctions(selectedLocation);
+    public void setSelectedLocation(Location newLocation) {
+        selectedLocation = newLocation;
+        updateFunctionList(selectedLocation);
     }
 
     private void addToExecutorService(Thread newThread) {
@@ -160,22 +160,22 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         addToExecutorService(requestCheckAvailabilityThread);
     }
 
-    public void requestRegisterUser(String userName, String pwd) {
-        this.userName = userName;
-        this.userPwd = pwd;
+    public void requestRegisterUser(Credential credential) {
+        userCredential = credential;
 
-        initialisationOfApplication(userName, pwd);
+        initialisationOfApplication(userCredential.getId(), userCredential.getPassword());
     }
 
     private void initialisationOfApplication(String userName, String pwd) {
         MultiReactorCommandChainImpl multiCommandChain = new MultiReactorCommandChainImpl();
 
         registerAppAtGiraServer(userName, pwd, multiCommandChain);
-
         getAllConfigs(multiCommandChain);
+
+        serverHandler.sendRequest(multiCommandChain);
+
         //TODO: Check if this position is best. Worked by Stefan but maybe this need to be moved!
         MyFirebaseMessagingService.getValueObserver().subscribe(this);
-        serverHandler.sendRequest(multiCommandChain);
     }
 
     private void getAllConfigs(MultiReactorCommandChainImpl multiCommandChain) {
@@ -197,19 +197,50 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         multiCommandChain.add(new RegisterCallback(IP_OF_CALLBACK_SERVER), new ResponseReactorCallbackServer());
     }
 
-    public void setUIConfig(UIConfig newUiconfig){
-            smartHomeUiConfig = newUiconfig;
-            initParentLocation(smartHomeUiConfig);
-            updateRooms();
-            //TODO: Think about updating functions/datapoints with new UI
-            //updateUsableFunctions();
+    private void setUIConfig(UIConfig newUiconfig){
+        smartHomeUiConfig = newUiconfig;
+        initParentLocation(smartHomeUiConfig);
+        updateLocationList();
+
+        if(selectedLocation != null){
+            checkCurrentSelectedLocation();
+        }
+        if(selectedFunction != null){
+            checkCurrentSelectedFunction();
+        }
     }
 
-    public void setChannelConfig(ChannelConfig newChannelconfig){
+    private void checkCurrentSelectedLocation(){
+        //TODO: Check if this works!
+        String currentLocationName = selectedLocation.getName();
+
+        for(Location loc : locationList.getValue()){
+            if(loc.getName().equals(currentLocationName)){
+                setSelectedLocation(loc);
+                break;
+            }
+        }
+        toastUtility.prepareToast("Current Location was not fund in new UIConfig!");
+    }
+
+    private void checkCurrentSelectedFunction(){
+        //TODO: Check if this works!
+        String currentFunctionName = selectedFunction.getName();
+
+        for(Function func : selectedLocation.getFunctions(smartHomeUiConfig)){
+            if(func.getName().equals(currentFunctionName)){
+                setSelectedFunction(func);
+                break;
+            }
+        }
+        toastUtility.prepareToast("Selected Function was not fund in new UIConfig!");
+    }
+
+    private void setChannelConfig(ChannelConfig newChannelconfig){
         smartHomeChannelConfig = newChannelconfig;
     }
 
-    public void setBeaconConfig(BeaconLocations newBeaconConfig){
+    private void setBeaconConfig(BeaconLocations newBeaconConfig){
         smartHomeBeaconLocations = newBeaconConfig;
         initBeaconObserver();
     }
@@ -286,7 +317,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         return locationList;
     }
 
-    public void updateRooms(){
+    public void updateLocationList(){
         List<Location> allLocations = new ArrayList<>();
         allLocations.addAll(smartHomeUiConfig.getLocations());
 
@@ -315,7 +346,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
 
-    public void updateUsableFunctions(Location viewedLocation){
+    public void updateFunctionList(Location viewedLocation){
         Map<Function, Function> completeFunctionMap = new LinkedHashMap<Function, Function>();
 
         mapStatusFunctionToFunction(completeFunctionMap, viewedLocation);
@@ -423,7 +454,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
                     Log.d(TAG, "Server has started.");
                     System.out.println("Server has started.");
 
-                    initialisationOfApplication(userName, userPwd);
+                    initialisationOfApplication(userCredential.getId(), userCredential.getPassword());
                     break;
 
                 case RESTART:
@@ -472,7 +503,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
                         Log.d(TAG, "Server has started.");
                         System.out.println("Server has started.");
 
-                        initialisationOfApplication(userName, userPwd);
+                        initialisationOfApplication(userCredential.getId(), userCredential.getPassword());
                         break;
 
                     case RESTART:
