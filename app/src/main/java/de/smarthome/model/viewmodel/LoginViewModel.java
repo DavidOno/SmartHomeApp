@@ -27,8 +27,8 @@ public class LoginViewModel extends AndroidViewModel {
         repository = Repository.getInstance(application);
     }
 
-    public void registerUser(String userName, String pwd) {
-        repository.requestRegisterUser(userName, pwd);
+    public void registerUser(Credential userCredential) {
+        repository.requestRegisterUser(userCredential);
     }
 
 }

@@ -162,7 +162,7 @@ public class SmartHomeApplication extends AppCompatActivity {
     private void onCredentialRetrieved(Credential credential) {
         String accountType = credential.getAccountType();
         if (accountType == null) {
-            repository.requestRegisterUser(credential.getId(), credential.getPassword());
+            repository.requestRegisterUser(credential);
             goToFragment(R.id.HomeOverviewFragment);
         }
     }
