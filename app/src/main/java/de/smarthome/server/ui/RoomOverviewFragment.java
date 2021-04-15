@@ -75,8 +75,9 @@ public class RoomOverviewFragment extends Fragment {
             @Override
             public void onChanged(Map<String, String> stringStringMap) {
                 //TODO: REWORK LOOKS TERRIBLE!
-                adapter.updateStatusValue(stringStringMap.keySet().iterator().next(),
-                        stringStringMap.get(stringStringMap.keySet().iterator().next()));
+                String uid = stringStringMap.keySet().iterator().next();
+                String value = stringStringMap.get(uid);
+                adapter.updateStatusValue(uid, value);
             }
         });
 
