@@ -32,8 +32,12 @@ public class BeaconObserverImplementation implements BeaconObserver {
 
     @Override
     public void updateLocation(Optional<Location> newLocation) {
-        newLocation.ifPresent(location -> currentLocation = location);
-        notifySubscriber();
+        if(newLocation.isPresent()){
+            if(!newLocation.get().equals(currentLocation)){
+                currentLocation = newLocation.get();
+                notifySubscriber();
+            }
+        }
     }
 
     public void subscribe(BeaconObserverSubscriber subscriber) {
