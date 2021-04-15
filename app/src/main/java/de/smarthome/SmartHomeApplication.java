@@ -7,13 +7,11 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -51,8 +49,6 @@ public class SmartHomeApplication extends AppCompatActivity {
     private Repository repository;
     private ToastUtility toastUtility;
 
-    private Boolean test = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,7 +80,7 @@ public class SmartHomeApplication extends AppCompatActivity {
         navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         navController = NavHostFragment.findNavController(navHostFragment);
 
-        selectStartFragment();
+        getSavedCredentials();
     }
 
     @Override
@@ -120,7 +116,7 @@ public class SmartHomeApplication extends AppCompatActivity {
             public void onClick(View v) {
                 toastUtility.prepareToast("Room switched!");
                 dialog.dismiss();
-                goToRoomOverviewFragment();
+                goToFragment(R.id.roomOverviewFragment);
             }
         });
 
@@ -132,33 +128,15 @@ public class SmartHomeApplication extends AppCompatActivity {
         });
     }
 
-    private void goToRoomOverviewFragment(){
+    private void goToFragment(int destinationFragment) {
         NavInflater navInflater = navController.getNavInflater();
         NavGraph graph = navInflater.inflate(R.navigation.nav_graph);
 
-        graph.setStartDestination(R.id.roomOverviewFragment);
+        graph.setStartDestination(destinationFragment);
         navController.setGraph(graph);
     }
 
-    private void selectStartFragment() {
-        NavInflater navInflater = navController.getNavInflater();
-        NavGraph graph = navInflater.inflate(R.navigation.nav_graph);
-
-        if (navHostFragment.getChildFragmentManager().getBackStackEntryCount() == 0) {
-            //TODO: Autologin does not work because it updates boolean to slowly
-            if (test){//getSavedCredentials()) {
-                graph.setStartDestination(R.id.HomeOverviewFragment);
-
-            } else {
-                graph.setStartDestination(R.id.loginFragment);
-            }
-        }
-
-        //graph.setStartDestination(R.id.loginFragment);
-        navController.setGraph(graph);
-    }
-
-    public Boolean getSavedCredentials() {
+    public void getSavedCredentials() {
         CredentialRequest credentialRequest = new CredentialRequest.Builder()
                 .setPasswordLoginSupported(true)
                 .build();
@@ -171,21 +149,21 @@ public class SmartHomeApplication extends AppCompatActivity {
 
                 if (task.isSuccessful()) {
                     // See "Handle successful credential requests"
-                    test = true;
                     onCredentialRetrieved(task.getResult().getCredential());
+                }else{
+                    // See "Handle unsuccessful and incomplete credential requests"
+                    //TODO: To slow StartFragment (here HomeOverview) is still loaded before it is skipped
+                    goToFragment(R.id.loginFragment);
                 }
-                // See "Handle unsuccessful and incomplete credential requests"
-                // ...
             }
         });
-        return test;
     }
 
     private void onCredentialRetrieved(Credential credential) {
         String accountType = credential.getAccountType();
         if (accountType == null) {
-            test = true;
             repository.requestRegisterUser(credential.getId(), credential.getPassword());
+            goToFragment(R.id.HomeOverviewFragment);
         }
     }
 
