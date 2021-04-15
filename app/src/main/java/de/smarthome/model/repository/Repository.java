@@ -55,6 +55,7 @@ import de.smarthome.model.impl.Location;
 import de.smarthome.model.impl.UIConfig;
 import de.smarthome.model.responses.CallBackServiceInput;
 import de.smarthome.model.responses.CallbackValueInput;
+import de.smarthome.model.responses.Events;
 import de.smarthome.model.responses.ServiceEvent;
 import de.smarthome.server.CallbackSubscriber;
 import de.smarthome.server.MyFirebaseMessagingService;
@@ -68,7 +69,6 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     private Map<Location, List<Function>> roomIDToIDs = new HashMap<>();
 
     private final ServerHandler serverHandler = new GiraServerHandler(new HomeServerCommandInterpreter());
-    private MyFirebaseMessagingService myFirebaseMessagingService = new MyFirebaseMessagingService();
     private BeaconObserverImplementation beaconObserver;
     private Application parentApplication;
 
@@ -99,10 +99,8 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
 
             instance.parentApplication = application;
 
-            //Just for testing purposes! Has to be removed before product is finished!
+            //TODO: Just for testing purposes! Has to be removed before product is finished!
             instance.fillWithDummyValueAllConfigs();
-
-            instance.myFirebaseMessagingService.getValueObserver().subscribe(instance);
         }
         return instance;
     }
@@ -139,6 +137,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         beaconObserver = new BeaconObserverImplementation(parentApplication,
                 parentApplication.getApplicationContext(),
                 smartHomeUiConfig, smartHomeBeaconLocations);
+        beaconObserver.subscribe(this);
         beaconObserver.init();
 
         initBeaconCheck();
@@ -174,7 +173,8 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         registerAppAtGiraServer(userName, pwd, multiCommandChain);
 
         getAllConfigs(multiCommandChain);
-
+        //TODO: Check if this position is best. Worked by Stefan but maybe this need to be moved!
+        MyFirebaseMessagingService.getValueObserver().subscribe(this);
         serverHandler.sendRequest(multiCommandChain);
     }
 
@@ -201,6 +201,8 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
             smartHomeUiConfig = newUiconfig;
             initParentLocation(smartHomeUiConfig);
             updateRooms();
+            //TODO: Think about updating functions/datapoints with new UI
+            //updateUsableFunctions();
     }
 
     public void setChannelConfig(ChannelConfig newChannelconfig){
@@ -408,6 +410,8 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
 
     @Override
     public void update(CallbackValueInput input) {
+        //CallbackValueInput test = new CallbackValueInput(0, "0", null, null,"uiconfigchanged");
+        //input = test;
         if(input.getEvent() != null){
             switch(input.getEvent()){
                 case TEST:
@@ -658,20 +662,19 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
                 "\t\t\t\"beaconId\": \"ebefd083-70a2-47c8-9837-e7b5634df55570\"\n" +
                 "\t\t},\n" +
                 "\t\t{\n" +
-                "\t\t\t\"roomUID\": \"aacads\",\n" +
-                "\t\t\t\"beaconId\": \"xyz\"\n" +
+                "\t\t\t\"roomUID\": \"aafk\",\n" +
+                "\t\t\t\"beaconId\": \"11111111-11a1-1111-1111-1a111111111100\"\n" +
                 "\t\t},\n" +
                 "\t\t{\n" +
-                "\t\t\t\"roomUID\": \"fdasdf\",\n" +
-                "\t\t\t\"beaconId\": \"qwert\"\n" +
+                "\t\t\t\"roomUID\": \"aaej\",\n" +
+                "\t\t\t\"beaconId\": \"7b44b47b-52a1-5381-90c2-f09b6838c5d400\"\n" +
                 "\t\t}\n" +
                 "\t]\n" +
                 "}";
 
         ObjectMapper mapper = new ObjectMapper();
         try {
-            smartHomeBeaconLocations = mapper.readValue(locationConfigString, new TypeReference<BeaconLocations>() {});
-            initBeaconObserver();
+            setBeaconConfig(mapper.readValue(locationConfigString, new TypeReference<BeaconLocations>() {}));
 
         }catch(Exception e){
             Log.d(TAG, "BeaconConfig Exception " + e.toString());
