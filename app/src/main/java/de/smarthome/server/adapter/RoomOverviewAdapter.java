@@ -54,9 +54,19 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
     public void updateStatusValue(String changedStatusFunctionUID, String changedStatusFunctionValue){
         if(containsViewStatusFunction(changedStatusFunctionUID)){
             setStatusVariables(changedStatusFunctionUID, changedStatusFunctionValue);
-            //TODO: Add to RegulationOverviewAdapter and get correct position
-            notifyItemChanged(0);
+            notifyItemChanged(getItemPosition());
         }
+    }
+
+    private int getItemPosition(){
+        int position = 0;
+        for (Function func : functionList){
+            if(func.equals(functionToBeUpdated)){
+                return position;
+            }
+            position++;
+        }
+        return -1;
     }
 
     private boolean containsViewStatusFunction(String changedStatusFunctionUID) {
