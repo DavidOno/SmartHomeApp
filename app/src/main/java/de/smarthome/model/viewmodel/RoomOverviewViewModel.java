@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import java.util.List;
 import java.util.Map;
 
 import de.smarthome.model.impl.Function;
@@ -39,7 +38,7 @@ public class RoomOverviewViewModel  extends AndroidViewModel {
     }
 
     public void setSelectedFunction(Function function){
-        repository.setSelectedFunctionForDataPoints(function);
+        repository.setSelectedFunction(function);
     }
 
     public LiveData<Map<String, String>> getStatusList(){
