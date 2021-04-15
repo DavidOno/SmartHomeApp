@@ -52,6 +52,6 @@ public class SliderViewHolder extends RegulationAdapter.ViewHolder{
     public void onBindViewHolder(RegulationAdapter.ViewHolder holder, int position, Datapoint datapoint, Optional<String> value) {
         textView.setText(datapoint.getName());
 
-        value.ifPresent(s -> slider.setValue(Integer.parseInt(s)));
+        value.ifPresent(s -> slider.setValue(Float.parseFloat(s)));
     }
 }
