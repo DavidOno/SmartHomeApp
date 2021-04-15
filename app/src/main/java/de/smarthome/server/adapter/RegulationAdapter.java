@@ -58,8 +58,19 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
     public void updateStatusValue(String changedStatusFunctionUID, String changedStatusFunctionValue){
         if(containsViewStatusFunction(changedStatusFunctionUID)){
             setStatusVariables(changedStatusFunctionUID, changedStatusFunctionValue);
-            notifyDataSetChanged();
+            notifyItemChanged(getItemPosition());
         }
+    }
+
+    private int getItemPosition(){
+        int position = 0;
+        for (Datapoint dp : dataPointList){
+            if(dp.equals(dataPointToBeUpdated)){
+                return position;
+            }
+            position++;
+        }
+        return -1;
     }
 
     private boolean containsViewStatusFunction(String changedStatusFunctionUID) {
