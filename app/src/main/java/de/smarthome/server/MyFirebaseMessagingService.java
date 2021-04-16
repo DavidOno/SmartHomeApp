@@ -11,17 +11,18 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import de.smarthome.model.responses.CallbackValueInput;
+import de.smarthome.utility.ToastUtility;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
-    private static String TAG = "MyFirebaseMessagingService";
-    private final CallbackObserver valueObserver = new CallbackObserver();
-    private final CallbackObserver serviceObserver = new CallbackObserver();
+    private static final String TAG = "MyFirebaseMessagingService";
+    private static final CallbackObserver valueObserver = new CallbackObserver();
+    private static final CallbackObserver serviceObserver = new CallbackObserver();
 
-    public CallbackObserver getValueObserver(){
+    public static CallbackObserver getValueObserver(){
         return valueObserver;
     }
 
-    public CallbackObserver getServiceObserver(){
+    public static CallbackObserver getServiceObserver(){
         return serviceObserver;
     }
 

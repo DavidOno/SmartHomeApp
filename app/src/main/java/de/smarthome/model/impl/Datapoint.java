@@ -15,11 +15,11 @@ public class Datapoint {
     }
 
     public String getName() {
-        return null;
+        return name;
     }
 
     public String getID() {
-        return null;
+        return ID;
     }
 
     public Object getValue() {

@@ -11,9 +11,9 @@ public class CallbackValueInput {
 
 	private final int failures;
 	private final String token;
-	private final String uid;
-	private final Object value;
-	public final Events event;
+	private final String uid; //UID from the Status Function
+	private final Object value; //Value from the Status Function
+	public final Events event; //Other Event ==> Value == null
 	
 	public CallbackValueInput(@JsonProperty("failures") int failures,
 							  @JsonProperty("token") String token,

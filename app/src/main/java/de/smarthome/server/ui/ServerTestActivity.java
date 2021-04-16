@@ -17,7 +17,6 @@ import de.smarthome.command.gira.HomeServerCommandInterpreter;
 import de.smarthome.command.impl.AdditionalConfigCommand;
 import de.smarthome.command.impl.ChangeValueCommand;
 import de.smarthome.command.impl.CheckAvailabilityCommand;
-import de.smarthome.command.impl.CommandChainImpl;
 import de.smarthome.command.impl.GetValueCommand;
 import de.smarthome.command.impl.RegisterCallback;
 import de.smarthome.command.impl.RegisterCallbackServerAtGiraServer;
@@ -89,7 +88,7 @@ public class ServerTestActivity extends AppCompatActivity {
             }).start();
         });
 
-        registerCallbackButton.setOnClickListener(v -> {
+        /*registerCallbackButton.setOnClickListener(v -> {
             if(!registerToogle) {
                 new Thread(() -> {
                     AsyncCommand register = new RegisterCallback(ipOfCallbackServer);
@@ -107,7 +106,7 @@ public class ServerTestActivity extends AppCompatActivity {
                 registerToogle = !registerToogle;
                 registerCallbackButton.setText("Register Callback");
             }
-        });
+        });*/
 
         rcah.setOnClickListener(v -> {
             if(!registerCAHToogle) {
@@ -147,7 +146,7 @@ public class ServerTestActivity extends AppCompatActivity {
         getValue = findViewById(R.id.getvalue);
         id = findViewById(R.id.id);
         value = findViewById(R.id.value);
-        displayText = findViewById(R.id.display);
+        //displayText = findViewById(R.id.display);
         registerCallbackButton = findViewById(R.id.register_callback_button);
         showDeviceIPs = findViewById(R.id.showDeviceIps);
         rcah = findViewById(R.id.registerCallbackAtHomeServer);

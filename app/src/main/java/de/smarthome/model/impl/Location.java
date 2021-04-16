@@ -2,6 +2,7 @@ package de.smarthome.model.impl;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -53,6 +54,18 @@ public class Location {
 
     public List<String> getFunctionsID() {
         return functionsID;
+    }
+
+    public List<Function> getFunctions(UIConfig uiConfig) {
+        List<Function> result = new ArrayList<>();
+        List<Function> functions = uiConfig.getFunctions();
+
+        for (Function function : functions) {
+            if (functionsID.contains(function.getID())) {
+                result.add(function);
+            }
+        }
+        return result;
     }
 
     public Location getParentLocation(){
