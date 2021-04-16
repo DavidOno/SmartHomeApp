@@ -74,7 +74,6 @@ public class RoomOverviewFragment extends Fragment {
         roomOverviewViewModel.getStatusList().observe(getViewLifecycleOwner(), new Observer<Map<String, String>>() {
             @Override
             public void onChanged(Map<String, String> stringStringMap) {
-                //TODO: REWORK LOOKS TERRIBLE!
                 String uid = stringStringMap.keySet().iterator().next();
                 String value = stringStringMap.get(uid);
                 adapter.updateStatusValue(uid, value);
@@ -100,8 +99,6 @@ public class RoomOverviewFragment extends Fragment {
                 }
             }
         });
-
-
     }
 
     public void navigateToRegulationFragment() {
