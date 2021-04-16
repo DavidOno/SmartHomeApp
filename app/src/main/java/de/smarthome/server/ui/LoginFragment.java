@@ -35,8 +35,8 @@ public class LoginFragment extends Fragment {
     private EditText editTextUserName;
     private EditText editTextPwd;
     private Button buttonLogin;
-    private Button buttonReset;
 
+    //TODO: Remove at the end of testing
     private Button buttonDummy;
 
     private String userName;
@@ -45,10 +45,6 @@ public class LoginFragment extends Fragment {
     private final String TAG = "LoginFragment";
 
     ToastUtility toastUtility;
-
-    public static LoginFragment newInstance() {
-        return new LoginFragment();
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -62,7 +58,8 @@ public class LoginFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         buttonLogin.setOnClickListener(v -> registerNewUser());
-        //buttonReset.setOnClickListener(v -> deleteCredential(getSavedCredential()));
+
+        //TODO: Remove at the end of testing
         buttonDummy.setOnClickListener(v -> navigateToHomeOverviewFragment());
 
 
@@ -120,8 +117,7 @@ public class LoginFragment extends Fragment {
         editTextPwd = view.findViewById(R.id.editText_password);
         buttonLogin = view.findViewById(R.id.button_login);
 
-        buttonReset = view.findViewById(R.id.button_reset);
-
+        //TODO: Remove at the end of testing
         buttonDummy = view.findViewById(R.id.button_dummy);
 
     }
@@ -162,21 +158,5 @@ public class LoginFragment extends Fragment {
                 }
             }
         });
-    }
-
-
-    //not here has to be moved into "OptionsFragment"
-    public void deleteCredential(Credential credential){
-        CredentialsClient credentialsClient = Credentials.getClient(this.getActivity());
-
-        credentialsClient.delete(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    toastUtility.prepareToast("Login data deleted");
-                }
-            }
-        });
-
     }
 }
