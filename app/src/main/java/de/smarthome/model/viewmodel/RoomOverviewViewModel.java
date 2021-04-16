@@ -30,7 +30,7 @@ public class RoomOverviewViewModel  extends AndroidViewModel {
     }
 
     public boolean isChannelInputOnlyBinary(Function function){
-        return repository.getSmartHomeChannelConfig().isOnlyBinary(function);
+        return repository.getSmartHomeChannelConfig().isFirstDataPointBinary(function);
     }
 
     public void requestSetValue(String ID, String value){
