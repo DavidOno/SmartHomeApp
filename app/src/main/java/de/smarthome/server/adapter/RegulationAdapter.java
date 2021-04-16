@@ -52,7 +52,19 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
 
         repository = Repository.getInstance(application);
         channelConfig = repository.getSmartHomeChannelConfig();
+
+        requestCurrentStatus();
+
         notifyDataSetChanged();
+    }
+
+    private void requestCurrentStatus(){
+        //TODO: Check if the server response is for the status method if not function has to get the status id
+        for(Datapoint dp : dataPointList){
+            if(dataPointMap.get(dp) != null){
+                repository.requestGetValue(dp.getID());
+            }
+        }
     }
 
     public void updateStatusValue(String changedStatusFunctionUID, String changedStatusFunctionValue){
