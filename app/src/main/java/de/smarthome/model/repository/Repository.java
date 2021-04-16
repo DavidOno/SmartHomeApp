@@ -117,6 +117,10 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         updateDataPointList(function);
     }
 
+    public Credential getUserCredential(){
+        return userCredential;
+    }
+
     public Function getSelectedFunction() {
         return selectedFunction;
     }
@@ -197,7 +201,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         multiCommandChain.add(new RegisterCallback(IP_OF_CALLBACK_SERVER), new ResponseReactorCallbackServer());
     }
 
-    private void setUIConfig(UIConfig newUiconfig){
+    public void setUIConfig(UIConfig newUiconfig){
         smartHomeUiConfig = newUiconfig;
         initParentLocation(smartHomeUiConfig);
         updateLocationList();
@@ -236,11 +240,11 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         toastUtility.prepareToast("Selected Function was not fund in new UIConfig!");
     }
 
-    private void setChannelConfig(ChannelConfig newChannelconfig){
+    public void setChannelConfig(ChannelConfig newChannelconfig){
         smartHomeChannelConfig = newChannelconfig;
     }
 
-    private void setBeaconConfig(BeaconLocations newBeaconConfig){
+    public void setBeaconConfig(BeaconLocations newBeaconConfig){
         smartHomeBeaconLocations = newBeaconConfig;
         initBeaconObserver();
     }
@@ -711,5 +715,4 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
             Log.d(TAG, "BeaconConfig Exception " + e.toString());
         }
     }
-
 }
