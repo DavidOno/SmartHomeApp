@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.messaging.RemoteMessage;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -40,15 +42,28 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
     private String statusFunctionValue = null;
     private Function functionToBeUpdated = null;
 
+    private Repository repository;
     private ChannelConfig channelConfig;
 
     public void setFunctionList(Map<Function, Function> functions, Application application) {
         functionList = new ArrayList<>(functions.keySet());
         functionMap = functions;
 
-        channelConfig = Repository.getInstance(application).getSmartHomeChannelConfig();
+        repository = Repository.getInstance(application);
+        channelConfig = repository.getSmartHomeChannelConfig();
+
+        requestCurrentStatus();
 
         notifyDataSetChanged();
+    }
+
+    private void requestCurrentStatus(){
+        //TODO: Check if the server response is for the status method if not function has to get the status id
+        for(Function func : functionList){
+            if(channelConfig.isFirstDataPointBinary(func)){
+                repository.requestGetValue(func.getDataPoints().get(0).getID());
+            }
+        }
     }
 
     public void updateStatusValue(String changedStatusFunctionUID, String changedStatusFunctionValue){
@@ -160,6 +175,10 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
 
     public Function getFunctionAt(int position) {
         return functionList.get(position);
+    }
+
+    public void requestGetValue(String uID){
+        repository.requestGetValue(uID);
     }
 
     public interface OnItemClickListener {
