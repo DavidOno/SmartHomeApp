@@ -20,10 +20,10 @@ public class ChannelConfig {
         return channels;
     }
 
-    public boolean isOnlyBinary(Function function){
+    public boolean isFirstDataPointBinary(Function function){
         Channel channel = findChannelByName(function);
 
-        if(channel.getDatapoints().size() == 1){
+        if(channel.getDatapoints().size() >= 1){
             if(channel.getDatapoints().get(0).getType().equals(DatapointType.BINARY)
                     && channel.getDatapoints().get(0).getAccess().equals(DatapointAccess.READ_WRITE)){
                 return true;
@@ -41,22 +41,6 @@ public class ChannelConfig {
             }
         }
         throw new IllegalArgumentException("Channel: "+ searchedChannel + " is unknown");
-    }
-
-    public int getRoomOverviewViewHolderUI(Channel channel) {
-        if(channel.getDatapoints().size() == 1){
-            if(channel.getDatapoints().get(0).getType().equals(DatapointType.BINARY)
-                    && channel.getDatapoints().get(0).getAccess().equals(DatapointAccess.READ_WRITE)){
-                return R.layout.item_switch;
-            }
-        }else{
-            if(channel.getDatapoints().get(0).getType().equals(DatapointType.BINARY)){
-                if(channel.getDatapoints().get(0).getAccess().equals(DatapointAccess.READ_WRITE)){
-                    return R.layout.item_switch_arrow;
-                }
-            }
-        }
-        return R.layout.item_default;
     }
 
     public int getRoomOverviewItemViewType(Channel channel) {
