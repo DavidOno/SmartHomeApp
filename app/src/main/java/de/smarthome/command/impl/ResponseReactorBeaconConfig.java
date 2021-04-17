@@ -6,10 +6,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import de.smarthome.beacons.BeaconLocations;
-import de.smarthome.model.impl.UIConfig;
-import de.smarthome.model.repository.Repository;
+import de.smarthome.command.ResponseReactor;
+import de.smarthome.app.repository.Repository;
 
-public class ResponseReactorBeaconConfig implements ResponseReactor{
+public class ResponseReactorBeaconConfig implements ResponseReactor {
     private final String TAG = "ResponseReactorBeaconConfig";
     private BeaconLocations responseBeaconConfig;
     private Repository parentRepository;

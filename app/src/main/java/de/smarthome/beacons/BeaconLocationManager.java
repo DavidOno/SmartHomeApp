@@ -2,10 +2,6 @@ package de.smarthome.beacons;
 
 import android.util.Log;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import de.smarthome.model.impl.Location;
-import de.smarthome.model.impl.UIConfig;
+import de.smarthome.app.model.impl.Location;
+import de.smarthome.app.model.impl.UIConfig;
 
 public class BeaconLocationManager {
     private static final String TAG = "BeaconLocationManager";

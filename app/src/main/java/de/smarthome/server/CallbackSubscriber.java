@@ -1,7 +1,7 @@
 package de.smarthome.server;
 
-import de.smarthome.model.responses.CallBackServiceInput;
-import de.smarthome.model.responses.CallbackValueInput;
+import de.smarthome.app.model.responses.CallBackServiceInput;
+import de.smarthome.app.model.responses.CallbackValueInput;
 
 public interface CallbackSubscriber {
 

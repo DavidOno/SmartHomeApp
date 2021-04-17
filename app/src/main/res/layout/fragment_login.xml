@@ -10,7 +10,7 @@
     android:paddingTop="16dp"
     android:paddingRight="16dp"
     android:paddingBottom="16dp"
-    tools:context=".server.ui.LoginFragment">
+    tools:context=".app.ui.LoginFragment">
 
     <EditText
         android:id="@+id/editText_username"

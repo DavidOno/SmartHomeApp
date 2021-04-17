@@ -1,9 +1,8 @@
 package de.smarthome.command;
 
-import de.smarthome.beacons.BeaconLocation;
 import de.smarthome.beacons.BeaconLocations;
-import de.smarthome.model.configs.BoundariesConfig;
-import de.smarthome.model.configs.ChannelConfig;
+import de.smarthome.app.model.configs.BoundariesConfig;
+import de.smarthome.app.model.configs.ChannelConfig;
 
 public enum AdditionalConfigs {
 

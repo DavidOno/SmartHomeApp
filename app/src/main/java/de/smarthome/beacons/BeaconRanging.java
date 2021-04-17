@@ -12,11 +12,10 @@ import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.RangeNotifier;
 import org.altbeacon.beacon.Region;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.smarthome.model.impl.UIConfig;
+import de.smarthome.app.model.impl.UIConfig;
 
 public class BeaconRanging implements BeaconConsumer {
     private final BeaconManager beaconManager;

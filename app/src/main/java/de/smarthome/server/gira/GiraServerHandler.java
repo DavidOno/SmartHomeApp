@@ -1,13 +1,10 @@
 package de.smarthome.server.gira;
 
-import android.content.Context;
 import android.util.Log;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.net.InetAddress;
-import java.util.List;
 import java.util.function.Consumer;
 
 import de.smarthome.command.AsyncCommand;
@@ -16,8 +13,7 @@ import de.smarthome.command.CommandChain;
 import de.smarthome.command.CommandChainable;
 import de.smarthome.command.CommandInterpreter;
 import de.smarthome.command.Request;
-import de.smarthome.model.responses.RegisterResponse;
-import de.smarthome.server.IPScanner;
+import de.smarthome.app.model.responses.RegisterResponse;
 import de.smarthome.server.ServerHandler;
 
 import static de.smarthome.SmartHomeApplication.EXECUTOR_SERVICE;
@@ -26,7 +22,6 @@ public class GiraServerHandler implements ServerHandler {
 
     private static final String TAG = "GiraServerHandler";
     private CommandInterpreter commandInterpreter;
-    private IPScanner ipScanner;
 
     public GiraServerHandler(CommandInterpreter commandInterpreter) {
         this.commandInterpreter = commandInterpreter;

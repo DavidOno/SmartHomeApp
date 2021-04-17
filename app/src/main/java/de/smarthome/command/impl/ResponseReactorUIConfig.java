@@ -5,11 +5,12 @@ import android.util.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import de.smarthome.model.impl.UIConfig;
-import de.smarthome.model.repository.Repository;
-import de.smarthome.utility.ToastUtility;
+import de.smarthome.command.ResponseReactor;
+import de.smarthome.app.model.impl.UIConfig;
+import de.smarthome.app.repository.Repository;
+import de.smarthome.app.utility.ToastUtility;
 
-public class ResponseReactorUIConfig implements ResponseReactor{
+public class ResponseReactorUIConfig implements ResponseReactor {
     private final String TAG = "ResponseReactorUIConfig";
     private UIConfig responseUIConfig;
     private Repository parentRepository;

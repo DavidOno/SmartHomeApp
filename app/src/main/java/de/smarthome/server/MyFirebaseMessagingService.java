@@ -6,12 +6,10 @@ import androidx.annotation.NonNull;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.android.gms.common.api.Response;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import de.smarthome.model.responses.CallbackValueInput;
-import de.smarthome.utility.ToastUtility;
+import de.smarthome.app.model.responses.CallbackValueInput;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String TAG = "MyFirebaseMessagingService";

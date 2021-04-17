@@ -6,11 +6,12 @@ import android.util.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import de.smarthome.model.configs.ChannelConfig;
-import de.smarthome.model.repository.Repository;
-import de.smarthome.utility.ToastUtility;
+import de.smarthome.command.ResponseReactor;
+import de.smarthome.app.model.configs.ChannelConfig;
+import de.smarthome.app.repository.Repository;
+import de.smarthome.app.utility.ToastUtility;
 
-public class ResponseReactorChannelConfig implements ResponseReactor{
+public class ResponseReactorChannelConfig implements ResponseReactor {
     private final String TAG = "ResponseReactorChannelConfig";
     private ChannelConfig responseChannelConfig;
     private Repository parentRepository;

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".server.ui.ServerTestActivity">
+    tools:context=".app.ui.ServerTestActivity">
 <GridLayout
     android:rowCount="2"
     android:columnCount="2"

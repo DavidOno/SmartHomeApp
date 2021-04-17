@@ -21,10 +21,10 @@ import de.smarthome.command.AdditionalConfigs;
 import de.smarthome.command.CommandInterpreter;
 import de.smarthome.command.Request;
 import de.smarthome.command.impl.RequestImpl;
-import de.smarthome.model.impl.UIConfig;
-import de.smarthome.model.responses.AvailabilityResponse;
-import de.smarthome.model.responses.GetValueReponse;
-import de.smarthome.model.responses.RegisterResponse;
+import de.smarthome.app.model.impl.UIConfig;
+import de.smarthome.app.model.responses.AvailabilityResponse;
+import de.smarthome.app.model.responses.GetValueReponse;
+import de.smarthome.app.model.responses.RegisterResponse;
 
 public class HomeServerCommandInterpreter implements CommandInterpreter {
 

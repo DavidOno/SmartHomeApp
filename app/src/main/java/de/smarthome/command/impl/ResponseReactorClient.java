@@ -5,9 +5,10 @@ import android.util.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import de.smarthome.utility.ToastUtility;
+import de.smarthome.command.ResponseReactor;
+import de.smarthome.app.utility.ToastUtility;
 
-public class ResponseReactorClient implements ResponseReactor{
+public class ResponseReactorClient implements ResponseReactor {
     private final String TAG = "ResponseReactorClient";
 
     private ToastUtility toastUtility;

@@ -5,8 +5,8 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.smarthome.model.responses.CallBackServiceInput;
-import de.smarthome.model.responses.CallbackValueInput;
+import de.smarthome.app.model.responses.CallBackServiceInput;
+import de.smarthome.app.model.responses.CallbackValueInput;
 
 public class CallbackObserver {
 

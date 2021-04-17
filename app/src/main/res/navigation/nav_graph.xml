@@ -7,7 +7,7 @@
     app:startDestination="@id/HomeOverviewFragment">
     <fragment
         android:id="@+id/HomeOverviewFragment"
-        android:name="de.smarthome.server.ui.HomeOverviewFragment"
+        android:name="de.smarthome.app.ui.HomeOverviewFragment"
         android:label="fragment_rooms"
         tools:layout="@layout/fragment_home_overview" >
         <action
@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
-        android:name="de.smarthome.server.ui.LoginFragment"
+        android:name="de.smarthome.app.ui.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
         <action
@@ -29,12 +29,12 @@
     </fragment>
     <fragment
         android:id="@+id/optionsFragment"
-        android:name="de.smarthome.server.ui.OptionsFragment"
+        android:name="de.smarthome.app.ui.OptionsFragment"
         android:label="fragment_options"
         tools:layout="@layout/fragment_options" />
     <fragment
         android:id="@+id/roomOverviewFragment"
-        android:name="de.smarthome.server.ui.RoomOverviewFragment"
+        android:name="de.smarthome.app.ui.RoomOverviewFragment"
         android:label="fragment_room_overview"
         tools:layout="@layout/fragment_room_overview" >
         <action
@@ -44,7 +44,7 @@
     </fragment>
     <fragment
         android:id="@+id/regulationFragment"
-        android:name="de.smarthome.server.ui.RegulationFragment"
+        android:name="de.smarthome.app.ui.RegulationFragment"
         android:label="fragment_regulation"
         tools:layout="@layout/fragment_regulation_number" />
 </navigation>

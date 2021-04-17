@@ -29,7 +29,7 @@ import javax.net.ssl.SSLContext;
 
 import de.smarthome.SmartHomeApplication;
 import de.smarthome.command.Request;
-import de.smarthome.server.impl.StandardErrorHandler;
+import de.smarthome.server.StandardErrorHandler;
 
 public class RequestImpl implements Request {
 

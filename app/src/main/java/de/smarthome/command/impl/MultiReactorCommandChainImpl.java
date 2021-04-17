@@ -8,8 +8,9 @@ import java.util.List;
 
 import de.smarthome.command.AsyncCommand;
 import de.smarthome.command.Command;
-import de.smarthome.command.CommandChain;
 import de.smarthome.command.CommandChainable;
+import de.smarthome.command.MultiReactorCommandChain;
+import de.smarthome.command.ResponseReactor;
 
 public class MultiReactorCommandChainImpl implements MultiReactorCommandChain {
 

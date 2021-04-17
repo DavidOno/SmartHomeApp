@@ -34,8 +34,8 @@ import com.google.android.gms.tasks.Task;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import de.smarthome.model.repository.Repository;
-import de.smarthome.utility.ToastUtility;
+import de.smarthome.app.repository.Repository;
+import de.smarthome.app.utility.ToastUtility;
 
 public class SmartHomeApplication extends AppCompatActivity {
     public static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(4);
