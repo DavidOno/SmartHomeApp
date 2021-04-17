@@ -9,7 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
 
-import de.smarthome.app.model.impl.Location;
+import de.smarthome.app.model.Location;
 import de.smarthome.app.repository.Repository;
 
 public class HomeOverviewViewModel extends AndroidViewModel {

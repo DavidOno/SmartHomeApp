@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import de.smarthome.app.model.impl.Location;
-import de.smarthome.app.model.impl.UIConfig;
+import de.smarthome.app.model.Location;
+import de.smarthome.app.model.UIConfig;
 
 public class BeaconLocationManager {
     private static final String TAG = "BeaconLocationManager";

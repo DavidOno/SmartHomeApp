@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import de.smarthome.R;
-import de.smarthome.app.model.impl.Location;
+import de.smarthome.app.model.Location;
 import de.smarthome.app.viewmodel.HomeOverviewViewModel;
 import de.smarthome.app.adapter.HomeOverviewAdapter;
 

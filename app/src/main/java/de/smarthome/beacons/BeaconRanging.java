@@ -15,7 +15,7 @@ import org.altbeacon.beacon.Region;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.smarthome.app.model.impl.UIConfig;
+import de.smarthome.app.model.UIConfig;
 
 public class BeaconRanging implements BeaconConsumer {
     private final BeaconManager beaconManager;

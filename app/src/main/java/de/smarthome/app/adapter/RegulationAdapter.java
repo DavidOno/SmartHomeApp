@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import de.smarthome.app.model.configs.ChannelConfig;
-import de.smarthome.app.model.impl.Datapoint;
+import de.smarthome.app.model.Datapoint;
 import de.smarthome.app.repository.Repository;
 import de.smarthome.app.adapter.viewholder.regulation.DoubleSliderViewHolder;
 import de.smarthome.app.adapter.viewholder.regulation.ReadViewHolder;

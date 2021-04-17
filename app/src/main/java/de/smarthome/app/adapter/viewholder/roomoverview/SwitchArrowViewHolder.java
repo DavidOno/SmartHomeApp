@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.Optional;
 
 import de.smarthome.R;
-import de.smarthome.app.model.impl.Function;
+import de.smarthome.app.model.Function;
 import de.smarthome.app.adapter.RoomOverviewAdapter;
 
 

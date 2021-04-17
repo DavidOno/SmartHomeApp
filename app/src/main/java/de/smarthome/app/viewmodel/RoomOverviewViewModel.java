@@ -8,7 +8,7 @@ import androidx.lifecycle.LiveData;
 
 import java.util.Map;
 
-import de.smarthome.app.model.impl.Function;
+import de.smarthome.app.model.Function;
 import de.smarthome.app.repository.Repository;
 
 public class RoomOverviewViewModel  extends AndroidViewModel {

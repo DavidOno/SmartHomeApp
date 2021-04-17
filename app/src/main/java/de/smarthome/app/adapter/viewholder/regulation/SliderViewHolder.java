@@ -12,7 +12,7 @@ import com.google.android.material.slider.Slider;
 import java.util.Optional;
 
 import de.smarthome.R;
-import de.smarthome.app.model.impl.Datapoint;
+import de.smarthome.app.model.Datapoint;
 import de.smarthome.app.adapter.RegulationAdapter;
 
 public class SliderViewHolder extends RegulationAdapter.ViewHolder{

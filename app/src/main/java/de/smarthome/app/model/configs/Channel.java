@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Optional;
 
-import de.smarthome.app.model.impl.Datapoint;
+import de.smarthome.app.model.Datapoint;
 
 
 public class Channel {

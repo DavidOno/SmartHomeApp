@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import de.smarthome.command.ResponseReactor;
-import de.smarthome.app.model.impl.UIConfig;
+import de.smarthome.app.model.UIConfig;
 import de.smarthome.app.repository.Repository;
 
 public class ResponseReactorBoundariesConfig implements ResponseReactor {

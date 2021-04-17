@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.smarthome.R;
-import de.smarthome.app.model.impl.Function;
+import de.smarthome.app.model.Function;
 import de.smarthome.app.viewmodel.RoomOverviewViewModel;
 import de.smarthome.app.adapter.RoomOverviewAdapter;
 

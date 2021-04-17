@@ -1,4 +1,4 @@
-package de.smarthome.app.model.impl;
+package de.smarthome.app.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

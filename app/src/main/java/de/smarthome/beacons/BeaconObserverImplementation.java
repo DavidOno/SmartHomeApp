@@ -6,8 +6,8 @@ import android.util.Log;
 
 import java.util.Optional;
 
-import de.smarthome.app.model.impl.Location;
-import de.smarthome.app.model.impl.UIConfig;
+import de.smarthome.app.model.Location;
+import de.smarthome.app.model.UIConfig;
 
 public class BeaconObserverImplementation implements BeaconObserver {
     private BeaconObserverSubscriber subscriber;

@@ -4,7 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import org.altbeacon.beacon.BeaconManager;
 
-import de.smarthome.app.model.impl.UIConfig;
+import de.smarthome.app.model.UIConfig;
 
 public class BeaconMonitoring {
     private Context context;

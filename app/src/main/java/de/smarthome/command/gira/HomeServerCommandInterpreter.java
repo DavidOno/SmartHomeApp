@@ -21,7 +21,7 @@ import de.smarthome.command.AdditionalConfigs;
 import de.smarthome.command.CommandInterpreter;
 import de.smarthome.command.Request;
 import de.smarthome.command.impl.RequestImpl;
-import de.smarthome.app.model.impl.UIConfig;
+import de.smarthome.app.model.UIConfig;
 import de.smarthome.app.model.responses.AvailabilityResponse;
 import de.smarthome.app.model.responses.GetValueReponse;
 import de.smarthome.app.model.responses.RegisterResponse;

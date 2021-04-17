@@ -8,9 +8,9 @@ import androidx.lifecycle.LiveData;
 
 import java.util.Map;
 
-import de.smarthome.app.model.impl.Datapoint;
-import de.smarthome.app.model.impl.Function;
-import de.smarthome.app.model.impl.Location;
+import de.smarthome.app.model.Datapoint;
+import de.smarthome.app.model.Function;
+import de.smarthome.app.model.Location;
 import de.smarthome.app.repository.Repository;
 
 public class RegulationViewModel extends AndroidViewModel {

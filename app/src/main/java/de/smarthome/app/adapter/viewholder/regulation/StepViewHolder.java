@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.Optional;
 
 import de.smarthome.R;
-import de.smarthome.app.model.impl.Datapoint;
+import de.smarthome.app.model.Datapoint;
 import de.smarthome.app.adapter.RegulationAdapter;
 
 public class StepViewHolder extends RegulationAdapter.ViewHolder{

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.smarthome.R;
-import de.smarthome.app.model.impl.Location;
+import de.smarthome.app.model.Location;
 
 
 public class HomeOverviewAdapter extends RecyclerView.Adapter<HomeOverviewAdapter.RoomHolder> {

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
-import de.smarthome.app.model.impl.Function;
+import de.smarthome.app.model.Function;
 import de.smarthome.app.adapter.RegulationAdapter;
 import de.smarthome.app.adapter.RoomOverviewAdapter;
 
