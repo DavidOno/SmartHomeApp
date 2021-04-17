@@ -8,7 +8,9 @@ public enum DatapointType {
         switch (type.toLowerCase()){
             case "binary": return BINARY;
             case "percent": return PERCENT;
-            case "integer": return INTEGER;
+            case "integer":
+            case "dword":
+                return INTEGER;
             case "float": return FLOAT;
             case "string": return STRING;
             case "byte": return BYTE;
