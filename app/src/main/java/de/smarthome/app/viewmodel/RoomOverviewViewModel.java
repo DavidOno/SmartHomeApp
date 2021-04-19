@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData;
 import java.util.Map;
 
 import de.smarthome.app.model.Function;
+import de.smarthome.app.model.Location;
 import de.smarthome.app.repository.Repository;
 
 public class RoomOverviewViewModel  extends AndroidViewModel {
@@ -43,6 +44,10 @@ public class RoomOverviewViewModel  extends AndroidViewModel {
 
     public LiveData<Map<String, String>> getStatusList(){
         return repository.getStatusList();
+    }
+
+    public Location getSelectedLoction(){
+        return repository.getSelectedLocation();
     }
 
 }
