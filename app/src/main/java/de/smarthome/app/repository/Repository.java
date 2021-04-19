@@ -83,6 +83,8 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     //Used to check type of ChannelDataPoint
     private Function selectedFunction;
 
+    private Location beaconLocation = null;
+
     private static final String IP_OF_CALLBACK_SERVER = "192.168.132.213:8443";
 
     private MutableLiveData<List<Location>> locationList = new MutableLiveData<>();
@@ -117,15 +119,17 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         this.selectedFunction = function;
         updateDataPointList(function);
     }
+    public Function getSelectedFunction() {
+        return selectedFunction;
+    }
 
     public Credential getUserCredential(){
         return userCredential;
     }
 
-    public Function getSelectedFunction() {
-        return selectedFunction;
+    public Location getSelectedLocation() {
+        return selectedLocation;
     }
-
     public void initBeaconCheck(){
         beaconCheck.postValue(false);
     }
@@ -144,6 +148,14 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
 
     public ChannelConfig getSmartHomeChannelConfig(){
         return smartHomeChannelConfig;
+    }
+
+    public void confirmBeaconLocation(){
+        selectedLocation = beaconLocation;
+    }
+
+    public Location getBeaconLocation() {
+        return beaconLocation;
     }
 
     private void initBeaconObserver(){
@@ -372,13 +384,15 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     private void mapStatusFunctionToFunction(Map<Function, Function> completeFunctionMap, Location parentLocation) {
+        String regex = "_";
+
         for (Function func : parentLocation.getFunctions(smartHomeUiConfig)) {
             Function functionStatus = null;
             if (!func.isStatusFunction()) {
                 for (Function comparedFunction : parentLocation.getFunctions(smartHomeUiConfig)) {
                     if (comparedFunction.isStatusFunction()) {
-                        if (func.getName().split("_")[0].equals(
-                                comparedFunction.getName().split("_")[0])) {
+                        if (func.getName().split(regex)[0].equals(
+                                comparedFunction.getName().split(regex)[0])) {
                             functionStatus = comparedFunction;
                             break;
                         }
@@ -555,10 +569,9 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
 
     @Override
     public void update(Location newLocation) {
-        setSelectedLocation(newLocation);
+        beaconLocation = newLocation;
         beaconCheck.postValue(true);
     }
-
 
     private Location createEssen(){
         List<String> functionIDs = new ArrayList<>();
