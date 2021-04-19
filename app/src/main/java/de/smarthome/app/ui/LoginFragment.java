@@ -10,9 +10,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -57,13 +59,25 @@ public class LoginFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        requireActivity().setTitle("Login");
+
         buttonLogin.setOnClickListener(v -> registerNewUser());
 
         //TODO: Remove at the end of testing
         buttonDummy.setOnClickListener(v -> navigateToHomeOverviewFragment());
 
-
-        super.onViewCreated(view, savedInstanceState);
+        loginViewModel.getLoginDataStatus().observe(this.getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean requestStatus) {
+                if(requestStatus){
+                    saveCredential(buildCredential(userName, password));
+                    navigateToHomeOverviewFragment();
+                }else{
+                    toastUtility.prepareToast("Login Data incorrect!");
+                }
+            }
+        });
     }
 
 
@@ -73,6 +87,18 @@ public class LoginFragment extends Fragment {
 
         loginViewModel = new ViewModelProvider(requireActivity()).get(LoginViewModel.class);
         toastUtility = ToastUtility.getInstance();
+
+        test();
+    }
+
+    private void test() {
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                toastUtility.prepareToast("Hello backpress!");
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
     public Credential buildCredential(String Username, String pwd) {
@@ -99,9 +125,6 @@ public class LoginFragment extends Fragment {
     private void registerNewUser(){
         if(getCredentialsFromUI()){
             loginViewModel.registerUser(buildCredential(userName, password));
-            saveCredential(buildCredential(userName, password));
-
-            navigateToHomeOverviewFragment();
         }
     }
 
