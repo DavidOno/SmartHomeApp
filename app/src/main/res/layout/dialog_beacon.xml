@@ -11,19 +11,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:text="Beacon Update"/>
+        android:text="Beacon Update"
+        android:paddingBottom="30dp"/>
 
     <TextView
-        android:id="@+id/text_view_action_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/text_view_type"
+        android:id="@+id/text_view_room_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:text="Hello"/>
+        android:textStyle="bold" />
 
     <TextView
         android:layout_width="match_parent"
@@ -33,7 +28,7 @@
         android:lines="1"
         android:gravity="top"
         android:background="@android:drawable/editbox_background"
-        android:text="Wann switch rooms?"/>
+        android:text="Wanna switch rooms?"/>
 
     <LinearLayout
         android:layout_width="match_parent"
