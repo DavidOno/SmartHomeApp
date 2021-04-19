@@ -4,6 +4,7 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 
 import com.google.android.gms.auth.api.credentials.Credential;
 
@@ -24,4 +25,7 @@ public class LoginViewModel extends AndroidViewModel {
         repository.requestRegisterUser(userCredential);
     }
 
+    public LiveData<Boolean> getLoginDataStatus(){
+        return repository.getLoginDataStatus();
+    }
 }
