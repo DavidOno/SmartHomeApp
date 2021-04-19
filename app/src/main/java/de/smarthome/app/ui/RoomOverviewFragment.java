@@ -31,12 +31,6 @@ public class RoomOverviewFragment extends Fragment {
 
     private RoomOverviewAdapter adapter;
 
-    public static RoomOverviewFragment newInstance() {
-        RoomOverviewFragment fragment = new RoomOverviewFragment();
-
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +49,7 @@ public class RoomOverviewFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        requireActivity().setTitle(roomOverviewViewModel.getSelectedLoction().getName());
 
         recyclerViewRoom.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewRoom.setHasFixedSize(true);
