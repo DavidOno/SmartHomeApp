@@ -26,14 +26,12 @@ public class ResponseReactorCallbackServer implements ResponseReactor {
 
                 Log.d(TAG, "Registered CallbackServer.\nStatus: " + responseEntity.getStatusCode());
 
-                toastUtility.prepareToast("CallbackServer successfully registered!");
             } else {
                 System.out.println("error occurred");
                 System.out.println(responseEntity.getStatusCode());
 
                 Log.d(TAG, "Problem when trying to register CallbackServer.\nStatus: " + responseEntity.getStatusCode());
-
-                toastUtility.prepareToast("Unable to register CallbackServer!");
+                toastUtility.prepareToast("Unable to reach CallbackServer");
             }
         }catch(Exception e){
             Log.d(TAG, "Exerption: " + e.toString());

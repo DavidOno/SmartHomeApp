@@ -26,14 +26,12 @@ public class ResponseReactorCheckAvailability implements ResponseReactor {
 
                 Log.d(TAG, "Communication with Server possible.\nStatus: " + responseEntity.getStatusCode());
 
-                toastUtility.prepareToast("Communication successful!!");
             } else {
                 System.out.println("error occurred");
                 System.out.println(responseEntity.getStatusCode());
 
                 Log.d(TAG, "Problem when trying to reach Server.\nStatus: " + responseEntity.getStatusCode());
 
-                toastUtility.prepareToast("Unable to reach Gira!");
             }
         }catch(Exception e){
             Log.d(TAG, "Exerption: " + e.toString());

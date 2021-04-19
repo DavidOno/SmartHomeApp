@@ -26,14 +26,12 @@ public class ResponseReactorGiraCallbackServer implements ResponseReactor {
 
                 Log.d(TAG, "No Problems when registering CallbackServer at Gira.\nStatus: " + responseEntity.getStatusCode());
 
-                toastUtility.prepareToast("CallbackServer successfully registered at Gira!");
             } else {
                 System.out.println("error occurred");
                 System.out.println(responseEntity.getStatusCode());
 
                 Log.d(TAG, "Problem when registering CallbackServer at Gira.\nStatus: " + responseEntity.getStatusCode());
-
-                toastUtility.prepareToast("Unable to register CallbackServer at Gira!");
+                toastUtility.prepareToast("Unable to reach Gira Server");
             }
         }catch(Exception e){
             Log.d(TAG, "Exerption: " + e.toString());
