@@ -77,6 +77,10 @@ public class SmartHomeApplication extends AppCompatActivity {
             }
         });
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //TODO: Find a way to stop it from beeing cut or just remove it
+        getSupportActionBar().setSubtitle("SmartHome");
+
         navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         navController = NavHostFragment.findNavController(navHostFragment);
 
@@ -118,7 +122,7 @@ public class SmartHomeApplication extends AppCompatActivity {
             public void onClick(View v) {
                 toastUtility.prepareToast("Room switched!");
                 dialog.dismiss();
-                goToFragment(R.id.roomOverviewFragment);
+                setStartFragment(R.id.roomOverviewFragment);
             }
         });
 
@@ -130,12 +134,16 @@ public class SmartHomeApplication extends AppCompatActivity {
         });
     }
 
-    private void goToFragment(int destinationFragment) {
+    private void setStartFragment(int destinationFragment) {
         NavInflater navInflater = navController.getNavInflater();
         NavGraph graph = navInflater.inflate(R.navigation.nav_graph);
 
         graph.setStartDestination(destinationFragment);
         navController.setGraph(graph);
+    }
+
+    private void goToFragment(int destinationFragment){
+        navController.navigate(destinationFragment);
     }
 
     public void getSavedCredentials() {
@@ -155,7 +163,7 @@ public class SmartHomeApplication extends AppCompatActivity {
                 }else{
                     // See "Handle unsuccessful and incomplete credential requests"
                     //TODO: To slow StartFragment (here HomeOverview) is still loaded before it is skipped
-                    goToFragment(R.id.loginFragment);
+                    setStartFragment(R.id.loginFragment);
                 }
             }
         });
@@ -165,7 +173,7 @@ public class SmartHomeApplication extends AppCompatActivity {
         String accountType = credential.getAccountType();
         if (accountType == null) {
             repository.requestRegisterUser(credential);
-            goToFragment(R.id.HomeOverviewFragment);
+            setStartFragment(R.id.HomeOverviewFragment);
         }
     }
 
