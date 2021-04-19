@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -34,6 +35,7 @@ import com.google.android.gms.tasks.Task;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import de.smarthome.app.model.Location;
 import de.smarthome.app.repository.Repository;
 import de.smarthome.app.utility.ToastUtility;
 
@@ -72,7 +74,7 @@ public class SmartHomeApplication extends AppCompatActivity {
             public void onChanged(Boolean aBoolean) {
                 if(aBoolean){
                     repository.initBeaconCheck();
-                    startBeaconDialog();
+                    startBeaconDialog(repository.getBeaconLocation());
                 }
             }
         });
@@ -99,20 +101,29 @@ public class SmartHomeApplication extends AppCompatActivity {
             case R.id.action_home_overview:
                 goToFragment(R.id.HomeOverviewFragment);
                 return true;
+
             case R.id.action_settings:
                 goToFragment(R.id.optionsFragment);
                 return true;
+
+            case android.R.id.home:
+                this.onBackPressed();
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private void startBeaconDialog(){
+    private void startBeaconDialog(Location newLocation){
         Dialog dialog = new Dialog(SmartHomeApplication.this);
         dialog.setContentView(R.layout.dialog_beacon);
 
         dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         dialog.show();
+
+        TextView roomName = dialog.findViewById(R.id.text_view_room_name);
+        roomName.setText(newLocation.getName());
 
         Button buttonYes = dialog.findViewById(R.id.button_left);
         Button buttonNo = dialog.findViewById(R.id.button_right);
@@ -120,7 +131,6 @@ public class SmartHomeApplication extends AppCompatActivity {
         buttonYes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toastUtility.prepareToast("Room switched!");
                 dialog.dismiss();
                 setStartFragment(R.id.roomOverviewFragment);
             }
