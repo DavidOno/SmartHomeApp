@@ -39,4 +39,8 @@ public class RegulationViewModel extends AndroidViewModel {
     public LiveData<Map<String, String>> getStatusList(){
         return repository.getStatusList();
     }
+
+    public Function getSelectedFunction(){
+        return repository.getSelectedFunction();
+    }
 }
