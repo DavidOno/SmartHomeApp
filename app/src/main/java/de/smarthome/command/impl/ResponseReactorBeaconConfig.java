@@ -32,6 +32,7 @@ public class ResponseReactorBeaconConfig implements ResponseReactor {
             } else {
                 System.out.println("error occurred");
                 System.out.println(responseEntity.getStatusCode());
+
                 Log.d(TAG, "Problem when trying to reach Server.\nStatus: " + responseEntity.getStatusCode());
             }
         }catch(Exception e){
