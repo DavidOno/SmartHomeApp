@@ -92,6 +92,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     private MutableLiveData<Map<String, String>> statusList = new MutableLiveData<>();
 
     private MutableLiveData<Boolean> beaconCheck = new MutableLiveData<>();
+    private MutableLiveData<Boolean> loginDataStatus = new MutableLiveData<>();
 
     //TODO: Can the Repo get delete while app is active? if not, create first Repo in Activity so the Fragment do not need to give Application
     public static Repository getInstance(@Nullable Application application) {
@@ -131,6 +132,14 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
 
     public LiveData<Boolean> checkBeacon(){
         return beaconCheck;
+    }
+
+    public void updateLoginDataStatus(Boolean status){
+        loginDataStatus.postValue(status);
+    }
+
+    public LiveData<Boolean> getLoginDataStatus(){
+        return loginDataStatus;
     }
 
     public ChannelConfig getSmartHomeChannelConfig(){
@@ -195,7 +204,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     private void registerAppAtGiraServer(String userName, String pwd, MultiReactorCommandChainImpl multiCommandChain) {
-        multiCommandChain.add(new RegisterClientCommand(userName, pwd), new ResponseReactorClient());
+        multiCommandChain.add(new RegisterClientCommand(userName, pwd), new ResponseReactorClient(this));
         multiCommandChain.add(new CheckAvailabilityCommand(), new ResponseReactorCheckAvailability());
         multiCommandChain.add(new RegisterCallbackServerAtGiraServer(IP_OF_CALLBACK_SERVER), new ResponseReactorGiraCallbackServer());
         multiCommandChain.add(new RegisterCallback(IP_OF_CALLBACK_SERVER), new ResponseReactorCallbackServer());
