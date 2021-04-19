@@ -61,7 +61,8 @@ public class HomeOverviewFragment extends Fragment {
         homeOverviewViewModel.getRooms().observe(getViewLifecycleOwner(), new Observer<List<Location>>() {
             @Override
             public void onChanged(@Nullable List<Location> rooms) {
-                adapter.setRoomList(rooms);;
+                adapter.setRoomList(rooms);
+                requireActivity().setTitle(rooms.get(0).getName());
             }
         });
 
