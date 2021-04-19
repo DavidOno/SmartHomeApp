@@ -59,6 +59,11 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
         for(Function func : functionList){
             if(channelConfig.isFirstDataPointBinary(func)){
                 repository.requestGetValue(func.getDataPoints().get(0).getID());
+            }else{
+                //Check if the function has a StatusViewHolder
+                if(STATUS_VIEW_HOLDER == channelConfig.getRoomOverviewItemViewType(channelConfig.findChannelByName(func))){
+                    repository.requestGetValue(func.getDataPoints().get(0).getID());
+                }
             }
         }
     }
@@ -86,7 +91,6 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
             if (functionMap.get(function) != null) {
                 Function statusFunction = functionMap.get(function);
 
-                //TODO: Right now in RoomOverview it can only be the first dataPoint (because only binary is shown)
                 for(Datapoint datapoint : statusFunction.getDataPoints()){
                     if (changedStatusFunctionUID.equals(datapoint.getID())) {
                         functionToBeUpdated = function;
