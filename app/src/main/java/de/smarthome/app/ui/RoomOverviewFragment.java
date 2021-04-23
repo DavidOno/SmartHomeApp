@@ -67,9 +67,21 @@ public class RoomOverviewFragment extends Fragment {
         roomOverviewViewModel.getStatusList().observe(getViewLifecycleOwner(), new Observer<Map<String, String>>() {
             @Override
             public void onChanged(Map<String, String> stringStringMap) {
-                String uid = stringStringMap.keySet().iterator().next();
-                String value = stringStringMap.get(uid);
-                adapter.updateStatusValue(uid, value);
+                    String uid = stringStringMap.keySet().iterator().next();
+                    String value = stringStringMap.get(uid);
+                    adapter.updateStatusValue(uid, value);
+            }
+        });
+
+        //TODO: Check if this works
+        roomOverviewViewModel.getStatusList2().observe(getViewLifecycleOwner(), new Observer<Map<String, String>>() {
+            @Override
+            public void onChanged(Map<String, String> stringStringMap) {
+                for(String s : stringStringMap.keySet()){
+                        String uid = s;
+                        String value = stringStringMap.get(uid);
+                        adapter.updateStatusValue(uid, value);
+                }
             }
         });
 
