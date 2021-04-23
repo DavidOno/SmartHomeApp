@@ -90,6 +90,12 @@ public class SmartHomeApplication extends AppCompatActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        repository.unsubscribeFromEverything();
+        super.onDestroy();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_options, menu);
         getMenuInflater().inflate(R.menu.menu_home_overview, menu);
@@ -132,6 +138,7 @@ public class SmartHomeApplication extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+                repository.confirmBeaconLocation();
                 setStartFragment(R.id.roomOverviewFragment);
             }
         });
@@ -182,7 +189,7 @@ public class SmartHomeApplication extends AppCompatActivity {
     private void onCredentialRetrieved(Credential credential) {
         String accountType = credential.getAccountType();
         if (accountType == null) {
-            repository.requestRegisterUser(credential);
+            //repository.requestRegisterUser(credential);
             setStartFragment(R.id.HomeOverviewFragment);
         }
     }
