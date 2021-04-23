@@ -121,7 +121,6 @@ public class LoginFragment extends Fragment {
         return true;
     }
 
-    //TODO: Data needs to be verified before it gets saved!
     private void registerNewUser(){
         if(getCredentialsFromUI()){
             loginViewModel.registerUser(buildCredential(userName, password));
