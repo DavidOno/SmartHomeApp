@@ -19,9 +19,7 @@ public class BeaconLocationManager {
     private BeaconID nearestBeacon;
     private Map<BeaconID, List<Integer>> beacons2SignalStrength = new HashMap<>();
     private Map<BeaconID, Integer> signalStrengthAvg = new HashMap<>();
-    //TODO: Initialise
     private UIConfig uiConfig;
-    //TODO: Initialise
     private BeaconLocations locationConfig;
     private BeaconObserver beaconObserver;
 
