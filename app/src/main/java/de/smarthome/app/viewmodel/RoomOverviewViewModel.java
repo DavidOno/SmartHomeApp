@@ -50,4 +50,8 @@ public class RoomOverviewViewModel  extends AndroidViewModel {
         return repository.getSelectedLocation();
     }
 
+    public LiveData<Map<String, String>> getStatusList2(){
+        return repository.statusList2;
+    }
+
 }
