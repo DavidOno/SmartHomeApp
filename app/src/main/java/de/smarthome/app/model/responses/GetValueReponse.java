@@ -12,6 +12,10 @@ public class GetValueReponse {
         this.values = values;
     }
 
+    public List<UID_Value> getValues() {
+        return values;
+    }
+
     @Override
     public String toString() {
         return "GetValueReponse{" +
