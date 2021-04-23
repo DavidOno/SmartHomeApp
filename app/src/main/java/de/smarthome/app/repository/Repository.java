@@ -19,14 +19,17 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import de.smarthome.SmartHomeApplication;
+import de.smarthome.app.model.responses.GetValueReponse;
 import de.smarthome.beacons.BeaconLocations;
 import de.smarthome.beacons.BeaconObserverImplementation;
 import de.smarthome.beacons.BeaconObserverSubscriber;
 import de.smarthome.command.AdditionalConfigs;
 import de.smarthome.command.AsyncCommand;
 import de.smarthome.command.Command;
+import de.smarthome.command.SingleReactorCommandChain;
 import de.smarthome.command.gira.HomeServerCommandInterpreter;
 import de.smarthome.command.impl.AdditionalConfigCommand;
 import de.smarthome.command.impl.ChangeValueCommand;
@@ -41,6 +44,7 @@ import de.smarthome.command.impl.ResponseReactorCallbackServer;
 import de.smarthome.command.impl.ResponseReactorChannelConfig;
 import de.smarthome.command.impl.ResponseReactorCheckAvailability;
 import de.smarthome.command.impl.ResponseReactorClient;
+import de.smarthome.command.impl.ResponseReactorGetValue;
 import de.smarthome.command.impl.ResponseReactorGiraCallbackServer;
 import de.smarthome.command.impl.ResponseReactorUIConfig;
 import de.smarthome.command.impl.SingleReactorCommandChainImpl;
@@ -85,18 +89,18 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
 
     private Location beaconLocation = null;
 
-    private static final String IP_OF_CALLBACK_SERVER = "192.168.132.213:8443";
+    private static final String IP_OF_CALLBACK_SERVER = "192.168.132.211:8443";
 
     private MutableLiveData<List<Location>> locationList = new MutableLiveData<>();
     private MutableLiveData<Map<Function, Function>> functionList = new MutableLiveData<>();
     private MutableLiveData<Map<Datapoint, Datapoint>> dataPointList = new MutableLiveData<>();
 
     private MutableLiveData<Map<String, String>> statusList = new MutableLiveData<>();
+    public MutableLiveData<Map<String, String>> statusList2 = new MutableLiveData<>();
 
     private MutableLiveData<Boolean> beaconCheck = new MutableLiveData<>();
     private MutableLiveData<Boolean> loginDataStatus = new MutableLiveData<>();
 
-    //TODO: Can the Repo get delete while app is active? if not, create first Repo in Activity so the Fragment do not need to give Application
     public static Repository getInstance(@Nullable Application application) {
         if (instance == null) {
             instance = new Repository();
@@ -116,7 +120,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     public void setSelectedFunction(Function function){
-        this.selectedFunction = function;
+        selectedFunction = function;
         updateDataPointList(function);
     }
     public Function getSelectedFunction() {
@@ -151,7 +155,8 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     public void confirmBeaconLocation(){
-        selectedLocation = beaconLocation;
+        setSelectedLocation(beaconLocation);
+        beaconLocation = null;
     }
 
     public Location getBeaconLocation() {
@@ -200,7 +205,12 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         serverHandler.sendRequest(multiCommandChain);
 
         //TODO: Check if this position is best. Worked by Stefan but maybe this need to be moved!
+        subscribeToMyFirebaseMessagingService();
+    }
+
+    private void subscribeToMyFirebaseMessagingService() {
         MyFirebaseMessagingService.getValueObserver().subscribe(this);
+        MyFirebaseMessagingService.getServiceObserver().subscribe(this);
     }
 
     private void getAllConfigs(MultiReactorCommandChainImpl multiCommandChain) {
@@ -239,7 +249,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         //TODO: Check if this works!
         String currentLocationName = selectedLocation.getName();
 
-        for(Location loc : locationList.getValue()){
+        for(Location loc : Objects.requireNonNull(locationList.getValue())){
             if(loc.getName().equals(currentLocationName)){
                 setSelectedLocation(loc);
                 break;
@@ -270,7 +280,6 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         initBeaconObserver();
     }
 
-
     public void requestRegisterClient(String ipOfServer){
         Thread requestRegisterClientThread = new Thread(() -> {
             AsyncCommand register = new RegisterCallback(ipOfServer);
@@ -278,8 +287,6 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         });
         addToExecutorService(requestRegisterClientThread);
     }
-
-
 
     public void requestUnregisterClient(String ipOfServer){
         Thread requestUnregisterClientThread = new Thread(() -> {
@@ -289,7 +296,6 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         addToExecutorService(requestUnregisterClientThread);
     }
 
-
     public void requestGetConfig(){
         Thread requestGetConfigThread = new Thread(() -> {
             Command getConfig = new UIConfigCommand();
@@ -298,7 +304,6 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
 
         addToExecutorService(requestGetConfigThread);
     }
-
 
     public void requestSetValue(String ID, String value){
         Thread requestSetValueThread = new Thread(() -> {
@@ -312,10 +317,22 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     public void requestGetValue(String ID){
         Thread requestGetValueThread = new Thread(() -> {
             Command getValueCommand = new GetValueCommand(ID);
-            serverHandler.sendRequest(getValueCommand);
+            handleResponseEntities(serverHandler.sendRequest(getValueCommand));
         });
 
         addToExecutorService(requestGetValueThread);
+    }
+
+    public void requestGetValue2(List<String> IDs){
+        SingleReactorCommandChain chain = new SingleReactorCommandChainImpl(new ResponseReactorGetValue(this));
+        //TODO: Check if this clears the map!
+        Objects.requireNonNull(statusList2.getValue()).clear();
+
+        for(String id : IDs){
+            chain.add(new GetValueCommand(id));
+        }
+
+        serverHandler.sendRequest(chain);
     }
 
     public void requestRegisterCallbackServerAtGiraServer(String ipOfServer){
@@ -326,7 +343,6 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         addToExecutorService(requestRegisterCallbackServerAtGiraServerThread);
     }
 
-
     public void requestUnRegisterCallbackServerAtGiraServer(){
         Thread requestUnRegisterCallbackServerAtGiraServerThread = new Thread(() -> {
             Command unregisterAtGira = new UnRegisterCallbackServerAtGiraServer();
@@ -336,15 +352,12 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         addToExecutorService(requestUnRegisterCallbackServerAtGiraServerThread);
     }
 
-    //public void requestGetValues(Location location, UIConfig uiConfig)
-
     public MutableLiveData<List<Location>> getRooms(){
         return locationList;
     }
 
     public void updateLocationList(){
-        List<Location> allLocations = new ArrayList<>();
-        allLocations.addAll(smartHomeUiConfig.getLocations());
+        List<Location> allLocations = new ArrayList<>(smartHomeUiConfig.getLocations());
 
         for(Location location: smartHomeUiConfig.getLocations()){
             getAllChildrenFromLocation(location, allLocations);
@@ -369,7 +382,6 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     public MutableLiveData<Map<Function, Function>> getRoomUsableFunctions(){
         return functionList;
     }
-
 
     public void updateFunctionList(Location viewedLocation){
         Map<Function, Function> completeFunctionMap = new LinkedHashMap<Function, Function>();
@@ -407,7 +419,6 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         return functionList;
     }
 
-
     public void updateDataPointList(Function function){
         Map<Datapoint, Datapoint> newValue = new LinkedHashMap<>();
 
@@ -425,17 +436,22 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         dataPointList.postValue(newValue);
     }
 
-
     public MutableLiveData<Map<Datapoint, Datapoint>> getDataPoints(){
         return dataPointList;
     }
-
 
     public void updateStatusList(String functionUID, String value){
         Map<String, String> newValue = new HashMap<>();
         newValue.put(functionUID, value);
 
         statusList.postValue(newValue);
+    }
+
+    public void updateStatusList2(String functionUID, String value){
+        Map<String, String> newValue = statusList2.getValue();
+        newValue.put(functionUID, value);
+
+        statusList2.postValue(newValue);
     }
 
     public MutableLiveData<Map<String, String>> getStatusList(){
@@ -452,24 +468,31 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     public void handleResponseEntities(ResponseEntity responseEntity){
+        GetValueReponse x;
         try {
                 if (responseEntity.getStatusCode() == HttpStatus.OK) {
                     System.out.println("response received");
                     System.out.println(responseEntity.getBody());
+                    x = (GetValueReponse) responseEntity.getBody();
+                    System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + x);
+
+                    String value = x.getValues().get(0).getValue();
+                    String uID = x.getValues().get(0).getUid();
+                    System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX value " + value);
+                    System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX uid " + uID);
+                    updateStatusList(uID, value);
+
                 } else {
                     System.out.println("error occurred");
                     System.out.println(responseEntity.getStatusCode());
                 }
         }catch(Exception e){
-            Log.d(TAG, "handleResponseEntities, Exerptíon: " + e.toString());
+            Log.d(TAG, "handleResponseEntities, Exception: " + e.toString());
         }
     }
 
-
     @Override
     public void update(CallbackValueInput input) {
-        //CallbackValueInput test = new CallbackValueInput(0, "0", null, null,"uiconfigchanged");
-        //input = test;
         if(input.getEvent() != null){
             switch(input.getEvent()){
                 case TEST:
@@ -549,8 +572,8 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
                         break;
 
                     case PROJECT_CONFIG_CHANGED:
-                        Log.d(TAG, "UI_CONFIG_CHANGED");
-                        System.out.println("UI_CONFIG_CHANGED");
+                        Log.d(TAG, "PROJECT_CONFIG_CHANGED");
+                        System.out.println("PROJECT_CONFIG_CHANGED");
 
                         MultiReactorCommandChainImpl multiCommandChain = new MultiReactorCommandChainImpl();
                         getAdditionalConfigs(multiCommandChain);
@@ -566,11 +589,21 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
             }
     }
 
-
     @Override
     public void update(Location newLocation) {
         beaconLocation = newLocation;
         beaconCheck.postValue(true);
+    }
+
+    public void unsubscribeFromEverything(){
+        //TODO: Do we need to do this? They get destroyed anyway ...
+        MyFirebaseMessagingService.getValueObserver().unsubscribe(this);
+        MyFirebaseMessagingService.getServiceObserver().unsubscribe(this);
+        beaconObserver.unsubscribe();
+
+
+        requestUnregisterClient(IP_OF_CALLBACK_SERVER);
+        requestUnRegisterCallbackServerAtGiraServer();
     }
 
     private Location createEssen(){
