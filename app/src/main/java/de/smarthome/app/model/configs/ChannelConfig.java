@@ -72,18 +72,18 @@ public class ChannelConfig {
                 if(channelDatapoint.getAccess().equals(DatapointAccess.WRITE)){
                     return RegulationAdapter.STEP_VIEW_HOLDER;
                 }
-            case PERCENT:
+            case FLOAT:
                 if(channelDatapoint.getAccess().equals(DatapointAccess.READ_WRITE)){
-                    return RegulationAdapter.SLIDER_VIEW_HOLDER;
+                    return RegulationAdapter.FLOAT_SLIDER_VIEW_HOLDER;
                 }
                 if(channelDatapoint.getAccess().equals(DatapointAccess.WRITE)){
                     return RegulationAdapter.STEP_VIEW_HOLDER;
                 }
+            case PERCENT:
             case INTEGER:
-            case FLOAT:
             case BYTE:
                 if(channelDatapoint.getAccess().equals(DatapointAccess.READ_WRITE)){
-                    return RegulationAdapter.SLIDER_VIEW_HOLDER;
+                    return RegulationAdapter.INT_SLIDER_VIEW_HOLDER;
                 }
                 if(channelDatapoint.getAccess().equals(DatapointAccess.WRITE)){
                     return RegulationAdapter.STEP_VIEW_HOLDER;
