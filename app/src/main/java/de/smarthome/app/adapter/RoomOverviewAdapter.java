@@ -27,6 +27,7 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
     List<Function> functionList;
     Map<Function, Function> functionMap;
 
+    List<String> requestList = new ArrayList<>();
     public static final int DEFAULT_VIEW_HOLDER = 0;
     public static final int SWITCH_VIEW_HOLDER = 1;
     public static final int SWITCH_ARROW_HOLDER = 2;
@@ -58,12 +59,21 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
         //TODO: Check if the server response is for the status method if not function has to get the status id
         for(Function func : functionList){
             if(channelConfig.isFirstDataPointBinary(func)){
-                repository.requestGetValue(func.getDataPoints().get(0).getID());
+                if(functionMap.get(func) != null){
+                    requestList.add(functionMap.get(func).getDataPoints().get(0).getID());
+                }
             }else{
                 //Check if the function has a StatusViewHolder
                 if(STATUS_VIEW_HOLDER == channelConfig.getRoomOverviewItemViewType(channelConfig.findChannelByName(func))){
-                    repository.requestGetValue(func.getDataPoints().get(0).getID());
+                    requestList.add(functionMap.get(func).getDataPoints().get(0).getID());
                 }
+            }
+        }
+        if(!requestList.isEmpty()){
+            if(requestList.size() == 1){
+                repository.requestGetValue(requestList.get(0));
+            }else{
+                repository.requestGetValue2(requestList);
             }
         }
     }
