@@ -29,9 +29,10 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
 
     public static final int STEP_VIEW_HOLDER = 0;
     public static final int SWITCH_VIEW_HOLDER = 1;
-    public static final int SLIDER_VIEW_HOLDER = 2;
-    public static final int DOUBLE_SLIDER_VIEW_HOLDER = 3;
-    public static final int READ_VIEW_HOLDER = 4;
+    public static final int INT_SLIDER_VIEW_HOLDER = 2;
+    public static final int FLOAT_SLIDER_VIEW_HOLDER = 3;
+    public static final int DOUBLE_SLIDER_VIEW_HOLDER = 4;
+    public static final int READ_VIEW_HOLDER = 5;
 
     private OnItemClickListener listener;
     private OnSwitchClickListener switchClickListener;
@@ -59,7 +60,7 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
         //TODO: Check if the server response is for the status method if not function has to get the status id
         for(Datapoint dp : dataPointList){
             if(dataPointMap.get(dp) != null){
-                repository.requestGetValue(dp.getID());
+                repository.requestGetValue(dataPointMap.get(dp).getID());
             }
         }
     }
@@ -113,12 +114,22 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
                     listener,
                     this
             );
-        }else if(viewType == SLIDER_VIEW_HOLDER){
+        }else if(viewType == INT_SLIDER_VIEW_HOLDER){
             return new SliderViewHolder(
                     parent,
                     listener,
-                    this
+                    this,
+                    INT_SLIDER_VIEW_HOLDER
             );
+
+        }else if(viewType == FLOAT_SLIDER_VIEW_HOLDER){
+            return new SliderViewHolder(
+                    parent,
+                    listener,
+                    this,
+                    FLOAT_SLIDER_VIEW_HOLDER
+            );
+
         }else if(viewType == DOUBLE_SLIDER_VIEW_HOLDER){
             return new DoubleSliderViewHolder(
                     parent,
