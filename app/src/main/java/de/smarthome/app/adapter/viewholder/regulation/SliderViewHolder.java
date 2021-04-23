@@ -22,12 +22,17 @@ public class SliderViewHolder extends RegulationAdapter.ViewHolder{
     private RegulationAdapter.OnItemClickListener onItemClickListener;
 
     public SliderViewHolder(@NonNull ViewGroup parent,
-                          @NonNull RegulationAdapter.OnItemClickListener onItemClickListener,
-                          @NonNull RegulationAdapter adapter) {
+                            @NonNull RegulationAdapter.OnItemClickListener onItemClickListener,
+                            @NonNull RegulationAdapter adapter,
+                            @NonNull int type) {
         super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_slider, parent, false));
         textView = itemView.findViewById(R.id.textView_item);
 
         slider = itemView.findViewById(R.id.sliderRange_item);
+
+        if(type == RegulationAdapter.INT_SLIDER_VIEW_HOLDER){
+            slider.setStepSize(1);
+        }
 
         this.onItemClickListener = onItemClickListener;
         this.adapter = adapter;
