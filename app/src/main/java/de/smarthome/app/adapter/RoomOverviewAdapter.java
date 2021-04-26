@@ -73,7 +73,7 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
             if(requestList.size() == 1){
                 repository.requestGetValue(requestList.get(0));
             }else{
-                repository.requestGetValue2(requestList);
+                //repository.requestGetValue2(requestList);
             }
         }
     }
@@ -209,7 +209,7 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
         this.switchClickListener = listener;
     }
 
-    public abstract static class ViewHolder extends RecyclerView.ViewHolder {//implements View.OnClickListener {
+    public abstract static class ViewHolder extends RecyclerView.ViewHolder {
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
