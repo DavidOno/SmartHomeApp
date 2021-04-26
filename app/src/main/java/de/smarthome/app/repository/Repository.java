@@ -22,6 +22,9 @@ import java.util.Map;
 import java.util.Objects;
 
 import de.smarthome.SmartHomeApplication;
+import de.smarthome.app.model.configs.BoundariesConfig;
+import de.smarthome.app.model.configs.Boundary;
+import de.smarthome.app.model.configs.BoundaryDataPoint;
 import de.smarthome.app.model.responses.GetValueReponse;
 import de.smarthome.beacons.BeaconLocations;
 import de.smarthome.beacons.BeaconObserverImplementation;
@@ -40,6 +43,7 @@ import de.smarthome.command.impl.RegisterCallback;
 import de.smarthome.command.impl.RegisterCallbackServerAtGiraServer;
 import de.smarthome.command.impl.RegisterClientCommand;
 import de.smarthome.command.impl.ResponseReactorBeaconConfig;
+import de.smarthome.command.impl.ResponseReactorBoundariesConfig;
 import de.smarthome.command.impl.ResponseReactorCallbackServer;
 import de.smarthome.command.impl.ResponseReactorChannelConfig;
 import de.smarthome.command.impl.ResponseReactorCheckAvailability;
@@ -68,32 +72,34 @@ import de.smarthome.server.gira.GiraServerHandler;
 import de.smarthome.app.utility.ToastUtility;
 
 public class Repository implements CallbackSubscriber, BeaconObserverSubscriber {
-    private  final String TAG = "Repository";
+    private final String TAG = "Repository";
     private static Repository instance;
     private final ToastUtility toastUtility = ToastUtility.getInstance();
 
+    //TODO: Move server stuff into own class to make david happy repository only contains livedata and will be handed to new class in constructor
+    private static final String IP_OF_CALLBACK_SERVER = "192.168.132.211:8443";
     private final ServerHandler serverHandler = new GiraServerHandler(new HomeServerCommandInterpreter());
+
     private BeaconObserverImplementation beaconObserver;
     private Application parentApplication;
 
     private UIConfig smartHomeUiConfig;
     private ChannelConfig smartHomeChannelConfig;
     private BeaconLocations smartHomeBeaconLocations;
-    //private BoundariesConfig smartHomeBoundariesConfig;
+    private BoundariesConfig smartHomeBoundariesConfig;
 
     private Credential userCredential;
 
     private Location selectedLocation;
-    //Used to check type of ChannelDataPoint
     private Function selectedFunction;
 
     private Location beaconLocation = null;
 
-    private static final String IP_OF_CALLBACK_SERVER = "192.168.132.211:8443";
-
     private MutableLiveData<List<Location>> locationList = new MutableLiveData<>();
+    //TODO: Replace the Function/Datapoint with just their names. In one Room their can not be more than one of each
     private MutableLiveData<Map<Function, Function>> functionList = new MutableLiveData<>();
     private MutableLiveData<Map<Datapoint, Datapoint>> dataPointList = new MutableLiveData<>();
+    private MutableLiveData<Map<Datapoint, BoundaryDataPoint>> boundaryList = new MutableLiveData<>();
 
     private MutableLiveData<Map<String, String>> statusList = new MutableLiveData<>();
     public MutableLiveData<Map<String, String>> statusList2 = new MutableLiveData<>();
@@ -104,57 +110,59 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     public static Repository getInstance(@Nullable Application application) {
         if (instance == null) {
             instance = new Repository();
-
             instance.parentApplication = application;
-
             //TODO: Just for testing purposes! Has to be removed before product is finished!
             instance.fillWithDummyValueAllConfigs();
         }
         return instance;
     }
 
-    private void fillWithDummyValueAllConfigs(){
+    private void fillWithDummyValueAllConfigs() {
         fillWithDummyValuesUIConfig();
         fillWithDummyValuesChannelConfig();
         fillWithDummyValueBeaconConfig();
+        fillWithDummyValueBoundaryConfig();
     }
 
-    public void setSelectedFunction(Function function){
+    public void setSelectedFunction(Function function) {
         selectedFunction = function;
+        test();
         updateDataPointList(function);
     }
+
     public Function getSelectedFunction() {
         return selectedFunction;
     }
 
-    public Credential getUserCredential(){
+    public Credential getUserCredential() {
         return userCredential;
     }
 
     public Location getSelectedLocation() {
         return selectedLocation;
     }
-    public void initBeaconCheck(){
+
+    public void initBeaconCheck() {
         beaconCheck.postValue(false);
     }
 
-    public LiveData<Boolean> checkBeacon(){
+    public LiveData<Boolean> checkBeacon() {
         return beaconCheck;
     }
 
-    public void updateLoginDataStatus(Boolean status){
+    public void updateLoginDataStatus(Boolean status) {
         loginDataStatus.postValue(status);
     }
 
-    public LiveData<Boolean> getLoginDataStatus(){
+    public LiveData<Boolean> getLoginDataStatus() {
         return loginDataStatus;
     }
 
-    public ChannelConfig getSmartHomeChannelConfig(){
+    public ChannelConfig getSmartHomeChannelConfig() {
         return smartHomeChannelConfig;
     }
 
-    public void confirmBeaconLocation(){
+    public void confirmBeacon() {
         setSelectedLocation(beaconLocation);
         beaconLocation = null;
     }
@@ -163,13 +171,10 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         return beaconLocation;
     }
 
-    private void initBeaconObserver(){
-        beaconObserver = new BeaconObserverImplementation(parentApplication,
-                parentApplication.getApplicationContext(),
-                smartHomeUiConfig, smartHomeBeaconLocations);
+    private void initBeaconObserver() {
+        beaconObserver = new BeaconObserverImplementation(parentApplication, parentApplication.getApplicationContext(), smartHomeUiConfig, smartHomeBeaconLocations);
         beaconObserver.subscribe(this);
         beaconObserver.init();
-
         initBeaconCheck();
     }
 
@@ -182,29 +187,16 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         SmartHomeApplication.EXECUTOR_SERVICE.execute(newThread);
     }
 
-    public void requestCheckAvailability() {
-        Thread requestCheckAvailabilityThread = new Thread(() -> {
-            Command availability = new CheckAvailabilityCommand();
-            handleResponseEntities(serverHandler.sendRequest(availability));
-        });
-        addToExecutorService(requestCheckAvailabilityThread);
-    }
-
     public void requestRegisterUser(Credential credential) {
         userCredential = credential;
-
         initialisationOfApplication(userCredential.getId(), userCredential.getPassword());
     }
 
     private void initialisationOfApplication(String userName, String pwd) {
         MultiReactorCommandChainImpl multiCommandChain = new MultiReactorCommandChainImpl();
-
         registerAppAtGiraServer(userName, pwd, multiCommandChain);
         getAllConfigs(multiCommandChain);
-
         serverHandler.sendRequest(multiCommandChain);
-
-        //TODO: Check if this position is best. Worked by Stefan but maybe this need to be moved!
         subscribeToMyFirebaseMessagingService();
     }
 
@@ -215,14 +207,13 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
 
     private void getAllConfigs(MultiReactorCommandChainImpl multiCommandChain) {
         multiCommandChain.add(new UIConfigCommand(), new ResponseReactorUIConfig(this));
-
         getAdditionalConfigs(multiCommandChain);
     }
 
     private void getAdditionalConfigs(MultiReactorCommandChainImpl multiCommandChain) {
         multiCommandChain.add(new AdditionalConfigCommand(IP_OF_CALLBACK_SERVER, AdditionalConfigs.CHANNEL), new ResponseReactorChannelConfig(this));
         multiCommandChain.add(new AdditionalConfigCommand(IP_OF_CALLBACK_SERVER, AdditionalConfigs.LOCATION), new ResponseReactorBeaconConfig(this));
-        //multiCommandChain.add(new AdditionalConfigCommand(IP_OF_CALLBACK_SERVER, AdditionalConfigs.BOUNDARIES), new ResponseReactorBoundariesConfig(this));
+        multiCommandChain.add(new AdditionalConfigCommand(IP_OF_CALLBACK_SERVER, AdditionalConfigs.BOUNDARIES), new ResponseReactorBoundariesConfig(this));
     }
 
     private void registerAppAtGiraServer(String userName, String pwd, MultiReactorCommandChainImpl multiCommandChain) {
@@ -232,25 +223,22 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         multiCommandChain.add(new RegisterCallback(IP_OF_CALLBACK_SERVER), new ResponseReactorCallbackServer());
     }
 
-    public void setUIConfig(UIConfig newUiconfig){
+    public void setUIConfig(UIConfig newUiconfig) {
         smartHomeUiConfig = newUiconfig;
-        initParentLocation(smartHomeUiConfig);
+        smartHomeUiConfig.initParentLocations();
         updateLocationList();
-
-        if(selectedLocation != null){
+        if (selectedLocation != null) {
             checkCurrentSelectedLocation();
         }
-        if(selectedFunction != null){
+        if (selectedFunction != null) {
             checkCurrentSelectedFunction();
         }
     }
 
-    private void checkCurrentSelectedLocation(){
+    private void checkCurrentSelectedLocation() {
         //TODO: Check if this works!
-        String currentLocationName = selectedLocation.getName();
-
-        for(Location loc : Objects.requireNonNull(locationList.getValue())){
-            if(loc.getName().equals(currentLocationName)){
+        for (Location loc : Objects.requireNonNull(locationList.getValue())) {
+            if (loc.getName().equals(selectedLocation.getName())) {
                 setSelectedLocation(loc);
                 break;
             }
@@ -258,12 +246,10 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         toastUtility.prepareToast("Current Location was not fund in new UIConfig!");
     }
 
-    private void checkCurrentSelectedFunction(){
+    private void checkCurrentSelectedFunction() {
         //TODO: Check if this works!
-        String currentFunctionName = selectedFunction.getName();
-
-        for(Function func : selectedLocation.getFunctions(smartHomeUiConfig)){
-            if(func.getName().equals(currentFunctionName)){
+        for (Function func : selectedLocation.getFunctions(smartHomeUiConfig)) {
+            if (func.getName().equals(selectedFunction.getName())) {
                 setSelectedFunction(func);
                 break;
             }
@@ -271,24 +257,20 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         toastUtility.prepareToast("Selected Function was not fund in new UIConfig!");
     }
 
-    public void setChannelConfig(ChannelConfig newChannelconfig){
-        smartHomeChannelConfig = newChannelconfig;
+    public void setChannelConfig(ChannelConfig newChannelConfig) {
+        smartHomeChannelConfig = newChannelConfig;
     }
 
-    public void setBeaconConfig(BeaconLocations newBeaconConfig){
+    public void setBeaconConfig(BeaconLocations newBeaconConfig) {
         smartHomeBeaconLocations = newBeaconConfig;
         initBeaconObserver();
     }
 
-    public void requestRegisterClient(String ipOfServer){
-        Thread requestRegisterClientThread = new Thread(() -> {
-            AsyncCommand register = new RegisterCallback(ipOfServer);
-            serverHandler.sendRequest(register);
-        });
-        addToExecutorService(requestRegisterClientThread);
+    public void setBoundaryConfig(BoundariesConfig newBoundaryConfig) {
+        smartHomeBoundariesConfig = newBoundaryConfig;
     }
 
-    public void requestUnregisterClient(String ipOfServer){
+    public void requestUnregisterClient(String ipOfServer) {
         Thread requestUnregisterClientThread = new Thread(() -> {
             AsyncCommand register = new UnRegisterCallback(ipOfServer);
             serverHandler.sendRequest(register);
@@ -296,112 +278,72 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         addToExecutorService(requestUnregisterClientThread);
     }
 
-    public void requestGetConfig(){
-        Thread requestGetConfigThread = new Thread(() -> {
-            Command getConfig = new UIConfigCommand();
-            serverHandler.sendRequest(getConfig);
-        });
-
-        addToExecutorService(requestGetConfigThread);
-    }
-
-    public void requestSetValue(String ID, String value){
+    public void requestSetValue(String ID, String value) {
         Thread requestSetValueThread = new Thread(() -> {
             Command setValueCommand = new ChangeValueCommand(ID, Float.parseFloat(value));
             serverHandler.sendRequest(setValueCommand);
         });
-
         addToExecutorService(requestSetValueThread);
     }
 
-    public void requestGetValue(String ID){
+    public void requestGetValue(String ID) {
         Thread requestGetValueThread = new Thread(() -> {
             Command getValueCommand = new GetValueCommand(ID);
             handleResponseEntities(serverHandler.sendRequest(getValueCommand));
         });
-
         addToExecutorService(requestGetValueThread);
     }
 
-    public void requestGetValue2(List<String> IDs){
+    public void requestGetValue2(List<String> IDs) {
         SingleReactorCommandChain chain = new SingleReactorCommandChainImpl(new ResponseReactorGetValue(this));
         //TODO: Check if this clears the map!
         Objects.requireNonNull(statusList2.getValue()).clear();
-
-        for(String id : IDs){
+        for (String id : IDs) {
             chain.add(new GetValueCommand(id));
         }
-
         serverHandler.sendRequest(chain);
     }
 
-    public void requestRegisterCallbackServerAtGiraServer(String ipOfServer){
-        Thread requestRegisterCallbackServerAtGiraServerThread = new Thread(() -> {
-            Command registerAtGira = new RegisterCallbackServerAtGiraServer(ipOfServer);
-            serverHandler.sendRequest(registerAtGira);
-        });
-        addToExecutorService(requestRegisterCallbackServerAtGiraServerThread);
-    }
-
-    public void requestUnRegisterCallbackServerAtGiraServer(){
+    public void requestUnRegisterCallbackServerAtGiraServer() {
         Thread requestUnRegisterCallbackServerAtGiraServerThread = new Thread(() -> {
             Command unregisterAtGira = new UnRegisterCallbackServerAtGiraServer();
             serverHandler.sendRequest(unregisterAtGira);
         });
-
         addToExecutorService(requestUnRegisterCallbackServerAtGiraServerThread);
     }
 
-    public MutableLiveData<List<Location>> getRooms(){
+    public MutableLiveData<List<Location>> getLocationList() {
         return locationList;
     }
 
-    public void updateLocationList(){
+    public void updateLocationList() {
         List<Location> allLocations = new ArrayList<>(smartHomeUiConfig.getLocations());
-
-        for(Location location: smartHomeUiConfig.getLocations()){
-            getAllChildrenFromLocation(location, allLocations);
+        for (Location location : allLocations) {
+            location.getAllChildrenFromLocation(allLocations);
         }
-
         locationList.postValue(allLocations);
     }
 
-    public void initParentLocation(UIConfig uiConfig){
-        for(Location loc: uiConfig.getLocations()){
-            loc.initParentLocation(loc);
-        }
-    }
 
-    public void getAllChildrenFromLocation(Location location, List<Location> resultList){
-        for(Location loc: location.getLocations()){
-            resultList.add(loc);
-            getAllChildrenFromLocation(loc, resultList);
-        }
-    }
-
-    public MutableLiveData<Map<Function, Function>> getRoomUsableFunctions(){
+    public MutableLiveData<Map<Function, Function>> getFunctionList() {
         return functionList;
     }
 
-    public void updateFunctionList(Location viewedLocation){
-        Map<Function, Function> completeFunctionMap = new LinkedHashMap<Function, Function>();
-
+    public void updateFunctionList(Location viewedLocation) {
+        Map<Function, Function> completeFunctionMap = new LinkedHashMap<>();
         mapStatusFunctionToFunction(completeFunctionMap, viewedLocation);
-
-        if(!viewedLocation.equals(viewedLocation.getParentLocation())){
+        if (!viewedLocation.getParentLocation().equals(Location.ROOT)) {
             mapStatusFunctionToFunction(completeFunctionMap, viewedLocation.getParentLocation());
         }
-
         functionList.postValue(completeFunctionMap);
     }
 
-    private void mapStatusFunctionToFunction(Map<Function, Function> completeFunctionMap, Location parentLocation) {
+    private void mapStatusFunctionToFunction(Map<Function, Function> completeFunctionMap, Location location) {
         String regex = "_";
-
-        for (Function func : parentLocation.getFunctions(smartHomeUiConfig)) {
+        for (Function func : location.getFunctions(smartHomeUiConfig)) {
             Function functionStatus = null;
             if (!func.isStatusFunction()) {
-                for (Function comparedFunction : parentLocation.getFunctions(smartHomeUiConfig)) {
+                for (Function comparedFunction : location.getFunctions(smartHomeUiConfig)) {
                     if (comparedFunction.isStatusFunction()) {
                         if (func.getName().split(regex)[0].equals(
                                 comparedFunction.getName().split(regex)[0])) {
@@ -415,178 +357,140 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         }
     }
 
-    public MutableLiveData<Map<Function, Function>> getRoomStatusFunctions(){
+    //TODO: Refactor
+    public void test() {
+        Map<Datapoint, BoundaryDataPoint> completeFunctionMap = new LinkedHashMap<>();
+        mapBoundaryToFunction(completeFunctionMap);
+        boundaryList.postValue(completeFunctionMap);
+    }
+
+    public LiveData<Map<Datapoint, BoundaryDataPoint>> getTest() {
+        return boundaryList;
+    }
+
+    private void mapBoundaryToFunction(Map<Datapoint, BoundaryDataPoint> boundaryMap) {
+        String regex = "_";
+        for (Boundary boundary : smartHomeBoundariesConfig.getBoundaries()) {
+            if (boundary.getName().split(regex)[0].equals(selectedFunction.getName().split(regex)[0])) {
+                for (BoundaryDataPoint bdp : boundary.getDatapoints()) {
+                    for (Datapoint dp : selectedFunction.getDataPoints())
+                        if (bdp.getName().equals(dp.getName())) {
+                            boundaryMap.put(dp, bdp);
+                            break;
+                        }
+                }
+                break;
+            }
+        }
+    }
+
+    public MutableLiveData<Map<Function, Function>> getRoomStatusFunctions() {
         return functionList;
     }
 
-    public void updateDataPointList(Function function){
+    public void updateDataPointList(Function function) {
         Map<Datapoint, Datapoint> newValue = new LinkedHashMap<>();
-
         //TODO: Check if StatusFunction always has the same number of Datapoint than "normal" Function
-        if(functionList.getValue().get(function) != null){
-            for(int i = 0; i < function.getDataPoints().size(); i++){
+        if (functionList.getValue().get(function) != null) {
+            for (int i = 0; i < function.getDataPoints().size(); i++) {
                 newValue.put(function.getDataPoints().get(i), functionList.getValue().get(function).getDataPoints().get(i));
             }
-        }else{
-            for(Datapoint datapoint : function.getDataPoints()){
+        } else {
+            for (Datapoint datapoint : function.getDataPoints()) {
                 newValue.put(datapoint, null);
             }
         }
-
         dataPointList.postValue(newValue);
     }
 
-    public MutableLiveData<Map<Datapoint, Datapoint>> getDataPoints(){
+    public MutableLiveData<Map<Datapoint, Datapoint>> getDataPoints() {
         return dataPointList;
     }
 
-    public void updateStatusList(String functionUID, String value){
+    public void updateStatusList(String functionUID, String value) {
         Map<String, String> newValue = new HashMap<>();
         newValue.put(functionUID, value);
-
         statusList.postValue(newValue);
     }
 
-    public void updateStatusList2(String functionUID, String value){
+    public void updateStatusList2(String functionUID, String value) {
         Map<String, String> newValue = statusList2.getValue();
         newValue.put(functionUID, value);
-
         statusList2.postValue(newValue);
     }
 
-    public MutableLiveData<Map<String, String>> getStatusList(){
+    public MutableLiveData<Map<String, String>> getStatusList() {
         return statusList;
     }
 
-    public Function getFunctionByUID(String UID, Location location){
-        for(Function function : location.getFunctions(smartHomeUiConfig)){
-            if(function.getID().equals(UID)){
-                return function;
-            }
-        }
-        return null;
-    }
 
-    public void handleResponseEntities(ResponseEntity responseEntity){
+    public void handleResponseEntities(ResponseEntity responseEntity) {
+        //TODO: Get rid of this
         GetValueReponse x;
         try {
-                if (responseEntity.getStatusCode() == HttpStatus.OK) {
-                    System.out.println("response received");
-                    System.out.println(responseEntity.getBody());
-                    x = (GetValueReponse) responseEntity.getBody();
-                    System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + x);
+            if (responseEntity.getStatusCode() == HttpStatus.OK) {
+                System.out.println("response received");
+                System.out.println(responseEntity.getBody());
+                x = (GetValueReponse) responseEntity.getBody();
 
-                    String value = x.getValues().get(0).getValue();
-                    String uID = x.getValues().get(0).getUid();
-                    System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX value " + value);
-                    System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX uid " + uID);
-                    updateStatusList(uID, value);
+                String value = x.getValues().get(0).getValue();
+                String uID = x.getValues().get(0).getUid();
+                updateStatusList(uID, value);
 
-                } else {
-                    System.out.println("error occurred");
-                    System.out.println(responseEntity.getStatusCode());
-                }
-        }catch(Exception e){
+            } else {
+                System.out.println("error occurred");
+                System.out.println(responseEntity.getStatusCode());
+            }
+        } catch (Exception e) {
             Log.d(TAG, "handleResponseEntities, Exception: " + e.toString());
         }
     }
 
     @Override
     public void update(CallbackValueInput input) {
-        if(input.getEvent() != null){
-            switch(input.getEvent()){
-                case TEST:
-                    Log.d(TAG, "Test Event");
-                    System.out.println("Test Event");
-                    break;
-
-                case STARTUP:
-                    Log.d(TAG, "Server has started.");
-                    System.out.println("Server has started.");
-
-                    initialisationOfApplication(userCredential.getId(), userCredential.getPassword());
-                    break;
-
-                case RESTART:
-                    Log.d(TAG, "Server got restarted.");
-                    System.out.println("Server got restarted.");
-                    break;
-
-                case UI_CONFIG_CHANGED:
-                    Log.d(TAG, "UI_CONFIG_CHANGED");
-                    System.out.println("UI_CONFIG_CHANGED");
-
-                    SingleReactorCommandChainImpl singleCommandChain = new SingleReactorCommandChainImpl(new ResponseReactorUIConfig(this));
-                    singleCommandChain.add(new UIConfigCommand());
-                    serverHandler.sendRequest(singleCommandChain);
-                    break;
-
-                case PROJECT_CONFIG_CHANGED:
-                    Log.d(TAG, "PROJECT_CONFIG_CHANGED");
-                    System.out.println("PROJECT_CONFIG_CHANGED");
-
-                    MultiReactorCommandChainImpl multiCommandChain = new MultiReactorCommandChainImpl();
-                    getAdditionalConfigs(multiCommandChain);
-                    serverHandler.sendRequest(multiCommandChain);
-
-                    break;
-
-                default:
-                    Log.d(TAG, "Unknown CallbackValueInputEvent");
-                    System.out.println("Unknown CallbackValueInputEvent");
-                    break;
-            }
-
-        }else if(input.getValue() != null){
+        if (input.getEvent() != null && input.getValue() != null) {
             String value = String.valueOf(input.getValue());
             String uID = input.getUid();
-
             updateStatusList(uID, value);
         }
     }
-
+    //TODO: Move to own updatehandly class to make david happy repository only contains livedata and will be handed to new class in constructor
     @Override
     public void update(CallBackServiceInput input) {
-            for(ServiceEvent serviceEvent: input.getServiceEvents()){
-                switch(serviceEvent.getEvent()){
+        if (input.getServiceEvents() != null) {
+            for (ServiceEvent serviceEvent : input.getServiceEvents()) {
+                switch (serviceEvent.getEvent()) {
                     case STARTUP:
                         Log.d(TAG, "Server has started.");
                         System.out.println("Server has started.");
-
                         initialisationOfApplication(userCredential.getId(), userCredential.getPassword());
                         break;
-
                     case RESTART:
                         Log.d(TAG, "Server got restarted.");
                         System.out.println("Server got restarted.");
                         break;
-
                     case UI_CONFIG_CHANGED:
                         Log.d(TAG, "UI_CONFIG_CHANGED");
                         System.out.println("UI_CONFIG_CHANGED");
-
+                        //TODO: Update BeaconObserver
                         SingleReactorCommandChainImpl singleCommandChain = new SingleReactorCommandChainImpl(new ResponseReactorUIConfig(this));
                         singleCommandChain.add(new UIConfigCommand());
                         serverHandler.sendRequest(singleCommandChain);
-
                         break;
-
                     case PROJECT_CONFIG_CHANGED:
                         Log.d(TAG, "PROJECT_CONFIG_CHANGED");
                         System.out.println("PROJECT_CONFIG_CHANGED");
-
                         MultiReactorCommandChainImpl multiCommandChain = new MultiReactorCommandChainImpl();
                         getAdditionalConfigs(multiCommandChain);
                         serverHandler.sendRequest(multiCommandChain);
-
                         break;
-
                     default:
                         Log.d(TAG, "Unknown CallBackServiceInputEvent");
                         System.out.println("Unknown CallBackServiceInputEvent");
                         break;
                 }
             }
+        }
     }
 
     @Override
@@ -595,18 +499,16 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         beaconCheck.postValue(true);
     }
 
-    public void unsubscribeFromEverything(){
+    public void unsubscribeFromEverything() {
         //TODO: Do we need to do this? They get destroyed anyway ...
         MyFirebaseMessagingService.getValueObserver().unsubscribe(this);
         MyFirebaseMessagingService.getServiceObserver().unsubscribe(this);
         beaconObserver.unsubscribe();
-
-
         requestUnregisterClient(IP_OF_CALLBACK_SERVER);
         requestUnRegisterCallbackServerAtGiraServer();
     }
 
-    private Location createEssen(){
+    private Location createEssen() {
         List<String> functionIDs = new ArrayList<>();
         functionIDs.add("aael");
         functionIDs.add("aae4");
@@ -615,9 +517,10 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         functionIDs.add("aafe");
         List<Location> loc = new ArrayList<>();
 
-        return new Location("Bereich Essen","aaej","4", functionIDs, loc,"Room");
+        return new Location("Bereich Essen", "aaej", "4", functionIDs, loc, "Room");
     }
-    private Location createWohnen(){
+
+    private Location createWohnen() {
         List<String> functionIDs = new ArrayList<>();
         functionIDs.add("aaet");
         functionIDs.add("aae2");
@@ -628,9 +531,10 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
 
         List<Location> loc = new ArrayList<>();
 
-        return new Location("Bereich Wohnen","aaex","4", functionIDs, loc,"Room");
+        return new Location("Bereich Wohnen", "aaex", "4", functionIDs, loc, "Room");
     }
-    private Location createTerrasse(){
+
+    private Location createTerrasse() {
         List<String> functionIDs = new ArrayList<>();
         functionIDs.add("aafe");
         functionIDs.add("aafg");
@@ -640,10 +544,10 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
 
         List<Location> loc = new ArrayList<>();
 
-        return new Location("Terrasse","aafb","4", functionIDs, loc,"Room");
+        return new Location("Terrasse", "aafb", "4", functionIDs, loc, "Room");
     }
 
-    private void fillWithDummyValuesUIConfig(){
+    private void fillWithDummyValuesUIConfig() {
         Thread thread = new Thread(() -> {
             ArrayList<Function> funcList1 = new ArrayList<>();
             List<String> functionIDs = new ArrayList<>();
@@ -704,7 +608,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
             Location all = new Location("House", "aaaa", "4", functionIDs, uiconfigloc, "Room");
             uiconfigloc2.add(all);
 
-            UIConfig newUiConfig =  new UIConfig(funcList1, uiconfigloc2,"cczk");
+            UIConfig newUiConfig = new UIConfig(funcList1, uiconfigloc2, "cczk");
             //Log.d("Hello", "New UIConfig " + newUiConfig.toString());
             setUIConfig(newUiConfig);
         });
@@ -764,10 +668,30 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
 
         ObjectMapper mapper = new ObjectMapper();
         try {
-            setBeaconConfig(mapper.readValue(locationConfigString, new TypeReference<BeaconLocations>() {}));
+            setBeaconConfig(mapper.readValue(locationConfigString, new TypeReference<BeaconLocations>() {
+            }));
 
-        }catch(Exception e){
+        } catch (Exception e) {
             Log.d(TAG, "BeaconConfig Exception " + e.toString());
         }
+    }
+
+    private void fillWithDummyValueBoundaryConfig() {
+        BoundaryDataPoint dataPoint = new BoundaryDataPoint("Position", "20", "40");
+        List<BoundaryDataPoint> list = new ArrayList<>();
+        list.add(dataPoint);
+        Boundary x = new Boundary("Markise_Boundary", list);
+
+        BoundaryDataPoint dataPoint2 = new BoundaryDataPoint("Position", "10", "30");
+        List<BoundaryDataPoint> list2 = new ArrayList<>();
+        list2.add(dataPoint2);
+        Boundary y = new Boundary("Alarmanlage_Boundary", list2);
+
+        List<Boundary> z = new ArrayList<>();
+        z.add(y);
+        z.add(x);
+
+        BoundariesConfig t = new BoundariesConfig(z);
+        smartHomeBoundariesConfig = t;
     }
 }
