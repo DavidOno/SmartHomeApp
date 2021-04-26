@@ -23,7 +23,7 @@ public class RoomOverviewViewModel  extends AndroidViewModel {
     }
 
     public LiveData<Map<Function, Function>> getUsableRoomFunctions(){
-        return repository.getRoomUsableFunctions();
+        return repository.getFunctionList();
     }
 
     public LiveData<Map<Function, Function>> getRoomStatusFunctions(){

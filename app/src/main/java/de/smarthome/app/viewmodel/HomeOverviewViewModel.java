@@ -21,7 +21,7 @@ public class HomeOverviewViewModel extends AndroidViewModel {
         super(application);
 
         repository = Repository.getInstance(application);
-        roomSet = repository.getRooms();
+        roomSet = repository.getLocationList();
     }
 
     public LiveData<List<Location>> getRooms(){
