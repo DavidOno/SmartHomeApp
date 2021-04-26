@@ -86,12 +86,16 @@ public class SmartHomeApplication extends AppCompatActivity {
         navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         navController = NavHostFragment.findNavController(navHostFragment);
 
-        getSavedCredentials();
+        if(savedInstanceState == null){
+            getSavedCredentials();
+        }
     }
 
     @Override
     protected void onDestroy() {
-        repository.unsubscribeFromEverything();
+        //TODO: When App gets rotated ==> Everything gets unsubscribed!
+        //repository.unsubscribeFromEverything();
+        toastUtility.prepareToast("Everything got unsubscribed!");
         super.onDestroy();
     }
 
@@ -138,7 +142,7 @@ public class SmartHomeApplication extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                repository.confirmBeaconLocation();
+                repository.confirmBeacon();
                 setStartFragment(R.id.roomOverviewFragment);
             }
         });
