@@ -15,7 +15,7 @@ import de.smarthome.app.model.Function;
 import de.smarthome.app.adapter.RoomOverviewAdapter;
 
 public class DefaultViewHolder extends RoomOverviewAdapter.ViewHolder{
-    private TextView textView;
+    private TextView textViewName;
     private RoomOverviewAdapter adapter;
     private RoomOverviewAdapter.OnItemClickListener onItemClickListener;
 
@@ -24,7 +24,7 @@ public class DefaultViewHolder extends RoomOverviewAdapter.ViewHolder{
                              @NonNull RoomOverviewAdapter adapter) {
         super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_default, parent, false));
 
-        textView = itemView.findViewById(R.id.textView_item);
+        textViewName = itemView.findViewById(R.id.textView_item);
 
         this.onItemClickListener = onItemClickListener;
         this.adapter = adapter;
@@ -42,6 +42,6 @@ public class DefaultViewHolder extends RoomOverviewAdapter.ViewHolder{
 
     @Override
     public void onBindViewHolder(RoomOverviewAdapter.ViewHolder holder, int position, Function function, Optional<String> value ) {
-        this.textView.setText(function.getName());
+        textViewName.setText(function.getName().replace("_", " "));
     }
 }

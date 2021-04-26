@@ -19,7 +19,7 @@ import de.smarthome.app.adapter.RoomOverviewAdapter;
 
 public class SwitchArrowViewHolder extends RoomOverviewAdapter.ViewHolder{
     private SwitchCompat binarySwitch;
-    private TextView textView;
+    private TextView textViewName;
     private RoomOverviewAdapter adapter;
     private RoomOverviewAdapter.OnItemClickListener onItemClickListener;
     private RoomOverviewAdapter.OnSwitchClickListener onSwitchClickListener;
@@ -30,7 +30,7 @@ public class SwitchArrowViewHolder extends RoomOverviewAdapter.ViewHolder{
                                  @NonNull RoomOverviewAdapter adapter) {
         super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_switch_arrow, parent, false));
 
-        textView = itemView.findViewById(R.id.textView_item);
+        textViewName = itemView.findViewById(R.id.textView_item);
         binarySwitch = itemView.findViewById(R.id.switch_item);
 
         this.onItemClickListener = onItemClickListener;
@@ -40,7 +40,6 @@ public class SwitchArrowViewHolder extends RoomOverviewAdapter.ViewHolder{
         binarySwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("SwitchViewHolder", "Switch pressed");
                 int position = getAdapterPosition();
                 if (onSwitchClickListener != null && position != RecyclerView.NO_POSITION) {
                     onSwitchClickListener.onItemClick(adapter.getFunctionAt(position),  binarySwitch.isChecked());
@@ -62,7 +61,7 @@ public class SwitchArrowViewHolder extends RoomOverviewAdapter.ViewHolder{
 
     @Override
     public void onBindViewHolder(RoomOverviewAdapter.ViewHolder holder, int position, Function function, Optional<String> value) {
-        this.textView.setText(function.getName());
+        textViewName.setText(function.getName().replace("_", " "));
 
         if(value.isPresent()) {
             if (value.get().equals("true")) {

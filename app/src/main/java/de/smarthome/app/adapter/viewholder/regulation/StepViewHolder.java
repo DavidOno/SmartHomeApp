@@ -16,7 +16,7 @@ import de.smarthome.app.model.Datapoint;
 import de.smarthome.app.adapter.RegulationAdapter;
 
 public class StepViewHolder extends RegulationAdapter.ViewHolder{
-    private TextView textView;
+    private TextView textViewName;
     private ImageView plus;
     private ImageView minus;
     private RegulationAdapter adapter;
@@ -26,7 +26,7 @@ public class StepViewHolder extends RegulationAdapter.ViewHolder{
                              @NonNull RegulationAdapter.OnItemClickListener onItemClickListener,
                              @NonNull RegulationAdapter adapter) {
         super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_step, parent, false));
-        textView = itemView.findViewById(R.id.textView_item);
+        textViewName = itemView.findViewById(R.id.textView_item);
 
         plus = itemView.findViewById(R.id.imageView_plus);
         minus = itemView.findViewById(R.id.imageView_minus);
@@ -57,7 +57,7 @@ public class StepViewHolder extends RegulationAdapter.ViewHolder{
 
     @Override
     public void onBindViewHolder(RegulationAdapter.ViewHolder holder, int position, Datapoint datapoint, Optional<String> value) {
-        this.textView.setText(datapoint.getName());
+        this.textViewName.setText(datapoint.getName().replace("_", " "));
     }
 }
 

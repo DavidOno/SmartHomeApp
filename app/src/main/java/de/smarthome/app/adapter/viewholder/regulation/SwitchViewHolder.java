@@ -1,6 +1,5 @@
 package de.smarthome.app.adapter.viewholder.regulation;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,7 @@ import de.smarthome.app.adapter.RegulationAdapter;
 
 public class SwitchViewHolder extends RegulationAdapter.ViewHolder{
     private SwitchCompat binarySwitch;
-    private TextView textView;
+    private TextView textViewName;
     private RegulationAdapter adapter;
     private RegulationAdapter.OnItemClickListener onSwitchClickListener;
 
@@ -28,7 +27,7 @@ public class SwitchViewHolder extends RegulationAdapter.ViewHolder{
                             @NonNull RegulationAdapter adapter) {
         super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_switch, parent, false));
 
-        textView = itemView.findViewById(R.id.textView_item);
+        textViewName = itemView.findViewById(R.id.textView_item);
         binarySwitch = itemView.findViewById(R.id.switch_item);
 
         this.onSwitchClickListener = onSwitchClickListener;
@@ -37,7 +36,6 @@ public class SwitchViewHolder extends RegulationAdapter.ViewHolder{
         binarySwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("SwitchViewHolder", "Switch pressed");
                 int position = getAdapterPosition();
                 if (onSwitchClickListener != null && position != RecyclerView.NO_POSITION) {
                     if(binarySwitch.isChecked()){
@@ -52,7 +50,7 @@ public class SwitchViewHolder extends RegulationAdapter.ViewHolder{
 
     @Override
     public void onBindViewHolder(RegulationAdapter.ViewHolder holder, int position, Datapoint datapoint, Optional<String> value) {
-        textView.setText(datapoint.getName());
+        textViewName.setText(datapoint.getName().replace("_", " "));
 
         if(value.isPresent()){
             if(value.get().equals("1")){

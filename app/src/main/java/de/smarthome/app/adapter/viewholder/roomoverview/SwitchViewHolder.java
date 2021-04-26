@@ -1,6 +1,5 @@
 package de.smarthome.app.adapter.viewholder.roomoverview;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,7 @@ import de.smarthome.app.adapter.RoomOverviewAdapter;
 
 public class SwitchViewHolder extends RoomOverviewAdapter.ViewHolder{
     private SwitchCompat binarySwitch;
-    private TextView textView;
+    private TextView textViewName;
     private RoomOverviewAdapter adapter;
     private RoomOverviewAdapter.OnSwitchClickListener onSwitchClickListener;
 
@@ -28,7 +27,7 @@ public class SwitchViewHolder extends RoomOverviewAdapter.ViewHolder{
                             @NonNull RoomOverviewAdapter adapter) {
         super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_switch, parent, false));
 
-        textView = itemView.findViewById(R.id.textView_item);
+        textViewName = itemView.findViewById(R.id.textView_item);
         binarySwitch = itemView.findViewById(R.id.switch_item);
 
         this.onSwitchClickListener = onSwitchClickListener;
@@ -37,7 +36,6 @@ public class SwitchViewHolder extends RoomOverviewAdapter.ViewHolder{
         binarySwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("SwitchViewHolder", "Switch pressed");
                 int position = getAdapterPosition();
                 if (onSwitchClickListener != null && position != RecyclerView.NO_POSITION) {
                     onSwitchClickListener.onItemClick(adapter.getFunctionAt(position), binarySwitch.isChecked());
@@ -48,7 +46,7 @@ public class SwitchViewHolder extends RoomOverviewAdapter.ViewHolder{
 
     @Override
     public void onBindViewHolder(RoomOverviewAdapter.ViewHolder holder, int position, Function function, Optional<String> value) {
-        this.textView.setText(function.getName());
+        textViewName.setText(function.getName().replace("_", " "));
 
         if(value.isPresent()){
             if (value.get().equals("true")) {
