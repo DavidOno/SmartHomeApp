@@ -79,6 +79,13 @@ public class Location {
         }
     }
 
+    public void getAllChildrenFromLocation(List<Location> resultList) {
+        for (Location loc : this.getLocations()) {
+            resultList.add(loc);
+            loc.getAllChildrenFromLocation(resultList);
+        }
+    }
+
     @Override
     public String toString() {
         return "Location{" +
