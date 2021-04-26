@@ -17,6 +17,9 @@ import java.util.Map;
 
 import de.smarthome.R;
 import de.smarthome.app.model.Datapoint;
+import de.smarthome.app.model.Function;
+import de.smarthome.app.model.configs.Boundary;
+import de.smarthome.app.model.configs.BoundaryDataPoint;
 import de.smarthome.app.viewmodel.RegulationViewModel;
 import de.smarthome.app.adapter.RegulationAdapter;
 
@@ -27,10 +30,6 @@ public class RegulationFragment extends Fragment {
     private RecyclerView recyclerViewRegulation;
 
     private RegulationAdapter adapter;
-
-    public static RoomOverviewFragment newInstance() {
-        return new RoomOverviewFragment();
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,13 +75,17 @@ public class RegulationFragment extends Fragment {
             }
         });
 
-        //CallbackValueInput input = new CallbackValueInput(1, "2", "aajx", "70", null);
+        regulationViewModel.getTest().observe(getViewLifecycleOwner(), new Observer<Map<Datapoint, BoundaryDataPoint>>() {
+            @Override
+            public void onChanged(Map<Datapoint, BoundaryDataPoint> boundaryMap) {
+                adapter.setBoundaryList(boundaryMap);
+            }
+        });
 
         adapter.setOnItemClickListener(new RegulationAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Datapoint datapoint, String value) {
                 regulationViewModel.requestSetValue(datapoint.getID(), value);
-                //regulationViewModel.repository.update(input);
             }
         });
     }

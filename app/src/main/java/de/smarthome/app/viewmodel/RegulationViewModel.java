@@ -11,6 +11,8 @@ import java.util.Map;
 import de.smarthome.app.model.Datapoint;
 import de.smarthome.app.model.Function;
 import de.smarthome.app.model.Location;
+import de.smarthome.app.model.configs.Boundary;
+import de.smarthome.app.model.configs.BoundaryDataPoint;
 import de.smarthome.app.repository.Repository;
 
 public class RegulationViewModel extends AndroidViewModel {
@@ -28,10 +30,6 @@ public class RegulationViewModel extends AndroidViewModel {
         repository.requestSetValue(ID, value);
     }
 
-    public Function getFunctionByUID(String UID, Location location){
-        return repository.getFunctionByUID(UID, location);
-    }
-
     public LiveData<Map<Datapoint, Datapoint>> getDataPoints(){
         return repository.getDataPoints();
     }
@@ -42,5 +40,10 @@ public class RegulationViewModel extends AndroidViewModel {
 
     public Function getSelectedFunction(){
         return repository.getSelectedFunction();
+    }
+
+    //TODO: Refactor
+    public LiveData<Map<Datapoint, BoundaryDataPoint>> getTest(){
+        return  repository.getTest();
     }
 }
