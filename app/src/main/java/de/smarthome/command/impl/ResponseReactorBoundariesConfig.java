@@ -5,19 +5,19 @@ import android.util.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import de.smarthome.app.model.configs.BoundariesConfig;
 import de.smarthome.command.ResponseReactor;
-import de.smarthome.app.model.UIConfig;
 import de.smarthome.app.repository.Repository;
 
 public class ResponseReactorBoundariesConfig implements ResponseReactor {
-    private final String TAG = "ResponseReactorUIConfig";
-    private UIConfig responseUIConfig;
+    private final String TAG = "ResponseReactorBoundariesConfig";
+    private BoundariesConfig responseBoundariesConfig;
     private Repository parentRepository;
 
     public ResponseReactorBoundariesConfig(Repository parentRepository) {
         this.parentRepository = parentRepository;
     }
-
+    //TODO:Rework Logs
     @Override
     public void react(ResponseEntity responseEntity) {
         try {
@@ -25,8 +25,8 @@ public class ResponseReactorBoundariesConfig implements ResponseReactor {
                 System.out.println("response received UIConfig");
                 System.out.println(responseEntity.getBody());
 
-                responseUIConfig = (UIConfig) responseEntity.getBody();
-                sendUIConfigToRepo(responseUIConfig);
+                responseBoundariesConfig = (BoundariesConfig) responseEntity.getBody();
+                sendBoundariesConfigToRepo(responseBoundariesConfig);
 
                 Log.d(TAG, "Communication with Server possible.\nStatus: " + responseEntity.getStatusCode());
             } else {
@@ -39,11 +39,11 @@ public class ResponseReactorBoundariesConfig implements ResponseReactor {
         }
     }
 
-    public UIConfig getResponseUIConfig() {
-        return responseUIConfig;
+    public BoundariesConfig getResponseBoundariesConfig() {
+        return responseBoundariesConfig;
     }
 
-    public void sendUIConfigToRepo(UIConfig newUIConfig){
-        parentRepository.setUIConfig(newUIConfig);
+    public void sendBoundariesConfigToRepo(BoundariesConfig newBoundariesConfig){
+        parentRepository.setBoundaryConfig(newBoundariesConfig);
     }
 }
