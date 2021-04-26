@@ -13,6 +13,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import de.smarthome.app.model.Function;
+import de.smarthome.app.model.configs.BoundariesConfig;
+import de.smarthome.app.model.configs.Boundary;
+import de.smarthome.app.model.configs.BoundaryDataPoint;
 import de.smarthome.app.model.configs.ChannelConfig;
 import de.smarthome.app.model.Datapoint;
 import de.smarthome.app.repository.Repository;
@@ -24,8 +28,10 @@ import de.smarthome.app.adapter.viewholder.regulation.SwitchViewHolder;
 
 
 public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.ViewHolder>{
-    List<Datapoint> dataPointList;
-    Map<Datapoint, Datapoint> dataPointMap;
+    private List<Datapoint> dataPointList;
+    private Map<Datapoint, Datapoint> dataPointMap;
+    //TODO: Refactor
+    private Map<Datapoint, BoundaryDataPoint> testMap;
 
     public static final int STEP_VIEW_HOLDER = 0;
     public static final int SWITCH_VIEW_HOLDER = 1;
@@ -35,7 +41,6 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
     public static final int READ_VIEW_HOLDER = 5;
 
     private OnItemClickListener listener;
-    private OnSwitchClickListener switchClickListener;
 
     private String statusFunctionDataPointUID = null;
     private String statusFunctionDataPointValue = null;
@@ -43,6 +48,14 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
 
     private ChannelConfig channelConfig;
     private Repository repository;
+    //TODO: Refactor
+    public void setBoundaryList(Map<Datapoint, BoundaryDataPoint> newData){
+        testMap = newData;
+    }
+
+    public Map<Datapoint, BoundaryDataPoint> getTestMap() {
+        return testMap;
+    }
 
     public void setDataPointList(Map<Datapoint, Datapoint> dataPoints, Application application) {
         dataPointList = new ArrayList<>(dataPoints.keySet());
@@ -108,12 +121,14 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
                     listener,
                     this
             );
+
         }else if(viewType == STEP_VIEW_HOLDER){
             return new StepViewHolder(
                     parent,
                     listener,
                     this
             );
+
         }else if(viewType == INT_SLIDER_VIEW_HOLDER){
             return new SliderViewHolder(
                     parent,
@@ -201,16 +216,7 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
         this.listener = listener;
     }
 
-
-    public interface OnSwitchClickListener {
-        void onItemClick(Datapoint datapoint, boolean isChecked);
-    }
-
-    public void setOnSwitchClickListener(RegulationAdapter.OnSwitchClickListener listener) {
-        this.switchClickListener = listener;
-    }
-
-    public abstract static class ViewHolder extends RecyclerView.ViewHolder {//implements View.OnClickListener {
+    public abstract static class ViewHolder extends RecyclerView.ViewHolder {
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

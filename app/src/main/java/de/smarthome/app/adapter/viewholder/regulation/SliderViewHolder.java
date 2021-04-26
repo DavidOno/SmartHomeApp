@@ -1,10 +1,12 @@
 package de.smarthome.app.adapter.viewholder.regulation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.slider.Slider;
@@ -16,7 +18,7 @@ import de.smarthome.app.model.Datapoint;
 import de.smarthome.app.adapter.RegulationAdapter;
 
 public class SliderViewHolder extends RegulationAdapter.ViewHolder{
-    private TextView textView;
+    private TextView textViewName;
     private Slider slider;
     private RegulationAdapter adapter;
     private RegulationAdapter.OnItemClickListener onItemClickListener;
@@ -26,7 +28,7 @@ public class SliderViewHolder extends RegulationAdapter.ViewHolder{
                             @NonNull RegulationAdapter adapter,
                             @NonNull int type) {
         super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_slider, parent, false));
-        textView = itemView.findViewById(R.id.textView_item);
+        textViewName = itemView.findViewById(R.id.textView_item);
 
         slider = itemView.findViewById(R.id.sliderRange_item);
 
@@ -55,7 +57,20 @@ public class SliderViewHolder extends RegulationAdapter.ViewHolder{
 
     @Override
     public void onBindViewHolder(RegulationAdapter.ViewHolder holder, int position, Datapoint datapoint, Optional<String> value) {
-        textView.setText(datapoint.getName());
+        textViewName.setText(datapoint.getName().replace("_", " "));
+
+        if(adapter.getTestMap().get(datapoint) != null){
+            if(adapter.getTestMap().get(datapoint).getMin() != null){
+                float min = Float.parseFloat(adapter.getTestMap().get(datapoint).getMin());
+                slider.setValueFrom(min);
+                slider.setValue(min);
+            }
+
+            if(adapter.getTestMap().get(datapoint).getMax() != null){
+                float max = Float.parseFloat(adapter.getTestMap().get(datapoint).getMax());
+                slider.setValueTo(max);
+            }
+        }
 
         value.ifPresent(s -> slider.setValue(Float.parseFloat(s)));
     }
