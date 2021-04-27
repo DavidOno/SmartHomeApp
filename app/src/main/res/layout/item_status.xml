@@ -15,7 +15,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="-1dp"
-        android:background="#000000" />
+        android:background="@color/optionPrimaryColor" />
 
     <TextView
         android:id="@+id/textView_item"
@@ -25,7 +25,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="28dp"
         android:layout_marginTop="15dp"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/textPrimaryColor"
         android:textSize="18sp" />
 
     <TextView
@@ -37,7 +37,7 @@
         android:layout_marginStart="268dp"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="170dp"
-        android:textColor="#585B5C"
+        android:textColor="@color/textStatusColor"
         android:textSize="18sp"
         android:text="Status"/>
 

@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="55dp">
 
-
     <View
         android:id="@+id/view"
         android:layout_width="match_parent"
@@ -15,7 +14,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="-1dp"
-        android:background="#000000" />
+        android:background="@color/optionPrimaryColor" />
 
     <TextView
         android:id="@+id/textView_item"
@@ -26,7 +25,7 @@
         android:layout_marginStart="28dp"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="170dp"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/textPrimaryColor"
         android:textSize="18sp" />
 
     <ImageView

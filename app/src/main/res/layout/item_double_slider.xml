@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="80dp">
 
-
     <View
         android:id="@+id/view"
         android:layout_width="match_parent"
@@ -15,7 +14,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="0dp"
-        android:background="#000000" />
+        android:background="@color/optionPrimaryColor" />
 
     <com.google.android.material.slider.RangeSlider
         android:id="@+id/sliderRange_double_item"
@@ -53,7 +52,7 @@
         android:layout_marginStart="11dp"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="186dp"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/textPrimaryColor"
         android:textSize="18sp"/>
 
 

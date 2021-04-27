@@ -11,8 +11,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:text="Beacon Update"
-        android:paddingBottom="30dp"/>
+        android:text="@string/room_change"/>
+
+    <TextView
+        android:id="@+id/text_view_action_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/text_view_room_name"
@@ -28,7 +32,7 @@
         android:lines="1"
         android:gravity="top"
         android:background="@android:drawable/editbox_background"
-        android:text="Wanna switch rooms?"/>
+        android:text="@string/switch_rooms"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -37,19 +41,23 @@
 
         <Button
             android:id="@+id/button_left"
-            android:layout_width="150dp"
+            android:background="@drawable/dialog_button_shape"
+            android:textColor="@color/textOnButton"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:gravity="center"
-            android:text="Yes"/>
+            android:text="@string/switch_room_yes"/>
 
         <Button
             android:id="@+id/button_right"
-            android:layout_width="150dp"
+            android:background="@drawable/dialog_button_shape"
+            android:textColor="@color/textOnButton"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:gravity="center"
-            android:text="No"/>
+            android:text="@string/switch_room_no" />
 
     </LinearLayout>
 

@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#03DAC5</color>
+    <!-- Primary colors for front-end -->
+    <color name="colorPrimary">#FF800F</color>
+    <color name="colorPrimaryDark">#F87500</color>
+    <color name="colorAccent">#FBA421</color>
+    <color name="backgroundPrimaryColor">#0A0A0B</color>
+    <color name="optionPrimaryColor">#2C2C2E</color>
+    <color name="textPrimaryColor">#FFFFFF</color>
+    <color name="textStatusColor">#585B5C</color>
+    <color name="textOnButton">#000000</color>
+
+    <!-- Colors for switch -->
+    <color name="switchTrackDisabled">#585B5c</color>
+    <color name="switchTrackEnabled">#4CAF50</color>
+    <color name="switchTrackBorder">#8e8e8e</color>
+    <color name="switchThumbArea">#FFFFFF</color>
+    <color name="switchThumbBorder">#8e8e8e</color>
 </resources>

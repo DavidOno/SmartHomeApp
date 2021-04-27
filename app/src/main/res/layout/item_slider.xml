@@ -15,7 +15,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="0dp"
-        android:background="#000000" />
+        android:background="@color/optionPrimaryColor" />
 
     <com.google.android.material.slider.Slider
         android:id="@+id/sliderRange_item"
@@ -53,7 +53,7 @@
         android:layout_marginTop="15dp"
         android:layout_marginEnd="186dp"
         android:text="Lightregulation"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/textPrimaryColor"
         android:textSize="18sp" />
 
 </RelativeLayout>
