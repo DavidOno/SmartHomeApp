@@ -23,4 +23,6 @@
     <string name="switch_room_yes">Yes</string>
     <string name="switch_room_no">No</string>
     <string name="room_change">Room Change</string>
+    <string name="option_value">Value</string>
+    <string name="option_description">Description</string>
 </resources>

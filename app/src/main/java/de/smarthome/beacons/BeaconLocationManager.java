@@ -38,8 +38,8 @@ public class BeaconLocationManager {
             signalStrengthAvg.put(beaconID, average);
         }
         nearestBeacon = retrieveBeaconIDWithMaximumSignalStrength(signalStrengthAvg);
-        Log.d(TAG, "nearestBeacon " + nearestBeacon.toString());
-        //System.out.println("LM::NEARESTBEACON " + nearestBeacon.toString());
+        //Log.d(TAG, "nearestBeacon " + nearestBeacon.toString());
+        System.out.println("LM::NEARESTBEACON " + nearestBeacon.toString());
 
         Optional<Location> currentLocation = getLocation(nearestBeacon);
 
