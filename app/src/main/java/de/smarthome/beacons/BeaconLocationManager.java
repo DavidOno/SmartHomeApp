@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import de.smarthome.app.model.Location;
 import de.smarthome.app.model.UIConfig;
@@ -28,16 +29,9 @@ public class BeaconLocationManager {
         this.locationConfig = newBeaconConfig;
     }
 
-    void addNewBeaconStatus(Map<BeaconID, Integer> map) {
-        for(Map.Entry<BeaconID, Integer> entry: map.entrySet()) {
-            BeaconID beaconID = entry.getKey();
-            Integer signalStrength = entry.getValue();
-            List<Integer> signalStrengths = beacons2SignalStrength.get(beaconID);
-            signalStrengths = addSignalStrength(beaconID, signalStrength, signalStrengths);
-            int average = calculateAverageSignalStrength(signalStrengths);
-            signalStrengthAvg.put(beaconID, average);
-        }
-        nearestBeacon = retrieveBeaconIDWithMaximumSignalStrength(signalStrengthAvg);
+    void addNewBeaconStatus(Map<BeaconID, Integer> updatedBeaconSignals) {
+        updateSignalsStrengths(updatedBeaconSignals);
+        nearestBeacon = retrieveBeaconIDWithMaxAverageSignalStrength(signalStrengthAvg);
         //Log.d(TAG, "nearestBeacon " + nearestBeacon.toString());
         System.out.println("LM::NEARESTBEACON " + nearestBeacon.toString());
 
@@ -46,19 +40,66 @@ public class BeaconLocationManager {
         beaconObserver.updateLocation(currentLocation);
         }
 
-    private BeaconID retrieveBeaconIDWithMaximumSignalStrength(Map<BeaconID, Integer> signalStrengthAvg) {
-        return Collections.max(signalStrengthAvg.entrySet(), (entry1, entry2) -> entry1.getValue() - entry2.getValue()).getKey();
+    private void updateSignalsStrengths(Map<BeaconID, Integer> updatedBeaconSignals) {
+        for(Map.Entry<BeaconID, List<Integer>> entry : beacons2SignalStrength.entrySet()){
+            updateKnownSignalStrengths(updatedBeaconSignals, entry);
+        }
+        addNewSignalStrengths(updatedBeaconSignals);
+    }
+
+    private void addNewSignalStrengths(Map<BeaconID, Integer> updatedBeaconSignals) {
+        for(Map.Entry<BeaconID, Integer> remainingEntry : updatedBeaconSignals.entrySet()){
+            addNewSignalStrength(remainingEntry);
+        }
+    }
+
+    private void updateKnownSignalStrengths(Map<BeaconID, Integer> updatedBeaconSignals, Map.Entry<BeaconID, List<Integer>> entry) {
+        BeaconID beaconID = entry.getKey();
+        if(updatedBeaconSignals.containsKey(beaconID)){
+            updateSignalStrength(updatedBeaconSignals, beaconID);
+            updatedBeaconSignals.remove(beaconID);
+        }else{
+            fillMissingSignalStrengthsWithZero(beaconID);
+        }
+    }
+
+    private void fillMissingSignalStrengthsWithZero(BeaconID beaconID) {
+        List<Integer> signalStrengths = beacons2SignalStrength.get(beaconID);
+        signalStrengths = addSignalStrength(beaconID, 0, signalStrengths);
+        int average = calculateAverageSignalStrength(signalStrengths);
+        signalStrengthAvg.put(beaconID, average);
+    }
+
+    private void addNewSignalStrength(Map.Entry<BeaconID, Integer> entry) {
+        BeaconID beaconID = entry.getKey();
+        List<Integer> signalStrengths = beacons2SignalStrength.get(beaconID);
+        Integer signalStrength = entry.getValue();
+        signalStrengths = addSignalStrength(beaconID, signalStrength, signalStrengths);
+        int average = calculateAverageSignalStrength(signalStrengths);
+        signalStrengthAvg.put(beaconID, average);
+    }
+
+    private void updateSignalStrength(Map<BeaconID, Integer> updatedBeaconSignals, BeaconID beaconID) {
+        List<Integer> signalStrengths = beacons2SignalStrength.get(beaconID);
+        Integer signalStrength = updatedBeaconSignals.get(beaconID);
+        signalStrengths = addSignalStrength(beaconID, signalStrength, signalStrengths);
+        int average = calculateAverageSignalStrength(signalStrengths);
+        signalStrengthAvg.put(beaconID, average);
+    }
+
+    private BeaconID retrieveBeaconIDWithMaxAverageSignalStrength(Map<BeaconID, Integer> signalStrengthAvg) {
+        return Collections.min(signalStrengthAvg.entrySet(), (entry1, entry2) -> entry1.getValue() - entry2.getValue()).getKey();
     }
 
     private List<Integer> addSignalStrength(BeaconID beaconID, Integer signalStrength, List<Integer> signalStrenghts) {
         if(signalStrenghts == null) {
-            signalStrenghts = new ArrayList<>();
-        }else {
-            if(signalStrenghts.size() == N) {
-                signalStrenghts.remove(0);
-            }
+            signalStrenghts = Collections.nCopies(N, 0).stream().collect(Collectors.toCollection(ArrayList::new));
         }
+        signalStrenghts.remove(0);
         addSignalStrengthToMap(beaconID, signalStrength, signalStrenghts);
+        Log.d("BEACONID:", beaconID.toString());
+        Log.d("SIGNALSTRENGTHS: ", signalStrenghts.toString());
+        Log.d("GESAMT: ", beacons2SignalStrength.toString());
         return signalStrenghts;
     }
 
