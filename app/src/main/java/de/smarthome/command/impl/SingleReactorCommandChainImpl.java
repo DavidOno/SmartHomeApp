@@ -15,8 +15,8 @@ import de.smarthome.command.SingleReactorCommandChain;
 public class SingleReactorCommandChainImpl implements SingleReactorCommandChain {
 
     private Iterator<CommandChainable> iterator;
-    private List<CommandChainable> commands = new ArrayList<>();
-    private ResponseReactor reactor;
+    private final List<CommandChainable> commands = new ArrayList<>();
+    private final ResponseReactor reactor;
 
     public SingleReactorCommandChainImpl(ResponseReactor reactor){
         this.reactor = reactor;

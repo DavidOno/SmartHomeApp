@@ -28,8 +28,11 @@ import de.smarthome.app.model.responses.RegisterResponse;
 
 public class HomeServerCommandInterpreter implements CommandInterpreter {
 
+
     private static final String NO_CACHE = "no-cache";
     private static final String TAG = "HomeServerCommandInterpreter";
+    public static final String API_V_2_CLIENTS = "/api/v2/clients/";
+    public static final String HTTPS = "https://";
     private String token;
     private String uriPrefix = "https://192.168.132.101";
 
@@ -87,7 +90,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
 
     @Override
     public Request buildUnregisterClientRequest(){
-        String uri = uriPrefix+"/api/v2/clients/"+token;
+        String uri = uriPrefix+ API_V_2_CLIENTS +token;
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> entity = new HttpEntity<>(headers);
         return new RequestImpl(uri, HttpMethod.DELETE, entity, JsonNode.class);
@@ -95,14 +98,14 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
 
     @Override
     public Request buildRegisterCallbackServerAtGiraServer(String ipCallbackServer) {
-        String uri = uriPrefix+"/api/v2/clients/"+token+"/callbacks";
+        String uri = uriPrefix+ API_V_2_CLIENTS +token+"/callbacks";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        String serviceURI = "https://"+ipCallbackServer+"/service";
-        String valueURI = "https://"+ipCallbackServer+"/value";
+        String serviceURI = HTTPS +ipCallbackServer+"/service";
+        String valueURI = HTTPS +ipCallbackServer+"/value";
 
-        Map<Object, Object> jsonBody = new LinkedHashMap();
+        Map<Object, Object> jsonBody = new LinkedHashMap<>();
         jsonBody.put("serviceCallback", serviceURI);
         jsonBody.put("valueCallback", valueURI);
         jsonBody.put("testCallbacks", true);
@@ -113,7 +116,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
 
     @Override
     public Request buildUnRegisterCallbackServerAtGiraServer() {
-        String uri = uriPrefix+"/api/v2/clients/"+token+"/callbacks";
+        String uri = uriPrefix+ API_V_2_CLIENTS +token+"/callbacks";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -153,7 +156,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
     }
 
     private Request buildRegisterRequest(String ip, String token) {
-        String uri = "https://"+ip+"/register";
+        String uri = HTTPS +ip+"/register";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -163,7 +166,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
     }
 
     private Request buildUnregisterRequest(String ip, String token){
-        String uri = "https://"+ip+"/unregister?firebaseToken="+token;
+        String uri = HTTPS +ip+"/unregister?firebaseToken="+token;
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -173,7 +176,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
 
     @Override
     public Request buildAdditionalConfigRequest(String ip, AdditionalConfigs additionalConfigs) {
-        String uri = "https://"+ip+"/"+additionalConfigs.getResource();
+        String uri = HTTPS +ip+"/"+additionalConfigs.getResource();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -183,6 +186,6 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
 
     @Override
     public void setIP(String ip) {
-        this.uriPrefix = "https://"+ip;
+        this.uriPrefix = HTTPS +ip;
     }
 }

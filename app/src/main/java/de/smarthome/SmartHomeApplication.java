@@ -9,15 +9,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.NavGraph;
 import androidx.navigation.NavInflater;
@@ -25,11 +22,8 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialRequest;
-import com.google.android.gms.auth.api.credentials.CredentialRequestResponse;
 import com.google.android.gms.auth.api.credentials.Credentials;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -58,22 +52,16 @@ public class SmartHomeApplication extends AppCompatActivity {
         repository = Repository.getInstance(this.getApplication());
 
         toastUtility = ToastUtility.getInstance();
-        toastUtility.getNewToast().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if(aBoolean){
-                    Toast.makeText(getApplicationContext(), toastUtility.getMessage(), Toast.LENGTH_LONG).show();
-                }
+        toastUtility.getNewToast().observe(this, aBoolean -> {
+            if(aBoolean){
+                Toast.makeText(getApplicationContext(), toastUtility.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
 
-        repository.checkBeacon().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if(aBoolean){
-                    repository.initBeaconCheck();
-                    startBeaconDialog();
-                }
+        repository.checkBeacon().observe(this, aBoolean -> {
+            if(aBoolean){
+                repository.initBeaconCheck();
+                startBeaconDialog();
             }
         });
 
@@ -113,21 +101,13 @@ public class SmartHomeApplication extends AppCompatActivity {
         Button buttonYes = dialog.findViewById(R.id.button_left);
         Button buttonNo = dialog.findViewById(R.id.button_right);
 
-        buttonYes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toastUtility.prepareToast("Room switched!");
-                dialog.dismiss();
-                goToFragment(R.id.roomOverviewFragment);
-            }
+        buttonYes.setOnClickListener(v -> {
+            toastUtility.prepareToast("Room switched!");
+            dialog.dismiss();
+            goToFragment(R.id.roomOverviewFragment);
         });
 
-        buttonNo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
+        buttonNo.setOnClickListener(v -> dialog.dismiss());
     }
 
     private void goToFragment(int destinationFragment) {
@@ -145,18 +125,15 @@ public class SmartHomeApplication extends AppCompatActivity {
 
         CredentialsClient credentialsClient = Credentials.getClient(this);
 
-        credentialsClient.request(credentialRequest).addOnCompleteListener(new OnCompleteListener<CredentialRequestResponse>() {
-            @Override
-            public void onComplete(@NonNull Task<CredentialRequestResponse> task) {
+        credentialsClient.request(credentialRequest).addOnCompleteListener(task -> {
 
-                if (task.isSuccessful()) {
-                    // See "Handle successful credential requests"
-                    onCredentialRetrieved(task.getResult().getCredential());
-                }else{
-                    // See "Handle unsuccessful and incomplete credential requests"
-                    //TODO: To slow StartFragment (here HomeOverview) is still loaded before it is skipped
-                    goToFragment(R.id.loginFragment);
-                }
+            if (task.isSuccessful()) {
+                // See "Handle successful credential requests"
+                onCredentialRetrieved(task.getResult().getCredential());
+            }else{
+                // See "Handle unsuccessful and incomplete credential requests"
+                //TODO: To slow StartFragment (here HomeOverview) is still loaded before it is skipped
+                goToFragment(R.id.loginFragment);
             }
         });
     }
