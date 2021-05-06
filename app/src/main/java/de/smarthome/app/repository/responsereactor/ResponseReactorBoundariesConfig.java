@@ -1,20 +1,20 @@
-package de.smarthome.command.impl;
+package de.smarthome.app.repository.responsereactor;
 
 import android.util.Log;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import de.smarthome.beacons.BeaconLocations;
 import de.smarthome.command.ResponseReactor;
+import de.smarthome.app.model.UIConfig;
 import de.smarthome.app.repository.Repository;
 
-public class ResponseReactorBeaconConfig implements ResponseReactor {
-    private final String TAG = "ResponseReactorBeaconConfig";
-    private BeaconLocations responseBeaconConfig;
+public class ResponseReactorBoundariesConfig implements ResponseReactor {
+    private final String TAG = "ResponseReactorUIConfig";
+    private UIConfig responseUIConfig;
     private Repository parentRepository;
 
-    public ResponseReactorBeaconConfig(Repository parentRepository) {
+    public ResponseReactorBoundariesConfig(Repository parentRepository) {
         this.parentRepository = parentRepository;
     }
 
@@ -22,11 +22,11 @@ public class ResponseReactorBeaconConfig implements ResponseReactor {
     public void react(ResponseEntity responseEntity) {
         try {
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
-                System.out.println("response received BeaconConfig");
+                System.out.println("response received UIConfig");
                 System.out.println(responseEntity.getBody());
 
-                responseBeaconConfig = (BeaconLocations) responseEntity.getBody();
-                sendBeaconLocationsToRepo(responseBeaconConfig);
+                responseUIConfig = (UIConfig) responseEntity.getBody();
+                sendUIConfigToRepo(responseUIConfig);
 
                 Log.d(TAG, "Communication with Server possible.\nStatus: " + responseEntity.getStatusCode());
             } else {
@@ -39,11 +39,11 @@ public class ResponseReactorBeaconConfig implements ResponseReactor {
         }
     }
 
-    public BeaconLocations getResponseBeaconLocations() {
-        return responseBeaconConfig;
+    public UIConfig getResponseUIConfig() {
+        return responseUIConfig;
     }
 
-    public void sendBeaconLocationsToRepo(BeaconLocations newBeaconConfig){
-        parentRepository.setBeaconConfig(newBeaconConfig);
+    public void sendUIConfigToRepo(UIConfig newUIConfig){
+        parentRepository.setUIConfig(newUIConfig);
     }
 }

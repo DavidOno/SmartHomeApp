@@ -1,4 +1,4 @@
-package de.smarthome.command.impl;
+package de.smarthome.app.repository.responsereactor;
 
 
 import android.util.Log;

@@ -1,4 +1,4 @@
-package de.smarthome.command.impl;
+package de.smarthome.app.repository.responsereactor;
 
 import android.util.Log;
 
@@ -8,14 +8,19 @@ import org.springframework.http.ResponseEntity;
 import de.smarthome.command.ResponseReactor;
 import de.smarthome.app.model.UIConfig;
 import de.smarthome.app.repository.Repository;
+import de.smarthome.app.utility.ToastUtility;
 
-public class ResponseReactorBoundariesConfig implements ResponseReactor {
+public class ResponseReactorUIConfig implements ResponseReactor {
     private final String TAG = "ResponseReactorUIConfig";
     private UIConfig responseUIConfig;
     private Repository parentRepository;
 
-    public ResponseReactorBoundariesConfig(Repository parentRepository) {
+    private ToastUtility toastUtility;
+
+    public ResponseReactorUIConfig(Repository parentRepository) {
         this.parentRepository = parentRepository;
+
+        this.toastUtility = ToastUtility.getInstance();
     }
 
     @Override
@@ -29,13 +34,19 @@ public class ResponseReactorBoundariesConfig implements ResponseReactor {
                 sendUIConfigToRepo(responseUIConfig);
 
                 Log.d(TAG, "Communication with Server possible.\nStatus: " + responseEntity.getStatusCode());
+
+                toastUtility.prepareToast("UIConfig successfully retrieved!");
             } else {
                 System.out.println("error occurred");
                 System.out.println(responseEntity.getStatusCode());
                 Log.d(TAG, "Problem when trying to reach Server.\nStatus: " + responseEntity.getStatusCode());
+
+                toastUtility.prepareToast("Unable to retrieve UIConfig!");
             }
         }catch(Exception e){
-            Log.d(TAG, "Exerption: " + e.toString());
+            Log.d(TAG, "Exception: " + e.toString());
+
+            toastUtility.prepareToast("Exception: Unable to retrieve UIConfig!");
         }
     }
 
