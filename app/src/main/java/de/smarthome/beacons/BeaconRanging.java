@@ -28,12 +28,12 @@ public class BeaconRanging implements BeaconConsumer {
         beaconLocationManager = new BeaconLocationManager(newUIConfig, newBeaconConfig);
     }
 
-    public void onPause() {
-        beaconManager.unbind(this);
-    }
-
     public void onResume() {
         beaconManager.bind(this);
+    }
+
+    public void onPause() {
+        beaconManager.unbind(this);
     }
 
     @Override

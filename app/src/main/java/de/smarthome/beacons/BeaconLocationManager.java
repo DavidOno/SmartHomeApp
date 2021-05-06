@@ -97,9 +97,12 @@ public class BeaconLocationManager {
         }
         signalStrenghts.remove(0);
         addSignalStrengthToMap(beaconID, signalStrength, signalStrenghts);
-        Log.d("BEACONID:", beaconID.toString());
-        Log.d("SIGNALSTRENGTHS: ", signalStrenghts.toString());
-        Log.d("GESAMT: ", beacons2SignalStrength.toString());
+        //Log.d("BEACONID:", beaconID.toString());
+        //Log.d("SIGNALSTRENGTHS: ", signalStrenghts.toString());
+        //Log.d("GESAMT: ", beacons2SignalStrength.toString());
+        System.out.println("BEACONID:::" + beaconID.toString());
+        System.out.println("SIGNALSTRENGTHS:::" + signalStrenghts.toString());
+        System.out.println("GESAMT:::" + beacons2SignalStrength.toString());
         return signalStrenghts;
     }
 

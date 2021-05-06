@@ -18,11 +18,11 @@
     <string name="loginHintPassword">Password</string>
     <string name="loginButton">Login</string>
     <string name="loginButtonDmy">Dummy</string>
-    <string name="room_name">Room Name</string>
     <string name="switch_rooms">You want to switch rooms?</string>
     <string name="switch_room_yes">Yes</string>
     <string name="switch_room_no">No</string>
     <string name="room_change">Room Change</string>
     <string name="option_value">Value</string>
     <string name="option_description">Description</string>
+    <string name="room_name">Room Name</string>
 </resources>

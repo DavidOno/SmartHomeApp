@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="80dp">
+    android:layout_height="80dp"
+    android:layout_marginBottom="20dp">
 
     <View
         android:id="@+id/view"
@@ -51,7 +52,6 @@
         android:layout_centerHorizontal="true"
         android:layout_marginStart="11dp"
         android:layout_marginTop="15dp"
-        android:layout_marginEnd="186dp"
         android:textColor="@color/textPrimaryColor"
         android:textSize="18sp"/>
 

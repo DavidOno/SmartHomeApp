@@ -648,16 +648,17 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         }).start();
     }
 
+    //ebefd083-70a2-47c8-9837-e7b5634df55570
     private void fillWithDummyValueBeaconConfig() {
         String locationConfigString = "{\n" +
                 "\t\"locations\": [\n" +
                 "\t\t{\n" +
                 "\t\t\t\"roomUID\": \"aafb\",\n" +
-                "\t\t\t\"beaconId\": \"ebefd083-70a2-47c8-9837-e7b5634df55570\"\n" +
+                "\t\t\t\"beaconId\": \"2789b1a4-664c-51dd-9d49-df3401de285700\"\n" +
                 "\t\t},\n" +
                 "\t\t{\n" +
                 "\t\t\t\"roomUID\": \"aaej\",\n" +
-                "\t\t\t\"beaconId\": \"2789b1a4-664c-51dd-9d49-df3401de285700\"\n" +
+                "\t\t\t\"beaconId\": \"7b44b47b-52a1-5381-90c2-f09b6838c5d410\"\n" +
                 "\t\t},\n" +
                 "\t\t{\n" +
                 "\t\t\t\"roomUID\": \"aaex\",\n" +
