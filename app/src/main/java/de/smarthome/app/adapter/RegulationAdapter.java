@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -42,9 +43,7 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
 
     private OnItemClickListener listener;
 
-    private String statusFunctionDataPointUID = null;
-    private String statusFunctionDataPointValue = null;
-    private Datapoint dataPointToBeUpdated = null;
+    private Map<String, String> mapDatapointIDandValue = new LinkedHashMap<>();
 
     private ChannelConfig channelConfig;
     private Repository repository;
@@ -70,25 +69,37 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
     }
 
     private void requestCurrentStatus(){
-        //TODO: Check if the server response is for the status method if not function has to get the status id
+        List<String> requestList = new ArrayList<>();
         for(Datapoint dp : dataPointList){
             if(dataPointMap.get(dp) != null){
-                repository.requestGetValue(dataPointMap.get(dp).getID());
+                requestList.add(dataPointMap.get(dp).getID());
             }
         }
+        repository.requestGetValue(requestList);
     }
 
     public void updateStatusValue(String changedStatusFunctionUID, String changedStatusFunctionValue){
-        if(containsViewStatusFunction(changedStatusFunctionUID)){
-            setStatusVariables(changedStatusFunctionUID, changedStatusFunctionValue);
+        if(containsViewStatusFunction(changedStatusFunctionUID, changedStatusFunctionValue)){
             notifyItemChanged(getItemPosition());
+        }
+    }
+
+    public void updateStatusValue2(Map<String, String> newInput) {
+        if (newInput.size() == 1) {
+            updateStatusValue(newInput.keySet().iterator().next(),
+                    newInput.get(newInput.keySet().iterator().next()));
+        } else {
+            notifyDataSetChanged();
+            for (String key : newInput.keySet()) {
+                containsViewStatusFunction(key, newInput.get(key));
+            }
         }
     }
 
     private int getItemPosition(){
         int position = 0;
         for (Datapoint dp : dataPointList){
-            if(dp.equals(dataPointToBeUpdated)){
+            if(mapDatapointIDandValue.containsKey(dp.getID())){
                 return position;
             }
             position++;
@@ -96,13 +107,14 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
         return -1;
     }
 
-    private boolean containsViewStatusFunction(String changedStatusFunctionUID) {
+    private boolean containsViewStatusFunction(String changedStatusFunctionUID, String value) {
         for(Datapoint datapoint : dataPointList){
             if (dataPointMap.get(datapoint) != null) {
+                //TODO: remove after testing
                 Datapoint statusDataPoint = dataPointMap.get(datapoint);
 
-                if (changedStatusFunctionUID.equals(statusDataPoint.getID())) {
-                    dataPointToBeUpdated  = datapoint;
+                if (changedStatusFunctionUID.equals(dataPointMap.get(datapoint).getID())) {
+                    mapDatapointIDandValue.put(datapoint.getID(), value);
                     return true;
                 }
 
@@ -174,19 +186,18 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
     }
 
     private Optional<String> getStatusValueString(Datapoint datapoint, Optional<String> value) {
-        if(dataPointToBeUpdated != null) {
-            if(dataPointToBeUpdated.equals(datapoint)){
-                value = Optional.ofNullable(statusFunctionDataPointValue);
+        if(!mapDatapointIDandValue.isEmpty()) {
+            if(mapDatapointIDandValue.containsKey(datapoint.getID())){
+                value = Optional.ofNullable(mapDatapointIDandValue.get(datapoint.getID()));
 
-                setStatusVariables(null, null);
+                removeStatusVariables(datapoint.getID());
             }
         }
         return value;
     }
 
-    private void setStatusVariables(String uID, String value) {
-        statusFunctionDataPointUID = uID;
-        statusFunctionDataPointValue = value;
+    private void removeStatusVariables(String uID) {
+        mapDatapointIDandValue.remove(uID);
     }
 
     @Override
