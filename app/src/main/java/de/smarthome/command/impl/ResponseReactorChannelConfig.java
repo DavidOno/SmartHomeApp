@@ -6,6 +6,7 @@ import android.util.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import de.smarthome.app.repository.ConfigContainer;
 import de.smarthome.command.ResponseReactor;
 import de.smarthome.app.model.configs.ChannelConfig;
 import de.smarthome.app.repository.Repository;
@@ -14,14 +15,13 @@ import de.smarthome.app.utility.ToastUtility;
 public class ResponseReactorChannelConfig implements ResponseReactor {
     private final String TAG = "ResponseReactorChannelConfig";
     private ChannelConfig responseChannelConfig;
-    private Repository parentRepository;
+    private ConfigContainer configContainer;
 
     private ToastUtility toastUtility;
 
-    public ResponseReactorChannelConfig(Repository parentRepository) {
-        this.parentRepository = parentRepository;
-
-        this.toastUtility = ToastUtility.getInstance();
+    public ResponseReactorChannelConfig() {
+        configContainer = ConfigContainer.getInstance();
+        toastUtility = ToastUtility.getInstance();
     }
 
     @Override
@@ -55,6 +55,6 @@ public class ResponseReactorChannelConfig implements ResponseReactor {
     }
 
     public void sendChannelConfigToRepo(ChannelConfig newChannelConfig){
-        parentRepository.setChannelConfig(newChannelConfig);
+        configContainer.setChannelConfig(newChannelConfig);
     }
 }

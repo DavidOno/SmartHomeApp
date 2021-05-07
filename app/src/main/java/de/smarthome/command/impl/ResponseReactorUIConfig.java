@@ -5,21 +5,20 @@ import android.util.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import de.smarthome.app.repository.ConfigContainer;
 import de.smarthome.command.ResponseReactor;
 import de.smarthome.app.model.UIConfig;
-import de.smarthome.app.repository.Repository;
 import de.smarthome.app.utility.ToastUtility;
 
 public class ResponseReactorUIConfig implements ResponseReactor {
     private final String TAG = "ResponseReactorUIConfig";
     private UIConfig responseUIConfig;
-    private Repository parentRepository;
+    private ConfigContainer configContainer;
 
     private ToastUtility toastUtility;
 
-    public ResponseReactorUIConfig(Repository parentRepository) {
-        this.parentRepository = parentRepository;
-
+    public ResponseReactorUIConfig() {
+        this.configContainer = ConfigContainer.getInstance();
         this.toastUtility = ToastUtility.getInstance();
     }
 
@@ -53,6 +52,6 @@ public class ResponseReactorUIConfig implements ResponseReactor {
     }
 
     public void sendUIConfigToRepo(UIConfig newUIConfig){
-        parentRepository.setUIConfig(newUIConfig);
+        configContainer.setUIConfig(newUIConfig);
     }
 }

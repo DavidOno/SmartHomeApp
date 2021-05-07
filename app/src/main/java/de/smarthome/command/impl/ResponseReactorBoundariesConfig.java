@@ -6,16 +6,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import de.smarthome.app.model.configs.BoundariesConfig;
+import de.smarthome.app.repository.ConfigContainer;
 import de.smarthome.command.ResponseReactor;
-import de.smarthome.app.repository.Repository;
 
 public class ResponseReactorBoundariesConfig implements ResponseReactor {
     private final String TAG = "ResponseReactorBoundariesConfig";
     private BoundariesConfig responseBoundariesConfig;
-    private Repository parentRepository;
+    private ConfigContainer configContainer;
 
-    public ResponseReactorBoundariesConfig(Repository parentRepository) {
-        this.parentRepository = parentRepository;
+    public ResponseReactorBoundariesConfig() {
+        this.configContainer = ConfigContainer.getInstance();
     }
     //TODO:Rework Logs
     @Override
@@ -44,6 +44,6 @@ public class ResponseReactorBoundariesConfig implements ResponseReactor {
     }
 
     public void sendBoundariesConfigToRepo(BoundariesConfig newBoundariesConfig){
-        parentRepository.setBoundaryConfig(newBoundariesConfig);
+        configContainer.setBoundaryConfig(newBoundariesConfig);
     }
 }

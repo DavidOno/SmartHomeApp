@@ -36,7 +36,8 @@ public class ResponseReactorGetValue implements ResponseReactor {
 
                 String value = x.getValues().get(0).getValue();
                 String uID = x.getValues().get(0).getUid();
-                parentRepository.updateStatusList2(uID, value);
+                //TODO: REWORK THIS REQUEST
+                //parentRepository.updateStatusList2(uID, value);
 
             } else {
                 System.out.println("error occurred");
