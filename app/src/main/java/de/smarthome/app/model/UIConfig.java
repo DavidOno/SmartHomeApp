@@ -3,6 +3,7 @@ package de.smarthome.app.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -78,5 +79,13 @@ public class UIConfig {
         for(Location location : locationParent.getLocations()) {
             getLocation(location, result, roomId);
         }
+    }
+
+    public List<Location> getAllLocations(){
+        List<Location> resultList = locations;
+        for(Location loc : locations){
+            loc.getAllChildrenFromLocation(resultList);
+        }
+        return resultList;
     }
 }
