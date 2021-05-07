@@ -75,6 +75,15 @@ public class RegulationFragment extends Fragment {
             }
         });
 
+        regulationViewModel.getStatusList2().observe(getViewLifecycleOwner(), new Observer<Map<String, String>>() {
+            @Override
+            public void onChanged(Map<String, String> stringStringMap) {
+                adapter.updateStatusValue2(stringStringMap);
+
+            }
+        });
+
+        //TODO:REFACTOR!
         regulationViewModel.getTest().observe(getViewLifecycleOwner(), new Observer<Map<Datapoint, BoundaryDataPoint>>() {
             @Override
             public void onChanged(Map<Datapoint, BoundaryDataPoint> boundaryMap) {
