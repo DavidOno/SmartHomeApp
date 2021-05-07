@@ -26,14 +26,6 @@ public class RoomOverviewViewModel  extends AndroidViewModel {
         return repository.getFunctionList();
     }
 
-    public LiveData<Map<Function, Function>> getRoomStatusFunctions(){
-        return repository.getRoomStatusFunctions();
-    }
-
-    public boolean isChannelInputOnlyBinary(Function function){
-        return repository.getSmartHomeChannelConfig().isFirstDataPointBinary(function);
-    }
-
     public void requestSetValue(String ID, String value){
         repository.requestSetValue(ID, value);
     }
@@ -46,12 +38,12 @@ public class RoomOverviewViewModel  extends AndroidViewModel {
         return repository.getStatusList();
     }
 
-    public Location getSelectedLoction(){
+    public Location getSelectedLocation(){
         return repository.getSelectedLocation();
     }
 
     public LiveData<Map<String, String>> getStatusList2(){
-        return repository.statusList2;
+        return repository.getStatusList2();
     }
 
 }

@@ -10,8 +10,6 @@ import java.util.Map;
 
 import de.smarthome.app.model.Datapoint;
 import de.smarthome.app.model.Function;
-import de.smarthome.app.model.Location;
-import de.smarthome.app.model.configs.Boundary;
 import de.smarthome.app.model.configs.BoundaryDataPoint;
 import de.smarthome.app.repository.Repository;
 
@@ -44,6 +42,10 @@ public class RegulationViewModel extends AndroidViewModel {
 
     //TODO: Refactor
     public LiveData<Map<Datapoint, BoundaryDataPoint>> getTest(){
-        return  repository.getTest();
+        return  repository.getBoundaryList();
+    }
+
+    public LiveData<Map<String, String>> getStatusList2() {
+        return repository.getStatusList2();
     }
 }
