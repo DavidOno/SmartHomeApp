@@ -64,7 +64,7 @@ public class SmartHomeApplication extends AppCompatActivity {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if(aBoolean){
-                    Toast.makeText(getApplicationContext(), toastUtility.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), toastUtility.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -93,8 +93,7 @@ public class SmartHomeApplication extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        //TODO: When App gets rotated ==> Everything gets unsubscribed!
-        //repository.unsubscribeFromEverything();
+        repository.unsubscribeFromEverything();
         toastUtility.prepareToast("Everything got unsubscribed!");
         super.onDestroy();
     }
@@ -183,7 +182,6 @@ public class SmartHomeApplication extends AppCompatActivity {
                     onCredentialRetrieved(task.getResult().getCredential());
                 }else{
                     // See "Handle unsuccessful and incomplete credential requests"
-                    //TODO: To slow StartFragment (here HomeOverview) is still loaded before it is skipped
                     setStartFragment(R.id.loginFragment);
                 }
             }
@@ -193,7 +191,7 @@ public class SmartHomeApplication extends AppCompatActivity {
     private void onCredentialRetrieved(Credential credential) {
         String accountType = credential.getAccountType();
         if (accountType == null) {
-            //repository.requestRegisterUser(credential);
+            repository.requestRegisterUser(credential);
             setStartFragment(R.id.HomeOverviewFragment);
         }
     }
