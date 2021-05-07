@@ -88,17 +88,6 @@ public class LoginFragment extends Fragment {
         loginViewModel = new ViewModelProvider(requireActivity()).get(LoginViewModel.class);
         toastUtility = ToastUtility.getInstance();
 
-        test();
-    }
-
-    private void test() {
-        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                toastUtility.prepareToast("Hello backpress!");
-            }
-        };
-        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
     public Credential buildCredential(String Username, String pwd) {
