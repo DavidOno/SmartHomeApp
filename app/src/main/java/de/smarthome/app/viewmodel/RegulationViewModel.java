@@ -14,8 +14,8 @@ import de.smarthome.app.model.configs.BoundaryDataPoint;
 import de.smarthome.app.repository.Repository;
 
 public class RegulationViewModel extends AndroidViewModel {
-    private  final String TAG = "RegulationViewModel";
-    private   Repository repository;
+    private  static final String TAG = "RegulationViewModel";
+    private  Repository repository;
 
     public RegulationViewModel(@NonNull Application application)  {
         super(application);
@@ -28,24 +28,23 @@ public class RegulationViewModel extends AndroidViewModel {
         repository.requestSetValue(ID, value);
     }
 
-    public LiveData<Map<Datapoint, Datapoint>> getDataPoints(){
-        return repository.getDataPoints();
+    public LiveData<Map<Datapoint, Datapoint>> getDataPointMap(){
+        return repository.getDataPointMap();
     }
 
-    public LiveData<Map<String, String>> getStatusList(){
-        return repository.getStatusList();
+    public LiveData<Map<String, String>> getStatusUpdateMap(){
+        return repository.getStatusUpdateMap();
     }
 
     public Function getSelectedFunction(){
         return repository.getSelectedFunction();
     }
 
-    //TODO: Refactor
-    public LiveData<Map<Datapoint, BoundaryDataPoint>> getTest(){
-        return  repository.getBoundaryList();
+    public LiveData<Map<Datapoint, BoundaryDataPoint>> getBoundaryMap(){
+        return  repository.getBoundaryMap();
     }
 
-    public LiveData<Map<String, String>> getStatusList2() {
-        return repository.getStatusList2();
+    public LiveData<Map<String, String>> getStatusGetValueMap() {
+        return repository.getStatusGetValueMap();
     }
 }

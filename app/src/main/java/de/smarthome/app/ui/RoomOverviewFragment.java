@@ -57,14 +57,14 @@ public class RoomOverviewFragment extends Fragment {
         adapter = new RoomOverviewAdapter();
         recyclerViewRoom.setAdapter(adapter);
 
-        roomOverviewViewModel.getUsableRoomFunctions().observe(getViewLifecycleOwner(), new Observer<Map<Function, Function>>() {
+        roomOverviewViewModel.getFunctionMap().observe(getViewLifecycleOwner(), new Observer<Map<Function, Function>>() {
             @Override
             public void onChanged(@Nullable Map<Function, Function> functions) {
                 adapter.setFunctionList(functions, getActivity().getApplication());
             }
         });
 
-        roomOverviewViewModel.getStatusList().observe(getViewLifecycleOwner(), new Observer<Map<String, String>>() {
+        roomOverviewViewModel.getStatusUpdateMap().observe(getViewLifecycleOwner(), new Observer<Map<String, String>>() {
             @Override
             public void onChanged(Map<String, String> stringStringMap) {
                     String uid = stringStringMap.keySet().iterator().next();
@@ -73,10 +73,10 @@ public class RoomOverviewFragment extends Fragment {
             }
         });
 
-        roomOverviewViewModel.getStatusList2().observe(getViewLifecycleOwner(), new Observer<Map<String, String>>() {
+        roomOverviewViewModel.getStatusGetValueMap().observe(getViewLifecycleOwner(), new Observer<Map<String, String>>() {
             @Override
             public void onChanged(Map<String, String> stringStringMap) {
-                adapter.updateStatusValue2(stringStringMap);
+                adapter.updateMultipleStatusValues(stringStringMap);
 
             }
         });

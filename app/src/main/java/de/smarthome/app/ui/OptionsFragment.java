@@ -14,6 +14,8 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.gms.auth.api.credentials.Credential;
+import com.google.android.gms.auth.api.credentials.CredentialRequest;
+import com.google.android.gms.auth.api.credentials.CredentialRequestResponse;
 import com.google.android.gms.auth.api.credentials.Credentials;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -52,7 +54,7 @@ public class OptionsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         requireActivity().setTitle("Option");
 
-        buttonLogout.setOnClickListener(v -> test());
+        buttonLogout.setOnClickListener(v -> logoutUser());
     }
 
 
@@ -60,10 +62,8 @@ public class OptionsFragment extends Fragment {
         buttonLogout = view.findViewById(R.id.button_logout);
     }
 
-    private void test(){
-        toastUtility.prepareToast("User Credential were deleted!");
-        navigateToLoginFragment();
-        deleteCredential(optionsViewModel.getUserCredential());
+    private void logoutUser(){
+        getSavedCredentialsFromGoogle();
     }
 
     private void navigateToLoginFragment() {
@@ -84,5 +84,28 @@ public class OptionsFragment extends Fragment {
             }
         });
 
+    }
+
+    public void getSavedCredentialsFromGoogle() {
+        CredentialRequest credentialRequest = new CredentialRequest.Builder()
+                .setPasswordLoginSupported(true)
+                .build();
+
+        CredentialsClient credentialsClient = Credentials.getClient(this.getActivity());
+
+        credentialsClient.request(credentialRequest).addOnCompleteListener(new OnCompleteListener<CredentialRequestResponse>() {
+            @Override
+            public void onComplete(@NonNull Task<CredentialRequestResponse> task) {
+
+                if (task.isSuccessful()) {
+                    // See "Handle successful credential requests"
+                    deleteCredential(task.getResult().getCredential());
+                    navigateToLoginFragment();
+                }else{
+                    // See "Handle unsuccessful and incomplete credential requests"
+                    toastUtility.prepareToast("Not able to retrieve Login data");
+                }
+            }
+        });
     }
 }

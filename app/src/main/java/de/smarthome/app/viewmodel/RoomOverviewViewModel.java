@@ -22,8 +22,8 @@ public class RoomOverviewViewModel  extends AndroidViewModel {
         repository = Repository.getInstance(application);
     }
 
-    public LiveData<Map<Function, Function>> getUsableRoomFunctions(){
-        return repository.getFunctionList();
+    public LiveData<Map<Function, Function>> getFunctionMap(){
+        return repository.getFunctionMap();
     }
 
     public void requestSetValue(String ID, String value){
@@ -34,16 +34,16 @@ public class RoomOverviewViewModel  extends AndroidViewModel {
         repository.setSelectedFunction(function);
     }
 
-    public LiveData<Map<String, String>> getStatusList(){
-        return repository.getStatusList();
+    public LiveData<Map<String, String>> getStatusUpdateMap(){
+        return repository.getStatusUpdateMap();
     }
 
     public Location getSelectedLocation(){
         return repository.getSelectedLocation();
     }
 
-    public LiveData<Map<String, String>> getStatusList2(){
-        return repository.getStatusList2();
+    public LiveData<Map<String, String>> getStatusGetValueMap(){
+        return repository.getStatusGetValueMap();
     }
 
 }

@@ -26,7 +26,7 @@ import de.smarthome.server.CallbackSubscriber;
 import de.smarthome.server.MyFirebaseMessagingService;
 
 public class Repository implements CallbackSubscriber, BeaconObserverSubscriber {
-    private final String TAG = "Repository";
+    private static final String TAG = "Repository";
     private static Repository instance;
 
     private ConfigContainer configContainer;
@@ -46,8 +46,8 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         if (instance == null) {
             instance = new Repository();
             instance.configContainer = ConfigContainer.getInstance();
-            instance.serverCommunicator = ServerCommunicator.getInstance();
             if(application != null){
+                instance.serverCommunicator = ServerCommunicator.getInstance(application);
                 instance.parentApplication = application;
             }
         }
@@ -61,10 +61,6 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
 
     public Function getSelectedFunction() {
         return configContainer.getSelectedFunction();
-    }
-
-    public Credential getUserCredential() {
-        return serverCommunicator.getUserCredential();
     }
 
     public Location getSelectedLocation() {
@@ -88,7 +84,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     public LiveData<Boolean> getLoginDataStatus() {
-        return serverCommunicator.getLoginDataStatus();
+        return serverCommunicator.getLoginRequestStatus();
     }
 
     public ChannelConfig getSmartHomeChannelConfig() {
@@ -130,24 +126,24 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         return configContainer.getLocationList();
     }
 
-    public MutableLiveData<Map<Function, Function>> getFunctionList() {
-        return configContainer.getFunctionList();
+    public MutableLiveData<Map<Function, Function>> getFunctionMap() {
+        return configContainer.getFunctionMap();
     }
 
-    public LiveData<Map<Datapoint, BoundaryDataPoint>> getBoundaryList() {
-        return configContainer.getBoundaryList();
+    public LiveData<Map<Datapoint, BoundaryDataPoint>> getBoundaryMap() {
+        return configContainer.getBoundaryMap();
     }
 
-    public MutableLiveData<Map<Datapoint, Datapoint>> getDataPoints() {
-        return configContainer.getDataPoints();
+    public MutableLiveData<Map<Datapoint, Datapoint>> getDataPointMap() {
+        return configContainer.getDataPointMap();
     }
 
-    public MutableLiveData<Map<String, String>> getStatusList() {
-        return configContainer.getStatusList();
+    public MutableLiveData<Map<String, String>> getStatusUpdateMap() {
+        return configContainer.getStatusUpdateMap();
     }
 
-    public MutableLiveData<Map<String, String>> getStatusList2() {
-        return configContainer.getStatusList2();
+    public MutableLiveData<Map<String, String>> getStatusGetValueMap() {
+        return configContainer.getStatusGetValueMap();
     }
 
     @Override
@@ -155,7 +151,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         if (input.getEvent() == null && input.getValue() != null) {
             String value = String.valueOf(input.getValue());
             String uID = input.getUid();
-            configContainer.updateStatusList(uID, value);
+            configContainer.updateStatusUpdateMap(uID, value);
         }
     }
 
@@ -167,7 +163,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
                     case STARTUP:
                         Log.d(TAG, "Server has started.");
                         System.out.println("Server has started.");
-                        serverCommunicator.initialisationOfApplicationAfterRestart();
+                        serverCommunicator.getSavedCredentialsForLoginAfterRestart();
                         break;
                     case RESTART:
                         Log.d(TAG, "Server got restarted.");

@@ -1,11 +1,20 @@
 package de.smarthome.app.repository;
 
+import android.app.Application;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.auth.api.credentials.Credential;
+import com.google.android.gms.auth.api.credentials.CredentialRequest;
+import com.google.android.gms.auth.api.credentials.CredentialRequestResponse;
+import com.google.android.gms.auth.api.credentials.Credentials;
+import com.google.android.gms.auth.api.credentials.CredentialsClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +25,7 @@ import java.util.Map;
 
 import de.smarthome.SmartHomeApplication;
 import de.smarthome.app.model.responses.GetValueReponse;
+import de.smarthome.app.utility.ToastUtility;
 import de.smarthome.command.AdditionalConfigs;
 import de.smarthome.command.AsyncCommand;
 import de.smarthome.command.Command;
@@ -44,41 +54,39 @@ import de.smarthome.server.ServerHandler;
 import de.smarthome.server.gira.GiraServerHandler;
 
 public class ServerCommunicator {
-    private final String TAG = "ServerCommunicator";
+    private static final String TAG = "ServerCommunicator";
     private static ServerCommunicator instance;
+    private ToastUtility toastUtility;
 
-    //TODO: Move server stuff into own class to make david happy repository only contains livedata and will be handed to new class in constructor
     private static final String IP_OF_CALLBACK_SERVER = "192.168.132.219:8443";
     private final ServerHandler serverHandler = new GiraServerHandler(new HomeServerCommandInterpreter());
 
     //Needed for Relogin after Update/Delete of Logindata in Optionfragment
-    private Credential userCredential;
-    private MutableLiveData<Boolean> loginDataStatus = new MutableLiveData<>();
+    private MutableLiveData<Boolean> loginRequestStatus = new MutableLiveData<>();
+
+    //Needed for beaconObserver
+    private Application parentApplication;
 
     private int statusListSize = 0;
-    public Map<String, String> statusMapNewValues = new LinkedHashMap<>();
+    public Map<String, String> newStatusValuesMap = new LinkedHashMap<>();
 
-    public static ServerCommunicator getInstance() {
+    public static ServerCommunicator getInstance(@Nullable Application application) {
         if (instance == null) {
             instance = new ServerCommunicator();
+            if(application != null){
+                instance.parentApplication = application;
+            }
+            instance.toastUtility = ToastUtility.getInstance();
         }
         return instance;
     }
 
     public void updateLoginDataStatus(Boolean status) {
-        loginDataStatus.postValue(status);
+        loginRequestStatus.postValue(status);
     }
 
-    public LiveData<Boolean> getLoginDataStatus() {
-        return loginDataStatus;
-    }
-
-    public Credential getUserCredential() {
-        return userCredential;
-    }
-
-    public void setUserCredential(Credential userCredential) {
-        this.userCredential = userCredential;
+    public LiveData<Boolean> getLoginRequestStatus() {
+        return loginRequestStatus;
     }
 
     private void addToExecutorService(Thread newThread) {
@@ -86,8 +94,7 @@ public class ServerCommunicator {
     }
 
     public void requestRegisterUser(Credential credential) {
-        setUserCredential(credential);
-        initialisationOfApplication(userCredential.getId(), userCredential.getPassword());
+        initialisationOfApplication(credential.getId(), credential.getPassword());
     }
 
     private void initialisationOfApplication(String userName, String pwd) {
@@ -97,9 +104,9 @@ public class ServerCommunicator {
         serverHandler.sendRequest(multiCommandChain);
     }
 
-    public void initialisationOfApplicationAfterRestart() {
+    public void initialisationOfApplicationAfterRestart(Credential credential) {
         MultiReactorCommandChainImpl multiCommandChain = new MultiReactorCommandChainImpl();
-        registerAppAtGiraServerAfterRestart(userCredential.getId(), userCredential.getPassword(), multiCommandChain);
+        registerAppAtGiraServerAfterRestart(credential.getId(), credential.getPassword(), multiCommandChain);
         serverHandler.sendRequest(multiCommandChain);
     }
 
@@ -158,7 +165,7 @@ public class ServerCommunicator {
 
     public void requestGetValue(List<String> IDs) {
         statusListSize = IDs.size();
-        statusMapNewValues.clear();
+        newStatusValuesMap.clear();
         for(String ID :IDs){
             Thread requestGetValueThread = new Thread(() -> {
                 Command getValueCommand = new GetValueCommand(ID);
@@ -186,10 +193,10 @@ public class ServerCommunicator {
                 String value = valueReponse.getValues().get(0).getValue();
                 String uID = valueReponse.getValues().get(0).getUid();
 
-                statusMapNewValues.put(uID, value);
-                if(statusListSize == statusMapNewValues.size()) {
-                    statusMapNewValues.put(uID, value);
-                    ConfigContainer.getInstance().updateStatusList2(statusMapNewValues);
+                newStatusValuesMap.put(uID, value);
+                if(statusListSize == newStatusValuesMap.size()) {
+                    newStatusValuesMap.put(uID, value);
+                    ConfigContainer.getInstance().updateStatusGetValueMap(newStatusValuesMap);
                 }
             } else {
                 System.out.println("error occurred");
@@ -203,5 +210,27 @@ public class ServerCommunicator {
     public void unsubscribeFromEverything() {
         requestUnregisterClient(IP_OF_CALLBACK_SERVER);
         requestUnRegisterCallbackServerAtGiraServer();
+    }
+
+    public void getSavedCredentialsForLoginAfterRestart() {
+        CredentialRequest credentialRequest = new CredentialRequest.Builder()
+                .setPasswordLoginSupported(true)
+                .build();
+
+        CredentialsClient credentialsClient = Credentials.getClient(parentApplication);
+
+        credentialsClient.request(credentialRequest).addOnCompleteListener(new OnCompleteListener<CredentialRequestResponse>() {
+            @Override
+            public void onComplete(@NonNull Task<CredentialRequestResponse> task) {
+
+                if (task.isSuccessful()) {
+                    // See "Handle successful credential requests"
+                    initialisationOfApplicationAfterRestart(task.getResult().getCredential());
+                }else{
+                    // See "Handle unsuccessful and incomplete credential requests"
+                    toastUtility.prepareToast("Not able to retrieve Login data");
+                }
+            }
+        });
     }
 }

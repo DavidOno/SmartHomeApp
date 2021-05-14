@@ -17,8 +17,6 @@ import java.util.Map;
 
 import de.smarthome.R;
 import de.smarthome.app.model.Datapoint;
-import de.smarthome.app.model.Function;
-import de.smarthome.app.model.configs.Boundary;
 import de.smarthome.app.model.configs.BoundaryDataPoint;
 import de.smarthome.app.viewmodel.RegulationViewModel;
 import de.smarthome.app.adapter.RegulationAdapter;
@@ -58,36 +56,34 @@ public class RegulationFragment extends Fragment {
         adapter = new RegulationAdapter();
         recyclerViewRegulation.setAdapter(adapter);
 
-        regulationViewModel.getDataPoints().observe(getViewLifecycleOwner(), new Observer<Map<Datapoint, Datapoint>>() {
+        regulationViewModel.getDataPointMap().observe(getViewLifecycleOwner(), new Observer<Map<Datapoint, Datapoint>>() {
             @Override
             public void onChanged(Map<Datapoint, Datapoint> dataPoints) {
                 adapter.setDataPointList(dataPoints, getActivity().getApplication());
             }
         });
 
-        regulationViewModel.getStatusList().observe(getViewLifecycleOwner(), new Observer<Map<String, String>>() {
+        regulationViewModel.getStatusUpdateMap().observe(getViewLifecycleOwner(), new Observer<Map<String, String>>() {
             @Override
             public void onChanged(Map<String, String> stringStringMap) {
-                //TODO: REWORK LOOKS TERRIBLE!
                 String uid = stringStringMap.keySet().iterator().next();
                 String value = stringStringMap.get(uid);
                 adapter.updateStatusValue(uid, value);
             }
         });
 
-        regulationViewModel.getStatusList2().observe(getViewLifecycleOwner(), new Observer<Map<String, String>>() {
+        regulationViewModel.getStatusGetValueMap().observe(getViewLifecycleOwner(), new Observer<Map<String, String>>() {
             @Override
             public void onChanged(Map<String, String> stringStringMap) {
-                adapter.updateStatusValue2(stringStringMap);
+                adapter.updateMultipleStatusValues(stringStringMap);
 
             }
         });
 
-        //TODO:REFACTOR!
-        regulationViewModel.getTest().observe(getViewLifecycleOwner(), new Observer<Map<Datapoint, BoundaryDataPoint>>() {
+        regulationViewModel.getBoundaryMap().observe(getViewLifecycleOwner(), new Observer<Map<Datapoint, BoundaryDataPoint>>() {
             @Override
             public void onChanged(Map<Datapoint, BoundaryDataPoint> boundaryMap) {
-                adapter.setBoundaryList(boundaryMap);
+                adapter.setBoundaryMap(boundaryMap);
             }
         });
 

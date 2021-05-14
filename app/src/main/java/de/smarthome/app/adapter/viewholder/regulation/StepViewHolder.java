@@ -3,7 +3,7 @@ package de.smarthome.app.adapter.viewholder.regulation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,8 +17,8 @@ import de.smarthome.app.adapter.RegulationAdapter;
 
 public class StepViewHolder extends RegulationAdapter.ViewHolder{
     private TextView textViewName;
-    private ImageView plus;
-    private ImageView minus;
+    private ImageButton plus;
+    private ImageButton minus;
     private RegulationAdapter adapter;
     private RegulationAdapter.OnItemClickListener onItemClickListener;
 

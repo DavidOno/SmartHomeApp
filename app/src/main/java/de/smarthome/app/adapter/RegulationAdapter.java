@@ -14,14 +14,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import de.smarthome.app.model.Function;
-import de.smarthome.app.model.configs.BoundariesConfig;
-import de.smarthome.app.model.configs.Boundary;
 import de.smarthome.app.model.configs.BoundaryDataPoint;
 import de.smarthome.app.model.configs.ChannelConfig;
 import de.smarthome.app.model.Datapoint;
 import de.smarthome.app.repository.Repository;
-import de.smarthome.app.adapter.viewholder.regulation.DoubleSliderViewHolder;
 import de.smarthome.app.adapter.viewholder.regulation.ReadViewHolder;
 import de.smarthome.app.adapter.viewholder.regulation.SliderViewHolder;
 import de.smarthome.app.adapter.viewholder.regulation.StepViewHolder;
@@ -31,29 +27,27 @@ import de.smarthome.app.adapter.viewholder.regulation.SwitchViewHolder;
 public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.ViewHolder>{
     private List<Datapoint> dataPointList;
     private Map<Datapoint, Datapoint> dataPointMap;
-    //TODO: Refactor
-    private Map<Datapoint, BoundaryDataPoint> testMap;
+    private Map<Datapoint, BoundaryDataPoint> boundaryMap;
 
     public static final int STEP_VIEW_HOLDER = 0;
     public static final int SWITCH_VIEW_HOLDER = 1;
     public static final int INT_SLIDER_VIEW_HOLDER = 2;
     public static final int FLOAT_SLIDER_VIEW_HOLDER = 3;
-    public static final int DOUBLE_SLIDER_VIEW_HOLDER = 4;
-    public static final int READ_VIEW_HOLDER = 5;
+    public static final int READ_VIEW_HOLDER = 4;
 
     private OnItemClickListener listener;
 
-    private Map<String, String> mapDatapointIDandValue = new LinkedHashMap<>();
+    private Map<String, String> statusValueMap = new LinkedHashMap<>();
 
     private ChannelConfig channelConfig;
     private Repository repository;
-    //TODO: Refactor
-    public void setBoundaryList(Map<Datapoint, BoundaryDataPoint> newData){
-        testMap = newData;
+
+    public void setBoundaryMap(Map<Datapoint, BoundaryDataPoint> newData){
+        boundaryMap = newData;
     }
 
-    public Map<Datapoint, BoundaryDataPoint> getTestMap() {
-        return testMap;
+    public Map<Datapoint, BoundaryDataPoint> getBoundaryMap() {
+        return boundaryMap;
     }
 
     public void setDataPointList(Map<Datapoint, Datapoint> dataPoints, Application application) {
@@ -84,7 +78,7 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
         }
     }
 
-    public void updateStatusValue2(Map<String, String> newInput) {
+    public void updateMultipleStatusValues(Map<String, String> newInput) {
         if (newInput.size() == 1) {
             updateStatusValue(newInput.keySet().iterator().next(),
                     newInput.get(newInput.keySet().iterator().next()));
@@ -99,7 +93,7 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
     private int getItemPosition(){
         int position = 0;
         for (Datapoint dp : dataPointList){
-            if(mapDatapointIDandValue.containsKey(dp.getID())){
+            if(statusValueMap.containsKey(dp.getID())){
                 return position;
             }
             position++;
@@ -110,11 +104,8 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
     private boolean containsViewStatusFunction(String changedStatusFunctionUID, String value) {
         for(Datapoint datapoint : dataPointList){
             if (dataPointMap.get(datapoint) != null) {
-                //TODO: remove after testing
-                Datapoint statusDataPoint = dataPointMap.get(datapoint);
-
                 if (changedStatusFunctionUID.equals(dataPointMap.get(datapoint).getID())) {
-                    mapDatapointIDandValue.put(datapoint.getID(), value);
+                    statusValueMap.put(datapoint.getID(), value);
                     return true;
                 }
 
@@ -157,12 +148,6 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
                     FLOAT_SLIDER_VIEW_HOLDER
             );
 
-        }else if(viewType == DOUBLE_SLIDER_VIEW_HOLDER){
-            return new DoubleSliderViewHolder(
-                    parent,
-                    listener,
-                    this
-            );
         }else if(viewType == READ_VIEW_HOLDER){
             return new ReadViewHolder(
                     parent,
@@ -186,9 +171,9 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
     }
 
     private Optional<String> getStatusValueString(Datapoint datapoint, Optional<String> value) {
-        if(!mapDatapointIDandValue.isEmpty()) {
-            if(mapDatapointIDandValue.containsKey(datapoint.getID())){
-                value = Optional.ofNullable(mapDatapointIDandValue.get(datapoint.getID()));
+        if(!statusValueMap.isEmpty()) {
+            if(statusValueMap.containsKey(datapoint.getID())){
+                value = Optional.ofNullable(statusValueMap.get(datapoint.getID()));
 
                 removeStatusVariables(datapoint.getID());
             }
@@ -197,7 +182,7 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
     }
 
     private void removeStatusVariables(String uID) {
-        mapDatapointIDandValue.remove(uID);
+        statusValueMap.remove(uID);
     }
 
     @Override

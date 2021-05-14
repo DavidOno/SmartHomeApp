@@ -28,7 +28,7 @@ import de.smarthome.app.utility.ToastUtility;
 import de.smarthome.beacons.BeaconLocations;
 
 public class ConfigContainer {
-    private final String TAG = "ConfigContainer";
+    private static final String TAG = "ConfigContainer";
     private static ConfigContainer instance;
     private final ToastUtility toastUtility = ToastUtility.getInstance();
 
@@ -41,12 +41,12 @@ public class ConfigContainer {
     private Function selectedFunction;
 
     private MutableLiveData<List<Location>> locationList = new MutableLiveData<>();
-    private MutableLiveData<Map<Function, Function>> functionList = new MutableLiveData<>();
-    private MutableLiveData<Map<Datapoint, Datapoint>> dataPointList = new MutableLiveData<>();
-    private MutableLiveData<Map<Datapoint, BoundaryDataPoint>> boundaryList = new MutableLiveData<>();
+    private MutableLiveData<Map<Function, Function>> functionMap = new MutableLiveData<>();
+    private MutableLiveData<Map<Datapoint, Datapoint>> dataPointMap = new MutableLiveData<>();
+    private MutableLiveData<Map<Datapoint, BoundaryDataPoint>> boundaryMap = new MutableLiveData<>();
 
-    private MutableLiveData<Map<String, String>> statusList = new MutableLiveData<>();
-    public MutableLiveData<Map<String, String>> statusList2 = new MutableLiveData<>();
+    private MutableLiveData<Map<String, String>> statusUpdateMap = new MutableLiveData<>();
+    public MutableLiveData<Map<String, String>> statusGetValueMap = new MutableLiveData<>();
 
     public static ConfigContainer getInstance() {
         if (instance == null) {
@@ -59,8 +59,8 @@ public class ConfigContainer {
 
     public void setSelectedFunction(Function function) {
         selectedFunction = function;
-        updateBoundaryList();
-        updateDataPointList(function);
+        updateBoundaryMap();
+        updateDataPointMap(function);
     }
 
     public Function getSelectedFunction() {
@@ -69,7 +69,7 @@ public class ConfigContainer {
 
     public void setSelectedLocation(Location newLocation) {
         selectedLocation = newLocation;
-        updateFunctionList(selectedLocation);
+        updateFunctionMap(selectedLocation);
     }
 
     public Location getSelectedLocation() {
@@ -155,17 +155,17 @@ public class ConfigContainer {
         locationList.postValue(allLocations);
     }
 
-    public MutableLiveData<Map<Function, Function>> getFunctionList() {
-        return functionList;
+    public MutableLiveData<Map<Function, Function>> getFunctionMap() {
+        return functionMap;
     }
 
-    public void updateFunctionList(Location viewedLocation) {
+    public void updateFunctionMap(Location viewedLocation) {
         Map<Function, Function> completeFunctionMap = new LinkedHashMap<>();
         mapStatusFunctionToFunction(completeFunctionMap, viewedLocation);
         if (!viewedLocation.getParentLocation().equals(Location.ROOT)) {
             mapStatusFunctionToFunction(completeFunctionMap, viewedLocation.getParentLocation());
         }
-        functionList.postValue(completeFunctionMap);
+        functionMap.postValue(completeFunctionMap);
     }
 
     private void mapStatusFunctionToFunction(Map<Function, Function> completeFunctionMap, Location location) {
@@ -187,14 +187,14 @@ public class ConfigContainer {
         }
     }
 
-    public void updateBoundaryList() {
+    public void updateBoundaryMap() {
         Map<Datapoint, BoundaryDataPoint> completeFunctionMap = new LinkedHashMap<>();
         mapBoundaryToFunction(completeFunctionMap);
-        boundaryList.postValue(completeFunctionMap);
+        boundaryMap.postValue(completeFunctionMap);
     }
 
-    public LiveData<Map<Datapoint, BoundaryDataPoint>> getBoundaryList() {
-        return boundaryList;
+    public LiveData<Map<Datapoint, BoundaryDataPoint>> getBoundaryMap() {
+        return boundaryMap;
     }
 
     private void mapBoundaryToFunction(Map<Datapoint, BoundaryDataPoint> boundaryMap) {
@@ -213,41 +213,41 @@ public class ConfigContainer {
         }
     }
 
-    public void updateDataPointList(Function function) {
+    public void updateDataPointMap(Function function) {
         Map<Datapoint, Datapoint> newValue = new LinkedHashMap<>();
         //TODO: Check if StatusFunction always has the same number of Datapoint than "normal" Function
-        if (functionList.getValue().get(function) != null) {
+        if (functionMap.getValue().get(function) != null) {
             for (int i = 0; i < function.getDataPoints().size(); i++) {
-                newValue.put(function.getDataPoints().get(i), functionList.getValue().get(function).getDataPoints().get(i));
+                newValue.put(function.getDataPoints().get(i), functionMap.getValue().get(function).getDataPoints().get(i));
             }
         } else {
             for (Datapoint datapoint : function.getDataPoints()) {
                 newValue.put(datapoint, null);
             }
         }
-        dataPointList.postValue(newValue);
+        dataPointMap.postValue(newValue);
     }
 
-    public MutableLiveData<Map<Datapoint, Datapoint>> getDataPoints() {
-        return dataPointList;
+    public MutableLiveData<Map<Datapoint, Datapoint>> getDataPointMap() {
+        return dataPointMap;
     }
 
-    public void updateStatusList(String functionUID, String value) {
+    public void updateStatusUpdateMap(String functionUID, String value) {
         Map<String, String> newValue = new HashMap<>();
         newValue.put(functionUID, value);
-        statusList.postValue(newValue);
+        statusUpdateMap.postValue(newValue);
     }
 
-    public MutableLiveData<Map<String, String>> getStatusList() {
-        return statusList;
+    public MutableLiveData<Map<String, String>> getStatusUpdateMap() {
+        return statusUpdateMap;
     }
 
-    public void updateStatusList2(Map<String, String> newValues) {
-        statusList2.postValue(newValues);
+    public void updateStatusGetValueMap(Map<String, String> newValues) {
+        statusGetValueMap.postValue(newValues);
     }
 
-    public MutableLiveData<Map<String, String>> getStatusList2() {
-        return statusList2;
+    public MutableLiveData<Map<String, String>> getStatusGetValueMap() {
+        return statusGetValueMap;
     }
 
 

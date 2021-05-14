@@ -1,12 +1,10 @@
 package de.smarthome.app.adapter.viewholder.regulation;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.slider.Slider;
@@ -59,15 +57,15 @@ public class SliderViewHolder extends RegulationAdapter.ViewHolder{
     public void onBindViewHolder(RegulationAdapter.ViewHolder holder, int position, Datapoint datapoint, Optional<String> value) {
         textViewName.setText(datapoint.getName().replace("_", " "));
 
-        if(adapter.getTestMap().get(datapoint) != null){
-            if(adapter.getTestMap().get(datapoint).getMin() != null){
-                float min = Float.parseFloat(adapter.getTestMap().get(datapoint).getMin());
+        if(adapter.getBoundaryMap().get(datapoint) != null){
+            if(adapter.getBoundaryMap().get(datapoint).getMin() != null){
+                float min = Float.parseFloat(adapter.getBoundaryMap().get(datapoint).getMin());
                 slider.setValueFrom(min);
                 slider.setValue(min);
             }
 
-            if(adapter.getTestMap().get(datapoint).getMax() != null){
-                float max = Float.parseFloat(adapter.getTestMap().get(datapoint).getMax());
+            if(adapter.getBoundaryMap().get(datapoint).getMax() != null){
+                float max = Float.parseFloat(adapter.getBoundaryMap().get(datapoint).getMax());
                 slider.setValueTo(max);
             }
         }

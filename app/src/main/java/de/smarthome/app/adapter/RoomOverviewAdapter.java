@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -38,8 +37,7 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
     private OnItemClickListener listener;
     private OnSwitchClickListener switchClickListener;
 
-    //TODO: Refactor
-    private Map<String, String> mapFunctionIDAndValue = new LinkedHashMap<>();
+    private Map<String, String> statusValueMap = new LinkedHashMap<>();
 
     private Repository repository;
     private ChannelConfig channelConfig;
@@ -80,7 +78,7 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
         }
     }
 
-    public void updateStatusValue2(Map<String, String> newInput){
+    public void updateMultipleStatusValues(Map<String, String> newInput){
         if(newInput.size() == 1){
             updateStatusValue(newInput.keySet().iterator().next(),
                     newInput.get(newInput.keySet().iterator().next()));
@@ -95,7 +93,7 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
     private int getItemPosition(){
         int position = 0;
         for (Function func : functionList){
-            if(mapFunctionIDAndValue.containsKey(func.getID())){
+            if(statusValueMap.containsKey(func.getID())){
                 return position;
             }
             position++;
@@ -107,13 +105,11 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
         for(Function function : functionList){
             //Has to be this check because: No Status function => value of map is null! so it contains the function
             if (functionMap.get(function) != null) {
-                //TODO: remove after testing
-                Function statusFunction = functionMap.get(function);
 
                 for(Datapoint datapoint : functionMap.get(function).getDataPoints()){
                     String x = datapoint.getID();
                     if (changedStatusFunctionUID.equals(datapoint.getID())) {
-                        mapFunctionIDAndValue.put(function.getID(), value);
+                        statusValueMap.put(function.getID(), value);
                         return true;
                     }
                 }
@@ -167,9 +163,9 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
     }
 
     private Optional<String> getStatusValueString(Function function, Optional<String> value) {
-        if(!mapFunctionIDAndValue.isEmpty()) {
-            if(mapFunctionIDAndValue.containsKey(function.getID())){
-                value = Optional.ofNullable(mapFunctionIDAndValue.get(function.getID()));
+        if(!statusValueMap.isEmpty()) {
+            if(statusValueMap.containsKey(function.getID())){
+                value = Optional.ofNullable(statusValueMap.get(function.getID()));
 
                 removeStatusVariables(function.getID());
             }
@@ -178,7 +174,7 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
     }
 
     private void removeStatusVariables(String uID) {
-        mapFunctionIDAndValue.remove(uID);
+        statusValueMap.remove(uID);
     }
 
     @Override

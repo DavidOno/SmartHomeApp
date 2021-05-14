@@ -5,8 +5,6 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
-import com.google.android.gms.auth.api.credentials.Credential;
-
 import de.smarthome.app.repository.Repository;
 
 public class OptionsViewModel extends AndroidViewModel {
@@ -17,9 +15,5 @@ public class OptionsViewModel extends AndroidViewModel {
         super(application);
 
         repository = Repository.getInstance(application);
-    }
-
-    public Credential getUserCredential(){
-        return repository.getUserCredential();
     }
 }
