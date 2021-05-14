@@ -16,7 +16,7 @@ public class ResponseReactorClient implements ResponseReactor {
     private ToastUtility toastUtility;
 
     public ResponseReactorClient() {
-        this.serverCommunicator = ServerCommunicator.getInstance();
+        this.serverCommunicator = ServerCommunicator.getInstance(null);
         this.toastUtility = ToastUtility.getInstance();
     }
 
@@ -38,8 +38,7 @@ public class ResponseReactorClient implements ResponseReactor {
                 serverCommunicator.updateLoginDataStatus(false);
             }
         }catch(Exception e){
-            Log.d(TAG, "Exerption: " + e.toString());
-
+            Log.d(TAG, "Exception: " + e.toString());
             toastUtility.prepareToast("Exception: Unable to register User at Gira!");
         }
     }

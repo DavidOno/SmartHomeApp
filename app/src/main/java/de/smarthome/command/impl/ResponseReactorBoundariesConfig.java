@@ -17,7 +17,6 @@ public class ResponseReactorBoundariesConfig implements ResponseReactor {
     public ResponseReactorBoundariesConfig() {
         this.configContainer = ConfigContainer.getInstance();
     }
-    //TODO:Rework Logs
     @Override
     public void react(ResponseEntity responseEntity) {
         try {
@@ -28,14 +27,14 @@ public class ResponseReactorBoundariesConfig implements ResponseReactor {
                 responseBoundariesConfig = (BoundariesConfig) responseEntity.getBody();
                 sendBoundariesConfigToRepo(responseBoundariesConfig);
 
-                Log.d(TAG, "Communication with Server possible.\nStatus: " + responseEntity.getStatusCode());
+                Log.d(TAG, "BoundaryConfig successfully retrieved.\nStatus: " + responseEntity.getStatusCode());
             } else {
                 System.out.println("error occurred");
                 System.out.println(responseEntity.getStatusCode());
-                Log.d(TAG, "Problem when trying to reach Server.\nStatus: " + responseEntity.getStatusCode());
+                Log.d(TAG, "Problem when trying get BoundaryConfig.\nStatus: " + responseEntity.getStatusCode());
             }
         }catch(Exception e){
-            Log.d(TAG, "Exerption: " + e.toString());
+            Log.d(TAG, "Exception: " + e.toString());
         }
     }
 

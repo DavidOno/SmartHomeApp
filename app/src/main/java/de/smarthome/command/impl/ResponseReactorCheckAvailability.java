@@ -34,9 +34,7 @@ public class ResponseReactorCheckAvailability implements ResponseReactor {
 
             }
         }catch(Exception e){
-            Log.d(TAG, "Exerption: " + e.toString());
-
-            toastUtility.prepareToast("Exception: Unable to reach Gira!");
+            Log.d(TAG, "Exception: " + e.toString());
         }
     }
 }

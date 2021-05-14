@@ -34,8 +34,7 @@ public class ResponseReactorCallbackServer implements ResponseReactor {
                 toastUtility.prepareToast("Unable to reach CallbackServer");
             }
         }catch(Exception e){
-            Log.d(TAG, "Exerption: " + e.toString());
-
+            Log.d(TAG, "Exception: " + e.toString());
             toastUtility.prepareToast("Exception: Unable to register CallbackServer!");
         }
     }

@@ -34,8 +34,7 @@ public class ResponseReactorGiraCallbackServer implements ResponseReactor {
                 toastUtility.prepareToast("Unable to reach Gira Server");
             }
         }catch(Exception e){
-            Log.d(TAG, "Exerption: " + e.toString());
-
+            Log.d(TAG, "Exception: " + e.toString());
             toastUtility.prepareToast("Exception: Unable to register CallbackServer at Gira!");
         }
     }

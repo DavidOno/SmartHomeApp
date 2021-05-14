@@ -32,18 +32,16 @@ public class ResponseReactorUIConfig implements ResponseReactor {
                 responseUIConfig = (UIConfig) responseEntity.getBody();
                 sendUIConfigToRepo(responseUIConfig);
 
-                Log.d(TAG, "Communication with Server possible.\nStatus: " + responseEntity.getStatusCode());
+                Log.d(TAG, "UIConfig successfully retrieved.\nStatus: " + responseEntity.getStatusCode());
 
             } else {
                 System.out.println("error occurred");
                 System.out.println(responseEntity.getStatusCode());
 
-                Log.d(TAG, "Problem when trying to reach Server.\nStatus: " + responseEntity.getStatusCode());
+                Log.d(TAG, "Problem when trying to retrieve UIConfig.\nStatus: " + responseEntity.getStatusCode());
             }
         }catch(Exception e){
             Log.d(TAG, "Exception: " + e.toString());
-
-            toastUtility.prepareToast("Exception: Unable to retrieve UIConfig!");
         }
     }
 
