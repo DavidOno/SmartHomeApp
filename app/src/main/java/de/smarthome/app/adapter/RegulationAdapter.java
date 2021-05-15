@@ -209,7 +209,7 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
         this.listener = listener;
     }
 
-    protected abstract static class ViewHolder extends RecyclerView.ViewHolder {
+    public abstract static class ViewHolder extends RecyclerView.ViewHolder {
 
         protected ViewHolder(@NonNull View itemView) {
             super(itemView);
