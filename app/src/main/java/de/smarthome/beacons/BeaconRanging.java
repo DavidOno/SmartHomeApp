@@ -36,6 +36,10 @@ public class BeaconRanging implements BeaconConsumer {
         beaconManager.unbind(this);
     }
 
+    public void onDestroy() {
+        beaconManager.unbind(this);
+    }
+
     @Override
     public void onBeaconServiceConnect() {
         RangeNotifier rangeNotifier = (beacons, region) -> {
