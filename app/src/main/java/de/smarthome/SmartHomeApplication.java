@@ -7,10 +7,8 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
@@ -19,7 +17,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.NavGraph;
 import androidx.navigation.NavInflater;
@@ -33,8 +30,6 @@ import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -57,60 +52,22 @@ public class SmartHomeApplication extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if ( isExternalStorageWritable() ) {
-
-            File appDirectory = new File( Environment.getExternalStorageDirectory() + "/MyPersonalAppFolder" );
-            File logDirectory = new File( appDirectory + "/logs" );
-            File logFile = new File( logDirectory, "logcat_" + System.currentTimeMillis() + ".txt" );
-
-            // create app folder
-            if ( !appDirectory.exists() ) {
-                appDirectory.mkdir();
-            }
-
-            // create log folder
-            if ( !logDirectory.exists() ) {
-                logDirectory.mkdir();
-            }
-
-            // clear the previous logcat and then write the new one to the file
-            try {
-                Process process = Runtime.getRuntime().exec("logcat -c");
-                process = Runtime.getRuntime().exec("logcat -f " + logFile);
-            } catch ( IOException e ) {
-                e.printStackTrace();
-            }
-
-        } else if ( isExternalStorageReadable() ) {
-            // only readable
-        } else {
-            // not accessible
-        }
-
-
         setContentView(R.layout.activity_main);
 
         checkBeaconPermissions();
         repository = Repository.getInstance(this.getApplication());
 
         toastUtility = ToastUtility.getInstance();
-        toastUtility.getNewToast().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if(aBoolean){
-                    Toast.makeText(getApplicationContext(), toastUtility.getMessage(), Toast.LENGTH_LONG).show();
-                }
+        toastUtility.getNewToast().observe(this, aBoolean -> {
+            if(aBoolean){
+                Toast.makeText(getApplicationContext(), toastUtility.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
-        repository.checkBeacon().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if(aBoolean){
-                    repository.initBeaconCheck();
-                    startBeaconDialog(repository.getBeaconLocation());
-                }
+        repository.checkBeacon().observe(this, aBoolean -> {
+            if(aBoolean){
+                repository.initBeaconCheck();
+                startBeaconDialog(repository.getBeaconLocation());
             }
         });
 
@@ -126,31 +83,9 @@ public class SmartHomeApplication extends AppCompatActivity {
         }
     }
 
-    //TODO: TO DELETE!!!
-    /* Checks if external storage is available to at least read */
-    public boolean isExternalStorageReadable() {
-        String state = Environment.getExternalStorageState();
-        if ( Environment.MEDIA_MOUNTED.equals( state ) ||
-                Environment.MEDIA_MOUNTED_READ_ONLY.equals( state ) ) {
-            return true;
-        }
-        return false;
-    }
-
-    //TODO: TO DELETE!!!
-    /* Checks if external storage is available for read and write */
-    public boolean isExternalStorageWritable() {
-        String state = Environment.getExternalStorageState();
-        if ( Environment.MEDIA_MOUNTED.equals( state ) ) {
-            return true;
-        }
-        return false;
-    }
-
     @Override
     protected void onDestroy() {
-        //TODO: When App gets rotated ==> Everything gets unsubscribed!
-        //repository.unsubscribeFromEverything();
+        repository.unsubscribeFromEverything();
         toastUtility.prepareToast("Everything got unsubscribed!");
         super.onDestroy();
     }
@@ -162,6 +97,7 @@ public class SmartHomeApplication extends AppCompatActivity {
         return true;
     }
 
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_home_overview:
@@ -194,21 +130,13 @@ public class SmartHomeApplication extends AppCompatActivity {
         Button buttonYes = dialog.findViewById(R.id.button_left);
         Button buttonNo = dialog.findViewById(R.id.button_right);
 
-        buttonYes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                repository.confirmBeacon();
-                setStartFragment(R.id.roomOverviewFragment);
-            }
+        buttonYes.setOnClickListener(v -> {
+            dialog.dismiss();
+            repository.confirmBeacon();
+            setStartFragment(R.id.roomOverviewFragment);
         });
 
-        buttonNo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
+        buttonNo.setOnClickListener(v -> dialog.dismiss());
     }
 
     private void setStartFragment(int destinationFragment) {
@@ -239,7 +167,6 @@ public class SmartHomeApplication extends AppCompatActivity {
                     onCredentialRetrieved(task.getResult().getCredential());
                 }else{
                     // See "Handle unsuccessful and incomplete credential requests"
-                    //TODO: To slow StartFragment (here HomeOverview) is still loaded before it is skipped
                     setStartFragment(R.id.loginFragment);
                 }
             }
@@ -249,7 +176,7 @@ public class SmartHomeApplication extends AppCompatActivity {
     private void onCredentialRetrieved(Credential credential) {
         String accountType = credential.getAccountType();
         if (accountType == null) {
-            //repository.requestRegisterUser(credential);
+            repository.requestRegisterUser(credential);
             setStartFragment(R.id.HomeOverviewFragment);
         }
     }
@@ -257,8 +184,8 @@ public class SmartHomeApplication extends AppCompatActivity {
     private void checkBeaconPermissions(){
         if (this.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                if (this.checkSelfPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
+                    this.checkSelfPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
                         != PackageManager.PERMISSION_GRANTED) {
                     if (!this.shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
                         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -285,7 +212,6 @@ public class SmartHomeApplication extends AppCompatActivity {
                         });
                         builder.show();
                     }
-                }
             }
         } else {
             if (!this.shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
