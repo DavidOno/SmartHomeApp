@@ -208,7 +208,7 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
         this.switchClickListener = listener;
     }
 
-    protected abstract static class ViewHolder extends RecyclerView.ViewHolder {
+    public abstract static class ViewHolder extends RecyclerView.ViewHolder {
 
         protected ViewHolder(@NonNull View itemView) {
             super(itemView);
