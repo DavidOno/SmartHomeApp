@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
@@ -18,7 +17,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.NavGraph;
 import androidx.navigation.NavInflater;
@@ -60,22 +58,16 @@ public class SmartHomeApplication extends AppCompatActivity {
         repository = Repository.getInstance(this.getApplication());
 
         toastUtility = ToastUtility.getInstance();
-        toastUtility.getNewToast().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if(aBoolean){
-                    Toast.makeText(getApplicationContext(), toastUtility.getMessage(), Toast.LENGTH_SHORT).show();
-                }
+        toastUtility.getNewToast().observe(this, aBoolean -> {
+            if(aBoolean){
+                Toast.makeText(getApplicationContext(), toastUtility.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
-        repository.checkBeacon().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if(aBoolean){
-                    repository.initBeaconCheck();
-                    startBeaconDialog(repository.getBeaconLocation());
-                }
+        repository.checkBeacon().observe(this, aBoolean -> {
+            if(aBoolean){
+                repository.initBeaconCheck();
+                startBeaconDialog(repository.getBeaconLocation());
             }
         });
 
@@ -105,6 +97,7 @@ public class SmartHomeApplication extends AppCompatActivity {
         return true;
     }
 
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_home_overview:
@@ -137,21 +130,13 @@ public class SmartHomeApplication extends AppCompatActivity {
         Button buttonYes = dialog.findViewById(R.id.button_left);
         Button buttonNo = dialog.findViewById(R.id.button_right);
 
-        buttonYes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                repository.confirmBeacon();
-                setStartFragment(R.id.roomOverviewFragment);
-            }
+        buttonYes.setOnClickListener(v -> {
+            dialog.dismiss();
+            repository.confirmBeacon();
+            setStartFragment(R.id.roomOverviewFragment);
         });
 
-        buttonNo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
+        buttonNo.setOnClickListener(v -> dialog.dismiss());
     }
 
     private void setStartFragment(int destinationFragment) {
@@ -199,8 +184,8 @@ public class SmartHomeApplication extends AppCompatActivity {
     private void checkBeaconPermissions(){
         if (this.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                if (this.checkSelfPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
+                    this.checkSelfPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
                         != PackageManager.PERMISSION_GRANTED) {
                     if (!this.shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
                         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -227,7 +212,6 @@ public class SmartHomeApplication extends AppCompatActivity {
                         });
                         builder.show();
                     }
-                }
             }
         } else {
             if (!this.shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
