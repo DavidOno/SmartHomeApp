@@ -21,7 +21,6 @@ public class SliderViewHolder extends RegulationAdapter.ViewHolder{
     private TextView textViewName;
     private Slider slider;
     private RegulationAdapter adapter;
-    private RegulationAdapter.OnItemClickListener onItemClickListener;
 
     public SliderViewHolder(@NonNull ViewGroup parent,
                             @NonNull RegulationAdapter.OnItemClickListener onItemClickListener,
@@ -36,7 +35,6 @@ public class SliderViewHolder extends RegulationAdapter.ViewHolder{
             slider.setStepSize(1);
         }
 
-        this.onItemClickListener = onItemClickListener;
         this.adapter = adapter;
 
         slider.addOnSliderTouchListener(new Slider.OnSliderTouchListener() {

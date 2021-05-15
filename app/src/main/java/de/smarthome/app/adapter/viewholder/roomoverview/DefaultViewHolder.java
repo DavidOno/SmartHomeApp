@@ -16,8 +16,6 @@ import de.smarthome.app.adapter.RoomOverviewAdapter;
 
 public class DefaultViewHolder extends RoomOverviewAdapter.ViewHolder{
     private TextView textViewName;
-    private RoomOverviewAdapter adapter;
-    private RoomOverviewAdapter.OnItemClickListener onItemClickListener;
 
     public DefaultViewHolder(@NonNull ViewGroup parent,
                              @NonNull RoomOverviewAdapter.OnItemClickListener onItemClickListener,
@@ -25,9 +23,6 @@ public class DefaultViewHolder extends RoomOverviewAdapter.ViewHolder{
         super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_default, parent, false));
 
         textViewName = itemView.findViewById(R.id.textView_item);
-
-        this.onItemClickListener = onItemClickListener;
-        this.adapter = adapter;
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override

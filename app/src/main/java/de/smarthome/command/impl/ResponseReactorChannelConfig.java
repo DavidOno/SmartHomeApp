@@ -8,11 +8,10 @@ import org.springframework.http.ResponseEntity;
 
 import de.smarthome.command.ResponseReactor;
 import de.smarthome.app.model.configs.ChannelConfig;
-import de.smarthome.app.repository.Repository;
 import de.smarthome.app.utility.ToastUtility;
 
 public class ResponseReactorChannelConfig implements ResponseReactor {
-    private final String TAG = "ResponseReactorChannelConfig";
+    private static final String TAG = "ResponseReactorChannelConfig";
     private ChannelConfig responseChannelConfig;
     private Repository parentRepository;
 

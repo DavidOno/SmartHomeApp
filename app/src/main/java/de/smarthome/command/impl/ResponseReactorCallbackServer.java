@@ -9,7 +9,7 @@ import de.smarthome.command.ResponseReactor;
 import de.smarthome.app.utility.ToastUtility;
 
 public class ResponseReactorCallbackServer implements ResponseReactor {
-    private final String TAG = "ResponseReactorCallbackServer";
+    private static final String TAG = "ResponseReactorCallbackServer";
 
     private ToastUtility toastUtility;
 

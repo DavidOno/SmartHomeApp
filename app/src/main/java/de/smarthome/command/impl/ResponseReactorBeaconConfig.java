@@ -10,7 +10,7 @@ import de.smarthome.command.ResponseReactor;
 import de.smarthome.app.repository.Repository;
 
 public class ResponseReactorBeaconConfig implements ResponseReactor {
-    private final String TAG = "ResponseReactorBeaconConfig";
+    private static final String TAG = "ResponseReactorBeaconConfig";
     private BeaconLocations responseBeaconConfig;
     private Repository parentRepository;
 

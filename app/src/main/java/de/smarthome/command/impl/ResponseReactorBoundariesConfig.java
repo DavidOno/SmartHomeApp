@@ -10,7 +10,7 @@ import de.smarthome.command.ResponseReactor;
 import de.smarthome.app.repository.Repository;
 
 public class ResponseReactorBoundariesConfig implements ResponseReactor {
-    private final String TAG = "ResponseReactorBoundariesConfig";
+    private static final String TAG = "ResponseReactorBoundariesConfig";
     private BoundariesConfig responseBoundariesConfig;
     private Repository parentRepository;
 
