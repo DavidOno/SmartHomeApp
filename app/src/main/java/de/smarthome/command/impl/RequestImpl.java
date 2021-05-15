@@ -34,10 +34,10 @@ import de.smarthome.server.StandardErrorHandler;
 public class RequestImpl implements Request {
 
     private static final String TAG = "RequestImpl";
-    private String uri;
-    private HttpMethod httpMethod;
-    private HttpEntity entity;
-    private Class responseType;
+    private final String uri;
+    private final HttpMethod httpMethod;
+    private final HttpEntity entity;
+    private final Class responseType;
     private boolean isSSLVerificationSkipped;
     private ResponseErrorHandler errorHandler = new StandardErrorHandler();
 
@@ -81,6 +81,7 @@ public class RequestImpl implements Request {
         }
         catch (IOException | InterruptedException e){
             e.printStackTrace();
+            Thread.currentThread().interrupt();
         }
         return false;
     }
@@ -92,6 +93,7 @@ public class RequestImpl implements Request {
         } catch (ExecutionException | InterruptedException | TimeoutException e) {
             Log.d(TAG, "Request took too long");
             e.printStackTrace();
+            Thread.currentThread().interrupt();
         }
         return responseEntity;
     }

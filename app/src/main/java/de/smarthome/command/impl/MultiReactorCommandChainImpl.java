@@ -15,8 +15,8 @@ import de.smarthome.command.ResponseReactor;
 public class MultiReactorCommandChainImpl implements MultiReactorCommandChain {
 
     private Iterator<CommandChainable> iterator;
-    private List<CommandChainable> commands = new ArrayList<>();
-    private List<ResponseReactor> reactors = new ArrayList<>();
+    private final List<CommandChainable> commands = new ArrayList<>();
+    private final List<ResponseReactor> reactors = new ArrayList<>();
     private int resultCounter = 0;
 
     @Override
