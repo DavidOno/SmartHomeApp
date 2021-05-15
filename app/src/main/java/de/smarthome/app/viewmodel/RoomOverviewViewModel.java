@@ -13,7 +13,7 @@ import de.smarthome.app.model.Location;
 import de.smarthome.app.repository.Repository;
 
 public class RoomOverviewViewModel  extends AndroidViewModel {
-    private  final String TAG = "RoomOverviewViewModel";
+    private static final String TAG = "RoomOverviewViewModel";
     private Repository repository;
 
     public RoomOverviewViewModel(@NonNull Application application)  {
@@ -26,8 +26,8 @@ public class RoomOverviewViewModel  extends AndroidViewModel {
         return repository.getFunctionMap();
     }
 
-    public void requestSetValue(String ID, String value){
-        repository.requestSetValue(ID, value);
+    public void requestSetValue(String id, String value){
+        repository.requestSetValue(id, value);
     }
 
     public void setSelectedFunction(Function function){

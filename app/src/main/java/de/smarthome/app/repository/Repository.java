@@ -114,12 +114,12 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         MyFirebaseMessagingService.getServiceObserver().subscribe(this);
     }
 
-    public void requestSetValue(String ID, String value) {
-        serverCommunicator.requestSetValue(ID, value);
+    public void requestSetValue(String id, String value) {
+        serverCommunicator.requestSetValue(id, value);
     }
 
-    public void requestGetValue(List<String> IDs) {
-        serverCommunicator.requestGetValue(IDs);
+    public void requestGetValue(List<String> ids) {
+        serverCommunicator.requestGetValue(ids);
     }
 
     public MutableLiveData<List<Location>> getLocationList() {

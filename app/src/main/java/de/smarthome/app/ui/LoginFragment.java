@@ -4,19 +4,15 @@ import android.content.IntentSender;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -26,8 +22,6 @@ import com.google.android.gms.auth.api.credentials.Credentials;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.auth.api.credentials.CredentialsOptions;
 import com.google.android.gms.common.api.ResolvableApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 
 import de.smarthome.R;
 import de.smarthome.app.viewmodel.LoginViewModel;
@@ -46,7 +40,7 @@ public class LoginFragment extends Fragment {
     private String userName;
     private String password;
 
-    private final String TAG = "LoginFragment";
+    private static final String TAG = "LoginFragment";
 
     ToastUtility toastUtility;
 
@@ -69,15 +63,12 @@ public class LoginFragment extends Fragment {
         //TODO: Remove at the end of testing
         buttonDummy.setOnClickListener(v -> navigateToHomeOverviewFragment());
 
-        loginViewModel.getLoginDataStatus().observe(this.getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean requestStatus) {
-                if(requestStatus){
-                    saveCredential(buildCredential(userName, password));
-                    navigateToHomeOverviewFragment();
-                }else{
-                    toastUtility.prepareToast("Login Data incorrect!");
-                }
+        loginViewModel.getLoginDataStatus().observe(this.getViewLifecycleOwner(), requestStatus -> {
+            if(requestStatus){
+                saveCredential(buildCredential(userName, password));
+                navigateToHomeOverviewFragment();
+            }else{
+                toastUtility.prepareToast("Login Data incorrect!");
             }
         });
     }
@@ -92,12 +83,10 @@ public class LoginFragment extends Fragment {
 
     }
 
-    public Credential buildCredential(String Username, String pwd) {
-        Credential credential = new Credential.Builder(Username)
+    public Credential buildCredential(String userName, String pwd) {
+        return new Credential.Builder(userName)
                 .setPassword(pwd)
                 .build();
-
-        return credential;
     }
 
     private boolean getCredentialsFromUI(){
@@ -120,8 +109,6 @@ public class LoginFragment extends Fragment {
 
     private void navigateToHomeOverviewFragment() {
         NavController navController = NavHostFragment.findNavController(this);
-        //NavDirections toRoomsFragment = LoginFragmentDirections.actionLoginFragmentToRoomsFragment();
-
         navController.navigate(R.id.action_loginFragment_to_homeOverviewFragment);
     }
 
@@ -141,33 +128,30 @@ public class LoginFragment extends Fragment {
 
         CredentialsClient credentialsClient = Credentials.getClient(this.getActivity(), options);
 
-        credentialsClient.save(userCredential).addOnCompleteListener(new OnCompleteListener() {
-            @Override
-            public void onComplete(@NonNull Task task) {
-                if (task.isSuccessful()) {
-                    Log.d(TAG, "SAVE: OK");
-                    toastUtility.prepareToast("Credentials saved");
-                    return;
-                }
+        credentialsClient.save(userCredential).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Log.d(TAG, "SAVE: OK");
+                toastUtility.prepareToast("Credentials saved");
+                return;
+            }
 
-                Exception e = task.getException();
-                if (e instanceof ResolvableApiException) {
-                    // Try to resolve the save request. This will prompt the user if
-                    // the credential is new.
-                    ResolvableApiException rae = (ResolvableApiException) e;
-                    try {
-                        //can not start in VM
-                        rae.startResolutionForResult(getActivity(), 1);
+            Exception e = task.getException();
+            if (e instanceof ResolvableApiException) {
+                // Try to resolve the save request. This will prompt the user if
+                // the credential is new.
+                ResolvableApiException rae = (ResolvableApiException) e;
+                try {
+                    //can not start in VM
+                    rae.startResolutionForResult(getActivity(), 1);
 
-                    } catch (IntentSender.SendIntentException exception) {
-                        // Could not resolve the request
-                        Log.e(TAG, "Failed to send resolution.", exception);
-                        toastUtility.prepareToast("Save failed");
-                    }
-                } else {
-                    // Request has no resolution
+                } catch (IntentSender.SendIntentException exception) {
+                    // Could not resolve the request
+                    Log.e(TAG, "Failed to send resolution.", exception);
                     toastUtility.prepareToast("Save failed");
                 }
+            } else {
+                // Request has no resolution
+                toastUtility.prepareToast("Save failed");
             }
         });
     }

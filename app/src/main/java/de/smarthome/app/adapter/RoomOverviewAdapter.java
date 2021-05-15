@@ -107,7 +107,6 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
             if (functionMap.get(function) != null) {
 
                 for(Datapoint datapoint : functionMap.get(function).getDataPoints()){
-                    String x = datapoint.getID();
                     if (changedStatusFunctionUID.equals(datapoint.getID())) {
                         statusValueMap.put(function.getID(), value);
                         return true;
@@ -143,7 +142,7 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
                     this
 
             );
-        }else{  //if(viewType == DEFAULT_VIEW_HOLDER){
+        }else{
             return new DefaultViewHolder(
                     parent,
                     listener,
@@ -163,12 +162,11 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
     }
 
     private Optional<String> getStatusValueString(Function function, Optional<String> value) {
-        if(!statusValueMap.isEmpty()) {
-            if(statusValueMap.containsKey(function.getID())){
+        if(!statusValueMap.isEmpty() &&
+                statusValueMap.containsKey(function.getID())){
                 value = Optional.ofNullable(statusValueMap.get(function.getID()));
 
                 removeStatusVariables(function.getID());
-            }
         }
         return value;
     }
@@ -210,9 +208,9 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
         this.switchClickListener = listener;
     }
 
-    public abstract static class ViewHolder extends RecyclerView.ViewHolder {
+    protected abstract static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public ViewHolder(@NonNull View itemView) {
+        protected ViewHolder(@NonNull View itemView) {
             super(itemView);
         }
 

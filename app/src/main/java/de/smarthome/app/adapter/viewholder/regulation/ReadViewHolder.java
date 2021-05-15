@@ -16,9 +16,6 @@ public class ReadViewHolder extends RegulationAdapter.ViewHolder{
     private TextView textViewName;
     private TextView textViewOutput;
 
-    private RegulationAdapter adapter;
-    private RegulationAdapter.OnItemClickListener onItemClickListener;
-
     public ReadViewHolder(@NonNull ViewGroup parent,
                             @NonNull RegulationAdapter.OnItemClickListener onItemClickListener,
                             @NonNull RegulationAdapter adapter) {
@@ -26,9 +23,6 @@ public class ReadViewHolder extends RegulationAdapter.ViewHolder{
         textViewName = itemView.findViewById(R.id.textView_item);
 
         textViewOutput = itemView.findViewById(R.id.textView_read_output_item);
-
-        this.onItemClickListener = onItemClickListener;
-        this.adapter = adapter;
     }
 
     @Override

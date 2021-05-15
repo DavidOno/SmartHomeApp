@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -17,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import de.smarthome.R;
 import de.smarthome.app.model.Function;
@@ -25,16 +23,9 @@ import de.smarthome.app.viewmodel.RoomOverviewViewModel;
 import de.smarthome.app.adapter.RoomOverviewAdapter;
 
 public class RoomOverviewFragment extends Fragment {
-    private  final String TAG = "RoomOverviewFragment";
+    private static final String TAG = "RoomOverviewFragment";
     private RoomOverviewViewModel roomOverviewViewModel;
     private RecyclerView recyclerViewRoom;
-
-    private RoomOverviewAdapter adapter;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -54,60 +45,36 @@ public class RoomOverviewFragment extends Fragment {
         recyclerViewRoom.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewRoom.setHasFixedSize(true);
 
-        adapter = new RoomOverviewAdapter();
+        RoomOverviewAdapter adapter = new RoomOverviewAdapter();
         recyclerViewRoom.setAdapter(adapter);
 
-        roomOverviewViewModel.getFunctionMap().observe(getViewLifecycleOwner(), new Observer<Map<Function, Function>>() {
-            @Override
-            public void onChanged(@Nullable Map<Function, Function> functions) {
-                adapter.setFunctionList(functions, getActivity().getApplication());
-            }
+        roomOverviewViewModel.getFunctionMap().observe(getViewLifecycleOwner(), functions -> adapter.setFunctionList(functions, getActivity().getApplication()));
+
+        roomOverviewViewModel.getStatusUpdateMap().observe(getViewLifecycleOwner(), stringStringMap -> {
+                String uid = stringStringMap.keySet().iterator().next();
+                String value = stringStringMap.get(uid);
+                adapter.updateStatusValue(uid, value);
         });
 
-        roomOverviewViewModel.getStatusUpdateMap().observe(getViewLifecycleOwner(), new Observer<Map<String, String>>() {
-            @Override
-            public void onChanged(Map<String, String> stringStringMap) {
-                    String uid = stringStringMap.keySet().iterator().next();
-                    String value = stringStringMap.get(uid);
-                    adapter.updateStatusValue(uid, value);
-            }
+        roomOverviewViewModel.getStatusGetValueMap().observe(getViewLifecycleOwner(), adapter::updateMultipleStatusValues);
+
+        adapter.setOnItemClickListener(function -> {
+            roomOverviewViewModel.setSelectedFunction(function);
+            navigateToRegulationFragment();
         });
 
-        roomOverviewViewModel.getStatusGetValueMap().observe(getViewLifecycleOwner(), new Observer<Map<String, String>>() {
-            @Override
-            public void onChanged(Map<String, String> stringStringMap) {
-                adapter.updateMultipleStatusValues(stringStringMap);
-
-            }
-        });
-
-        adapter.setOnItemClickListener(new RoomOverviewAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Function function) {
-                roomOverviewViewModel.setSelectedFunction(function);
-                navigateToRegulationFragment();
-            }
-        });
-
-        adapter.setOnSwitchClickListener(new RoomOverviewAdapter.OnSwitchClickListener() {
-            @Override
-            public void onItemClick(Function function, boolean isChecked) {
-                //There is only a switch if binary is the first (!) input type. So the first DataPoint is needed.
-                if(isChecked){
-                    roomOverviewViewModel.requestSetValue(function.getDataPoints().get(0).getID(), "1");
-                }else{
-                    roomOverviewViewModel.requestSetValue(function.getDataPoints().get(0).getID(), "0");
-                }
+        adapter.setOnSwitchClickListener((function, isChecked) -> {
+            //There is only a switch if binary is the first (!) input type. So the first DataPoint is needed.
+            if(isChecked){
+                roomOverviewViewModel.requestSetValue(function.getDataPoints().get(0).getID(), "1");
+            }else{
+                roomOverviewViewModel.requestSetValue(function.getDataPoints().get(0).getID(), "0");
             }
         });
     }
 
     public void navigateToRegulationFragment() {
         NavController navController = NavHostFragment.findNavController(this);
-
-        /*RoomOverviewFragmentDirections.ActionRoomOverviewFragmentToRegulationFragment toRegulationFragment =
-                RoomOverviewFragmentDirections.actionRoomOverviewFragmentToRegulationFragment();*/
-
         navController.navigate(R.id.action_roomOverviewFragment_to_regulationFragment);
     }
 

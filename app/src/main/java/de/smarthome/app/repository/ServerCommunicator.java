@@ -25,6 +25,14 @@ import java.util.Map;
 
 import de.smarthome.SmartHomeApplication;
 import de.smarthome.app.model.responses.GetValueReponse;
+import de.smarthome.app.repository.responsereactor.ResponseReactorBeaconConfig;
+import de.smarthome.app.repository.responsereactor.ResponseReactorBoundariesConfig;
+import de.smarthome.app.repository.responsereactor.ResponseReactorCallbackServer;
+import de.smarthome.app.repository.responsereactor.ResponseReactorChannelConfig;
+import de.smarthome.app.repository.responsereactor.ResponseReactorCheckAvailability;
+import de.smarthome.app.repository.responsereactor.ResponseReactorClient;
+import de.smarthome.app.repository.responsereactor.ResponseReactorGiraCallbackServer;
+import de.smarthome.app.repository.responsereactor.ResponseReactorUIConfig;
 import de.smarthome.app.utility.ToastUtility;
 import de.smarthome.command.AdditionalConfigs;
 import de.smarthome.command.AsyncCommand;
@@ -38,14 +46,6 @@ import de.smarthome.command.impl.MultiReactorCommandChainImpl;
 import de.smarthome.command.impl.RegisterCallback;
 import de.smarthome.command.impl.RegisterCallbackServerAtGiraServer;
 import de.smarthome.command.impl.RegisterClientCommand;
-import de.smarthome.command.impl.ResponseReactorBeaconConfig;
-import de.smarthome.command.impl.ResponseReactorBoundariesConfig;
-import de.smarthome.command.impl.ResponseReactorCallbackServer;
-import de.smarthome.command.impl.ResponseReactorChannelConfig;
-import de.smarthome.command.impl.ResponseReactorCheckAvailability;
-import de.smarthome.command.impl.ResponseReactorClient;
-import de.smarthome.command.impl.ResponseReactorGiraCallbackServer;
-import de.smarthome.command.impl.ResponseReactorUIConfig;
 import de.smarthome.command.impl.SingleReactorCommandChainImpl;
 import de.smarthome.command.impl.UIConfigCommand;
 import de.smarthome.command.impl.UnRegisterCallback;
@@ -68,7 +68,7 @@ public class ServerCommunicator {
     private Application parentApplication;
 
     private int statusListSize = 0;
-    public Map<String, String> newStatusValuesMap = new LinkedHashMap<>();
+    private Map<String, String> newStatusValuesMap = new LinkedHashMap<>();
 
     public static ServerCommunicator getInstance(@Nullable Application application) {
         if (instance == null) {
@@ -155,20 +155,20 @@ public class ServerCommunicator {
         addToExecutorService(requestUnregisterClientThread);
     }
 
-    public void requestSetValue(String ID, String value) {
+    public void requestSetValue(String id, String value) {
         Thread requestSetValueThread = new Thread(() -> {
-            Command setValueCommand = new ChangeValueCommand(ID, Float.parseFloat(value));
+            Command setValueCommand = new ChangeValueCommand(id, Float.parseFloat(value));
             serverHandler.sendRequest(setValueCommand);
         });
         addToExecutorService(requestSetValueThread);
     }
 
-    public void requestGetValue(List<String> IDs) {
-        statusListSize = IDs.size();
+    public void requestGetValue(List<String> ids) {
+        statusListSize = ids.size();
         newStatusValuesMap.clear();
-        for(String ID :IDs){
+        for(String id :ids){
             Thread requestGetValueThread = new Thread(() -> {
-                Command getValueCommand = new GetValueCommand(ID);
+                Command getValueCommand = new GetValueCommand(id);
                 handleResponseGetValue(serverHandler.sendRequest(getValueCommand));
             });
             addToExecutorService(requestGetValueThread);

@@ -37,23 +37,17 @@ public class SwitchArrowViewHolder extends RoomOverviewAdapter.ViewHolder{
         this.onSwitchClickListener = onSwitchClickListener;
         this.adapter = adapter;
 
-        binarySwitch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = getAdapterPosition();
-                if (onSwitchClickListener != null && position != RecyclerView.NO_POSITION) {
-                    onSwitchClickListener.onItemClick(adapter.getFunctionAt(position),  binarySwitch.isChecked());
-                }
+        binarySwitch.setOnClickListener(v -> {
+            int position = getAdapterPosition();
+            if (onSwitchClickListener != null && position != RecyclerView.NO_POSITION) {
+                onSwitchClickListener.onItemClick(adapter.getFunctionAt(position),  binarySwitch.isChecked());
             }
         });
 
-        itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = getAdapterPosition();
-                if (onItemClickListener != null && position != RecyclerView.NO_POSITION) {
-                    onItemClickListener.onItemClick(adapter.getFunctionAt(position));
-                }
+        itemView.setOnClickListener(v -> {
+            int position = getAdapterPosition();
+            if (onItemClickListener != null && position != RecyclerView.NO_POSITION) {
+                onItemClickListener.onItemClick(adapter.getFunctionAt(position));
             }
         });
 

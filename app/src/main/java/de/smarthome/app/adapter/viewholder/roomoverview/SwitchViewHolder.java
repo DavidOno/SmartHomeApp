@@ -19,8 +19,6 @@ import de.smarthome.app.adapter.RoomOverviewAdapter;
 public class SwitchViewHolder extends RoomOverviewAdapter.ViewHolder{
     private SwitchCompat binarySwitch;
     private TextView textViewName;
-    private RoomOverviewAdapter adapter;
-    private RoomOverviewAdapter.OnSwitchClickListener onSwitchClickListener;
 
     public SwitchViewHolder(@NonNull ViewGroup parent,
                             @NonNull RoomOverviewAdapter.OnSwitchClickListener onSwitchClickListener,
@@ -30,16 +28,10 @@ public class SwitchViewHolder extends RoomOverviewAdapter.ViewHolder{
         textViewName = itemView.findViewById(R.id.textView_item);
         binarySwitch = itemView.findViewById(R.id.switch_item);
 
-        this.onSwitchClickListener = onSwitchClickListener;
-        this.adapter = adapter;
-
-        binarySwitch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = getAdapterPosition();
-                if (onSwitchClickListener != null && position != RecyclerView.NO_POSITION) {
-                    onSwitchClickListener.onItemClick(adapter.getFunctionAt(position), binarySwitch.isChecked());
-                }
+        binarySwitch.setOnClickListener(v -> {
+            int position = getAdapterPosition();
+            if (onSwitchClickListener != null && position != RecyclerView.NO_POSITION) {
+                onSwitchClickListener.onItemClick(adapter.getFunctionAt(position), binarySwitch.isChecked());
             }
         });
     }

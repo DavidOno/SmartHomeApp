@@ -103,12 +103,9 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
 
     private boolean containsViewStatusFunction(String changedStatusFunctionUID, String value) {
         for(Datapoint datapoint : dataPointList){
-            if (dataPointMap.get(datapoint) != null) {
-                if (changedStatusFunctionUID.equals(dataPointMap.get(datapoint).getID())) {
+            if (dataPointMap.get(datapoint) != null && changedStatusFunctionUID.equals(dataPointMap.get(datapoint).getID())) {
                     statusValueMap.put(datapoint.getID(), value);
                     return true;
-                }
-
             }
         }
         return false;
@@ -171,12 +168,10 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
     }
 
     private Optional<String> getStatusValueString(Datapoint datapoint, Optional<String> value) {
-        if(!statusValueMap.isEmpty()) {
-            if(statusValueMap.containsKey(datapoint.getID())){
+        if(!statusValueMap.isEmpty() && statusValueMap.containsKey(datapoint.getID())){
                 value = Optional.ofNullable(statusValueMap.get(datapoint.getID()));
 
                 removeStatusVariables(datapoint.getID());
-            }
         }
         return value;
     }
@@ -192,9 +187,11 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
 
     @Override
     public int getItemViewType(int position){
-        //TODO: Optional<> is used but not checked
-        return channelConfig.getRegulationItemViewType(
-                channelConfig.findChannelByName(repository.getSelectedFunction()).getCorrespondingChannelDataPoint(dataPointList.get(position)).get());
+        if(channelConfig.findChannelByName(repository.getSelectedFunction()).getCorrespondingChannelDataPoint(dataPointList.get(position)).isPresent()){
+            channelConfig.getRegulationItemViewType(
+                    channelConfig.findChannelByName(repository.getSelectedFunction()).getCorrespondingChannelDataPoint(dataPointList.get(position)).get());
+        }
+        return -1;
     }
 
 
@@ -212,9 +209,9 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
         this.listener = listener;
     }
 
-    public abstract static class ViewHolder extends RecyclerView.ViewHolder {
+    protected abstract static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public ViewHolder(@NonNull View itemView) {
+        protected ViewHolder(@NonNull View itemView) {
             super(itemView);
         }
 

@@ -11,7 +11,7 @@ import de.smarthome.app.model.UIConfig;
 import de.smarthome.app.utility.ToastUtility;
 
 public class ResponseReactorUIConfig implements ResponseReactor {
-    private final String TAG = "ResponseReactorUIConfig";
+    private static final String TAG = "ResponseReactorUIConfig";
     private UIConfig responseUIConfig;
     private ConfigContainer configContainer;
 

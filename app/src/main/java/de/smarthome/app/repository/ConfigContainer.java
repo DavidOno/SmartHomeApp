@@ -46,7 +46,7 @@ public class ConfigContainer {
     private MutableLiveData<Map<Datapoint, BoundaryDataPoint>> boundaryMap = new MutableLiveData<>();
 
     private MutableLiveData<Map<String, String>> statusUpdateMap = new MutableLiveData<>();
-    public MutableLiveData<Map<String, String>> statusGetValueMap = new MutableLiveData<>();
+    private MutableLiveData<Map<String, String>> statusGetValueMap = new MutableLiveData<>();
 
     public static ConfigContainer getInstance() {
         if (instance == null) {
@@ -174,12 +174,11 @@ public class ConfigContainer {
             Function functionStatus = null;
             if (!func.isStatusFunction()) {
                 for (Function comparedFunction : location.getFunctions(smartHomeUiConfig)) {
-                    if (comparedFunction.isStatusFunction()) {
-                        if (func.getName().split(regex)[0].equals(
-                                comparedFunction.getName().split(regex)[0])) {
+                    if (comparedFunction.isStatusFunction() &&
+                            func.getName().split(regex)[0].equals(
+                                    comparedFunction.getName().split(regex)[0])) {
                             functionStatus = comparedFunction;
                             break;
-                        }
                     }
                 }
                 completeFunctionMap.put(func, functionStatus);

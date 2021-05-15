@@ -1,7 +1,6 @@
 package de.smarthome.app.adapter.viewholder.regulation;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -19,8 +18,6 @@ public class StepViewHolder extends RegulationAdapter.ViewHolder{
     private TextView textViewName;
     private ImageButton plus;
     private ImageButton minus;
-    private RegulationAdapter adapter;
-    private RegulationAdapter.OnItemClickListener onItemClickListener;
 
     public StepViewHolder(@NonNull ViewGroup parent,
                              @NonNull RegulationAdapter.OnItemClickListener onItemClickListener,
@@ -31,26 +28,17 @@ public class StepViewHolder extends RegulationAdapter.ViewHolder{
         plus = itemView.findViewById(R.id.imageView_plus);
         minus = itemView.findViewById(R.id.imageView_minus);
 
-        this.onItemClickListener = onItemClickListener;
-        this.adapter = adapter;
-
-        plus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = getAdapterPosition();
-                if (onItemClickListener != null && position != RecyclerView.NO_POSITION) {
-                    onItemClickListener.onItemClick(adapter.getDataPointAt(position), "1");
-                }
+        plus.setOnClickListener(v -> {
+            int position = getAdapterPosition();
+            if (onItemClickListener != null && position != RecyclerView.NO_POSITION) {
+                onItemClickListener.onItemClick(adapter.getDataPointAt(position), "1");
             }
         });
 
-        minus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = getAdapterPosition();
-                if (onItemClickListener != null && position != RecyclerView.NO_POSITION) {
-                    onItemClickListener.onItemClick(adapter.getDataPointAt(position), "0");
-                }
+        minus.setOnClickListener(v -> {
+            int position = getAdapterPosition();
+            if (onItemClickListener != null && position != RecyclerView.NO_POSITION) {
+                onItemClickListener.onItemClick(adapter.getDataPointAt(position), "0");
             }
         });
     }

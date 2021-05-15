@@ -10,7 +10,7 @@ import de.smarthome.command.ResponseReactor;
 import de.smarthome.app.utility.ToastUtility;
 
 public class ResponseReactorClient implements ResponseReactor {
-    private final String TAG = "ResponseReactorClient";
+    private static final String TAG = "ResponseReactorClient";
     private ServerCommunicator serverCommunicator;
 
     private ToastUtility toastUtility;

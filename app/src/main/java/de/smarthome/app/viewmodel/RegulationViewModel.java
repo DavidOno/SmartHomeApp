@@ -24,8 +24,8 @@ public class RegulationViewModel extends AndroidViewModel {
     }
 
 
-    public void requestSetValue(String ID, String value){
-        repository.requestSetValue(ID, value);
+    public void requestSetValue(String id, String value){
+        repository.requestSetValue(id, value);
     }
 
     public LiveData<Map<Datapoint, Datapoint>> getDataPointMap(){

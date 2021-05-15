@@ -9,7 +9,7 @@ import de.smarthome.command.ResponseReactor;
 import de.smarthome.app.utility.ToastUtility;
 
 public class ResponseReactorCheckAvailability implements ResponseReactor {
-    private final String TAG = "ResponseReactorCheckAvailability";
+    private static final String TAG = "ResponseReactorCheckAvailability";
 
     private ToastUtility toastUtility;
 
