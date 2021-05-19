@@ -197,7 +197,8 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     public void unsubscribeFromEverything() {
         MyFirebaseMessagingService.getValueObserver().unsubscribe(this);
         MyFirebaseMessagingService.getServiceObserver().unsubscribe(this);
-        beaconObserver.unsubscribe();
+        //TODO: Causes Crashes!!
+        //beaconObserver.unsubscribe();
         serverCommunicator.unsubscribeFromEverything();
     }
 }
