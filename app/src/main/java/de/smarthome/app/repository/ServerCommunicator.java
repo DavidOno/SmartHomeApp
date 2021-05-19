@@ -129,9 +129,7 @@ public class ServerCommunicator {
 
     public void getAdditionalConfigsAfterRestart() {
         MultiReactorCommandChainImpl multiCommandChain = new MultiReactorCommandChainImpl();
-        multiCommandChain.add(new AdditionalConfigCommand(IP_OF_CALLBACK_SERVER, AdditionalConfigs.CHANNEL), new ResponseReactorChannelConfig());
-        multiCommandChain.add(new AdditionalConfigCommand(IP_OF_CALLBACK_SERVER, AdditionalConfigs.LOCATION), new ResponseReactorBeaconConfig());
-        multiCommandChain.add(new AdditionalConfigCommand(IP_OF_CALLBACK_SERVER, AdditionalConfigs.BOUNDARIES), new ResponseReactorBoundariesConfig());
+        getAdditionalConfigs(multiCommandChain);
         serverHandler.sendRequest(multiCommandChain);
     }
 
