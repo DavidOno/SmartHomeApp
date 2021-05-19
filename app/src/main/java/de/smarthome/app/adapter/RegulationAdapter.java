@@ -17,6 +17,7 @@ import java.util.Optional;
 import de.smarthome.app.model.configs.BoundaryDataPoint;
 import de.smarthome.app.model.configs.ChannelConfig;
 import de.smarthome.app.model.Datapoint;
+import de.smarthome.app.model.configs.ChannelDatapoint;
 import de.smarthome.app.repository.Repository;
 import de.smarthome.app.adapter.viewholder.regulation.ReadViewHolder;
 import de.smarthome.app.adapter.viewholder.regulation.SliderViewHolder;
@@ -65,7 +66,8 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
     private void requestCurrentStatus(){
         List<String> requestList = new ArrayList<>();
         for(Datapoint dp : dataPointList){
-            if(dataPointMap.get(dp) != null){
+            //Status Function always have the same amount of DataPoints BUT only a few of them get answers
+            if(dataPointMap.get(dp) != null && !dataPointMap.get(dp).getID().equals(dp.getID())){
                 requestList.add(dataPointMap.get(dp).getID());
             }
         }
@@ -104,8 +106,8 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
     private boolean containsViewStatusFunction(String changedStatusFunctionUID, String value) {
         for(Datapoint datapoint : dataPointList){
             if (dataPointMap.get(datapoint) != null && changedStatusFunctionUID.equals(dataPointMap.get(datapoint).getID())) {
-                    statusValueMap.put(datapoint.getID(), value);
-                    return true;
+                statusValueMap.put(datapoint.getID(), value);
+                return true;
             }
         }
         return false;
@@ -147,9 +149,8 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
 
         }else if(viewType == READ_VIEW_HOLDER){
             return new ReadViewHolder(
-                    parent,
-                    listener,
-                    this
+                    parent
+
             );
         }else {
             throw new IllegalArgumentException("Input type not known");
@@ -187,11 +188,8 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
 
     @Override
     public int getItemViewType(int position){
-        if(channelConfig.findChannelByName(repository.getSelectedFunction()).getCorrespondingChannelDataPoint(dataPointList.get(position)).isPresent()){
-            channelConfig.getRegulationItemViewType(
-                    channelConfig.findChannelByName(repository.getSelectedFunction()).getCorrespondingChannelDataPoint(dataPointList.get(position)).get());
-        }
-        return -1;
+        Optional<ChannelDatapoint> channelDatapoint = channelConfig.findChannelByName(repository.getSelectedFunction()).getCorrespondingChannelDataPoint(dataPointList.get(position));
+        return channelDatapoint.map(datapoint -> channelConfig.getRegulationItemViewType(datapoint)).orElse(-1);
     }
 
 
