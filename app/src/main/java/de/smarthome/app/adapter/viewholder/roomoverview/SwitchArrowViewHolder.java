@@ -20,9 +20,6 @@ import de.smarthome.app.adapter.RoomOverviewAdapter;
 public class SwitchArrowViewHolder extends RoomOverviewAdapter.ViewHolder{
     private SwitchCompat binarySwitch;
     private TextView textViewName;
-    private RoomOverviewAdapter adapter;
-    private RoomOverviewAdapter.OnItemClickListener onItemClickListener;
-    private RoomOverviewAdapter.OnSwitchClickListener onSwitchClickListener;
 
     public SwitchArrowViewHolder(@NonNull ViewGroup parent,
                                  @NonNull RoomOverviewAdapter.OnItemClickListener onItemClickListener,
@@ -32,10 +29,6 @@ public class SwitchArrowViewHolder extends RoomOverviewAdapter.ViewHolder{
 
         textViewName = itemView.findViewById(R.id.textView_item);
         binarySwitch = itemView.findViewById(R.id.switch_item);
-
-        this.onItemClickListener = onItemClickListener;
-        this.onSwitchClickListener = onSwitchClickListener;
-        this.adapter = adapter;
 
         binarySwitch.setOnClickListener(v -> {
             int position = getAdapterPosition();
