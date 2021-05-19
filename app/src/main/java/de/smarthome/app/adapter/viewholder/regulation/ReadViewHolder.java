@@ -16,9 +16,7 @@ public class ReadViewHolder extends RegulationAdapter.ViewHolder{
     private TextView textViewName;
     private TextView textViewOutput;
 
-    public ReadViewHolder(@NonNull ViewGroup parent,
-                            @NonNull RegulationAdapter.OnItemClickListener onItemClickListener,
-                            @NonNull RegulationAdapter adapter) {
+    public ReadViewHolder(@NonNull ViewGroup parent) {
         super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_read, parent, false));
         textViewName = itemView.findViewById(R.id.textView_item);
 
