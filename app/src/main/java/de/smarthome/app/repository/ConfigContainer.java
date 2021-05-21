@@ -214,7 +214,6 @@ public class ConfigContainer {
 
     public void updateDataPointMap(Function function) {
         Map<Datapoint, Datapoint> newValue = new LinkedHashMap<>();
-        //TODO: Check if StatusFunction always has the same number of Datapoint than "normal" Function
         if (functionMap.getValue().get(function) != null) {
             for (int i = 0; i < function.getDataPoints().size(); i++) {
                 newValue.put(function.getDataPoints().get(i), functionMap.getValue().get(function).getDataPoints().get(i));
