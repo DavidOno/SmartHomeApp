@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.NavGraph;
 import androidx.navigation.NavInflater;
@@ -35,6 +36,7 @@ import java.util.concurrent.Executors;
 
 import de.smarthome.app.model.Location;
 import de.smarthome.app.repository.Repository;
+import de.smarthome.app.ui.LoginFragment;
 import de.smarthome.app.utility.ToastUtility;
 
 public class SmartHomeApplication extends AppCompatActivity {
@@ -94,6 +96,20 @@ public class SmartHomeApplication extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_options, menu);
         getMenuInflater().inflate(R.menu.menu_home_overview, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu (Menu menu) {
+        Fragment x = navHostFragment.getChildFragmentManager().getFragments().get(0);
+
+        if (x.getClass().equals(LoginFragment.class)){
+            menu.getItem(0).setEnabled(false);
+            menu.getItem(1).setEnabled(false);
+        }else{
+            menu.getItem(0).setEnabled(true);
+            menu.getItem(1).setEnabled(true);
+        }
         return true;
     }
 
