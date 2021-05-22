@@ -9,24 +9,18 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
-import com.google.android.gms.auth.api.credentials.Credential;
-import com.google.android.gms.auth.api.credentials.CredentialRequest;
-import com.google.android.gms.auth.api.credentials.Credentials;
-import com.google.android.gms.auth.api.credentials.CredentialsClient;
-
 import de.smarthome.R;
 import de.smarthome.app.utility.ToastUtility;
+import de.smarthome.app.viewmodel.OptionsViewModel;
 
 public class OptionsFragment extends Fragment {
     private static final String TAG = "OptionsFragment";
-
+    private OptionsViewModel optionsViewModel;
     private Button buttonLogout;
-
-    private final ToastUtility toastUtility = ToastUtility.getInstance();
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -43,6 +37,8 @@ public class OptionsFragment extends Fragment {
         requireActivity().setTitle("Option");
 
         buttonLogout.setOnClickListener(v -> logoutUser());
+
+        optionsViewModel = new ViewModelProvider(requireActivity()).get(OptionsViewModel.class);
     }
 
 
@@ -51,43 +47,13 @@ public class OptionsFragment extends Fragment {
     }
 
     private void logoutUser(){
-        getSavedCredentialsFromGoogle();
+        optionsViewModel.getDataFromGoogleAndDelete();
+        navigateToLoginFragment();
     }
 
     private void navigateToLoginFragment() {
         NavController navController = NavHostFragment.findNavController(this);
 
         navController.navigate(R.id.loginFragment);
-    }
-
-    public void deleteCredential(Credential credential){
-        CredentialsClient credentialsClient = Credentials.getClient(this.getActivity());
-
-        credentialsClient.delete(credential).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                toastUtility.prepareToast("Login data deleted");
-            }
-        });
-
-    }
-
-    public void getSavedCredentialsFromGoogle() {
-        CredentialRequest credentialRequest = new CredentialRequest.Builder()
-                .setPasswordLoginSupported(true)
-                .build();
-
-        CredentialsClient credentialsClient = Credentials.getClient(this.getActivity());
-
-        credentialsClient.request(credentialRequest).addOnCompleteListener(task -> {
-
-            if (task.isSuccessful()) {
-                // See "Handle successful credential requests"
-                deleteCredential(task.getResult().getCredential());
-                navigateToLoginFragment();
-            }else{
-                // See "Handle unsuccessful and incomplete credential requests"
-                toastUtility.prepareToast("Not able to retrieve Login data");
-            }
-        });
     }
 }
