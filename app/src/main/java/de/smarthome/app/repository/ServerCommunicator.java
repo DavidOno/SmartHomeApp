@@ -184,8 +184,8 @@ public class ServerCommunicator {
     public void handleResponseGetValue(ResponseEntity responseEntity) {
         try {
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
-                System.out.println("response received");
-                System.out.println(responseEntity.getBody());
+                Log.d(TAG, "response received");
+                Log.d(TAG, responseEntity.getBody().toString());
                 GetValueReponse valueReponse = (GetValueReponse) responseEntity.getBody();
 
                 String value = valueReponse.getValues().get(0).getValue();
@@ -197,8 +197,8 @@ public class ServerCommunicator {
                     ConfigContainer.getInstance().updateStatusGetValueMap(newStatusValuesMap);
                 }
             } else {
-                System.out.println("error occurred");
-                System.out.println(responseEntity.getStatusCode());
+                Log.d(TAG, "error occurred");
+                Log.d(TAG, responseEntity.getStatusCode().toString());
             }
         } catch (Exception e) {
             Log.d(TAG, "handleResponseEntities, Exception: " + e.toString());

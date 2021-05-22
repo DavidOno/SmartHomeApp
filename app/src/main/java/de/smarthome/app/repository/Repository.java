@@ -27,7 +27,7 @@ import de.smarthome.server.MyFirebaseMessagingService;
 
 public class Repository implements CallbackSubscriber, BeaconObserverSubscriber {
     private static final String TAG = "Repository";
-    private static Repository instance;
+    private static Repository INSTANCE;
 
     private ConfigContainer configContainer;
     private ServerCommunicator serverCommunicator;
@@ -43,15 +43,15 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     private MutableLiveData<Boolean> beaconCheck = new MutableLiveData<>();
 
     public static Repository getInstance(@Nullable Application application) {
-        if (instance == null) {
-            instance = new Repository();
-            instance.configContainer = ConfigContainer.getInstance();
+        if (INSTANCE == null) {
+            INSTANCE = new Repository();
+            INSTANCE.configContainer = ConfigContainer.getInstance();
             if(application != null){
-                instance.serverCommunicator = ServerCommunicator.getInstance(application);
-                instance.parentApplication = application;
+                INSTANCE.serverCommunicator = ServerCommunicator.getInstance(application);
+                INSTANCE.parentApplication = application;
             }
         }
-        return instance;
+        return INSTANCE;
     }
 
 
@@ -162,26 +162,21 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
                 switch (serviceEvent.getEvent()) {
                     case STARTUP:
                         Log.d(TAG, "Server has started.");
-                        System.out.println("Server has started.");
                         serverCommunicator.getSavedCredentialsForLoginAfterRestart();
                         break;
                     case RESTART:
                         Log.d(TAG, "Server got restarted.");
-                        System.out.println("Server got restarted.");
                         break;
                     case UI_CONFIG_CHANGED:
                         Log.d(TAG, "UI_CONFIG_CHANGED");
-                        System.out.println("UI_CONFIG_CHANGED");
                         serverCommunicator.getUIConfigAfterRestart();
                         break;
                     case PROJECT_CONFIG_CHANGED:
                         Log.d(TAG, "PROJECT_CONFIG_CHANGED");
-                        System.out.println("PROJECT_CONFIG_CHANGED");
                         serverCommunicator.getAdditionalConfigsAfterRestart();
                         break;
                     default:
                         Log.d(TAG, "Unknown CallBackServiceInputEvent");
-                        System.out.println("Unknown CallBackServiceInputEvent");
                         break;
                 }
             }
@@ -195,10 +190,13 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     public void unsubscribeFromEverything() {
-        MyFirebaseMessagingService.getValueObserver().unsubscribe(this);
-        MyFirebaseMessagingService.getServiceObserver().unsubscribe(this);
-        //TODO: Causes Crashes!!
-        //beaconObserver.unsubscribe();
-        serverCommunicator.unsubscribeFromEverything();
+        try {
+            MyFirebaseMessagingService.getValueObserver().unsubscribe(this);
+            MyFirebaseMessagingService.getServiceObserver().unsubscribe(this);
+            serverCommunicator.unsubscribeFromEverything();
+            beaconObserver.unsubscribe();
+        }catch (Exception e){
+            Log.d(TAG, e.getMessage());
+        }
     }
 }
