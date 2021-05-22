@@ -27,8 +27,8 @@ public class ResponseReactorUIConfig implements ResponseReactor {
     public void react(ResponseEntity responseEntity) {
         try {
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
-                System.out.println("response received UIConfig");
-                System.out.println(responseEntity.getBody());
+                Log.d(TAG, "response received UIConfig");
+                Log.d(TAG, responseEntity.getBody().toString());
 
                 responseUIConfig = (UIConfig) responseEntity.getBody();
                 sendUIConfigToRepo(responseUIConfig);
@@ -36,8 +36,8 @@ public class ResponseReactorUIConfig implements ResponseReactor {
                 Log.d(TAG, "Communication with Server possible.\nStatus: " + responseEntity.getStatusCode());
 
             } else {
-                System.out.println("error occurred");
-                System.out.println(responseEntity.getStatusCode());
+                Log.d(TAG, "error occurred");
+                Log.d(TAG, responseEntity.getStatusCode().toString());
 
                 Log.d(TAG, "Problem when trying to reach Server.\nStatus: " + responseEntity.getStatusCode());
             }
