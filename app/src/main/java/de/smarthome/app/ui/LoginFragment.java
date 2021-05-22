@@ -1,5 +1,6 @@
 package de.smarthome.app.ui;
 
+import android.app.Activity;
 import android.content.IntentSender;
 import android.os.Bundle;
 import android.util.Log;
@@ -65,7 +66,7 @@ public class LoginFragment extends Fragment {
 
         loginViewModel.getLoginDataStatus().observe(this.getViewLifecycleOwner(), requestStatus -> {
             if(requestStatus){
-                saveCredential(buildCredential(userName, password));
+                loginViewModel.saveCredential(this.getActivity(), buildCredential(userName, password));
                 navigateToHomeOverviewFragment();
             }else{
                 toastUtility.prepareToast("Login Data incorrect!");
@@ -131,40 +132,5 @@ public class LoginFragment extends Fragment {
         //TODO: Remove at the end of testing
         buttonDummy = view.findViewById(R.id.button_dummy);
 
-    }
-
-    public void saveCredential(Credential userCredential){
-        CredentialsOptions options = new CredentialsOptions.Builder()
-                .forceEnableSaveDialog()
-                .build();
-
-        CredentialsClient credentialsClient = Credentials.getClient(this.getActivity(), options);
-
-        credentialsClient.save(userCredential).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                Log.d(TAG, "SAVE: OK");
-                toastUtility.prepareToast("Credentials saved");
-                return;
-            }
-
-            Exception e = task.getException();
-            if (e instanceof ResolvableApiException) {
-                // Try to resolve the save request. This will prompt the user if
-                // the credential is new.
-                ResolvableApiException rae = (ResolvableApiException) e;
-                try {
-                    //can not start in VM
-                    rae.startResolutionForResult(getActivity(), 1);
-
-                } catch (IntentSender.SendIntentException exception) {
-                    // Could not resolve the request
-                    Log.e(TAG, "Failed to send resolution.", exception);
-                    toastUtility.prepareToast("Save failed");
-                }
-            } else {
-                // Request has no resolution
-                toastUtility.prepareToast("Save failed");
-            }
-        });
     }
 }
