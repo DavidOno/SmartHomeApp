@@ -21,14 +21,14 @@ public class ResponseReactorCheckAvailability implements ResponseReactor {
     public void react(ResponseEntity responseEntity) {
         try {
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
-                System.out.println("response received " + TAG);
-                System.out.println(responseEntity.getBody());
+                Log.d(TAG, "response received " + TAG);
+                Log.d(TAG, responseEntity.getBody().toString());
 
                 Log.d(TAG, "Communication with Server possible.\nStatus: " + responseEntity.getStatusCode());
 
             } else {
-                System.out.println("error occurred");
-                System.out.println(responseEntity.getStatusCode());
+                Log.d(TAG, "error occurred");
+                Log.d(TAG, responseEntity.getStatusCode().toString());
 
                 Log.d(TAG, "Problem when trying to reach Server.\nStatus: " + responseEntity.getStatusCode());
 

@@ -21,16 +21,16 @@ public class ResponseReactorBoundariesConfig implements ResponseReactor {
     public void react(ResponseEntity responseEntity) {
         try {
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
-                System.out.println("response received UIConfig");
-                System.out.println(responseEntity.getBody());
+                Log.d(TAG, "response received UIConfig");
+                Log.d(TAG, responseEntity.getBody().toString());
 
                 responseBoundariesConfig = (BoundariesConfig) responseEntity.getBody();
                 sendBoundariesConfigToRepo(responseBoundariesConfig);
 
                 Log.d(TAG, "BoundaryConfig successfully retrieved.\nStatus: " + responseEntity.getStatusCode());
             } else {
-                System.out.println("error occurred");
-                System.out.println(responseEntity.getStatusCode());
+                Log.d(TAG, "error occurred");
+                Log.d(TAG, responseEntity.getStatusCode().toString());
                 Log.d(TAG, "Problem when trying get BoundaryConfig.\nStatus: " + responseEntity.getStatusCode());
             }
         }catch(Exception e){
