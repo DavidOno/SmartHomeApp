@@ -59,8 +59,10 @@ public class ConfigContainer {
 
     public void setSelectedFunction(Function function) {
         selectedFunction = function;
-        updateBoundaryMap();
-        updateDataPointMap(function);
+        if(function != null) {
+            updateBoundaryMap();
+            updateDataPointMap(function);
+        }
     }
 
     public Function getSelectedFunction() {
@@ -69,7 +71,9 @@ public class ConfigContainer {
 
     public void setSelectedLocation(Location newLocation) {
         selectedLocation = newLocation;
-        updateFunctionMap(selectedLocation);
+        if(newLocation != null) {
+            updateFunctionMap(selectedLocation);
+        }
     }
 
     public Location getSelectedLocation() {
@@ -160,15 +164,16 @@ public class ConfigContainer {
     }
 
     public void updateFunctionMap(Location viewedLocation) {
-        Map<Function, Function> completeFunctionMap = new LinkedHashMap<>();
-        mapStatusFunctionToFunction(completeFunctionMap, viewedLocation);
+        Map<Function, Function> completeFunctionMap = mapStatusFunctionToFunction(viewedLocation);
+
         if (!viewedLocation.getParentLocation().equals(Location.ROOT)) {
-            mapStatusFunctionToFunction(completeFunctionMap, viewedLocation.getParentLocation());
+            completeFunctionMap.putAll(mapStatusFunctionToFunction(viewedLocation.getParentLocation()));
         }
         functionMap.postValue(completeFunctionMap);
     }
 
-    private void mapStatusFunctionToFunction(Map<Function, Function> completeFunctionMap, Location location) {
+    private LinkedHashMap<Function, Function> mapStatusFunctionToFunction(Location location) {
+        LinkedHashMap<Function, Function> completeFunctionMap = new LinkedHashMap<>();
         String regex = "_";
         for (Function func : location.getFunctions(smartHomeUiConfig)) {
             Function functionStatus = null;
@@ -184,11 +189,11 @@ public class ConfigContainer {
                 completeFunctionMap.put(func, functionStatus);
             }
         }
+        return completeFunctionMap;
     }
 
     public void updateBoundaryMap() {
-        Map<Datapoint, BoundaryDataPoint> completeFunctionMap = new LinkedHashMap<>();
-        mapBoundaryToFunction(completeFunctionMap);
+        Map<Datapoint, BoundaryDataPoint> completeFunctionMap = mapBoundaryToFunction();
         boundaryMap.postValue(completeFunctionMap);
     }
 
@@ -196,10 +201,12 @@ public class ConfigContainer {
         return boundaryMap;
     }
 
-    private void mapBoundaryToFunction(Map<Datapoint, BoundaryDataPoint> boundaryMap) {
+    private LinkedHashMap<Datapoint, BoundaryDataPoint> mapBoundaryToFunction() {
+        LinkedHashMap<Datapoint, BoundaryDataPoint> boundaryMap = new LinkedHashMap<>();
         String regex = "_";
         for (Boundary boundary : smartHomeBoundariesConfig.getBoundaries()) {
-            if (boundary.getName().split(regex)[0].equals(selectedFunction.getName().split(regex)[0])) {
+            if (boundary.getLoaction().equals(selectedLocation.getName()) &&
+                    boundary.getName().split(regex)[0].equals(selectedFunction.getName().split(regex)[0])) {
                 for (BoundaryDataPoint bdp : boundary.getDatapoints()) {
                     for (Datapoint dp : selectedFunction.getDataPoints())
                         if (bdp.getName().equals(dp.getName())) {
@@ -210,6 +217,7 @@ public class ConfigContainer {
                 break;
             }
         }
+        return boundaryMap;
     }
 
     public void updateDataPointMap(Function function) {
@@ -247,6 +255,10 @@ public class ConfigContainer {
     public MutableLiveData<Map<String, String>> getStatusGetValueMap() {
         return statusGetValueMap;
     }
+
+
+
+
 
 
     private void fillWithDummyValueAllConfigs() {
@@ -427,12 +439,12 @@ public class ConfigContainer {
         BoundaryDataPoint dataPoint = new BoundaryDataPoint("Position", "20", "90");
         List<BoundaryDataPoint> list = new ArrayList<>();
         list.add(dataPoint);
-        Boundary x = new Boundary("Markise_Boundary", list);
+        Boundary x = new Boundary("Markise_Boundary", "Terrasse", list);
 
         BoundaryDataPoint dataPoint2 = new BoundaryDataPoint("Position", "10", "30");
         List<BoundaryDataPoint> list2 = new ArrayList<>();
         list2.add(dataPoint2);
-        Boundary y = new Boundary("Alarmanlage_Boundary", list2);
+        Boundary y = new Boundary("Alarmanlage_Boundary", "House", list2);
 
         List<Boundary> z = new ArrayList<>();
         z.add(y);
