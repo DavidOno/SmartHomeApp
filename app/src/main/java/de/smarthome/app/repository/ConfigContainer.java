@@ -180,6 +180,7 @@ public class ConfigContainer {
             if (!func.isStatusFunction()) {
                 for (Function comparedFunction : location.getFunctions(smartHomeUiConfig)) {
                     if (comparedFunction.isStatusFunction() &&
+                            //If they share the same name "Light_on" and "Light_Status"
                             func.getName().split(regex)[0].equals(
                                     comparedFunction.getName().split(regex)[0])) {
                             functionStatus = comparedFunction;
@@ -202,22 +203,29 @@ public class ConfigContainer {
     }
 
     private LinkedHashMap<Datapoint, BoundaryDataPoint> mapBoundaryToFunction() {
-        LinkedHashMap<Datapoint, BoundaryDataPoint> boundaryMap = new LinkedHashMap<>();
+        LinkedHashMap<Datapoint, BoundaryDataPoint> datapointBoundaryDataPointMap = new LinkedHashMap<>();
         String regex = "_";
         for (Boundary boundary : smartHomeBoundariesConfig.getBoundaries()) {
             if (boundary.getLoaction().equals(selectedLocation.getName()) &&
                     boundary.getName().split(regex)[0].equals(selectedFunction.getName().split(regex)[0])) {
-                for (BoundaryDataPoint bdp : boundary.getDatapoints()) {
-                    for (Datapoint dp : selectedFunction.getDataPoints())
-                        if (bdp.getName().equals(dp.getName())) {
-                            boundaryMap.put(dp, bdp);
-                            break;
-                        }
-                }
+
+                datapointBoundaryDataPointMap.putAll(findCorrespondingBoundaryDataPoint(boundary));
                 break;
             }
         }
-        return boundaryMap;
+        return datapointBoundaryDataPointMap;
+    }
+
+    private LinkedHashMap<Datapoint, BoundaryDataPoint> findCorrespondingBoundaryDataPoint(Boundary boundary) {
+        LinkedHashMap<Datapoint, BoundaryDataPoint> datapointBoundaryDataPointMap = new LinkedHashMap<>();
+        for (BoundaryDataPoint bdp : boundary.getDatapoints()) {
+            for (Datapoint dp : selectedFunction.getDataPoints())
+                if (bdp.getName().equals(dp.getName())) {
+                    datapointBoundaryDataPointMap.put(dp, bdp);
+                    break;
+                }
+        }
+        return datapointBoundaryDataPointMap;
     }
 
     public void updateDataPointMap(Function function) {
@@ -286,7 +294,6 @@ public class ConfigContainer {
         functionIDs.add("aae2");
         functionIDs.add("aae8");
 
-        functionIDs.add("aael");
         functionIDs.add("aaafe");
 
         List<Location> loc = new ArrayList<>();
