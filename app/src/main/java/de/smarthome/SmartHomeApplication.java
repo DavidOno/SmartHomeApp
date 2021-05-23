@@ -117,6 +117,8 @@ public class SmartHomeApplication extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_home_overview:
+                repository.setSelectedLocation(null);
+                repository.setSelectedFunction(null);
                 goToFragment(R.id.HomeOverviewFragment);
                 return true;
 
