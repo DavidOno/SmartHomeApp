@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.NavGraph;
 import androidx.navigation.NavInflater;
@@ -101,9 +102,9 @@ public class SmartHomeApplication extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu (Menu menu) {
-        Fragment x = navHostFragment.getChildFragmentManager().getFragments().get(0);
+        Fragment currentFragment = navHostFragment.getChildFragmentManager().getFragments().get(0);
 
-        if (x.getClass().equals(LoginFragment.class)){
+        if (currentFragment.getClass().equals(LoginFragment.class)){
             menu.getItem(0).setEnabled(false);
             menu.getItem(1).setEnabled(false);
         }else{
@@ -117,8 +118,6 @@ public class SmartHomeApplication extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_home_overview:
-                repository.setSelectedLocation(null);
-                repository.setSelectedFunction(null);
                 goToFragment(R.id.HomeOverviewFragment);
                 return true;
 
@@ -169,6 +168,7 @@ public class SmartHomeApplication extends AppCompatActivity {
         navController.navigate(destinationFragment);
     }
 
+    //TODO: Move to viewmodel
     public void getSavedCredentials() {
         CredentialRequest credentialRequest = new CredentialRequest.Builder()
                 .setPasswordLoginSupported(true)
@@ -190,7 +190,7 @@ public class SmartHomeApplication extends AppCompatActivity {
             }
         });
     }
-
+    //TODO: Move to viewmodel
     private void onCredentialRetrieved(Credential credential) {
         String accountType = credential.getAccountType();
         if (accountType == null) {
