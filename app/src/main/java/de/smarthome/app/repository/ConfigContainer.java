@@ -37,8 +37,8 @@ public class ConfigContainer {
     private BeaconLocations smartHomeBeaconLocations;
     private BoundariesConfig smartHomeBoundariesConfig;
 
-    private Location selectedLocation;
-    private Function selectedFunction;
+    private Location selectedLocation = null;
+    private Function selectedFunction = null;
 
     private MutableLiveData<List<Location>> locationList = new MutableLiveData<>();
     private MutableLiveData<Map<Function, Function>> functionMap = new MutableLiveData<>();
@@ -120,11 +120,11 @@ public class ConfigContainer {
     }
 
     private void checkCurrentSelectedLocation() {
-        boolean notFound = false;
+        boolean notFound = true;
         for (Location loc : smartHomeUiConfig.getAllLocations()) {
             if (loc.getName().equals(selectedLocation.getName())) {
                 setSelectedLocation(loc);
-                notFound = true;
+                notFound = false;
                 break;
             }
         }
@@ -134,11 +134,11 @@ public class ConfigContainer {
     }
 
     private void checkCurrentSelectedFunction() {
-        boolean notFound = false;
+        boolean notFound = true;
         for (Function func : selectedLocation.getFunctions(smartHomeUiConfig)) {
             if (func.getName().equals(selectedFunction.getName())) {
                 setSelectedFunction(func);
-                notFound = true;
+                notFound = false;
                 break;
             }
         }
