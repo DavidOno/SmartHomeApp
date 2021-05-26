@@ -35,7 +35,8 @@ public class RegulationFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        requireActivity().setTitle(regulationViewModel.getSelectedFunction().getName());
+        if(regulationViewModel.getSelectedFunction() != null)
+            requireActivity().setTitle(regulationViewModel.getSelectedFunction().getName());
 
         recyclerViewRegulation.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewRegulation.setHasFixedSize(true);

@@ -40,7 +40,9 @@ public class RoomOverviewFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        requireActivity().setTitle(roomOverviewViewModel.getSelectedLocation().getName());
+
+        if(roomOverviewViewModel.getSelectedLocation() != null)
+            requireActivity().setTitle(roomOverviewViewModel.getSelectedLocation().getName());
 
         recyclerViewRoom.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewRoom.setHasFixedSize(true);
@@ -76,14 +78,5 @@ public class RoomOverviewFragment extends Fragment {
     public void navigateToRegulationFragment() {
         NavController navController = NavHostFragment.findNavController(this);
         navController.navigate(R.id.action_roomOverviewFragment_to_regulationFragment);
-    }
-
-
-    public List<String> getFunctionNames(List<Function> functionList){
-        List<String> outputList = new ArrayList<>();
-        for(Function function: functionList){
-            outputList.add(function.getName());
-        }
-        return outputList;
     }
 }
