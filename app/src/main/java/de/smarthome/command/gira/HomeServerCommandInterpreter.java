@@ -11,11 +11,13 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import de.smarthome.command.AdditionalConfigs;
 import de.smarthome.command.CommandInterpreter;
@@ -25,6 +27,7 @@ import de.smarthome.app.model.UIConfig;
 import de.smarthome.app.model.responses.AvailabilityResponse;
 import de.smarthome.app.model.responses.GetValueReponse;
 import de.smarthome.app.model.responses.RegisterResponse;
+import de.smarthome.server.RestTemplateCreater;
 
 public class HomeServerCommandInterpreter implements CommandInterpreter {
 
@@ -35,6 +38,12 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
     public static final String HTTPS = "https://";
     private String token;
     private String uriPrefix = "https://192.168.132.101";
+    private RestTemplateCreater restTemplateCreater;
+    private Supplier<RestTemplate> createRestTemplate = () -> restTemplateCreater.create();
+
+    public HomeServerCommandInterpreter(RestTemplateCreater restTemplateCreater) {
+        this.restTemplateCreater = restTemplateCreater;
+    }
 
     @Override
     public Request buildRegisterClientRequest(String username, String pwd) {
@@ -48,7 +57,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
         jsonBody.put("client", "de.haw.la.msp.db");
 
         HttpEntity<Map<Object, Object>> entity = new HttpEntity<>(jsonBody, headers);
-        return new RequestImpl(uri, HttpMethod.POST, entity, RegisterResponse.class);
+        return new RequestImpl(uri, HttpMethod.POST, entity, RegisterResponse.class, createRestTemplate.get());
     }
 
     @Override
@@ -61,7 +70,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
         jsonBody.put("value", value);
 
         HttpEntity<Map<Object, Object>> entity = new HttpEntity<>(jsonBody, headers);
-        return new RequestImpl(uri, HttpMethod.PUT, entity, JsonNode.class);
+        return new RequestImpl(uri, HttpMethod.PUT, entity, JsonNode.class, createRestTemplate.get());
     }
 
     @Override
@@ -69,7 +78,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
         String uri = uriPrefix + "/api/v2/values/" + id + "?token=" + token;
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        return new RequestImpl(uri, HttpMethod.GET, entity, GetValueReponse.class);
+        return new RequestImpl(uri, HttpMethod.GET, entity, GetValueReponse.class, createRestTemplate.get());
     }
 
     @Override
@@ -77,7 +86,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
         String uri = uriPrefix + "/api/v2/uiconfig?expand=locations&token=" + token;
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        return new RequestImpl(uri, HttpMethod.GET, entity, UIConfig.class);
+        return new RequestImpl(uri, HttpMethod.GET, entity, UIConfig.class, createRestTemplate.get());
     }
 
     @Override
@@ -85,7 +94,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
         String uri = uriPrefix + "/api";
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        return new RequestImpl(uri, HttpMethod.GET, entity, AvailabilityResponse.class);
+        return new RequestImpl(uri, HttpMethod.GET, entity, AvailabilityResponse.class, createRestTemplate.get());
     }
 
     @Override
@@ -93,7 +102,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
         String uri = uriPrefix+ API_V_2_CLIENTS +token;
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        return new RequestImpl(uri, HttpMethod.DELETE, entity, JsonNode.class);
+        return new RequestImpl(uri, HttpMethod.DELETE, entity, JsonNode.class, createRestTemplate.get());
     }
 
     @Override
@@ -111,7 +120,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
         jsonBody.put("testCallbacks", true);
 
         HttpEntity<Map<Object, Object>> entity = new HttpEntity<>(jsonBody, headers);
-        return new RequestImpl(uri, HttpMethod.POST, entity, JsonNode.class);
+        return new RequestImpl(uri, HttpMethod.POST, entity, JsonNode.class, createRestTemplate.get());
     }
 
     @Override
@@ -121,7 +130,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        return new RequestImpl(uri, HttpMethod.DELETE, entity, JsonNode.class);
+        return new RequestImpl(uri, HttpMethod.DELETE, entity, JsonNode.class, createRestTemplate.get());
     }
 
     @Override
@@ -162,7 +171,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
 
         String jsonBody = "[{\"token\": \""+token +"\"}]";
         HttpEntity<String> entity = new HttpEntity<>(jsonBody, headers);
-        return new RequestImpl(uri, HttpMethod.POST, entity, String.class);   
+        return new RequestImpl(uri, HttpMethod.POST, entity, String.class, createRestTemplate.get());
     }
 
     private Request buildUnregisterRequest(String ip, String token){
@@ -171,7 +180,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        return new RequestImpl(uri, HttpMethod.DELETE, entity, JsonNode.class);
+        return new RequestImpl(uri, HttpMethod.DELETE, entity, JsonNode.class, createRestTemplate.get());
     }
 
     @Override
@@ -181,7 +190,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        return new RequestImpl(uri, HttpMethod.GET, entity, additionalConfigs.getCorrespondingPOJO());
+        return new RequestImpl(uri, HttpMethod.GET, entity, additionalConfigs.getCorrespondingPOJO(), createRestTemplate.get());
     }
 
     @Override
