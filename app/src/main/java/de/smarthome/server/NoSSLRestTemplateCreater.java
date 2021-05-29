@@ -21,12 +21,10 @@ import javax.net.ssl.SSLContext;
 
 public class NoSSLRestTemplateCreater implements RestTemplateCreater {
     private static final String TAG = "NoSSLRestTemplateCreater";
-    private ResponseErrorHandler errorHandler;
 
     @Override
     public RestTemplate create() {
         RestTemplate restTemplate = new RestTemplate(avoidSSLVerification());
-        restTemplate.setErrorHandler(errorHandler);
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
         return restTemplate;
     }
@@ -45,9 +43,5 @@ public class NoSSLRestTemplateCreater implements RestTemplateCreater {
             ex.printStackTrace();
         }
         return requestFactory;
-    }
-
-    public void setErrorHandler(ResponseErrorHandler errorHandler){
-        this.errorHandler = errorHandler;
     }
 }

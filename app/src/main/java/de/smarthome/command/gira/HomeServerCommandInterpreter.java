@@ -28,6 +28,7 @@ import de.smarthome.app.model.responses.AvailabilityResponse;
 import de.smarthome.app.model.responses.GetValueReponse;
 import de.smarthome.app.model.responses.RegisterResponse;
 import de.smarthome.server.RestTemplateCreater;
+import de.smarthome.server.StandardErrorHandler;
 
 public class HomeServerCommandInterpreter implements CommandInterpreter {
 
@@ -39,7 +40,11 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
     private String token;
     private String uriPrefix = "https://192.168.132.101";
     private RestTemplateCreater restTemplateCreater;
-    private Supplier<RestTemplate> createRestTemplate = () -> restTemplateCreater.create();
+    private Supplier<RestTemplate> createRestTemplate = () -> {
+        RestTemplate restTemplate = restTemplateCreater.create();
+        restTemplate.setErrorHandler(new StandardErrorHandler());
+        return restTemplate;
+    };
 
     public HomeServerCommandInterpreter(RestTemplateCreater restTemplateCreater) {
         this.restTemplateCreater = restTemplateCreater;
