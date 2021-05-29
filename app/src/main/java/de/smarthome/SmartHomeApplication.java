@@ -1,6 +1,7 @@
 package de.smarthome;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -19,7 +20,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.NavGraph;
 import androidx.navigation.NavInflater;
@@ -40,7 +40,11 @@ import java.util.concurrent.Executors;
 
 import de.smarthome.app.model.Location;
 import de.smarthome.app.repository.Repository;
+import de.smarthome.app.ui.HomeOverviewFragment;
 import de.smarthome.app.ui.LoginFragment;
+import de.smarthome.app.ui.OptionsFragment;
+import de.smarthome.app.ui.RegulationFragment;
+import de.smarthome.app.ui.RoomOverviewFragment;
 import de.smarthome.app.utility.ToastUtility;
 
 public class SmartHomeApplication extends AppCompatActivity {
@@ -80,12 +84,10 @@ public class SmartHomeApplication extends AppCompatActivity {
             }
         });
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //TODO: Find a way to stop it from beeing cut or just remove it
-        getSupportActionBar().setSubtitle("SmartHome");
-
         navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         navController = NavHostFragment.findNavController(navHostFragment);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if(savedInstanceState == null){
             getSavedCredentials();
@@ -166,6 +168,12 @@ public class SmartHomeApplication extends AppCompatActivity {
         if (currentFragment.getClass().equals(LoginFragment.class)){
             menu.getItem(0).setEnabled(false);
             menu.getItem(1).setEnabled(false);
+        }else if(currentFragment.getClass().equals(OptionsFragment.class)){
+            menu.getItem(0).setEnabled(false);
+            menu.getItem(1).setEnabled(true);
+        }else if(currentFragment.getClass().equals(HomeOverviewFragment.class)){
+            menu.getItem(0).setEnabled(true);
+            menu.getItem(1).setEnabled(false);
         }else{
             menu.getItem(0).setEnabled(true);
             menu.getItem(1).setEnabled(true);
@@ -173,15 +181,16 @@ public class SmartHomeApplication extends AppCompatActivity {
         return true;
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_home_overview:
-                goToFragment(R.id.HomeOverviewFragment);
+                goToFragment(R.id.action_home_overview);
                 return true;
 
             case R.id.action_settings:
-                goToFragment(R.id.optionsFragment);
+                goToFragment(R.id.action_settings);
                 return true;
 
             case android.R.id.home:
@@ -223,8 +232,29 @@ public class SmartHomeApplication extends AppCompatActivity {
         navController.setGraph(graph);
     }
 
-    private void goToFragment(int destinationFragment){
-        navController.navigate(destinationFragment);
+    private void goToFragment(int pressedMenuItem){
+        Fragment currentFragment = navHostFragment.getChildFragmentManager().getFragments().get(0);
+
+        if (currentFragment.getClass().equals(HomeOverviewFragment.class) && pressedMenuItem == R.id.action_settings){
+            navController.navigate(R.id.action_homeOverviewFragment_to_optionsFragment);
+
+        }else if(currentFragment.getClass().equals(RoomOverviewFragment.class)){
+            if(pressedMenuItem == R.id.action_settings){
+                navController.navigate(R.id.action_roomOverviewFragment_to_optionsFragment);
+            }else if(pressedMenuItem == R.id.action_home_overview){
+                navController.navigate(R.id.action_roomOverviewFragment_to_HomeOverviewFragment);
+            }
+
+        }else if(currentFragment.getClass().equals(RegulationFragment.class)){
+            if(pressedMenuItem == R.id.action_settings){
+                navController.navigate(R.id.action_regulationFragment_to_optionsFragment);
+            }else if(pressedMenuItem == R.id.action_home_overview){
+                navController.navigate(R.id.action_regulationFragment_to_HomeOverviewFragment);
+            }
+
+        }else if(currentFragment.getClass().equals(OptionsFragment.class) && pressedMenuItem == R.id.action_home_overview){
+            navController.navigate(R.id.action_optionsFragment_to_HomeOverviewFragment);
+        }
     }
 
     //TODO: Move to viewmodel
