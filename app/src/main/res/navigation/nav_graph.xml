@@ -25,13 +25,20 @@
         <action
             android:id="@+id/action_loginFragment_to_homeOverviewFragment"
             app:destination="@id/HomeOverviewFragment"
-            app:popUpTo="@id/HomeOverviewFragment" />
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/optionsFragment"
         android:name="de.smarthome.app.ui.OptionsFragment"
         android:label="fragment_options"
-        tools:layout="@layout/fragment_options" />
+        tools:layout="@layout/fragment_options" >
+        <action
+            android:id="@+id/action_optionsFragment_to_HomeOverviewFragment"
+            app:destination="@id/HomeOverviewFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
     <fragment
         android:id="@+id/roomOverviewFragment"
         android:name="de.smarthome.app.ui.RoomOverviewFragment"
@@ -40,11 +47,28 @@
         <action
             android:id="@+id/action_roomOverviewFragment_to_regulationFragment"
             app:destination="@id/regulationFragment" />
+        <action
+            android:id="@+id/action_roomOverviewFragment_to_optionsFragment"
+            app:destination="@id/optionsFragment" />
+        <action
+            android:id="@+id/action_roomOverviewFragment_to_HomeOverviewFragment"
+            app:destination="@id/HomeOverviewFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
 
     </fragment>
     <fragment
         android:id="@+id/regulationFragment"
         android:name="de.smarthome.app.ui.RegulationFragment"
         android:label="fragment_regulation"
-        tools:layout="@layout/fragment_regulation_number" />
+        tools:layout="@layout/fragment_regulation_number" >
+        <action
+            android:id="@+id/action_regulationFragment_to_optionsFragment"
+            app:destination="@id/optionsFragment" />
+        <action
+            android:id="@+id/action_regulationFragment_to_HomeOverviewFragment"
+            app:destination="@id/HomeOverviewFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>
