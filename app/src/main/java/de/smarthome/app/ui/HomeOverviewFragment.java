@@ -26,8 +26,10 @@ public class HomeOverviewFragment extends Fragment {
 
     private HomeOverviewAdapter adapter;
 
-    public static HomeOverviewFragment newInstance() {
-        return new HomeOverviewFragment();
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        homeOverviewViewModel = new ViewModelProvider(requireActivity()).get(HomeOverviewViewModel.class);
     }
 
     @Override
@@ -40,8 +42,6 @@ public class HomeOverviewFragment extends Fragment {
 
         adapter = new HomeOverviewAdapter();
         recyclerViewHome.setAdapter(adapter);
-
-        homeOverviewViewModel = new ViewModelProvider(requireActivity()).get(HomeOverviewViewModel.class);
 
         return view;
     }
