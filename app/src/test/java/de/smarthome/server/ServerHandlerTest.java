@@ -21,10 +21,12 @@ import java.util.List;
 
 import de.smarthome.app.model.UIConfig;
 import de.smarthome.app.model.responses.AvailabilityResponse;
+import de.smarthome.app.model.responses.RegisterResponse;
 import de.smarthome.command.CommandInterpreter;
 import de.smarthome.command.Request;
 import de.smarthome.command.gira.HomeServerCommandInterpreter;
 import de.smarthome.command.impl.CheckAvailabilityCommand;
+import de.smarthome.command.impl.RegisterClientCommand;
 import de.smarthome.command.impl.UIConfigCommand;
 import de.smarthome.server.gira.GiraServerHandler;
 
@@ -45,9 +47,9 @@ public class ServerHandlerTest {
     @Test
     public void testAvailabilityCommand(){
         RestTemplate mockedRestTemplate = mock(RestTemplate.class);
-        RestTemplateCreater mockedRestTemplateCreater = mock(RestTemplateCreater.class);
-        when(mockedRestTemplateCreater.create()).thenReturn(mockedRestTemplate);
-        CommandInterpreter ci = new HomeServerCommandInterpreter(mockedRestTemplateCreater);
+        RestTemplateCreater mockedRestTemplateCreator = mock(RestTemplateCreater.class);
+        when(mockedRestTemplateCreator.create()).thenReturn(mockedRestTemplate);
+        CommandInterpreter ci = new HomeServerCommandInterpreter(mockedRestTemplateCreator);
         GiraServerHandler sh = new GiraServerHandler(ci);
 
 
@@ -73,9 +75,9 @@ public class ServerHandlerTest {
     @Test
     public void testUIConfigCommand(){
         RestTemplate mockedRestTemplate = mock(RestTemplate.class);
-        RestTemplateCreater mockedRestTemplateCreater = mock(RestTemplateCreater.class);
-        when(mockedRestTemplateCreater.create()).thenReturn(mockedRestTemplate);
-        CommandInterpreter ci = new HomeServerCommandInterpreter(mockedRestTemplateCreater);
+        RestTemplateCreater mockedRestTemplateCreator = mock(RestTemplateCreater.class);
+        when(mockedRestTemplateCreator.create()).thenReturn(mockedRestTemplate);
+        CommandInterpreter ci = new HomeServerCommandInterpreter(mockedRestTemplateCreator);
         GiraServerHandler sh = new GiraServerHandler(ci);
 
         UIConfigCommand uiConfigCommand = new UIConfigCommand();
@@ -93,5 +95,33 @@ public class ServerHandlerTest {
 
         assertThat(actualStatusCode.value()).isEqualTo(200);
         assertThat(actualBody).isInstanceOf(UIConfig.class);
+    }
+
+    @Test
+    public void testRegisterClientCommand(){
+        RestTemplate mockedRestTemplate = mock(RestTemplate.class);
+        RestTemplateCreater mockedRestTemplateCreator = mock(RestTemplateCreater.class);
+        when(mockedRestTemplateCreator.create()).thenReturn(mockedRestTemplate);
+        CommandInterpreter ci = new HomeServerCommandInterpreter(mockedRestTemplateCreator);
+        GiraServerHandler sh = new GiraServerHandler(ci);
+
+        RegisterClientCommand uiConfigCommand = new RegisterClientCommand("username", "password");
+        String expectedToken = "abc";
+        ResponseEntity<RegisterResponse> myEntity = new ResponseEntity<>(new RegisterResponse(expectedToken), HttpStatus.OK);
+        Mockito.when(mockedRestTemplate.exchange(
+                ArgumentMatchers.startsWith(uriPrefix + "/api/v2/clients"),
+                ArgumentMatchers.eq(HttpMethod.POST),
+                ArgumentMatchers.<HttpEntity<?>> any(),
+                ArgumentMatchers.<Class<RegisterResponse>>any())
+        ).thenReturn(myEntity);
+        ResponseEntity actualResponse = sh.sendRequest(uiConfigCommand);
+        verify(mockedRestTemplate, times(1)).exchange(anyString(), any(), any(), any());
+        HttpStatus actualStatusCode = actualResponse.getStatusCode();
+        Object actualBody = actualResponse.getBody();
+
+        assertThat(actualStatusCode.value()).isEqualTo(200);
+        assertThat(actualBody).isInstanceOf(RegisterResponse.class);
+        String actualToken = ((RegisterResponse) actualBody).getToken();
+        assertThat(actualToken).isEqualTo(expectedToken);
     }
 }
