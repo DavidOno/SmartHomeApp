@@ -34,6 +34,15 @@ android {
         //Therefore remove Log.d and introduce a framework via DI, so that it can be mocked away
         //when executing tests
         //TODO: Remove all Log.d
+        unitTests.all{ //?
+            useJUnitPlatform()
+        }
+    }
+
+    sourceSets{ //?
+        test{
+            java.srcDirs = ["src/test/java"]
+        }
     }
 
     android {
@@ -56,8 +65,9 @@ android {
         exclude 'META-INF/INDEX.LIST'
         exclude 'org/springframework/context/config/spring-context.gif'
     }
-
 }
+
+
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
@@ -96,15 +106,14 @@ dependencies {
     implementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.11.0'
     testImplementation group: 'net.bytebuddy', name: 'byte-buddy-agent', version: '1.11.0'
     testImplementation group: 'org.objenesis', name: 'objenesis', version: '3.2'
-//    testCompile group: 'org.powermock', name: 'powermock', version: '1.6.6', ext: 'pom'
-//    testCompile group: 'org.powermock', name: 'powermock-module-junit4', version: '2.0.9'
-//    testCompile group: 'org.powermock', name: 'powermock-api-mockito2', version: '1.7.4'
-
 }
+
+
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 tasks.withType(Test) {
+    useJUnitPlatform() //?
     testLogging {
         // set options for log level LIFECYCLE
         events TestLogEvent.FAILED,

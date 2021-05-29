@@ -19,11 +19,13 @@ import org.springframework.web.client.RestTemplate;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
+import de.smarthome.app.model.UIConfig;
 import de.smarthome.app.model.responses.AvailabilityResponse;
 import de.smarthome.command.CommandInterpreter;
 import de.smarthome.command.Request;
 import de.smarthome.command.gira.HomeServerCommandInterpreter;
 import de.smarthome.command.impl.CheckAvailabilityCommand;
+import de.smarthome.command.impl.UIConfigCommand;
 import de.smarthome.server.gira.GiraServerHandler;
 
 import static org.mockito.Mockito.*;
@@ -41,7 +43,7 @@ public class ServerHandlerTest {
 //    private Request request;
 
     @Test
-    public void test(){
+    public void testAvailabilityCommand(){
         RestTemplate mockedRestTemplate = mock(RestTemplate.class);
         RestTemplateCreater mockedRestTemplateCreater = mock(RestTemplateCreater.class);
         when(mockedRestTemplateCreater.create()).thenReturn(mockedRestTemplate);
@@ -50,8 +52,6 @@ public class ServerHandlerTest {
 
 
         CheckAvailabilityCommand checkAvailabilityCommand = new CheckAvailabilityCommand();
-//        CheckAvailabilityCommand spyCommand = spy(checkAvailabilityCommand);
-//        do(spyCommand).when(spyCommand.accept(any()));
         ResponseEntity<AvailabilityResponse> myEntity = new ResponseEntity<>(new AvailabilityResponse("", "", "", "", ""), HttpStatus.OK);
         Mockito.when(mockedRestTemplate.exchange(
                 ArgumentMatchers.eq(uriPrefix + "/api"),
@@ -71,7 +71,27 @@ public class ServerHandlerTest {
 
 
     @Test
-    public void test3(){
-        assertThat("abc").isEqualTo("abc");
+    public void testUIConfigCommand(){
+        RestTemplate mockedRestTemplate = mock(RestTemplate.class);
+        RestTemplateCreater mockedRestTemplateCreater = mock(RestTemplateCreater.class);
+        when(mockedRestTemplateCreater.create()).thenReturn(mockedRestTemplate);
+        CommandInterpreter ci = new HomeServerCommandInterpreter(mockedRestTemplateCreater);
+        GiraServerHandler sh = new GiraServerHandler(ci);
+
+        UIConfigCommand uiConfigCommand = new UIConfigCommand();
+        ResponseEntity<UIConfig> myEntity = new ResponseEntity<>(new UIConfig(null, null, null), HttpStatus.OK);
+        Mockito.when(mockedRestTemplate.exchange(
+                ArgumentMatchers.startsWith(uriPrefix + "/api/v2/uiconfig?expand=locations&token="),
+                ArgumentMatchers.eq(HttpMethod.GET),
+                ArgumentMatchers.<HttpEntity<?>> any(),
+                ArgumentMatchers.<Class<UIConfig>>any())
+        ).thenReturn(myEntity);
+        ResponseEntity actualResponse = sh.sendRequest(uiConfigCommand);
+        verify(mockedRestTemplate, times(1)).exchange(Mockito.anyString(), Mockito.any(), Mockito.any(), Mockito.any());
+        HttpStatus actualStatusCode = actualResponse.getStatusCode();
+        Object actualBody = actualResponse.getBody();
+
+        assertThat(actualStatusCode.value()).isEqualTo(200);
+        assertThat(actualBody).isInstanceOf(UIConfig.class);
     }
 }
