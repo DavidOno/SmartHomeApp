@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -82,6 +83,7 @@ public class LoginFragment extends Fragment {
         loginViewModel = new ViewModelProvider(requireActivity()).get(LoginViewModel.class);
         toastUtility = ToastUtility.getInstance();
 
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
     public Credential buildCredential(String userName, String pwd) {
@@ -109,6 +111,7 @@ public class LoginFragment extends Fragment {
     }
 
     private void navigateToHomeOverviewFragment() {
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         NavController navController = NavHostFragment.findNavController(this);
         navController.navigate(R.id.action_loginFragment_to_homeOverviewFragment);
     }
