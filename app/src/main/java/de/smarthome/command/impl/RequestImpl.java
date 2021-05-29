@@ -39,8 +39,6 @@ public class RequestImpl implements Request {
     private final HttpMethod httpMethod;
     private final HttpEntity entity;
     private final Class responseType;
-//    private boolean isSSLVerificationSkipped;
-//    private ResponseErrorHandler errorHandler = new StandardErrorHandler();
     private RestTemplate restTemplate;
 
     public RequestImpl(String uri, HttpMethod httpMethod, HttpEntity entity, Class responseType, RestTemplate restTemplate) {
@@ -48,7 +46,6 @@ public class RequestImpl implements Request {
         this.httpMethod = httpMethod;
         this.entity = entity;
         this.responseType = responseType;
-//        isSSLVerificationSkipped = true;
         this.restTemplate = restTemplate;
     }
 
@@ -58,8 +55,6 @@ public class RequestImpl implements Request {
     public ResponseEntity execute() {
 //        checkNetworkConnection();
         Future<ResponseEntity> future = SmartHomeApplication.EXECUTOR_SERVICE.submit(() -> {
-            //restTemplate = createRestTemplate(); //currently not needed
-            //restTemplateCreater
             return restTemplate.exchange(uri, httpMethod, entity, responseType);
         });
         return getResponseEntity(future);
@@ -97,38 +92,4 @@ public class RequestImpl implements Request {
         }
         return responseEntity;
     }
-
-//    private RestTemplate createRestTemplate() {
-//        RestTemplate restTemplate = new RestTemplate();
-//        if(isSSLVerificationSkipped){
-//            restTemplate = new RestTemplate(avoidSSLVerification());
-//        }
-//        restTemplate.setErrorHandler(errorHandler);
-//        restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-//        return restTemplate;
-//    }
-//
-//    private HttpComponentsClientHttpRequestFactory avoidSSLVerification() {
-//        HttpComponentsClientHttpRequestFactory requestFactory = null;
-//        try {
-//            TrustStrategy acceptingTrustStrategy = (x509Certificates, s) -> true;
-//            SSLContext sslContext = SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy).build();
-//            SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext, new AllowAllHostnameVerifier());
-//            CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
-//            requestFactory = new HttpComponentsClientHttpRequestFactory();
-//            requestFactory.setHttpClient(httpClient);
-//        }catch(KeyManagementException | NoSuchAlgorithmException | KeyStoreException ex){
-//            Log.d(TAG, "Avoiding SSL-Verification failed");
-//            ex.printStackTrace();
-//        }
-//        return requestFactory;
-////    }
-//
-//    public void setErrorHandler(ResponseErrorHandler errorHandler){
-//        this.errorHandler = errorHandler;
-//    }
-//
-//    public void setRestTemplate(RestTemplate restTemplate){
-//        this.restTemplate = restTemplate;
-//    }
 }
