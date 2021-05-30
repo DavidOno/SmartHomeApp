@@ -9,7 +9,7 @@ import de.smarthome.command.ResponseReactor;
 import de.smarthome.app.utility.ToastUtility;
 
 public class ResponseReactorGiraCallbackServer implements ResponseReactor {
-    private final String TAG = "ResponseReactorGiraCallbackServer";
+    private static final String TAG = "ResponseReactorGiraCallbackServer";
 
     private ToastUtility toastUtility;
 
@@ -21,21 +21,20 @@ public class ResponseReactorGiraCallbackServer implements ResponseReactor {
     public void react(ResponseEntity responseEntity) {
         try {
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
-                System.out.println("response received " + TAG);
-                System.out.println(responseEntity.getBody());
+                Log.d(TAG, "response received " + TAG);
+                Log.d(TAG, responseEntity.getBody().toString());
 
                 Log.d(TAG, "No Problems when registering CallbackServer at Gira.\nStatus: " + responseEntity.getStatusCode());
 
             } else {
-                System.out.println("error occurred");
-                System.out.println(responseEntity.getStatusCode());
+                Log.d(TAG, "error occurred");
+                Log.d(TAG, responseEntity.getStatusCode().toString());
 
                 Log.d(TAG, "Problem when registering CallbackServer at Gira.\nStatus: " + responseEntity.getStatusCode());
                 toastUtility.prepareToast("Unable to reach Gira Server");
             }
         }catch(Exception e){
-            Log.d(TAG, "Exerption: " + e.toString());
-
+            Log.d(TAG, "Exception: " + e.toString());
             toastUtility.prepareToast("Exception: Unable to register CallbackServer at Gira!");
         }
     }

@@ -9,34 +9,26 @@ import de.smarthome.command.ResponseReactor;
 import de.smarthome.app.utility.ToastUtility;
 
 public class ResponseReactorCheckAvailability implements ResponseReactor {
-    private final String TAG = "ResponseReactorCheckAvailability";
-
-    private ToastUtility toastUtility;
-
-    public ResponseReactorCheckAvailability() {
-        this.toastUtility = ToastUtility.getInstance();
-    }
+    private static final String TAG = "ResponseReactorCheckAvailability";
 
     @Override
     public void react(ResponseEntity responseEntity) {
         try {
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
-                System.out.println("response received " + TAG);
-                System.out.println(responseEntity.getBody());
+                Log.d(TAG, "response received " + TAG);
+                Log.d(TAG, responseEntity.getBody().toString());
 
                 Log.d(TAG, "Communication with Server possible.\nStatus: " + responseEntity.getStatusCode());
 
             } else {
-                System.out.println("error occurred");
-                System.out.println(responseEntity.getStatusCode());
+                Log.d(TAG, "error occurred");
+                Log.d(TAG, responseEntity.getStatusCode().toString());
 
                 Log.d(TAG, "Problem when trying to reach Server.\nStatus: " + responseEntity.getStatusCode());
 
             }
         }catch(Exception e){
-            Log.d(TAG, "Exerption: " + e.toString());
-
-            toastUtility.prepareToast("Exception: Unable to reach Gira!");
+            Log.d(TAG, "Exception: " + e.toString());
         }
     }
 }
