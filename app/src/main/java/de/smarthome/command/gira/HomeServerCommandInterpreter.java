@@ -25,7 +25,7 @@ import de.smarthome.command.Request;
 import de.smarthome.command.impl.RequestImpl;
 import de.smarthome.app.model.UIConfig;
 import de.smarthome.app.model.responses.AvailabilityResponse;
-import de.smarthome.app.model.responses.GetValueReponse;
+import de.smarthome.app.model.responses.GetValueResponse;
 import de.smarthome.app.model.responses.RegisterResponse;
 import de.smarthome.server.RestTemplateCreater;
 import de.smarthome.server.StandardErrorHandler;
@@ -83,7 +83,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
         String uri = uriPrefix + "/api/v2/values/" + id + "?token=" + token;
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        return new RequestImpl(uri, HttpMethod.GET, entity, GetValueReponse.class, createRestTemplate.get());
+        return new RequestImpl(uri, HttpMethod.GET, entity, GetValueResponse.class, createRestTemplate.get());
     }
 
     @Override

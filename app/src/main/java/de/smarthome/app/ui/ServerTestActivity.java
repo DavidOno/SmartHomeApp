@@ -19,7 +19,7 @@ import de.smarthome.command.impl.RegisterCallbackServerAtGiraServer;
 import de.smarthome.command.impl.RegisterClientCommand;
 import de.smarthome.command.impl.UIConfigCommand;
 import de.smarthome.command.impl.UnRegisterCallbackServerAtGiraServer;
-import de.smarthome.server.NoSSLRestTemplateCreater;
+import de.smarthome.server.NoSSLRestTemplateCreator;
 import de.smarthome.server.ServerHandler;
 import de.smarthome.server.gira.GiraServerHandler;
 
@@ -28,7 +28,7 @@ public class ServerTestActivity extends AppCompatActivity {
     private static final String USERNAME = "";
     private static final String PWD = "";
     private static final String ipOfCallbackServer = "127.0.0.1"; //192.168.132.211:8443
-    private ServerHandler sh = new GiraServerHandler(new HomeServerCommandInterpreter(new NoSSLRestTemplateCreater()));
+    private ServerHandler sh = new GiraServerHandler(new HomeServerCommandInterpreter(new NoSSLRestTemplateCreator()));
     private Button testAvailability;
     private Button register;
     private Button getUIConfig;

@@ -28,7 +28,6 @@ import de.smarthome.command.AdditionalConfigs;
 import de.smarthome.command.AsyncCommand;
 import de.smarthome.command.Command;
 import de.smarthome.command.gira.HomeServerCommandInterpreter;
-import de.smarthome.command.gira.StandardRestTemplateCreater;
 import de.smarthome.command.impl.AdditionalConfigCommand;
 import de.smarthome.command.impl.ChangeValueCommand;
 import de.smarthome.command.impl.CheckAvailabilityCommand;
@@ -60,8 +59,7 @@ import de.smarthome.app.model.responses.CallbackValueInput;
 import de.smarthome.app.model.responses.ServiceEvent;
 import de.smarthome.server.CallbackSubscriber;
 import de.smarthome.server.MyFirebaseMessagingService;
-import de.smarthome.server.NoSSLRestTemplateCreater;
-import de.smarthome.server.RestTemplateCreater;
+import de.smarthome.server.NoSSLRestTemplateCreator;
 import de.smarthome.server.ServerHandler;
 import de.smarthome.server.gira.GiraServerHandler;
 import de.smarthome.app.utility.ToastUtility;
@@ -71,7 +69,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     private static Repository instance;
     private final ToastUtility toastUtility = ToastUtility.getInstance();
 
-    private final ServerHandler serverHandler = new GiraServerHandler(new HomeServerCommandInterpreter(new NoSSLRestTemplateCreater()));
+    private final ServerHandler serverHandler = new GiraServerHandler(new HomeServerCommandInterpreter(new NoSSLRestTemplateCreator()));
     private BeaconObserverImplementation beaconObserver;
     private Application parentApplication;
 

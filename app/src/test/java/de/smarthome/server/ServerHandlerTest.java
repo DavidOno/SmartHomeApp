@@ -5,37 +5,28 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Answers;
 import org.mockito.ArgumentMatchers;
-import org.mockito.InjectMocks;
-import org.mockito.Matchers;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import de.smarthome.app.model.UIConfig;
-import de.smarthome.app.model.configs.BoundariesConfig;
 import de.smarthome.app.model.configs.ChannelConfig;
 import de.smarthome.app.model.responses.AvailabilityResponse;
-import de.smarthome.app.model.responses.GetValueReponse;
+import de.smarthome.app.model.responses.GetValueResponse;
 import de.smarthome.app.model.responses.RegisterResponse;
 import de.smarthome.app.model.responses.UID_Value;
-import de.smarthome.beacons.BeaconLocation;
 import de.smarthome.beacons.BeaconLocations;
 import de.smarthome.command.AdditionalConfigs;
 import de.smarthome.command.CommandInterpreter;
-import de.smarthome.command.Request;
 import de.smarthome.command.gira.HomeServerCommandInterpreter;
 import de.smarthome.command.impl.AdditionalConfigCommand;
 import de.smarthome.command.impl.ChangeValueCommand;
@@ -149,12 +140,12 @@ public class ServerHandlerTest {
         UID_Value firstExpectedValue = new UID_Value("firstUID", "21");
         UID_Value secondExpectedValue = new UID_Value("secondUID", "42");
         List<UID_Value> expectedValues = Arrays.asList(firstExpectedValue, secondExpectedValue);
-        ResponseEntity<GetValueReponse> myEntity = new ResponseEntity<>(new GetValueReponse(expectedValues), HttpStatus.OK);
+        ResponseEntity<GetValueResponse> myEntity = new ResponseEntity<>(new GetValueResponse(expectedValues), HttpStatus.OK);
         Mockito.when(mockedRestTemplate.exchange(
                 ArgumentMatchers.matches(uriPrefix + "/api/v2/values/" +".*"+"?token="+".*"),
                 ArgumentMatchers.eq(HttpMethod.GET),
                 ArgumentMatchers.<HttpEntity<?>> any(),
-                ArgumentMatchers.<Class<GetValueReponse>>any())
+                ArgumentMatchers.<Class<GetValueResponse>>any())
         ).thenReturn(myEntity);
         ResponseEntity actualResponse = sh.sendRequest(getValueCommand);
         verify(mockedRestTemplate, times(1)).exchange(anyString(), any(), any(), any());
@@ -162,8 +153,8 @@ public class ServerHandlerTest {
         Object actualBody = actualResponse.getBody();
 
         assertThat(actualStatusCode.value()).isEqualTo(200);
-        assertThat(actualBody).isInstanceOf(GetValueReponse.class);
-        List<UID_Value> actualValues = ((GetValueReponse) actualBody).getValues();
+        assertThat(actualBody).isInstanceOf(GetValueResponse.class);
+        List<UID_Value> actualValues = ((GetValueResponse) actualBody).getValues();
         UID_Value firstActualValue = actualValues.get(0);
         assertThat(firstActualValue).isEqualToComparingFieldByField(firstExpectedValue);
         UID_Value secondActualValue = actualValues.get(1);
