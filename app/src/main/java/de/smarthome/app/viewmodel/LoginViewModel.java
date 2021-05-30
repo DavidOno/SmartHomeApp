@@ -63,6 +63,7 @@ public class LoginViewModel extends AndroidViewModel {
                     // Could not resolve the request
                     Log.e(TAG, "Failed to send resolution.", exception);
                     toastUtility.prepareToast("Save failed");
+                    e.printStackTrace();
                 }
             } else {
                 // Request has no resolution

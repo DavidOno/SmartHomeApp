@@ -40,6 +40,7 @@ public class ResponseReactorChannelConfig implements ResponseReactor {
             }
         }catch(Exception e){
             Log.d(TAG, "Exception: " + e.toString());
+            e.printStackTrace();
         }
     }
 

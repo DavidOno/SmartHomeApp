@@ -42,6 +42,7 @@ public class ResponseReactorUIConfig implements ResponseReactor {
             }
         }catch(Exception e){
             Log.d(TAG, "Exception: " + e.toString());
+            e.printStackTrace();
         }
     }
 

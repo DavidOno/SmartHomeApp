@@ -203,6 +203,7 @@ public class ServerCommunicator {
             }
         } catch (Exception e) {
             Log.d(TAG, "handleResponseEntities, Exception: " + e.toString());
+            e.printStackTrace();
         }
     }
 

@@ -40,6 +40,7 @@ public class ResponseReactorClient implements ResponseReactor {
         }catch(Exception e){
             Log.d(TAG, "Exception: " + e.toString());
             toastUtility.prepareToast("Exception: Unable to register User at Gira!");
+            e.printStackTrace();
         }
     }
 }

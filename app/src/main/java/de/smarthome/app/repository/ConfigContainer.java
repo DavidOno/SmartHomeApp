@@ -439,6 +439,7 @@ public class ConfigContainer {
 
         } catch (Exception e) {
             Log.d(TAG, "BeaconConfig Exception " + e.toString());
+            e.printStackTrace();
         }
     }
 

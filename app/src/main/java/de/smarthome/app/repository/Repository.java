@@ -197,6 +197,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
             beaconObserver.unsubscribe();
         }catch (Exception e){
             Log.d(TAG, e.getMessage());
+            e.printStackTrace();
         }
     }
 }
