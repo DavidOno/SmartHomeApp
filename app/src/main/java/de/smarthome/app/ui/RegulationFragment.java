@@ -78,7 +78,7 @@ public class RegulationFragment extends Fragment {
         regulationViewModel.getBoundaryMap().observe(getViewLifecycleOwner(), new Observer<Map<Datapoint, BoundaryDataPoint>>() {
             @Override
             public void onChanged(Map<Datapoint, BoundaryDataPoint> boundaryMap) {
-                adapter.setBoundaryList(boundaryMap);
+                adapter.setBoundaryMap(boundaryMap);
             }
         });
 
