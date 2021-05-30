@@ -1,6 +1,7 @@
 package de.smarthome;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -10,7 +11,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
@@ -19,7 +19,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.NavGraph;
 import androidx.navigation.NavInflater;
@@ -40,6 +40,11 @@ import java.util.concurrent.Executors;
 
 import de.smarthome.app.model.Location;
 import de.smarthome.app.repository.Repository;
+import de.smarthome.app.ui.HomeOverviewFragment;
+import de.smarthome.app.ui.LoginFragment;
+import de.smarthome.app.ui.OptionsFragment;
+import de.smarthome.app.ui.RegulationFragment;
+import de.smarthome.app.ui.RoomOverviewFragment;
 import de.smarthome.app.utility.ToastUtility;
 
 public class SmartHomeApplication extends AppCompatActivity {
@@ -58,99 +63,39 @@ public class SmartHomeApplication extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if ( isExternalStorageWritable() ) {
-
-            File appDirectory = new File( Environment.getExternalStorageDirectory() + "/MyPersonalAppFolder" );
-            File logDirectory = new File( appDirectory + "/logs" );
-            File logFile = new File( logDirectory, "logcat_" + System.currentTimeMillis() + ".txt" );
-
-            // create app folder
-            if ( !appDirectory.exists() ) {
-                appDirectory.mkdir();
-            }
-
-            // create log folder
-            if ( !logDirectory.exists() ) {
-                logDirectory.mkdir();
-            }
-
-            // clear the previous logcat and then write the new one to the file
-            try {
-                Process process = Runtime.getRuntime().exec("logcat -c");
-                process = Runtime.getRuntime().exec("logcat -f " + logFile);
-            } catch ( IOException e ) {
-                e.printStackTrace();
-            }
-
-        } else if ( isExternalStorageReadable() ) {
-            // only readable
-        } else {
-            // not accessible
-        }
-
-
         setContentView(R.layout.activity_main);
 
         checkBeaconPermissions();
         repository = Repository.getInstance(this.getApplication());
 
         toastUtility = ToastUtility.getInstance();
-        toastUtility.getNewToast().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if(aBoolean){
-                    Toast.makeText(getApplicationContext(), toastUtility.getMessage(), Toast.LENGTH_LONG).show();
-                }
+        toastUtility.getNewToast().observe(this, aBoolean -> {
+            if(aBoolean){
+                Toast.makeText(getApplicationContext(), toastUtility.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
-        repository.checkBeacon().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if(aBoolean){
-                    repository.initBeaconCheck();
-                    startBeaconDialog(repository.getBeaconLocation());
-                }
+        repository.checkBeacon().observe(this, aBoolean -> {
+            if(aBoolean){
+                repository.initBeaconCheck();
+                startBeaconDialog(repository.getBeaconLocation());
             }
         });
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //TODO: Find a way to stop it from beeing cut or just remove it
-        getSupportActionBar().setSubtitle("SmartHome");
 
         navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         navController = NavHostFragment.findNavController(navHostFragment);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if(savedInstanceState == null){
             getSavedCredentials();
         }
     }
 
-    //TODO: TO DELETE!!!
-    /* Checks if external storage is available to at least read */
-    public boolean isExternalStorageReadable() {
-        String state = Environment.getExternalStorageState();
-        if ( Environment.MEDIA_MOUNTED.equals( state ) ||
-                Environment.MEDIA_MOUNTED_READ_ONLY.equals( state ) ) {
-            return true;
-        }
-        return false;
-    }
-
-    //TODO: TO DELETE!!!
-    /* Checks if external storage is available for read and write */
-    public boolean isExternalStorageWritable() {
-        String state = Environment.getExternalStorageState();
-        if ( Environment.MEDIA_MOUNTED.equals( state ) ) {
-            return true;
-        }
-        return false;
-    }
 
     @Override
     protected void onDestroy() {
-        //TODO: When App gets rotated ==> Everything gets unsubscribed!
-        //repository.unsubscribeFromEverything();
+        repository.unsubscribeFromEverything();
         toastUtility.prepareToast("Everything got unsubscribed!");
         super.onDestroy();
     }
@@ -162,14 +107,36 @@ public class SmartHomeApplication extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu (Menu menu) {
+        Fragment currentFragment = navHostFragment.getChildFragmentManager().getFragments().get(0);
+
+        if (currentFragment.getClass().equals(LoginFragment.class)){
+            menu.getItem(0).setEnabled(false);
+            menu.getItem(1).setEnabled(false);
+        }else if(currentFragment.getClass().equals(OptionsFragment.class)){
+            menu.getItem(0).setEnabled(false);
+            menu.getItem(1).setEnabled(true);
+        }else if(currentFragment.getClass().equals(HomeOverviewFragment.class)){
+            menu.getItem(0).setEnabled(true);
+            menu.getItem(1).setEnabled(false);
+        }else{
+            menu.getItem(0).setEnabled(true);
+            menu.getItem(1).setEnabled(true);
+        }
+        return true;
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_home_overview:
-                goToFragment(R.id.HomeOverviewFragment);
+                goToFragment(R.id.action_home_overview);
                 return true;
 
             case R.id.action_settings:
-                goToFragment(R.id.optionsFragment);
+                goToFragment(R.id.action_settings);
                 return true;
 
             case android.R.id.home:
@@ -194,21 +161,13 @@ public class SmartHomeApplication extends AppCompatActivity {
         Button buttonYes = dialog.findViewById(R.id.button_left);
         Button buttonNo = dialog.findViewById(R.id.button_right);
 
-        buttonYes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                repository.confirmBeacon();
-                setStartFragment(R.id.roomOverviewFragment);
-            }
+        buttonYes.setOnClickListener(v -> {
+            dialog.dismiss();
+            repository.confirmBeacon();
+            setStartFragment(R.id.roomOverviewFragment);
         });
 
-        buttonNo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
+        buttonNo.setOnClickListener(v -> dialog.dismiss());
     }
 
     private void setStartFragment(int destinationFragment) {
@@ -219,10 +178,32 @@ public class SmartHomeApplication extends AppCompatActivity {
         navController.setGraph(graph);
     }
 
-    private void goToFragment(int destinationFragment){
-        navController.navigate(destinationFragment);
+    private void goToFragment(int pressedMenuItem){
+        Fragment currentFragment = navHostFragment.getChildFragmentManager().getFragments().get(0);
+
+        if (currentFragment.getClass().equals(HomeOverviewFragment.class) && pressedMenuItem == R.id.action_settings){
+            navController.navigate(R.id.action_homeOverviewFragment_to_optionsFragment);
+
+        }else if(currentFragment.getClass().equals(RoomOverviewFragment.class)){
+            if(pressedMenuItem == R.id.action_settings){
+                navController.navigate(R.id.action_roomOverviewFragment_to_optionsFragment);
+            }else if(pressedMenuItem == R.id.action_home_overview){
+                navController.navigate(R.id.action_roomOverviewFragment_to_HomeOverviewFragment);
+            }
+
+        }else if(currentFragment.getClass().equals(RegulationFragment.class)){
+            if(pressedMenuItem == R.id.action_settings){
+                navController.navigate(R.id.action_regulationFragment_to_optionsFragment);
+            }else if(pressedMenuItem == R.id.action_home_overview){
+                navController.navigate(R.id.action_regulationFragment_to_HomeOverviewFragment);
+            }
+
+        }else if(currentFragment.getClass().equals(OptionsFragment.class) && pressedMenuItem == R.id.action_home_overview){
+            navController.navigate(R.id.action_optionsFragment_to_HomeOverviewFragment);
+        }
     }
 
+    //TODO: Move to viewmodel
     public void getSavedCredentials() {
         CredentialRequest credentialRequest = new CredentialRequest.Builder()
                 .setPasswordLoginSupported(true)
@@ -239,17 +220,16 @@ public class SmartHomeApplication extends AppCompatActivity {
                     onCredentialRetrieved(task.getResult().getCredential());
                 }else{
                     // See "Handle unsuccessful and incomplete credential requests"
-                    //TODO: To slow StartFragment (here HomeOverview) is still loaded before it is skipped
                     setStartFragment(R.id.loginFragment);
                 }
             }
         });
     }
-
+    //TODO: Move to viewmodel
     private void onCredentialRetrieved(Credential credential) {
         String accountType = credential.getAccountType();
         if (accountType == null) {
-            //repository.requestRegisterUser(credential);
+            repository.requestRegisterUser(credential);
             setStartFragment(R.id.HomeOverviewFragment);
         }
     }
@@ -257,34 +237,33 @@ public class SmartHomeApplication extends AppCompatActivity {
     private void checkBeaconPermissions(){
         if (this.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                if (this.checkSelfPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    if (!this.shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
-                        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                        builder.setTitle("This app needs background location access");
-                        builder.setMessage("Please grant location access so this app can detect beacons in the background.");
-                        builder.setPositiveButton(android.R.string.ok, null);
-                        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
+                    this.checkSelfPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+                            != PackageManager.PERMISSION_GRANTED) {
+                if (!this.shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("This app needs background location access");
+                    builder.setMessage("Please grant location access so this app can detect beacons in the background.");
+                    builder.setPositiveButton(android.R.string.ok, null);
+                    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
 
-                            @TargetApi(23)
-                            @Override
-                            public void onDismiss(DialogInterface dialog) {
-                                requestPermissions(new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION},
-                                        PERMISSION_REQUEST_BACKGROUND_LOCATION);
-                            }
+                        @TargetApi(23)
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            requestPermissions(new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION},
+                                    PERMISSION_REQUEST_BACKGROUND_LOCATION);
+                        }
 
-                        });
-                        builder.show();
-                    } else {
-                        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                        builder.setTitle("Functionality limited");
-                        builder.setMessage("Since background location access has not been granted, this app will not be able to discover beacons in the background.  Please go to Settings -> Applications -> Permissions and grant background location access to this app.");
-                        builder.setPositiveButton(android.R.string.ok, null);
-                        builder.setOnDismissListener(dialog -> {
-                        });
-                        builder.show();
-                    }
+                    });
+                    builder.show();
+                } else {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("Functionality limited");
+                    builder.setMessage("Since background location access has not been granted, this app will not be able to discover beacons in the background.  Please go to Settings -> Applications -> Permissions and grant background location access to this app.");
+                    builder.setPositiveButton(android.R.string.ok, null);
+                    builder.setOnDismissListener(dialog -> {
+                    });
+                    builder.show();
                 }
             }
         } else {
