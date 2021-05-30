@@ -41,8 +41,11 @@ import de.smarthome.command.impl.AdditionalConfigCommand;
 import de.smarthome.command.impl.ChangeValueCommand;
 import de.smarthome.command.impl.CheckAvailabilityCommand;
 import de.smarthome.command.impl.GetValueCommand;
+import de.smarthome.command.impl.RegisterCallbackServerAtGiraServer;
 import de.smarthome.command.impl.RegisterClientCommand;
 import de.smarthome.command.impl.UIConfigCommand;
+import de.smarthome.command.impl.UnRegisterCallbackServerAtGiraServer;
+import de.smarthome.command.impl.UnregisterClientCommand;
 import de.smarthome.server.gira.GiraServerHandler;
 
 import static org.mockito.Mockito.*;
@@ -148,7 +151,7 @@ public class ServerHandlerTest {
         List<UID_Value> expectedValues = Arrays.asList(firstExpectedValue, secondExpectedValue);
         ResponseEntity<GetValueReponse> myEntity = new ResponseEntity<>(new GetValueReponse(expectedValues), HttpStatus.OK);
         Mockito.when(mockedRestTemplate.exchange(
-                ArgumentMatchers.startsWith(uriPrefix + "/api/v2/values/" ),
+                ArgumentMatchers.matches(uriPrefix + "/api/v2/values/" +".*"+"?token="+".*"),
                 ArgumentMatchers.eq(HttpMethod.GET),
                 ArgumentMatchers.<HttpEntity<?>> any(),
                 ArgumentMatchers.<Class<GetValueReponse>>any())
@@ -175,10 +178,11 @@ public class ServerHandlerTest {
         CommandInterpreter ci = new HomeServerCommandInterpreter(mockedRestTemplateCreator);
         GiraServerHandler sh = new GiraServerHandler(ci);
 
-        ChangeValueCommand changeValueCommand = new ChangeValueCommand("someUID", 42);
+        String someUID = "someUID";
+        ChangeValueCommand changeValueCommand = new ChangeValueCommand(someUID, 42);
         ResponseEntity<JsonNode> myEntity = new ResponseEntity<>(HttpStatus.OK);
         Mockito.when(mockedRestTemplate.exchange(
-                ArgumentMatchers.startsWith(uriPrefix + "/api/v2/values/" ),
+                ArgumentMatchers.startsWith(uriPrefix + "/api/v2/values/" +someUID+"?"),
                 ArgumentMatchers.eq(HttpMethod.PUT),
                 ArgumentMatchers.<HttpEntity<?>> any(),
                 ArgumentMatchers.<Class<JsonNode>>any())
@@ -274,16 +278,73 @@ public class ServerHandlerTest {
 
     @Test
     public void testUnregisterClientCommand(){
+        RestTemplate mockedRestTemplate = mock(RestTemplate.class);
+        RestTemplateCreater mockedRestTemplateCreator = mock(RestTemplateCreater.class);
+        when(mockedRestTemplateCreator.create()).thenReturn(mockedRestTemplate);
+        CommandInterpreter ci = new HomeServerCommandInterpreter(mockedRestTemplateCreator);
+        GiraServerHandler sh = new GiraServerHandler(ci);
 
+
+        UnregisterClientCommand unregisterClientCommand = new UnregisterClientCommand();
+        ResponseEntity<JsonNode> myEntity = new ResponseEntity<>(HttpStatus.OK);
+        Mockito.when(mockedRestTemplate.exchange(
+                ArgumentMatchers.startsWith(uriPrefix+"/api/v2/clients/"),
+                ArgumentMatchers.eq(HttpMethod.DELETE),
+                ArgumentMatchers.<HttpEntity<?>> any(),
+                ArgumentMatchers.<Class<JsonNode>>any())
+        ).thenReturn(myEntity);
+        ResponseEntity actualResponse = sh.sendRequest(unregisterClientCommand);
+        verify(mockedRestTemplate, times(1)).exchange(anyString(), any(), any(), any());
+        HttpStatus actualStatusCode = actualResponse.getStatusCode();
+
+        assertThat(actualStatusCode.value()).isEqualTo(200);
     }
 
     @Test
     public void testRegisterCallbackServerAtGiraCommand(){
+        RestTemplate mockedRestTemplate = mock(RestTemplate.class);
+        RestTemplateCreater mockedRestTemplateCreator = mock(RestTemplateCreater.class);
+        when(mockedRestTemplateCreator.create()).thenReturn(mockedRestTemplate);
+        CommandInterpreter ci = new HomeServerCommandInterpreter(mockedRestTemplateCreator);
+        GiraServerHandler sh = new GiraServerHandler(ci);
 
+        String IP = "someIP";
+        RegisterCallbackServerAtGiraServer registerCallbackServerAtGiraServer = new RegisterCallbackServerAtGiraServer(IP);
+        ResponseEntity<JsonNode> myEntity = new ResponseEntity<>(HttpStatus.OK);
+        Mockito.when(mockedRestTemplate.exchange(
+                ArgumentMatchers.matches(uriPrefix+"/api/v2/clients/"+".*"+"callbacks"),
+                ArgumentMatchers.eq(HttpMethod.POST),
+                ArgumentMatchers.<HttpEntity<?>> any(),
+                ArgumentMatchers.<Class<JsonNode>>any())
+        ).thenReturn(myEntity);
+        ResponseEntity actualResponse = sh.sendRequest(registerCallbackServerAtGiraServer);
+        verify(mockedRestTemplate, times(1)).exchange(anyString(), any(), any(), any());
+        HttpStatus actualStatusCode = actualResponse.getStatusCode();
+
+        assertThat(actualStatusCode.value()).isEqualTo(200);
     }
 
     @Test
     public void testUnRegisterCallbackServerAtGiraCommand(){
+        RestTemplate mockedRestTemplate = mock(RestTemplate.class);
+        RestTemplateCreater mockedRestTemplateCreator = mock(RestTemplateCreater.class);
+        when(mockedRestTemplateCreator.create()).thenReturn(mockedRestTemplate);
+        CommandInterpreter ci = new HomeServerCommandInterpreter(mockedRestTemplateCreator);
+        GiraServerHandler sh = new GiraServerHandler(ci);
 
+        String IP = "someIP";
+        UnRegisterCallbackServerAtGiraServer unRegisterCallbackServerAtGiraServer = new UnRegisterCallbackServerAtGiraServer();
+        ResponseEntity<JsonNode> myEntity = new ResponseEntity<>(HttpStatus.OK);
+        Mockito.when(mockedRestTemplate.exchange(
+                ArgumentMatchers.matches(uriPrefix+"/api/v2/clients/"+".*"+"callbacks"),
+                ArgumentMatchers.eq(HttpMethod.DELETE),
+                ArgumentMatchers.<HttpEntity<?>> any(),
+                ArgumentMatchers.<Class<JsonNode>>any())
+        ).thenReturn(myEntity);
+        ResponseEntity actualResponse = sh.sendRequest(unRegisterCallbackServerAtGiraServer);
+        verify(mockedRestTemplate, times(1)).exchange(anyString(), any(), any(), any());
+        HttpStatus actualStatusCode = actualResponse.getStatusCode();
+
+        assertThat(actualStatusCode.value()).isEqualTo(200);
     }
 }

@@ -104,7 +104,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
 
     @Override
     public Request buildUnregisterClientRequest(){
-        String uri = uriPrefix+ API_V_2_CLIENTS +token;
+        String uri = uriPrefix + API_V_2_CLIENTS +token;
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> entity = new HttpEntity<>(headers);
         return new RequestImpl(uri, HttpMethod.DELETE, entity, JsonNode.class, createRestTemplate.get());
