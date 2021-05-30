@@ -17,27 +17,19 @@ import de.smarthome.app.adapter.RoomOverviewAdapter;
 public class StatusViewHolder extends RoomOverviewAdapter.ViewHolder{
     private TextView textViewName;
     private TextView textViewStatus;
-    private RoomOverviewAdapter adapter;
-    private RoomOverviewAdapter.OnItemClickListener onItemClickListener;
 
     public StatusViewHolder(@NonNull ViewGroup parent,
-                             @NonNull RoomOverviewAdapter.OnItemClickListener onItemClickListener,
-                             @NonNull RoomOverviewAdapter adapter) {
+                            @NonNull RoomOverviewAdapter.OnItemClickListener onItemClickListener,
+                            @NonNull RoomOverviewAdapter adapter) {
         super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_status, parent, false));
 
         textViewName = itemView.findViewById(R.id.textView_item);
         textViewStatus = itemView.findViewById(R.id.textView_item_status);
 
-        this.onItemClickListener = onItemClickListener;
-        this.adapter = adapter;
-
-        itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = getAdapterPosition();
-                if (onItemClickListener != null && position != RecyclerView.NO_POSITION) {
-                    onItemClickListener.onItemClick(adapter.getFunctionAt(position));
-                }
+        itemView.setOnClickListener(v -> {
+            int position = getAdapterPosition();
+            if (onItemClickListener != null && position != RecyclerView.NO_POSITION) {
+                onItemClickListener.onItemClick(adapter.getFunctionAt(position));
             }
         });
     }

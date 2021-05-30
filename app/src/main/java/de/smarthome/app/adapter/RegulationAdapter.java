@@ -1,6 +1,5 @@
 package de.smarthome.app.adapter;
 
-
 import android.app.Application;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,52 +8,45 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import de.smarthome.app.model.Function;
-import de.smarthome.app.model.configs.BoundariesConfig;
-import de.smarthome.app.model.configs.Boundary;
 import de.smarthome.app.model.configs.BoundaryDataPoint;
 import de.smarthome.app.model.configs.ChannelConfig;
 import de.smarthome.app.model.Datapoint;
+import de.smarthome.app.model.configs.ChannelDatapoint;
 import de.smarthome.app.repository.Repository;
-import de.smarthome.app.adapter.viewholder.regulation.DoubleSliderViewHolder;
 import de.smarthome.app.adapter.viewholder.regulation.ReadViewHolder;
 import de.smarthome.app.adapter.viewholder.regulation.SliderViewHolder;
 import de.smarthome.app.adapter.viewholder.regulation.StepViewHolder;
 import de.smarthome.app.adapter.viewholder.regulation.SwitchViewHolder;
 
-
 public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.ViewHolder>{
     private List<Datapoint> dataPointList;
     private Map<Datapoint, Datapoint> dataPointMap;
-    //TODO: Refactor
-    private Map<Datapoint, BoundaryDataPoint> testMap;
+    private Map<Datapoint, BoundaryDataPoint> boundaryMap;
 
     public static final int STEP_VIEW_HOLDER = 0;
     public static final int SWITCH_VIEW_HOLDER = 1;
     public static final int INT_SLIDER_VIEW_HOLDER = 2;
     public static final int FLOAT_SLIDER_VIEW_HOLDER = 3;
-    public static final int DOUBLE_SLIDER_VIEW_HOLDER = 4;
-    public static final int READ_VIEW_HOLDER = 5;
+    public static final int READ_VIEW_HOLDER = 4;
 
     private OnItemClickListener listener;
 
-    private String statusFunctionDataPointUID = null;
-    private String statusFunctionDataPointValue = null;
-    private Datapoint dataPointToBeUpdated = null;
+    private Map<String, String> statusValueMap = new LinkedHashMap<>();
 
     private ChannelConfig channelConfig;
     private Repository repository;
-    //TODO: Refactor
-    public void setBoundaryList(Map<Datapoint, BoundaryDataPoint> newData){
-        testMap = newData;
+
+    public void setBoundaryMap(Map<Datapoint, BoundaryDataPoint> newData){
+        boundaryMap = newData;
     }
 
-    public Map<Datapoint, BoundaryDataPoint> getTestMap() {
-        return testMap;
+    public Map<Datapoint, BoundaryDataPoint> getBoundaryMap() {
+        return boundaryMap;
     }
 
     public void setDataPointList(Map<Datapoint, Datapoint> dataPoints, Application application) {
@@ -70,25 +62,38 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
     }
 
     private void requestCurrentStatus(){
-        //TODO: Check if the server response is for the status method if not function has to get the status id
+        List<String> requestList = new ArrayList<>();
         for(Datapoint dp : dataPointList){
-            if(dataPointMap.get(dp) != null){
-                //repository.requestGetValue(dataPointMap.get(dp).getID());
+            //Status Function always have the same amount of DataPoints BUT only a few of them get answers
+            if(dataPointMap.get(dp) != null && !dataPointMap.get(dp).getID().equals(dp.getID())){
+                requestList.add(dataPointMap.get(dp).getID());
             }
         }
+        repository.requestGetValue(requestList);
     }
 
     public void updateStatusValue(String changedStatusFunctionUID, String changedStatusFunctionValue){
-        if(containsViewStatusFunction(changedStatusFunctionUID)){
-            setStatusVariables(changedStatusFunctionUID, changedStatusFunctionValue);
+        if(containsViewStatusFunction(changedStatusFunctionUID, changedStatusFunctionValue)){
             notifyItemChanged(getItemPosition());
+        }
+    }
+
+    public void updateMultipleStatusValues(Map<String, String> newInput) {
+        if (newInput.size() == 1) {
+            updateStatusValue(newInput.keySet().iterator().next(),
+                    newInput.get(newInput.keySet().iterator().next()));
+        } else {
+            notifyDataSetChanged();
+            for (String key : newInput.keySet()) {
+                containsViewStatusFunction(key, newInput.get(key));
+            }
         }
     }
 
     private int getItemPosition(){
         int position = 0;
         for (Datapoint dp : dataPointList){
-            if(dp.equals(dataPointToBeUpdated)){
+            if(statusValueMap.containsKey(dp.getID())){
                 return position;
             }
             position++;
@@ -96,16 +101,11 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
         return -1;
     }
 
-    private boolean containsViewStatusFunction(String changedStatusFunctionUID) {
+    private boolean containsViewStatusFunction(String changedStatusFunctionUID, String value) {
         for(Datapoint datapoint : dataPointList){
-            if (dataPointMap.get(datapoint) != null) {
-                Datapoint statusDataPoint = dataPointMap.get(datapoint);
-
-                if (changedStatusFunctionUID.equals(statusDataPoint.getID())) {
-                    dataPointToBeUpdated  = datapoint;
-                    return true;
-                }
-
+            if (dataPointMap.get(datapoint) != null && changedStatusFunctionUID.equals(dataPointMap.get(datapoint).getID())) {
+                statusValueMap.put(datapoint.getID(), value);
+                return true;
             }
         }
         return false;
@@ -145,17 +145,10 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
                     FLOAT_SLIDER_VIEW_HOLDER
             );
 
-        }else if(viewType == DOUBLE_SLIDER_VIEW_HOLDER){
-            return new DoubleSliderViewHolder(
-                    parent,
-                    listener,
-                    this
-            );
         }else if(viewType == READ_VIEW_HOLDER){
             return new ReadViewHolder(
-                    parent,
-                    listener,
-                    this
+                    parent
+
             );
         }else {
             throw new IllegalArgumentException("Input type not known");
@@ -174,19 +167,16 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
     }
 
     private Optional<String> getStatusValueString(Datapoint datapoint, Optional<String> value) {
-        if(dataPointToBeUpdated != null) {
-            if(dataPointToBeUpdated.equals(datapoint)){
-                value = Optional.ofNullable(statusFunctionDataPointValue);
+        if(!statusValueMap.isEmpty() && statusValueMap.containsKey(datapoint.getID())){
+            value = Optional.ofNullable(statusValueMap.get(datapoint.getID()));
 
-                setStatusVariables(null, null);
-            }
+            removeStatusVariables(datapoint.getID());
         }
         return value;
     }
 
-    private void setStatusVariables(String uID, String value) {
-        statusFunctionDataPointUID = uID;
-        statusFunctionDataPointValue = value;
+    private void removeStatusVariables(String uID) {
+        statusValueMap.remove(uID);
     }
 
     @Override
@@ -196,17 +186,13 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
 
     @Override
     public int getItemViewType(int position){
-        //TODO: Optional<> is used but not checked
-        return channelConfig.getRegulationItemViewType(
-                channelConfig.findChannelByName(repository.getSelectedFunction()).getCorrespondingChannelDataPoint(dataPointList.get(position)).get());
+        Optional<ChannelDatapoint> channelDatapoint = channelConfig.findChannelByName(repository.getSelectedFunction()).getCorrespondingChannelDataPoint(dataPointList.get(position));
+        return channelDatapoint.map(datapoint -> channelConfig.getRegulationItemViewType(datapoint)).orElse(-1);
     }
-
 
     public Datapoint getDataPointAt(int position) {
         return dataPointList.get(position);
     }
-
-
 
     public interface OnItemClickListener {
         void onItemClick(Datapoint datapoint, String value);
@@ -218,7 +204,7 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
 
     public abstract static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public ViewHolder(@NonNull View itemView) {
+        protected ViewHolder(@NonNull View itemView) {
             super(itemView);
         }
 

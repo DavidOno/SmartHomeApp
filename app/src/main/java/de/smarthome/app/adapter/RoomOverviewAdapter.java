@@ -1,6 +1,5 @@
 package de.smarthome.app.adapter;
 
-
 import android.app.Application;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -21,7 +21,6 @@ import de.smarthome.app.adapter.viewholder.roomoverview.DefaultViewHolder;
 import de.smarthome.app.adapter.viewholder.roomoverview.StatusViewHolder;
 import de.smarthome.app.adapter.viewholder.roomoverview.SwitchViewHolder;
 import de.smarthome.app.adapter.viewholder.roomoverview.SwitchArrowViewHolder;
-
 
 public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapter.ViewHolder>{
     List<Function> functionList;
@@ -36,9 +35,7 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
     private OnItemClickListener listener;
     private OnSwitchClickListener switchClickListener;
 
-    private String statusFunctionUID = null;
-    private String statusFunctionValue = null;
-    private Function functionToBeUpdated = null;
+    private Map<String, String> statusValueMap = new LinkedHashMap<>();
 
     private Repository repository;
     private ChannelConfig channelConfig;
@@ -56,7 +53,6 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
     }
 
     private void requestCurrentStatus(){
-        //TODO: Check if the server response is for the status method if not function has to get the status id
         for(Function func : functionList){
             if(channelConfig.isFirstDataPointBinary(func)){
                 if(functionMap.get(func) != null){
@@ -70,25 +66,32 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
             }
         }
         if(!requestList.isEmpty()){
-            if(requestList.size() == 1){
-                //repository.requestGetValue(requestList.get(0));
-            }else{
-                //repository.requestGetValue2(requestList);
-            }
+            repository.requestGetValue(requestList);
         }
     }
 
     public void updateStatusValue(String changedStatusFunctionUID, String changedStatusFunctionValue){
-        if(containsViewStatusFunction(changedStatusFunctionUID)){
-            setStatusVariables(changedStatusFunctionUID, changedStatusFunctionValue);
+        if(containsViewStatusFunction(changedStatusFunctionUID, changedStatusFunctionValue)){
             notifyItemChanged(getItemPosition());
+        }
+    }
+
+    public void updateMultipleStatusValues(Map<String, String> newInput){
+        if(newInput.size() == 1){
+            updateStatusValue(newInput.keySet().iterator().next(),
+                    newInput.get(newInput.keySet().iterator().next()));
+        }else{
+            notifyDataSetChanged();
+            for(String key: newInput.keySet()) {
+                containsViewStatusFunction(key, newInput.get(key));
+            }
         }
     }
 
     private int getItemPosition(){
         int position = 0;
         for (Function func : functionList){
-            if(func.equals(functionToBeUpdated)){
+            if(statusValueMap.containsKey(func.getID())){
                 return position;
             }
             position++;
@@ -96,14 +99,14 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
         return -1;
     }
 
-    private boolean containsViewStatusFunction(String changedStatusFunctionUID) {
+    private boolean containsViewStatusFunction(String changedStatusFunctionUID, String value) {
         for(Function function : functionList){
+            //Has to be this check because: No Status function => value of map is null! so it contains the function
             if (functionMap.get(function) != null) {
-                Function statusFunction = functionMap.get(function);
 
-                for(Datapoint datapoint : statusFunction.getDataPoints()){
+                for(Datapoint datapoint : functionMap.get(function).getDataPoints()){
                     if (changedStatusFunctionUID.equals(datapoint.getID())) {
-                        functionToBeUpdated = function;
+                        statusValueMap.put(function.getID(), value);
                         return true;
                     }
                 }
@@ -137,7 +140,7 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
                     this
 
             );
-        }else{  //if(viewType == DEFAULT_VIEW_HOLDER){
+        }else{
             return new DefaultViewHolder(
                     parent,
                     listener,
@@ -157,19 +160,17 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
     }
 
     private Optional<String> getStatusValueString(Function function, Optional<String> value) {
-        if(functionToBeUpdated != null) {
-            if(functionToBeUpdated.equals(function)){
-                value = Optional.ofNullable(statusFunctionValue);
+        if(!statusValueMap.isEmpty() &&
+                statusValueMap.containsKey(function.getID())){
+            value = Optional.ofNullable(statusValueMap.get(function.getID()));
 
-                setStatusVariables(null, null);
-            }
+            removeStatusVariables(function.getID());
         }
         return value;
     }
 
-    private void setStatusVariables(String uID, String value) {
-        statusFunctionUID = uID;
-        statusFunctionValue = value;
+    private void removeStatusVariables(String uID) {
+        statusValueMap.remove(uID);
     }
 
     @Override
@@ -183,7 +184,6 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
         return channelConfig.getRoomOverviewItemViewType(channelConfig.findChannelByName(item));
     }
 
-
     public Function getFunctionAt(int position) {
         return functionList.get(position);
     }
@@ -196,7 +196,6 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
         this.listener = listener;
     }
 
-
     public interface OnSwitchClickListener {
         void onItemClick(Function function, boolean isChecked);
     }
@@ -207,7 +206,7 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
 
     public abstract static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public ViewHolder(@NonNull View itemView) {
+        protected ViewHolder(@NonNull View itemView) {
             super(itemView);
         }
 

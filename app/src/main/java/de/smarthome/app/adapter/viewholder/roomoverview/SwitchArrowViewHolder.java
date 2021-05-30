@@ -1,8 +1,6 @@
 package de.smarthome.app.adapter.viewholder.roomoverview;
 
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -16,13 +14,9 @@ import de.smarthome.R;
 import de.smarthome.app.model.Function;
 import de.smarthome.app.adapter.RoomOverviewAdapter;
 
-
 public class SwitchArrowViewHolder extends RoomOverviewAdapter.ViewHolder{
     private SwitchCompat binarySwitch;
     private TextView textViewName;
-    private RoomOverviewAdapter adapter;
-    private RoomOverviewAdapter.OnItemClickListener onItemClickListener;
-    private RoomOverviewAdapter.OnSwitchClickListener onSwitchClickListener;
 
     public SwitchArrowViewHolder(@NonNull ViewGroup parent,
                                  @NonNull RoomOverviewAdapter.OnItemClickListener onItemClickListener,
@@ -33,27 +27,17 @@ public class SwitchArrowViewHolder extends RoomOverviewAdapter.ViewHolder{
         textViewName = itemView.findViewById(R.id.textView_item);
         binarySwitch = itemView.findViewById(R.id.switch_item);
 
-        this.onItemClickListener = onItemClickListener;
-        this.onSwitchClickListener = onSwitchClickListener;
-        this.adapter = adapter;
-
-        binarySwitch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = getAdapterPosition();
-                if (onSwitchClickListener != null && position != RecyclerView.NO_POSITION) {
-                    onSwitchClickListener.onItemClick(adapter.getFunctionAt(position),  binarySwitch.isChecked());
-                }
+        binarySwitch.setOnClickListener(v -> {
+            int position = getAdapterPosition();
+            if (onSwitchClickListener != null && position != RecyclerView.NO_POSITION) {
+                onSwitchClickListener.onItemClick(adapter.getFunctionAt(position),  binarySwitch.isChecked());
             }
         });
 
-        itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = getAdapterPosition();
-                if (onItemClickListener != null && position != RecyclerView.NO_POSITION) {
-                    onItemClickListener.onItemClick(adapter.getFunctionAt(position));
-                }
+        itemView.setOnClickListener(v -> {
+            int position = getAdapterPosition();
+            if (onItemClickListener != null && position != RecyclerView.NO_POSITION) {
+                onItemClickListener.onItemClick(adapter.getFunctionAt(position));
             }
         });
 
@@ -73,4 +57,3 @@ public class SwitchArrowViewHolder extends RoomOverviewAdapter.ViewHolder{
         }
     }
 }
-

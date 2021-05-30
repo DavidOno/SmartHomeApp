@@ -15,12 +15,9 @@ import de.smarthome.R;
 import de.smarthome.app.model.Datapoint;
 import de.smarthome.app.adapter.RegulationAdapter;
 
-
 public class SwitchViewHolder extends RegulationAdapter.ViewHolder{
     private SwitchCompat binarySwitch;
     private TextView textViewName;
-    private RegulationAdapter adapter;
-    private RegulationAdapter.OnItemClickListener onSwitchClickListener;
 
     public SwitchViewHolder(@NonNull ViewGroup parent,
                             @NonNull RegulationAdapter.OnItemClickListener onSwitchClickListener,
@@ -29,9 +26,6 @@ public class SwitchViewHolder extends RegulationAdapter.ViewHolder{
 
         textViewName = itemView.findViewById(R.id.textView_item);
         binarySwitch = itemView.findViewById(R.id.switch_item);
-
-        this.onSwitchClickListener = onSwitchClickListener;
-        this.adapter = adapter;
 
         binarySwitch.setOnClickListener(new View.OnClickListener() {
             @Override
