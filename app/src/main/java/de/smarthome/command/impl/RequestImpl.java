@@ -31,35 +31,30 @@ import de.smarthome.SmartHomeApplication;
 import de.smarthome.command.Request;
 import de.smarthome.server.StandardErrorHandler;
 
+
 public class RequestImpl implements Request {
 
     private static final String TAG = "RequestImpl";
-    private String uri;
-    private HttpMethod httpMethod;
-    private HttpEntity entity;
-    private Class responseType;
-    private boolean isSSLVerificationSkipped;
-    private ResponseErrorHandler errorHandler = new StandardErrorHandler();
+    private final String uri;
+    private final HttpMethod httpMethod;
+    private final HttpEntity entity;
+    private final Class responseType;
+    private RestTemplate restTemplate;
 
-    public RequestImpl(String uri, HttpMethod httpMethod, HttpEntity entity, Class responseType) {
+    public RequestImpl(String uri, HttpMethod httpMethod, HttpEntity entity, Class responseType, RestTemplate restTemplate) {
         this.uri = uri;
         this.httpMethod = httpMethod;
         this.entity = entity;
         this.responseType = responseType;
-        isSSLVerificationSkipped = true;
+        this.restTemplate = restTemplate;
     }
 
-    public Request checkSSLCertificate() {
-        isSSLVerificationSkipped = false;
-        return this;
-    }
+
 
     @Override
     public ResponseEntity execute() {
-        checkNetworkConnection();
+//        checkNetworkConnection();
         Future<ResponseEntity> future = SmartHomeApplication.EXECUTOR_SERVICE.submit(() -> {
-            RestTemplate restTemplate = createRestTemplate();
-            restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
             return restTemplate.exchange(uri, httpMethod, entity, responseType);
         });
         return getResponseEntity(future);
@@ -81,6 +76,7 @@ public class RequestImpl implements Request {
         }
         catch (IOException | InterruptedException e){
             e.printStackTrace();
+            Thread.currentThread().interrupt();
         }
         return false;
     }
@@ -92,36 +88,8 @@ public class RequestImpl implements Request {
         } catch (ExecutionException | InterruptedException | TimeoutException e) {
             Log.d(TAG, "Request took too long");
             e.printStackTrace();
+            Thread.currentThread().interrupt();
         }
         return responseEntity;
-    }
-
-    private RestTemplate createRestTemplate() {
-        RestTemplate restTemplate = new RestTemplate();
-        if(isSSLVerificationSkipped){
-            restTemplate = new RestTemplate(avoidSSLVerification());
-        }
-        restTemplate.setErrorHandler(errorHandler);
-        return restTemplate;
-    }
-
-    private HttpComponentsClientHttpRequestFactory avoidSSLVerification() {
-        HttpComponentsClientHttpRequestFactory requestFactory = null;
-        try {
-            TrustStrategy acceptingTrustStrategy = (x509Certificates, s) -> true;
-            SSLContext sslContext = SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy).build();
-            SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext, new AllowAllHostnameVerifier());
-            CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
-            requestFactory = new HttpComponentsClientHttpRequestFactory();
-            requestFactory.setHttpClient(httpClient);
-        }catch(KeyManagementException | NoSuchAlgorithmException | KeyStoreException ex){
-            Log.d(TAG, "Avoiding SSL-Verification failed");
-            ex.printStackTrace();
-        }
-        return requestFactory;
-    }
-
-    public void setErrorHandler(ResponseErrorHandler errorHandler){
-        this.errorHandler = errorHandler;
     }
 }

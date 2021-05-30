@@ -9,8 +9,8 @@ import de.smarthome.command.Request;
 
 public class RegisterClientCommand implements Command {
 
-    private String username;
-    private String pwd;
+    private final String username;
+    private final String pwd;
 
     public RegisterClientCommand(String username, String pwd) {
         this.username = username;

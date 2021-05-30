@@ -9,6 +9,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.util.Objects;
+
 import de.smarthome.app.model.responses.CallbackValueInput;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
@@ -33,7 +35,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private void handleNotification(RemoteMessage remoteMessage) {
         if (hasNotification(remoteMessage)) {
-            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
+            Log.d(TAG, "Message Notification Body: " + Objects.requireNonNull(remoteMessage.getNotification()).getBody());
             Log.d(TAG, "This notification is currently not forwarded to anyone");
         }
     }

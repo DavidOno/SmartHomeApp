@@ -8,7 +8,7 @@ import de.smarthome.command.Request;
 
 public class UnRegisterCallback implements AsyncCommand {
 
-    private String ip;
+    private final String ip;
 
     public UnRegisterCallback(String ip) {
         this.ip = ip;

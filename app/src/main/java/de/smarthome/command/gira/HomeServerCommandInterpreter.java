@@ -11,11 +11,13 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import de.smarthome.command.AdditionalConfigs;
 import de.smarthome.command.CommandInterpreter;
@@ -25,13 +27,28 @@ import de.smarthome.app.model.UIConfig;
 import de.smarthome.app.model.responses.AvailabilityResponse;
 import de.smarthome.app.model.responses.GetValueReponse;
 import de.smarthome.app.model.responses.RegisterResponse;
+import de.smarthome.server.RestTemplateCreater;
+import de.smarthome.server.StandardErrorHandler;
 
 public class HomeServerCommandInterpreter implements CommandInterpreter {
 
+
     private static final String NO_CACHE = "no-cache";
     private static final String TAG = "HomeServerCommandInterpreter";
+    public static final String API_V_2_CLIENTS = "/api/v2/clients/";
+    public static final String HTTPS = "https://";
     private String token;
     private String uriPrefix = "https://192.168.132.101";
+    private RestTemplateCreater restTemplateCreater;
+    private Supplier<RestTemplate> createRestTemplate = () -> {
+        RestTemplate restTemplate = restTemplateCreater.create();
+        restTemplate.setErrorHandler(new StandardErrorHandler());
+        return restTemplate;
+    };
+
+    public HomeServerCommandInterpreter(RestTemplateCreater restTemplateCreater) {
+        this.restTemplateCreater = restTemplateCreater;
+    }
 
     @Override
     public Request buildRegisterClientRequest(String username, String pwd) {
@@ -45,7 +62,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
         jsonBody.put("client", "de.haw.la.msp.db");
 
         HttpEntity<Map<Object, Object>> entity = new HttpEntity<>(jsonBody, headers);
-        return new RequestImpl(uri, HttpMethod.POST, entity, RegisterResponse.class);
+        return new RequestImpl(uri, HttpMethod.POST, entity, RegisterResponse.class, createRestTemplate.get());
     }
 
     @Override
@@ -58,7 +75,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
         jsonBody.put("value", value);
 
         HttpEntity<Map<Object, Object>> entity = new HttpEntity<>(jsonBody, headers);
-        return new RequestImpl(uri, HttpMethod.PUT, entity, JsonNode.class);
+        return new RequestImpl(uri, HttpMethod.PUT, entity, JsonNode.class, createRestTemplate.get());
     }
 
     @Override
@@ -66,7 +83,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
         String uri = uriPrefix + "/api/v2/values/" + id + "?token=" + token;
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        return new RequestImpl(uri, HttpMethod.GET, entity, GetValueReponse.class);
+        return new RequestImpl(uri, HttpMethod.GET, entity, GetValueReponse.class, createRestTemplate.get());
     }
 
     @Override
@@ -74,7 +91,7 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
         String uri = uriPrefix + "/api/v2/uiconfig?expand=locations&token=" + token;
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        return new RequestImpl(uri, HttpMethod.GET, entity, UIConfig.class);
+        return new RequestImpl(uri, HttpMethod.GET, entity, UIConfig.class, createRestTemplate.get());
     }
 
     @Override
@@ -82,43 +99,43 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
         String uri = uriPrefix + "/api";
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        return new RequestImpl(uri, HttpMethod.GET, entity, AvailabilityResponse.class);
+        return new RequestImpl(uri, HttpMethod.GET, entity, AvailabilityResponse.class, createRestTemplate.get());
     }
 
     @Override
     public Request buildUnregisterClientRequest(){
-        String uri = uriPrefix+"/api/v2/clients/"+token;
+        String uri = uriPrefix+ API_V_2_CLIENTS +token;
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        return new RequestImpl(uri, HttpMethod.DELETE, entity, JsonNode.class);
+        return new RequestImpl(uri, HttpMethod.DELETE, entity, JsonNode.class, createRestTemplate.get());
     }
 
     @Override
     public Request buildRegisterCallbackServerAtGiraServer(String ipCallbackServer) {
-        String uri = uriPrefix+"/api/v2/clients/"+token+"/callbacks";
+        String uri = uriPrefix+ API_V_2_CLIENTS +token+"/callbacks";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        String serviceURI = "https://"+ipCallbackServer+"/service";
-        String valueURI = "https://"+ipCallbackServer+"/value";
+        String serviceURI = HTTPS +ipCallbackServer+"/service";
+        String valueURI = HTTPS +ipCallbackServer+"/value";
 
-        Map<Object, Object> jsonBody = new LinkedHashMap();
+        Map<Object, Object> jsonBody = new LinkedHashMap<>();
         jsonBody.put("serviceCallback", serviceURI);
         jsonBody.put("valueCallback", valueURI);
         jsonBody.put("testCallbacks", true);
 
         HttpEntity<Map<Object, Object>> entity = new HttpEntity<>(jsonBody, headers);
-        return new RequestImpl(uri, HttpMethod.POST, entity, JsonNode.class);
+        return new RequestImpl(uri, HttpMethod.POST, entity, JsonNode.class, createRestTemplate.get());
     }
 
     @Override
     public Request buildUnRegisterCallbackServerAtGiraServer() {
-        String uri = uriPrefix+"/api/v2/clients/"+token+"/callbacks";
+        String uri = uriPrefix+ API_V_2_CLIENTS +token+"/callbacks";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        return new RequestImpl(uri, HttpMethod.DELETE, entity, JsonNode.class);
+        return new RequestImpl(uri, HttpMethod.DELETE, entity, JsonNode.class, createRestTemplate.get());
     }
 
     @Override
@@ -153,36 +170,36 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
     }
 
     private Request buildRegisterRequest(String ip, String token) {
-        String uri = "https://"+ip+"/register";
+        String uri = HTTPS +ip+"/register";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         String jsonBody = "[{\"token\": \""+token +"\"}]";
         HttpEntity<String> entity = new HttpEntity<>(jsonBody, headers);
-        return new RequestImpl(uri, HttpMethod.POST, entity, String.class);   
+        return new RequestImpl(uri, HttpMethod.POST, entity, String.class, createRestTemplate.get());
     }
 
     private Request buildUnregisterRequest(String ip, String token){
-        String uri = "https://"+ip+"/unregister?firebaseToken="+token;
+        String uri = HTTPS +ip+"/unregister?firebaseToken="+token;
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        return new RequestImpl(uri, HttpMethod.DELETE, entity, JsonNode.class);
+        return new RequestImpl(uri, HttpMethod.DELETE, entity, JsonNode.class, createRestTemplate.get());
     }
 
     @Override
     public Request buildAdditionalConfigRequest(String ip, AdditionalConfigs additionalConfigs) {
-        String uri = "https://"+ip+"/"+additionalConfigs.getResource();
+        String uri = HTTPS +ip+"/"+additionalConfigs.getResource();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        return new RequestImpl(uri, HttpMethod.GET, entity, additionalConfigs.getCorrespondingPOJO());
+        return new RequestImpl(uri, HttpMethod.GET, entity, additionalConfigs.getCorrespondingPOJO(), createRestTemplate.get());
     }
 
     @Override
     public void setIP(String ip) {
-        this.uriPrefix = "https://"+ip;
+        this.uriPrefix = HTTPS +ip;
     }
 }

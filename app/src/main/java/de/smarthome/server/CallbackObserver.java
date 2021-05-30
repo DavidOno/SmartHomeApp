@@ -12,7 +12,7 @@ public class CallbackObserver {
 
     private static final String TAG = "CallbackObserver";
 
-    private List<CallbackSubscriber> subscribers = new ArrayList<>();
+    private final List<CallbackSubscriber> subscribers = new ArrayList<>();
 
     public void subscribe(CallbackSubscriber subscriber){
         subscribers.add(subscriber);
@@ -27,8 +27,9 @@ public class CallbackObserver {
         subscribers.forEach(s -> s.update(input));
     }
 
-    public void notify(CallBackServiceInput input){
-        subscribers.forEach(s -> s.update(input));
-    }
+    //TODO: Check if really unsed:
+//    public void notify(CallBackServiceInput input){
+//        subscribers.forEach(s -> s.update(input));
+//    }
 
 }
