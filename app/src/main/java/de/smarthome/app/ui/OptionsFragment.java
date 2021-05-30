@@ -40,7 +40,6 @@ public class OptionsFragment extends Fragment {
         optionsViewModel = new ViewModelProvider(requireActivity()).get(OptionsViewModel.class);
     }
 
-
     private void findViewsByID(View view) {
         buttonLogout = view.findViewById(R.id.button_logout);
     }
