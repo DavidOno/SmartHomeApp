@@ -49,7 +49,7 @@ public class RoomOverviewFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        requireActivity().setTitle(roomOverviewViewModel.getSelectedLoction().getName());
+        requireActivity().setTitle(roomOverviewViewModel.getSelectedLocation().getName());
 
         recyclerViewRoom.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewRoom.setHasFixedSize(true);
@@ -57,14 +57,14 @@ public class RoomOverviewFragment extends Fragment {
         adapter = new RoomOverviewAdapter();
         recyclerViewRoom.setAdapter(adapter);
 
-        roomOverviewViewModel.getUsableRoomFunctions().observe(getViewLifecycleOwner(), new Observer<Map<Function, Function>>() {
+        roomOverviewViewModel.getFunctionMap().observe(getViewLifecycleOwner(), new Observer<Map<Function, Function>>() {
             @Override
             public void onChanged(@Nullable Map<Function, Function> functions) {
                 adapter.setFunctionList(functions, getActivity().getApplication());
             }
         });
 
-        roomOverviewViewModel.getStatusList().observe(getViewLifecycleOwner(), new Observer<Map<String, String>>() {
+        roomOverviewViewModel.getStatusUpdateMap().observe(getViewLifecycleOwner(), new Observer<Map<String, String>>() {
             @Override
             public void onChanged(Map<String, String> stringStringMap) {
                     String uid = stringStringMap.keySet().iterator().next();
@@ -74,7 +74,7 @@ public class RoomOverviewFragment extends Fragment {
         });
 
         //TODO: Check if this works
-        roomOverviewViewModel.getStatusList2().observe(getViewLifecycleOwner(), new Observer<Map<String, String>>() {
+        roomOverviewViewModel.getStatusGetValueMap().observe(getViewLifecycleOwner(), new Observer<Map<String, String>>() {
             @Override
             public void onChanged(Map<String, String> stringStringMap) {
                 for(String s : stringStringMap.keySet()){

@@ -6,36 +6,35 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import de.smarthome.app.model.configs.BoundariesConfig;
+import de.smarthome.app.repository.ConfigContainer;
 import de.smarthome.command.ResponseReactor;
-import de.smarthome.app.repository.Repository;
 
 public class ResponseReactorBoundariesConfig implements ResponseReactor {
-    private final String TAG = "ResponseReactorBoundariesConfig";
+    private static final String TAG = "ResponseReactorBoundariesConfig";
     private BoundariesConfig responseBoundariesConfig;
-    private Repository parentRepository;
+    private ConfigContainer configContainer;
 
-    public ResponseReactorBoundariesConfig(Repository parentRepository) {
-        this.parentRepository = parentRepository;
+    public ResponseReactorBoundariesConfig() {
+        this.configContainer = ConfigContainer.getInstance();
     }
-    //TODO:Rework Logs
     @Override
     public void react(ResponseEntity responseEntity) {
         try {
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
-                System.out.println("response received UIConfig");
-                System.out.println(responseEntity.getBody());
+                Log.d(TAG, "response received UIConfig");
+                Log.d(TAG, responseEntity.getBody().toString());
 
                 responseBoundariesConfig = (BoundariesConfig) responseEntity.getBody();
                 sendBoundariesConfigToRepo(responseBoundariesConfig);
 
-                Log.d(TAG, "Communication with Server possible.\nStatus: " + responseEntity.getStatusCode());
+                Log.d(TAG, "BoundaryConfig successfully retrieved.\nStatus: " + responseEntity.getStatusCode());
             } else {
-                System.out.println("error occurred");
-                System.out.println(responseEntity.getStatusCode());
-                Log.d(TAG, "Problem when trying to reach Server.\nStatus: " + responseEntity.getStatusCode());
+                Log.d(TAG, "error occurred");
+                Log.d(TAG, responseEntity.getStatusCode().toString());
+                Log.d(TAG, "Problem when trying get BoundaryConfig.\nStatus: " + responseEntity.getStatusCode());
             }
         }catch(Exception e){
-            Log.d(TAG, "Exerption: " + e.toString());
+            Log.d(TAG, "Exception: " + e.toString());
         }
     }
 
@@ -44,6 +43,6 @@ public class ResponseReactorBoundariesConfig implements ResponseReactor {
     }
 
     public void sendBoundariesConfigToRepo(BoundariesConfig newBoundariesConfig){
-        parentRepository.setBoundaryConfig(newBoundariesConfig);
+        configContainer.setBoundaryConfig(newBoundariesConfig);
     }
 }

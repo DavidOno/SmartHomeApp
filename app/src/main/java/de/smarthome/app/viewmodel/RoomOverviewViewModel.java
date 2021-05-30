@@ -13,7 +13,7 @@ import de.smarthome.app.model.Location;
 import de.smarthome.app.repository.Repository;
 
 public class RoomOverviewViewModel  extends AndroidViewModel {
-    private  final String TAG = "RoomOverviewViewModel";
+    private static final String TAG = "RoomOverviewViewModel";
     private Repository repository;
 
     public RoomOverviewViewModel(@NonNull Application application)  {
@@ -22,36 +22,27 @@ public class RoomOverviewViewModel  extends AndroidViewModel {
         repository = Repository.getInstance(application);
     }
 
-    public LiveData<Map<Function, Function>> getUsableRoomFunctions(){
-        return repository.getFunctionList();
+    public LiveData<Map<Function, Function>> getFunctionMap(){
+        return repository.getFunctionMap();
     }
 
-    public LiveData<Map<Function, Function>> getRoomStatusFunctions(){
-        return repository.getRoomStatusFunctions();
-    }
-
-    public boolean isChannelInputOnlyBinary(Function function){
-        return repository.getSmartHomeChannelConfig().isFirstDataPointBinary(function);
-    }
-
-    public void requestSetValue(String ID, String value){
-        repository.requestSetValue(ID, value);
+    public void requestSetValue(String id, String value){
+        repository.requestSetValue(id, value);
     }
 
     public void setSelectedFunction(Function function){
         repository.setSelectedFunction(function);
     }
 
-    public LiveData<Map<String, String>> getStatusList(){
-        return repository.getStatusList();
+    public LiveData<Map<String, String>> getStatusUpdateMap(){
+        return repository.getStatusUpdateMap();
     }
 
-    public Location getSelectedLoction(){
+    public Location getSelectedLocation(){
         return repository.getSelectedLocation();
     }
 
-    public LiveData<Map<String, String>> getStatusList2(){
-        return repository.statusList2;
+    public LiveData<Map<String, String>> getStatusGetValueMap(){
+        return repository.getStatusGetValueMap();
     }
-
 }

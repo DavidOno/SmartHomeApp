@@ -62,8 +62,8 @@ public class OptionsFragment extends Fragment {
 
     private void test(){
         toastUtility.prepareToast("User Credential were deleted!");
+        optionsViewModel.getDataFromGoogleAndDelete();
         navigateToLoginFragment();
-        deleteCredential(optionsViewModel.getUserCredential());
     }
 
     private void navigateToLoginFragment() {

@@ -73,7 +73,7 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
         //TODO: Check if the server response is for the status method if not function has to get the status id
         for(Datapoint dp : dataPointList){
             if(dataPointMap.get(dp) != null){
-                repository.requestGetValue(dataPointMap.get(dp).getID());
+                //repository.requestGetValue(dataPointMap.get(dp).getID());
             }
         }
     }

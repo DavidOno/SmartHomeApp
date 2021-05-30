@@ -12,20 +12,28 @@ import java.util.List;
 import de.smarthome.app.model.Location;
 import de.smarthome.app.repository.Repository;
 
+import android.app.Application;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+
+import java.util.List;
+
+import de.smarthome.app.model.Location;
+import de.smarthome.app.repository.Repository;
+
 public class HomeOverviewViewModel extends AndroidViewModel {
-    private  final String TAG = "HomeOverviewViewmodel";
-    private  MutableLiveData<List<Location>> roomSet;
-    private  Repository repository;
+    private static final String TAG = "HomeOverviewViewmodel";
+    private Repository repository;
 
     public HomeOverviewViewModel(@NonNull Application application)  {
         super(application);
-
         repository = Repository.getInstance(application);
-        roomSet = repository.getLocationList();
     }
 
-    public LiveData<List<Location>> getRooms(){
-        return roomSet;
+    public LiveData<List<Location>> getLocationList(){
+        return repository.getLocationList();
     }
 
     public void setSelectedLocation(Location location){

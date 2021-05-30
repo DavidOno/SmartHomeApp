@@ -79,4 +79,12 @@ public class UIConfig {
             getLocation(location, result, roomId);
         }
     }
+
+    public List<Location> getAllLocations(){
+        List<Location> resultList = locations;
+        for(Location loc : locations){
+            loc.getAllChildrenFromLocation(resultList);
+        }
+        return resultList;
+    }
 }

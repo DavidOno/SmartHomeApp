@@ -58,14 +58,14 @@ public class RegulationFragment extends Fragment {
         adapter = new RegulationAdapter();
         recyclerViewRegulation.setAdapter(adapter);
 
-        regulationViewModel.getDataPoints().observe(getViewLifecycleOwner(), new Observer<Map<Datapoint, Datapoint>>() {
+        regulationViewModel.getDataPointMap().observe(getViewLifecycleOwner(), new Observer<Map<Datapoint, Datapoint>>() {
             @Override
             public void onChanged(Map<Datapoint, Datapoint> dataPoints) {
                 adapter.setDataPointList(dataPoints, getActivity().getApplication());
             }
         });
 
-        regulationViewModel.getStatusList().observe(getViewLifecycleOwner(), new Observer<Map<String, String>>() {
+        regulationViewModel.getStatusUpdateMap().observe(getViewLifecycleOwner(), new Observer<Map<String, String>>() {
             @Override
             public void onChanged(Map<String, String> stringStringMap) {
                 //TODO: REWORK LOOKS TERRIBLE!
@@ -75,7 +75,7 @@ public class RegulationFragment extends Fragment {
             }
         });
 
-        regulationViewModel.getTest().observe(getViewLifecycleOwner(), new Observer<Map<Datapoint, BoundaryDataPoint>>() {
+        regulationViewModel.getBoundaryMap().observe(getViewLifecycleOwner(), new Observer<Map<Datapoint, BoundaryDataPoint>>() {
             @Override
             public void onChanged(Map<Datapoint, BoundaryDataPoint> boundaryMap) {
                 adapter.setBoundaryList(boundaryMap);

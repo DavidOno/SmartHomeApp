@@ -71,7 +71,7 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
         }
         if(!requestList.isEmpty()){
             if(requestList.size() == 1){
-                repository.requestGetValue(requestList.get(0));
+                //repository.requestGetValue(requestList.get(0));
             }else{
                 //repository.requestGetValue2(requestList);
             }
@@ -186,10 +186,6 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
 
     public Function getFunctionAt(int position) {
         return functionList.get(position);
-    }
-
-    public void requestGetValue(String uID){
-        repository.requestGetValue(uID);
     }
 
     public interface OnItemClickListener {
