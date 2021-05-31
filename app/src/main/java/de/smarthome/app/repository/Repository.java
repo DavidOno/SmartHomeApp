@@ -1,6 +1,7 @@
 package de.smarthome.app.repository;
 
 import android.app.Application;
+import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -54,6 +55,9 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         return INSTANCE;
     }
 
+    public void test(){
+        configContainer.fillWithDummyValueAllConfigs();
+    }
 
     public void setSelectedFunction(Function function) {
         configContainer.setSelectedFunction(function);
