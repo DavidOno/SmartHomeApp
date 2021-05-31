@@ -51,8 +51,6 @@ public class ConfigContainer {
     public static ConfigContainer getInstance() {
         if (instance == null) {
             instance = new ConfigContainer();
-            //TODO: Remove after testing!!
-            instance.fillWithDummyValueAllConfigs();
         }
         return instance;
     }
@@ -269,7 +267,7 @@ public class ConfigContainer {
 
 
 
-    private void fillWithDummyValueAllConfigs() {
+    public void fillWithDummyValueAllConfigs() {
         fillWithDummyValuesUIConfig();
         fillWithDummyValuesChannelConfig();
         fillWithDummyValueBeaconConfig();
