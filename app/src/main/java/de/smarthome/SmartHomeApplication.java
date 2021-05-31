@@ -67,6 +67,8 @@ public class SmartHomeApplication extends AppCompatActivity {
 
         checkBeaconPermissions();
         repository = Repository.getInstance(this.getApplication());
+        //TODO: Remove after Testing
+        repository.test();
 
         toastUtility = ToastUtility.getInstance();
         toastUtility.getNewToast().observe(this, aBoolean -> {
