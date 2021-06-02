@@ -1,7 +1,6 @@
 package de.smarthome.app.repository;
 
 import android.app.Application;
-import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
