@@ -18,6 +18,8 @@ public class HomeOverviewViewModel extends AndroidViewModel {
     public HomeOverviewViewModel(@NonNull Application application)  {
         super(application);
         repository = Repository.getInstance(application);
+        //TODO: Remove after Testing
+        repository.test();
     }
 
     public LiveData<List<Location>> getLocationList(){
