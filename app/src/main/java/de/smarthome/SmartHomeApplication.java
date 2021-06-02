@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
@@ -20,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavGraph;
 import androidx.navigation.NavInflater;
@@ -33,19 +33,17 @@ import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import de.smarthome.app.model.Location;
-import de.smarthome.app.repository.Repository;
 import de.smarthome.app.ui.HomeOverviewFragment;
 import de.smarthome.app.ui.LoginFragment;
 import de.smarthome.app.ui.OptionsFragment;
 import de.smarthome.app.ui.RegulationFragment;
 import de.smarthome.app.ui.RoomOverviewFragment;
 import de.smarthome.app.utility.ToastUtility;
+import de.smarthome.app.viewmodel.SmartHomeApplicationViewModel;
 
 public class SmartHomeApplication extends AppCompatActivity {
     public static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(4);
@@ -56,7 +54,7 @@ public class SmartHomeApplication extends AppCompatActivity {
     private NavController navController;
     private NavHostFragment navHostFragment;
 
-    private Repository repository;
+    private SmartHomeApplicationViewModel viewModel;
     private ToastUtility toastUtility;
 
     @Override
@@ -66,9 +64,8 @@ public class SmartHomeApplication extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         checkBeaconPermissions();
-        repository = Repository.getInstance(this.getApplication());
-        //TODO: Remove after Testing
-        repository.test();
+
+        viewModel = new ViewModelProvider(this).get(SmartHomeApplicationViewModel.class);
 
         toastUtility = ToastUtility.getInstance();
         toastUtility.getNewToast().observe(this, aBoolean -> {
@@ -77,10 +74,10 @@ public class SmartHomeApplication extends AppCompatActivity {
             }
         });
 
-        repository.checkBeacon().observe(this, aBoolean -> {
+        viewModel.checkBeacon().observe(this, aBoolean -> {
             if(aBoolean){
-                repository.initBeaconCheck();
-                startBeaconDialog(repository.getBeaconLocation());
+                viewModel.initBeaconCheck();
+                startBeaconDialog(viewModel.getBeaconLocation());
             }
         });
 
@@ -97,7 +94,7 @@ public class SmartHomeApplication extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        repository.unsubscribeFromEverything();
+        viewModel.unsubscribeFromEverything();
         toastUtility.prepareToast("Everything got unsubscribed!");
         super.onDestroy();
     }
@@ -165,7 +162,7 @@ public class SmartHomeApplication extends AppCompatActivity {
 
         buttonYes.setOnClickListener(v -> {
             dialog.dismiss();
-            repository.confirmBeacon();
+            viewModel.confirmBeacon();
             setStartFragment(R.id.roomOverviewFragment);
         });
 
@@ -231,7 +228,7 @@ public class SmartHomeApplication extends AppCompatActivity {
     private void onCredentialRetrieved(Credential credential) {
         String accountType = credential.getAccountType();
         if (accountType == null) {
-            repository.requestRegisterUser(credential);
+            viewModel.requestRegisterUser(credential);
             setStartFragment(R.id.HomeOverviewFragment);
         }
     }
