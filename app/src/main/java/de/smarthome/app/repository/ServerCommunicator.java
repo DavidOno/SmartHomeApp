@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.smarthome.SmartHomeApplication;
-import de.smarthome.app.model.responses.GetValueReponse;
+import de.smarthome.app.model.responses.GetValueResponse;
 import de.smarthome.app.repository.responsereactor.ResponseReactorBeaconConfig;
 import de.smarthome.app.repository.responsereactor.ResponseReactorBoundariesConfig;
 import de.smarthome.app.repository.responsereactor.ResponseReactorCallbackServer;
@@ -50,7 +50,7 @@ import de.smarthome.command.impl.SingleReactorCommandChainImpl;
 import de.smarthome.command.impl.UIConfigCommand;
 import de.smarthome.command.impl.UnRegisterCallback;
 import de.smarthome.command.impl.UnRegisterCallbackServerAtGiraServer;
-import de.smarthome.server.NoSSLRestTemplateCreater;
+import de.smarthome.server.NoSSLRestTemplateCreator;
 import de.smarthome.server.ServerHandler;
 import de.smarthome.server.gira.GiraServerHandler;
 
@@ -60,7 +60,7 @@ public class ServerCommunicator {
     private ToastUtility toastUtility;
 
     private static final String IP_OF_CALLBACK_SERVER = "192.168.132.219:8443";
-    private final ServerHandler serverHandler = new GiraServerHandler(new HomeServerCommandInterpreter(new NoSSLRestTemplateCreater()));
+    private final ServerHandler serverHandler = new GiraServerHandler(new HomeServerCommandInterpreter(new NoSSLRestTemplateCreator()));
 
     //Needed for Relogin after Update/Delete of Logindata in Optionfragment
     private MutableLiveData<Boolean> loginRequestStatus = new MutableLiveData<>();
@@ -187,7 +187,7 @@ public class ServerCommunicator {
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
                 Log.d(TAG, "response received");
                 Log.d(TAG, responseEntity.getBody().toString());
-                GetValueReponse valueReponse = (GetValueReponse) responseEntity.getBody();
+                GetValueResponse valueReponse = (GetValueResponse) responseEntity.getBody();
 
                 String value = valueReponse.getValues().get(0).getValue();
                 String uID = valueReponse.getValues().get(0).getUid();
