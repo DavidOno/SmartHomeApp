@@ -11,9 +11,10 @@ public class BeaconMonitoring {
     private BeaconRanging ranging;
     private BeaconApplication application;
 
-    public BeaconMonitoring(Context context, BeaconApplication application, UIConfig newUIConfig, BeaconLocations newBeaconConfig) {
+    public BeaconMonitoring(Context context, BeaconApplication application, UIConfig newUIConfig,
+                            BeaconLocations newBeaconConfig, BeaconManagerCreator beaconManagerCreator) {
         this.context = context;
-        this.ranging = new BeaconRanging(context, newUIConfig, newBeaconConfig);
+        this.ranging = new BeaconRanging(context, newUIConfig, newBeaconConfig, beaconManagerCreator);
         this.application = application;
     }
 

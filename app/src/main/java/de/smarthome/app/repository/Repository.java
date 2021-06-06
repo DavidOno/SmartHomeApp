@@ -22,6 +22,7 @@ import de.smarthome.app.model.Location;
 import de.smarthome.app.model.responses.CallBackServiceInput;
 import de.smarthome.app.model.responses.CallbackValueInput;
 import de.smarthome.app.model.responses.ServiceEvent;
+import de.smarthome.beacons.DefaultBeaconManagerCreator;
 import de.smarthome.server.CallbackSubscriber;
 import de.smarthome.server.MyFirebaseMessagingService;
 
@@ -101,7 +102,8 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
 
     public void initBeaconObserver() {
         beaconObserver = new BeaconObserverImplementation(parentApplication, parentApplication.getApplicationContext(),
-                configContainer.getSmartHomeUiConfig(), configContainer.getSmartHomeBeaconLocations());
+                configContainer.getSmartHomeUiConfig(), configContainer.getSmartHomeBeaconLocations(),
+                new DefaultBeaconManagerCreator());
         beaconObserver.subscribe(this);
         beaconObserver.init();
         initBeaconCheck();

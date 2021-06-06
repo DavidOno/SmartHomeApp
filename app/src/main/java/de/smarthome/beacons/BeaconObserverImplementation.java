@@ -14,11 +14,14 @@ public class BeaconObserverImplementation implements BeaconObserver {
     private Location currentLocation = null;
     private BeaconMonitoring beaconMonitoring;
 
-    public BeaconObserverImplementation(Application application, Context context, UIConfig newUIConfig, BeaconLocations newBeaconConfig) {
-        BeaconApplication beaconApplication = new BeaconApplication(application);
+    public BeaconObserverImplementation(Application application, Context context,
+                                        UIConfig newUIConfig, BeaconLocations newBeaconConfig,
+                                        BeaconManagerCreator beaconManagerCreator) {
+        BeaconApplication beaconApplication = new BeaconApplication(application, beaconManagerCreator);
         beaconApplication.onCreate();
 
-        beaconMonitoring = new BeaconMonitoring(context, beaconApplication, newUIConfig, newBeaconConfig);
+        beaconMonitoring = new BeaconMonitoring(context, beaconApplication, newUIConfig,
+                newBeaconConfig, beaconManagerCreator);
     }
 
     public void init() {

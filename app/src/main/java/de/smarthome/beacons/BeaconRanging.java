@@ -22,9 +22,10 @@ public class BeaconRanging implements BeaconConsumer {
     private BeaconLocationManager beaconLocationManager;
     private Context context;
 
-    public BeaconRanging(Context context, UIConfig newUIConfig, BeaconLocations newBeaconConfig) {
+    public BeaconRanging(Context context, UIConfig newUIConfig, BeaconLocations newBeaconConfig,
+                         BeaconManagerCreator beaconManagerCreator) {
         this.context = context;
-        beaconManager = BeaconManager.getInstanceForApplication(context);
+        beaconManager = beaconManagerCreator.create(context);
         beaconLocationManager = new BeaconLocationManager(newUIConfig, newBeaconConfig);
     }
 

@@ -12,16 +12,18 @@ import org.altbeacon.beacon.startup.RegionBootstrap;
 
 public class BeaconApplication implements BootstrapNotifier {
     private static final String TAG = "BeaconApplication";
+    private final BeaconManagerCreator beaconManagerCreator;
     private RegionBootstrap regionBootstrap;
     private BackgroundPowerSaver backgroundPowerSaver;
     private Context context;
 
-    public BeaconApplication(Context context) {
+    public BeaconApplication(Context context, BeaconManagerCreator beaconManagerCreator) {
         this.context = context;
+        this.beaconManagerCreator = beaconManagerCreator;
     }
 
     public void onCreate() {
-        BeaconManager beaconManager = BeaconManager.getInstanceForApplication(context);
+        BeaconManager beaconManager = beaconManagerCreator.create(context);
 
         beaconManager.getBeaconParsers().clear();
         beaconManager.getBeaconParsers().add(new BeaconParser().
