@@ -4,11 +4,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
-public class GetValueReponse {
+public class GetValueResponse {
 
     private final List<UID_Value> values;
 
-    public GetValueReponse(@JsonProperty("values") List<UID_Value> values) {
+    public GetValueResponse(@JsonProperty("values") List<UID_Value> values) {
         this.values = values;
     }
 

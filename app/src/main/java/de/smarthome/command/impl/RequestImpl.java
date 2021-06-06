@@ -84,7 +84,7 @@ public class RequestImpl implements Request {
     private ResponseEntity getResponseEntity(Future<ResponseEntity> future) {
         ResponseEntity responseEntity = null;
         try {
-             responseEntity = future.get(5, TimeUnit.SECONDS);
+             responseEntity = future.get(5, TimeUnit.MINUTES);
         } catch (ExecutionException | InterruptedException | TimeoutException e) {
             Log.d(TAG, "Request took too long");
             e.printStackTrace();

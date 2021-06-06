@@ -97,9 +97,12 @@ dependencies {
     implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
 
 
-    testImplementation "org.junit.jupiter:junit-jupiter-api:5.3.2"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.3.2"
-    testImplementation "org.junit.jupiter:junit-jupiter-params:5.3.2"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:5.7.0"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.7.0"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:5.7.0"
+    testImplementation group: 'org.junit.vintage', name: 'junit-vintage-engine', version: '5.8.0-M1'
+    testImplementation group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.8.0-M1'
+
     implementation group: 'com.squareup.assertj', name: 'assertj-android', version: '1.2.0'
     testCompile group: 'org.mockito', name: 'mockito-core', version: '3.9.0'
     androidTestCompile group: 'org.mockito', name: 'mockito-android', version: '3.9.0'

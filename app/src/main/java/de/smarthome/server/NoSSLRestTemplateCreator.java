@@ -10,7 +10,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
 import java.security.KeyManagementException;
@@ -19,7 +18,7 @@ import java.security.NoSuchAlgorithmException;
 
 import javax.net.ssl.SSLContext;
 
-public class NoSSLRestTemplateCreater implements RestTemplateCreater {
+public class NoSSLRestTemplateCreator implements RestTemplateCreater {
     private static final String TAG = "NoSSLRestTemplateCreater";
 
     @Override
