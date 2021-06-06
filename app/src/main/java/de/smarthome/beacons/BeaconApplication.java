@@ -27,6 +27,10 @@ public class BeaconApplication implements BootstrapNotifier {
         beaconManager.getBeaconParsers().add(new BeaconParser().
                 setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24"));
 
+        beaconManager.setEnableScheduledScanJobs(false);
+        beaconManager.setBackgroundBetweenScanPeriod(0);
+        beaconManager.setBackgroundScanPeriod(1100);
+
         BeaconManager.setDebug(true);
 
         Log.d(TAG, "setting up background monitoring for beacons and power saving");
