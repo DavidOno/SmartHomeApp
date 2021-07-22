@@ -95,7 +95,7 @@ public class SmartHomeApplication extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         viewModel.unsubscribeFromEverything();
-        toastUtility.prepareToast("Everything got unsubscribed!");
+        //toastUtility.prepareToast("Everything got unsubscribed!");
         super.onDestroy();
     }
 
