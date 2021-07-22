@@ -33,8 +33,9 @@ public class BeaconLocationManager {
         updateSignalsStrengths(updatedBeaconSignals);
         nearestBeacon = retrieveBeaconIDWithMaxAverageSignalStrength(signalStrengthAvg);
         //Log.d(TAG, "nearestBeacon " + nearestBeacon.toString());
-        System.out.println("LM::NEARESTBEACON " + nearestBeacon.toString());
-
+        System.out.println("NEARESTBEACON::: " + nearestBeacon.toString());
+        System.out.println("RSSI_AVG::: " + signalStrengthAvg.toString());
+        System.out.println("LIST::: " + beacons2SignalStrength.toString());
         Optional<Location> currentLocation = getLocation(nearestBeacon);
 
         beaconObserver.updateLocation(currentLocation);
@@ -44,6 +45,7 @@ public class BeaconLocationManager {
         for(Map.Entry<BeaconID, List<Integer>> entry : beacons2SignalStrength.entrySet()){
             updateKnownSignalStrengths(updatedBeaconSignals, entry);
         }
+
         addNewSignalStrengths(updatedBeaconSignals);
     }
 
@@ -88,7 +90,7 @@ public class BeaconLocationManager {
     }
 
     private BeaconID retrieveBeaconIDWithMaxAverageSignalStrength(Map<BeaconID, Integer> signalStrengthAvg) {
-        return Collections.min(signalStrengthAvg.entrySet(), (entry1, entry2) -> entry1.getValue() - entry2.getValue()).getKey();
+        return Collections.max(signalStrengthAvg.entrySet(), (entry1, entry2) -> entry1.getValue() - entry2.getValue()).getKey();
     }
 
     private List<Integer> addSignalStrength(BeaconID beaconID, Integer signalStrength, List<Integer> signalStrenghts) {
