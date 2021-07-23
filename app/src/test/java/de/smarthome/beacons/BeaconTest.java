@@ -52,7 +52,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BeaconTest {
-    @Test
+    /*@Test
     public void testAvailabilityCommand(){
         BeaconManagerCreator mockedBeaconManagerCreator = mock(BeaconManagerCreator.class);
         BeaconManager mockedBeaconManager = mock(BeaconManager.class);
@@ -83,5 +83,5 @@ public class BeaconTest {
 
         assertThat(beaconObserver.getCurrentLocation()).isEqualToComparingFieldByField(home);
         verify(mockedSubscriber, times(1)).update(home);
-    }
+    }*/
 }
