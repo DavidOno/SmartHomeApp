@@ -50,7 +50,7 @@ import static org.mockito.Mockito.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
+//@RunWith(MockitoJUnitRunner.class)
 public class BeaconTest {
     /*@Test
     public void testAvailabilityCommand(){
