@@ -22,7 +22,7 @@ public class ResponseReactorCallbackServer implements ResponseReactor {
         try {
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
                 Log.d(TAG, "response received " + TAG);
-                //Log.d(TAG, responseEntity.getBody().toString());
+                Log.d(TAG, responseEntity.getBody().toString());
 
                 Log.d(TAG, "Registered CallbackServer.\nStatus: " + responseEntity.getStatusCode());
 
