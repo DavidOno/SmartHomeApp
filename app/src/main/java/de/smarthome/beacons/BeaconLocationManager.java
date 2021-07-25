@@ -2,6 +2,8 @@ package de.smarthome.beacons;
 
 import android.util.Log;
 
+import org.altbeacon.beacon.Beacon;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,14 +26,20 @@ public class BeaconLocationManager {
     private BeaconLocations locationConfig;
     private BeaconObserver beaconObserver;
 
+//    private static Map<BeaconID, List<Integer>> storage = new HashMap<>();
+
     public BeaconLocationManager(UIConfig newUIConfig, BeaconLocations newBeaconConfig) {
         this.uiConfig = newUIConfig;
         this.locationConfig = newBeaconConfig;
     }
 
     void addNewBeaconStatus(Map<BeaconID, Integer> updatedBeaconSignals) {
-        updateSignalsStrengths(updatedBeaconSignals);
-        nearestBeacon = retrieveBeaconIDWithMaxAverageSignalStrength(signalStrengthAvg);
+//        store(updatedBeaconSignals);
+//        System.out.println("BEACONLIST:::" + storage);
+
+          updateSignalsStrengths(updatedBeaconSignals);
+//        nearestBeacon = retrieveBeaconIDWithMaxAverageSignalStrength(signalStrengthAvg);
+        nearestBeacon = retrieveBeaconIdWithMaxRssi(updatedBeaconSignals);
         //Log.d(TAG, "nearestBeacon " + nearestBeacon.toString());
         System.out.println("NEARESTBEACON::: " + nearestBeacon.toString());
         System.out.println("RSSI_AVG::: " + signalStrengthAvg.toString());
@@ -40,6 +48,18 @@ public class BeaconLocationManager {
 
         beaconObserver.updateLocation(currentLocation);
         }
+
+//    private void store(Map<BeaconID, Integer> updatedBeaconSignals) {
+//        for(Map.Entry<BeaconID, Integer> entry : updatedBeaconSignals.entrySet()){
+//            if(storage.get(entry.getKey()) == null)
+//                storage.put(entry.getKey(), new ArrayList<>());
+//            storage.get(entry.getKey()).add(entry.getValue());
+//        }
+//    }
+
+    private BeaconID retrieveBeaconIdWithMaxRssi(Map<BeaconID, Integer> updatedBeaconSignals) {
+        return updatedBeaconSignals.entrySet().stream().max((e1, e2) -> e1.getValue() > e2.getValue() ? 1:-1).get().getKey();
+    }
 
     private void updateSignalsStrengths(Map<BeaconID, Integer> updatedBeaconSignals) {
         for(Map.Entry<BeaconID, List<Integer>> entry : beacons2SignalStrength.entrySet()){

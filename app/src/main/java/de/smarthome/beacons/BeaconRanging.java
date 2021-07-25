@@ -11,6 +11,7 @@ import org.altbeacon.beacon.BeaconConsumer;
 import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.RangeNotifier;
 import org.altbeacon.beacon.Region;
+import org.altbeacon.beacon.service.RunningAverageRssiFilter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +26,8 @@ public class BeaconRanging implements BeaconConsumer {
     public BeaconRanging(Context context, UIConfig newUIConfig, BeaconLocations newBeaconConfig,
                          BeaconManagerCreator beaconManagerCreator) {
         this.context = context;
+        BeaconManager.setRssiFilterImplClass(RunningAverageRssiFilter.class);
+        RunningAverageRssiFilter.setSampleExpirationMilliseconds(5000);
         beaconManager = beaconManagerCreator.create(context);
         beaconLocationManager = new BeaconLocationManager(newUIConfig, newBeaconConfig);
     }
