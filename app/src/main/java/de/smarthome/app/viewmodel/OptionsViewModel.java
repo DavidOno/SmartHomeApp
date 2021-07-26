@@ -17,10 +17,12 @@ import de.smarthome.app.utility.ToastUtility;
 public class OptionsViewModel extends AndroidViewModel {
     private static final String TAG = "OptionsViewModel";
     private ToastUtility toastUtility;
+    private Repository repository;
 
     public OptionsViewModel(@NonNull Application application) {
         super(application);
         toastUtility = ToastUtility.getInstance();
+        repository = Repository.getInstance(application);
     }
 
     private void deleteCredential(Credential credential){
@@ -29,12 +31,14 @@ public class OptionsViewModel extends AndroidViewModel {
         credentialsClient.delete(credential).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 toastUtility.prepareToast("Login data deleted");
+
             }
         });
 
     }
 
     public void getDataFromGoogleAndDelete() {
+        repository.updateLoginDataStatus(false);
         CredentialRequest credentialRequest = new CredentialRequest.Builder()
                 .setPasswordLoginSupported(true)
                 .build();
