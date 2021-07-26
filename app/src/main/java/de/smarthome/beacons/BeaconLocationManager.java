@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 import de.smarthome.app.model.Location;
 import de.smarthome.app.model.UIConfig;
+import de.smarthome.beacons.nearest.RetrievingStrategy;
 
 public class BeaconLocationManager {
     private static final String TAG = "BeaconLocationManager";
@@ -25,37 +26,29 @@ public class BeaconLocationManager {
     private UIConfig uiConfig;
     private BeaconLocations locationConfig;
     private BeaconObserver beaconObserver;
+    private RetrievingStrategy retrievingStrategy;
 
-//    private static Map<BeaconID, List<Integer>> storage = new HashMap<>();
-
-    public BeaconLocationManager(UIConfig newUIConfig, BeaconLocations newBeaconConfig) {
+    public BeaconLocationManager(UIConfig newUIConfig, BeaconLocations newBeaconConfig, RetrievingStrategy retrievingStrategy) {
         this.uiConfig = newUIConfig;
         this.locationConfig = newBeaconConfig;
+        this.retrievingStrategy = retrievingStrategy;
     }
 
-    void addNewBeaconStatus(Map<BeaconID, Integer> updatedBeaconSignals) {
-//        store(updatedBeaconSignals);
-//        System.out.println("BEACONLIST:::" + storage);
-
-          updateSignalsStrengths(updatedBeaconSignals);
-//        nearestBeacon = retrieveBeaconIDWithMaxAverageSignalStrength(signalStrengthAvg);
-        nearestBeacon = retrieveBeaconIdWithMaxRssi(updatedBeaconSignals);
-        //Log.d(TAG, "nearestBeacon " + nearestBeacon.toString());
-        System.out.println("NEARESTBEACON::: " + nearestBeacon.toString());
-        System.out.println("RSSI_AVG::: " + signalStrengthAvg.toString());
-        System.out.println("LIST::: " + beacons2SignalStrength.toString());
-        Optional<Location> currentLocation = getLocation(nearestBeacon);
-
-        beaconObserver.updateLocation(currentLocation);
+    /**
+     *
+     * @param updatedBeaconSignals
+     */
+    void updateCurrentLocation(Map<BeaconID, Integer> updatedBeaconSignals) {
+        System.out.println("UPDATE:"+updatedBeaconSignals);
+        nearestBeacon = retrievingStrategy.getNearest(updatedBeaconSignals);
+        if(nearestBeacon != null) {
+            System.out.println("NEARESTBEACON::: " + nearestBeacon.toString());
+            Optional<Location> currentLocation = getLocation(nearestBeacon);
+            beaconObserver.updateLocation(currentLocation);
+        }else{
+            System.out.println("NEARESTBEACON::: no nearest beacon found");
         }
-
-//    private void store(Map<BeaconID, Integer> updatedBeaconSignals) {
-//        for(Map.Entry<BeaconID, Integer> entry : updatedBeaconSignals.entrySet()){
-//            if(storage.get(entry.getKey()) == null)
-//                storage.put(entry.getKey(), new ArrayList<>());
-//            storage.get(entry.getKey()).add(entry.getValue());
-//        }
-//    }
+    }
 
     private BeaconID retrieveBeaconIdWithMaxRssi(Map<BeaconID, Integer> updatedBeaconSignals) {
         return updatedBeaconSignals.entrySet().stream().max((e1, e2) -> e1.getValue() > e2.getValue() ? 1:-1).get().getKey();

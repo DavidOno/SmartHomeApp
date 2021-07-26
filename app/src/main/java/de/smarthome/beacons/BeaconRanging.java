@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.smarthome.app.model.UIConfig;
+import de.smarthome.beacons.nearest.ThresholderStrategy;
 
 public class BeaconRanging implements BeaconConsumer {
     private final BeaconManager beaconManager;
@@ -29,7 +30,7 @@ public class BeaconRanging implements BeaconConsumer {
         BeaconManager.setRssiFilterImplClass(RunningAverageRssiFilter.class);
         RunningAverageRssiFilter.setSampleExpirationMilliseconds(5000);
         beaconManager = beaconManagerCreator.create(context);
-        beaconLocationManager = new BeaconLocationManager(newUIConfig, newBeaconConfig);
+        beaconLocationManager = new BeaconLocationManager(newUIConfig, newBeaconConfig, new ThresholderStrategy());
     }
 
     public void onResume() {
@@ -56,7 +57,7 @@ public class BeaconRanging implements BeaconConsumer {
                 for (Beacon b : beaconsArray) {
                     beaconsOverview.put(new BeaconID(b.getId1(), b.getId2(), b.getId3()), b.getRssi());
                 }
-                beaconLocationManager.addNewBeaconStatus(beaconsOverview);
+                beaconLocationManager.updateCurrentLocation(beaconsOverview);
             }
         };
 
