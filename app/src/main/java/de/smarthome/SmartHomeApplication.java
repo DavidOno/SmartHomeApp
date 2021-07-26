@@ -57,6 +57,8 @@ public class SmartHomeApplication extends AppCompatActivity {
     private SmartHomeApplicationViewModel viewModel;
     private ToastUtility toastUtility;
 
+    private boolean beaconDialogShown;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +66,7 @@ public class SmartHomeApplication extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         checkBeaconPermissions();
+        beaconDialogShown = false;
 
         viewModel = new ViewModelProvider(this).get(SmartHomeApplicationViewModel.class);
 
@@ -77,7 +80,10 @@ public class SmartHomeApplication extends AppCompatActivity {
         viewModel.checkBeacon().observe(this, aBoolean -> {
             if(aBoolean){
                 viewModel.initBeaconCheck();
-                startBeaconDialog(viewModel.getBeaconLocation());
+                if(!beaconDialogShown){
+                    beaconDialogShown = true;
+                    startBeaconDialog(viewModel.getBeaconLocation());
+                }
             }
         });
 
@@ -166,6 +172,7 @@ public class SmartHomeApplication extends AppCompatActivity {
         });
 
         buttonNo.setOnClickListener(v -> dialog.dismiss());
+        beaconDialogShown = false;
     }
 
     private void setStartFragment(int destinationFragment) {

@@ -5,18 +5,19 @@ import android.util.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import de.smarthome.app.repository.Repository;
 import de.smarthome.app.repository.ServerCommunicator;
 import de.smarthome.command.ResponseReactor;
 import de.smarthome.app.utility.ToastUtility;
 
 public class ResponseReactorClient implements ResponseReactor {
     private static final String TAG = "ResponseReactorClient";
-    private ServerCommunicator serverCommunicator;
+    private Repository repository;
 
     private ToastUtility toastUtility;
 
     public ResponseReactorClient() {
-        this.serverCommunicator = ServerCommunicator.getInstance(null);
+        this.repository = Repository.getInstance(null);
         this.toastUtility = ToastUtility.getInstance();
     }
 
@@ -28,14 +29,14 @@ public class ResponseReactorClient implements ResponseReactor {
                 Log.d(TAG, responseEntity.getBody().toString());
 
                 Log.d(TAG, "No Problems when registering Client at Gira.\nStatus: " + responseEntity.getStatusCode());
-                serverCommunicator.updateLoginDataStatus(true);
+                repository.updateLoginDataStatus(true);
 
             } else {
                 Log.d(TAG, "error occurred");
                 Log.d(TAG, responseEntity.getStatusCode().toString());
 
                 Log.d(TAG, "Problem when registering Client at Gira.\nStatus: " + responseEntity.getStatusCode());
-                serverCommunicator.updateLoginDataStatus(false);
+                repository.updateLoginDataStatus(false);
             }
         }catch(Exception e){
             Log.d(TAG, "Exception: " + e.toString());

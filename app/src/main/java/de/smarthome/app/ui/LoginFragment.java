@@ -78,6 +78,9 @@ public class LoginFragment extends Fragment {
     }
 
     public Credential buildCredential(String userName, String pwd) {
+        if(userName == null || pwd == null){
+            throw new IllegalArgumentException();
+        }
         return new Credential.Builder(userName)
                 .setPassword(pwd)
                 .build();
