@@ -59,6 +59,10 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         configContainer.fillWithDummyValueAllConfigs();
     }
 
+    public void updateLoginDataStatus(boolean update){
+        serverCommunicator.updateLoginDataStatus(update);
+    }
+
     public void setSelectedFunction(Function function) {
         configContainer.setSelectedFunction(function);
     }
