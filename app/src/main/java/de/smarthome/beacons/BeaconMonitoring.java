@@ -7,9 +7,9 @@ import org.altbeacon.beacon.BeaconManager;
 import de.smarthome.app.model.UIConfig;
 
 public class BeaconMonitoring {
-    private Context context;
-    private BeaconRanging ranging;
-    private BeaconApplication application;
+    private final Context context;
+    private final BeaconRanging ranging;
+    private final BeaconApplication application;
 
     public BeaconMonitoring(Context context, BeaconApplication application, UIConfig newUIConfig,
                             BeaconLocations newBeaconConfig, BeaconManagerCreator beaconManagerCreator) {

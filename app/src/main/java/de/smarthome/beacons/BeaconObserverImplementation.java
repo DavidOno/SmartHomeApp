@@ -12,7 +12,7 @@ import de.smarthome.app.model.UIConfig;
 public class BeaconObserverImplementation implements BeaconObserver {
     private BeaconObserverSubscriber subscriber;
     private Location currentLocation = null;
-    private BeaconMonitoring beaconMonitoring;
+    private final BeaconMonitoring beaconMonitoring;
 
     public BeaconObserverImplementation(Application application, Context context,
                                         UIConfig newUIConfig, BeaconLocations newBeaconConfig,
@@ -35,12 +35,11 @@ public class BeaconObserverImplementation implements BeaconObserver {
 
     @Override
     public void updateLocation(Optional<Location> newLocation) {
-        if(newLocation.isPresent()){
-            if(!newLocation.get().equals(currentLocation)){
-                currentLocation = newLocation.get();
-                notifySubscriber();
-            }
+        if(newLocation.isPresent() && !newLocation.get().equals(currentLocation)){
+            currentLocation = newLocation.get();
+            notifySubscriber();
         }
+
     }
 
     public void subscribe(BeaconObserverSubscriber subscriber) {

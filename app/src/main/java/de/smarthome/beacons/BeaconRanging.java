@@ -21,8 +21,8 @@ import de.smarthome.beacons.nearest.ThresholderStrategy;
 
 public class BeaconRanging implements BeaconConsumer {
     private final BeaconManager beaconManager;
-    private BeaconLocationManager beaconLocationManager;
-    private Context context;
+    private final BeaconLocationManager beaconLocationManager;
+    private final Context context;
 
     public BeaconRanging(Context context, UIConfig newUIConfig, BeaconLocations newBeaconConfig,
                          BeaconManagerCreator beaconManagerCreator) {

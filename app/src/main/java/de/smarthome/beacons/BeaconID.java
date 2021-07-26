@@ -5,9 +5,9 @@ import org.altbeacon.beacon.Identifier;
 import java.util.Objects;
 
 public class BeaconID {
-    private Identifier uuid;
-    private Identifier minor;
-    private Identifier major;
+    private final Identifier uuid;
+    private final Identifier minor;
+    private final Identifier major;
 
     BeaconID(Identifier uuid, Identifier minor, Identifier major) {
         this.uuid = uuid;

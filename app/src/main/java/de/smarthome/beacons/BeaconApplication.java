@@ -14,8 +14,7 @@ public class BeaconApplication implements BootstrapNotifier {
     private static final String TAG = "BeaconApplication";
     private final BeaconManagerCreator beaconManagerCreator;
     private RegionBootstrap regionBootstrap;
-    private BackgroundPowerSaver backgroundPowerSaver;
-    private Context context;
+    private final Context context;
 
     public BeaconApplication(Context context, BeaconManagerCreator beaconManagerCreator) {
         this.context = context;
@@ -39,7 +38,7 @@ public class BeaconApplication implements BootstrapNotifier {
         Region region = new Region("backgroundRegion",
                 null, null, null);
         regionBootstrap = new RegionBootstrap(this, region);
-        backgroundPowerSaver = new BackgroundPowerSaver(context);
+        BackgroundPowerSaver backgroundPowerSaver = new BackgroundPowerSaver(context);
     }
 
     public void disableMonitoring() {
@@ -67,7 +66,7 @@ public class BeaconApplication implements BootstrapNotifier {
     }
 
     @Override
-    public void didDetermineStateForRegion(int state, Region region) {}
+    public void didDetermineStateForRegion(int state, Region region) {/* This method is currently not called*/}
 
     @Override
     public Context getApplicationContext() {
