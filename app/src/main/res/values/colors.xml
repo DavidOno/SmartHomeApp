@@ -16,4 +16,7 @@
     <color name="switchTrackBorder">#8e8e8e</color>
     <color name="switchThumbArea">#FFFFFF</color>
     <color name="switchThumbBorder">#8e8e8e</color>
+
+    <!-- Colors necessary for ripple effect -->
+    <color name="colorRippleWhite">#FFFFFF</color>
 </resources>

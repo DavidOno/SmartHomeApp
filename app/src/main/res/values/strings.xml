@@ -25,4 +25,6 @@
     <string name="option_value">Value</string>
     <string name="option_description">Description</string>
     <string name="room_name">Room Name</string>
+    <string name="light_regulation">Light_regulation</string>
+    <string name="item_status">Status</string>
 </resources>
