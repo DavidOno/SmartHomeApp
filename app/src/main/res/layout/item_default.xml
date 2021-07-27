@@ -17,7 +17,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/custom_ripple_effect">
+            android:background="@drawable/ripple_effect_item">
 
             <TextView
                 android:id="@+id/textView_item"
