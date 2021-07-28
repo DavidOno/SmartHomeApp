@@ -47,9 +47,9 @@ public class SwitchViewHolder extends RegulationAdapter.ViewHolder{
         textViewName.setText(datapoint.getName().replace("_", " "));
 
         if(value.isPresent()){
-            if(value.get().equals("1")){
+            if(value.get().equals("true")){
                 binarySwitch.setChecked(true);
-            }else if (value.get().equals("0")){
+            }else if (value.get().equals("false")){
                 binarySwitch.setChecked(false);
             }
         }
