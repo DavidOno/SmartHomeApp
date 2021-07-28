@@ -1,9 +1,12 @@
 package de.smarthome.beacons.nearest;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import de.smarthome.app.utility.InternalStorageWriter;
 import de.smarthome.beacons.BeaconID;
 
 public class ThresholderStrategy implements RetrievingStrategy{
@@ -11,6 +14,13 @@ public class ThresholderStrategy implements RetrievingStrategy{
     public static final int SIGNAL_HISTORY_LENGTH = 5;
 
     private final List<BeaconThresholder> beaconThresholders = new ArrayList<>();
+    private Context context;
+
+    public ThresholderStrategy(){}
+
+    public ThresholderStrategy(Context context) {
+        this.context = context;
+    } //TODO: remove this ctor, only needed to write beacon signals to file
 
     @Override
     public BeaconID getNearest(Map<BeaconID, Integer> newBeaconSignals) {
@@ -43,5 +53,6 @@ public class ThresholderStrategy implements RetrievingStrategy{
             beaconThresholders.add(newBeaconThreshold);
         }
         System.out.println("::::"+beaconThresholders);
+        InternalStorageWriter.writeFileOnInternalStorage(context, "Beacon", "\nThreshold:::\n"+beaconThresholders);
     }
 }
