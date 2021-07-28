@@ -34,7 +34,7 @@ import static org.mockito.Mockito.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(MockitoJUnitRunner.class)
-public class CommandChainTests {
+public class SingleReactorCommandChainTests {
 
     private String uriPrefix = "https://192.168.132.101";
 
