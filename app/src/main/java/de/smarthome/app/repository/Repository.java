@@ -34,14 +34,9 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     private ServerCommunicator serverCommunicator;
 
     private BeaconObserverImplementation beaconObserver;
-
-    //Needed for beaconObserver
     private Application parentApplication;
-
-    //Needed for BeaconDialog in Application, After confirm set null
     private Location beaconLocation = null;
-    //Have beacon been updated? Yes ==> Start dialog
-    private MutableLiveData<Boolean> beaconCheck = new MutableLiveData<>();
+    private MutableLiveData<Boolean> beaconUpdated = new MutableLiveData<>();
 
     public static Repository getInstance(@Nullable Application application) {
         if (INSTANCE == null) {
@@ -80,11 +75,11 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     public void initBeaconCheck() {
-        beaconCheck.postValue(false);
+        beaconUpdated.postValue(false);
     }
 
     public LiveData<Boolean> checkBeacon() {
-        return beaconCheck;
+        return beaconUpdated;
     }
 
     public Location getBeaconLocation() {
@@ -92,7 +87,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     public LiveData<Boolean> getLoginDataStatus() {
-        return serverCommunicator.getLoginRequestStatus();
+        return serverCommunicator.getRequestStatusLoginUser();
     }
 
     public ChannelConfig getSmartHomeChannelConfig() {
@@ -194,8 +189,10 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
 
     @Override
     public void update(Location newLocation) {
-        beaconLocation = newLocation;
-        beaconCheck.postValue(true);
+        if(newLocation != configContainer.getSelectedLocation()){
+            beaconLocation = newLocation;
+            beaconUpdated.postValue(true);
+        }
     }
 
     public void unsubscribeFromEverything() {
