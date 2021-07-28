@@ -22,6 +22,7 @@ import de.smarthome.app.adapter.viewholder.regulation.ReadViewHolder;
 import de.smarthome.app.adapter.viewholder.regulation.SliderViewHolder;
 import de.smarthome.app.adapter.viewholder.regulation.StepViewHolder;
 import de.smarthome.app.adapter.viewholder.regulation.SwitchViewHolder;
+import de.smarthome.app.adapter.viewholder.regulation.ColorpickerViewHolder;
 
 public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.ViewHolder>{
     private List<Datapoint> dataPointList;
@@ -33,6 +34,7 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
     public static final int INT_SLIDER_VIEW_HOLDER = 2;
     public static final int FLOAT_SLIDER_VIEW_HOLDER = 3;
     public static final int READ_VIEW_HOLDER = 4;
+    public static final int COLORPICKER = 5;
 
     private OnItemClickListener listener;
 
@@ -150,7 +152,9 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
                     parent
 
             );
-        }else {
+        }else if(viewType == COLORPICKER){
+            return new ColorpickerViewHolder(parent);
+        } else {
             throw new IllegalArgumentException("Input type not known");
         }
     }

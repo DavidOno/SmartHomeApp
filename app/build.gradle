@@ -110,7 +110,7 @@ dependencies {
     testImplementation group: 'net.bytebuddy', name: 'byte-buddy-agent', version: '1.11.0'
     testImplementation group: 'org.objenesis', name: 'objenesis', version: '3.2'
 
-    //compile 'petrov.kristiyan:colorpicker-library:1.1.4' TODO: probably unnecessary
+    compile 'com.github.skydoves:colorpickerpreference:1.0.2'
 }
 
 
