@@ -39,11 +39,11 @@ public class BeaconThresholder{
         return signalHistory.stream().skip(Math.max(0, signalHistory.size() - n)).collect(Collectors.toList());
     }
 
-    public boolean isAtLeastOnceLowerThan(BeaconThresholder o, int signalHistoryLength){
+    public boolean isAtLeastOnceGreaterThan(BeaconThresholder o, int signalHistoryLength){
         List<Integer> lastNSignals = getLastNSignals(signalHistoryLength);
         List<Integer> otherLastNSignals = o.getLastNSignals(signalHistoryLength);
         for(int i = 0; i < signalHistoryLength; i++){
-            if(lastNSignals.get(i) < otherLastNSignals.get(i)){
+            if(lastNSignals.get(i) > otherLastNSignals.get(i)){
                 return true;
             }
         }

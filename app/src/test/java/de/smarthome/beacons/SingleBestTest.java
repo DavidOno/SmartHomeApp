@@ -25,7 +25,7 @@ public class SingleBestTest {
         newSignals.put(beaconID2, -90);
         BeaconID nearest = strategy.getNearest(newSignals);
 
-        assertThat(nearest).isEqualTo(beaconID2);
+        assertThat(nearest).isEqualTo(beaconID1);
     }
 
     @Test
@@ -37,9 +37,9 @@ public class SingleBestTest {
         BeaconID beaconID3 = mock(BeaconID.class);
         newSignals.put(beaconID1, -50);
         newSignals.put(beaconID2, -99);
-        newSignals.put(beaconID3, -90);
+        newSignals.put(beaconID3, -30);
         BeaconID nearest = strategy.getNearest(newSignals);
 
-        assertThat(nearest).isEqualTo(beaconID2);
+        assertThat(nearest).isEqualTo(beaconID3);
     }
 }

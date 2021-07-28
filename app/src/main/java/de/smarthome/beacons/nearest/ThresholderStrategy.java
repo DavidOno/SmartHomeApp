@@ -34,7 +34,7 @@ public class ThresholderStrategy implements RetrievingStrategy{
 
     private boolean isStrongestBeaconConsistent(List<BeaconThresholder> beaconThresholders) {
         final BeaconThresholder strongestBeacon = beaconThresholders.get(0);
-        return beaconThresholders.stream().skip(1).noneMatch(beaconThresholder -> beaconThresholder.isAtLeastOnceLowerThan(strongestBeacon, SIGNAL_HISTORY_LENGTH));
+        return beaconThresholders.stream().skip(1).noneMatch(beaconThresholder -> beaconThresholder.isAtLeastOnceGreaterThan(strongestBeacon, SIGNAL_HISTORY_LENGTH));
     }
 
     private void updateHistory(Map<BeaconID, Integer> updatedBeaconSignals) {
@@ -43,7 +43,7 @@ public class ThresholderStrategy implements RetrievingStrategy{
             if(signalStrength != null){
                 beaconThresholder.addSignal(signalStrength);
             }else{
-                beaconThresholder.addSignal(0);
+                beaconThresholder.addSignal(-100);
             }
         }
         for(Map.Entry<BeaconID, Integer> entry : updatedBeaconSignals.entrySet()){

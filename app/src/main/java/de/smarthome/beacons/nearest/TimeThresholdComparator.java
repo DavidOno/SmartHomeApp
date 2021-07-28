@@ -45,7 +45,7 @@ public class TimeThresholdComparator implements Comparator<BeaconThresholder> {
 
         @Override
         public int getReturnValue() {
-            return 1;
+            return -1;
         }
     }
 
@@ -75,7 +75,7 @@ public class TimeThresholdComparator implements Comparator<BeaconThresholder> {
 
         @Override
         public int getReturnValue() {
-            return -1;
+            return 1;
         }
     }
 }

@@ -26,7 +26,7 @@ public class RetrievingTests {
         newSignals.put(beaconID2, -90);
         BeaconID nearest = strategy.getNearest(newSignals);
 
-        assertThat(nearest).isEqualTo(beaconID2);
+        assertThat(nearest).isEqualTo(beaconID1);
     }
 
     @Test
@@ -39,7 +39,7 @@ public class RetrievingTests {
         newSignals.put(beaconID2, -50);
         BeaconID nearest = strategy.getNearest(newSignals);
 
-        assertThat(nearest).isEqualTo(beaconID1);
+        assertThat(nearest).isEqualTo(beaconID2);
     }
 
     @Test
@@ -58,7 +58,7 @@ public class RetrievingTests {
         newSignals.put(beaconID2, -90);
         BeaconID nearest = strategy.getNearest(newSignals);
 
-        assertThat(nearest).isEqualTo(beaconID2);
+        assertThat(nearest).isEqualTo(beaconID1);
     }
 
     @Test
@@ -144,7 +144,7 @@ public class RetrievingTests {
         newSignals.put(beaconID2, -50);
         BeaconID nearest = strategy.getNearest(newSignals);
 
-        assertThat(nearest).isEqualTo(beaconID1);
+        assertThat(nearest).isEqualTo(beaconID2);
     }
 
     @Test
@@ -180,7 +180,7 @@ public class RetrievingTests {
         }
         BeaconID nearest = strategy.getNearest(newSignals);
 
-        assertThat(nearest).isEqualTo(beaconID1);
+        assertThat(nearest).isEqualTo(beaconID2);
     }
 
     private Map<BeaconID, Integer> collectNewConsistentSignals(RetrievingStrategy strategy, Map<BeaconID, Integer> newSignals, BeaconID beaconID1, BeaconID beaconID2) {
@@ -199,12 +199,12 @@ public class RetrievingTests {
         newSignals = new HashMap<>();
         BeaconID beaconID1 = mock(BeaconID.class);
         BeaconID beaconID2 = mock(BeaconID.class);
-        newSignals.put(beaconID1, -50);
-        newSignals.put(beaconID2, -90);
+        newSignals.put(beaconID1, -90);
+        newSignals.put(beaconID2, -50);
         strategy.getNearest(newSignals);
 
         newSignals = new HashMap<>();
-        newSignals.put(beaconID2, -50);
+        newSignals.put(beaconID2, -90);
         BeaconID nearest = strategy.getNearest(newSignals);
 
         assertThat(nearest).isEqualTo(beaconID2);
@@ -217,12 +217,12 @@ public class RetrievingTests {
         newSignals = new HashMap<>();
         BeaconID beaconID1 = mock(BeaconID.class);
         BeaconID beaconID2 = mock(BeaconID.class);
-        newSignals.put(beaconID1, -50);
-        newSignals.put(beaconID2, -90);
+        newSignals.put(beaconID1, -90);
+        newSignals.put(beaconID2, -50);
         strategy.getNearest(newSignals);
 
         newSignals = new HashMap<>();
-        newSignals.put(beaconID1, -50);
+        newSignals.put(beaconID1, -90);
         BeaconID nearest = strategy.getNearest(newSignals);
 
         assertThat(nearest).isNull();
