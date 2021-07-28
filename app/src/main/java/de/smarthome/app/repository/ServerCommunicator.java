@@ -56,38 +56,34 @@ import de.smarthome.server.gira.GiraServerHandler;
 
 public class ServerCommunicator {
     private static final String TAG = "ServerCommunicator";
-    private static ServerCommunicator instance;
+    private static ServerCommunicator INSTANCE;
     private ToastUtility toastUtility;
 
     private static final String IP_OF_CALLBACK_SERVER = "192.168.132.218:8443";
     private final ServerHandler serverHandler = new GiraServerHandler(new HomeServerCommandInterpreter(new NoSSLRestTemplateCreator()));
 
-    //Needed for Relogin after Update/Delete of Logindata in Optionfragment
-    private MutableLiveData<Boolean> loginRequestStatus = new MutableLiveData<>();
-
-    //Needed for beaconObserver
+    private MutableLiveData<Boolean> requestStatusLoginUser = new MutableLiveData<>();
     private Application parentApplication;
-
     private int statusListSize = 0;
     private Map<String, String> newStatusValuesMap = new LinkedHashMap<>();
 
     public static ServerCommunicator getInstance(@Nullable Application application) {
-        if (instance == null) {
-            instance = new ServerCommunicator();
+        if (INSTANCE == null) {
+            INSTANCE = new ServerCommunicator();
             if(application != null){
-                instance.parentApplication = application;
+                INSTANCE.parentApplication = application;
             }
-            instance.toastUtility = ToastUtility.getInstance();
+            INSTANCE.toastUtility = ToastUtility.getInstance();
         }
-        return instance;
+        return INSTANCE;
     }
 
     public void updateLoginDataStatus(Boolean status) {
-        loginRequestStatus.postValue(status);
+        requestStatusLoginUser.postValue(status);
     }
 
-    public LiveData<Boolean> getLoginRequestStatus() {
-        return loginRequestStatus;
+    public LiveData<Boolean> getRequestStatusLoginUser() {
+        return requestStatusLoginUser;
     }
 
     private void addToExecutorService(Thread newThread) {
@@ -194,7 +190,6 @@ public class ServerCommunicator {
 
                 newStatusValuesMap.put(uID, value);
                 if(statusListSize == newStatusValuesMap.size()) {
-                    //newStatusValuesMap.put(uID, value);
                     ConfigContainer.getInstance().updateStatusGetValueMap(newStatusValuesMap);
                 }
             } else {
@@ -224,10 +219,8 @@ public class ServerCommunicator {
             public void onComplete(@NonNull Task<CredentialRequestResponse> task) {
 
                 if (task.isSuccessful()) {
-                    // See "Handle successful credential requests"
                     initialisationOfApplicationAfterRestart(task.getResult().getCredential());
                 }else{
-                    // See "Handle unsuccessful and incomplete credential requests"
                     toastUtility.prepareToast("Not able to retrieve Login data");
                 }
             }
