@@ -29,7 +29,7 @@ import de.smarthome.beacons.BeaconLocations;
 
 public class ConfigContainer {
     private static final String TAG = "ConfigContainer";
-    private static ConfigContainer instance;
+    private static ConfigContainer INSTANCE;
     private final ToastUtility toastUtility = ToastUtility.getInstance();
 
     private UIConfig smartHomeUiConfig;
@@ -49,10 +49,10 @@ public class ConfigContainer {
     private MutableLiveData<Map<String, String>> statusGetValueMap = new MutableLiveData<>();
 
     public static ConfigContainer getInstance() {
-        if (instance == null) {
-            instance = new ConfigContainer();
+        if (INSTANCE == null) {
+            INSTANCE = new ConfigContainer();
         }
-        return instance;
+        return INSTANCE;
     }
 
     public void setSelectedFunction(Function function) {
@@ -230,7 +230,11 @@ public class ConfigContainer {
         Map<Datapoint, Datapoint> newValue = new LinkedHashMap<>();
         if (functionMap.getValue().get(function) != null) {
             for (int i = 0; i < function.getDataPoints().size(); i++) {
-                newValue.put(function.getDataPoints().get(i), functionMap.getValue().get(function).getDataPoints().get(i));
+                if(functionMap.getValue().get(function).getDataPoints().size() > i){
+                    newValue.put(function.getDataPoints().get(i), functionMap.getValue().get(function).getDataPoints().get(i));
+                }else{
+                    newValue.put(function.getDataPoints().get(i), null);
+                }
             }
         } else {
             for (Datapoint datapoint : function.getDataPoints()) {
