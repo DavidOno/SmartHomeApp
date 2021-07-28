@@ -59,7 +59,7 @@ public class ServerCommunicator {
     private static ServerCommunicator instance;
     private ToastUtility toastUtility;
 
-    private static final String IP_OF_CALLBACK_SERVER = "192.168.132.223:8443";
+    private static final String IP_OF_CALLBACK_SERVER = "192.168.132.218:8443";
     private final ServerHandler serverHandler = new GiraServerHandler(new HomeServerCommandInterpreter(new NoSSLRestTemplateCreator()));
 
     //Needed for Relogin after Update/Delete of Logindata in Optionfragment
@@ -187,14 +187,14 @@ public class ServerCommunicator {
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
                 Log.d(TAG, "response received");
                 Log.d(TAG, responseEntity.getBody().toString());
-                GetValueResponse valueReponse = (GetValueResponse) responseEntity.getBody();
+                GetValueResponse valueResponse = (GetValueResponse) responseEntity.getBody();
 
-                String value = valueReponse.getValues().get(0).getValue();
-                String uID = valueReponse.getValues().get(0).getUid();
+                String value = valueResponse.getValues().get(0).getValue();
+                String uID = valueResponse.getValues().get(0).getUid();
 
                 newStatusValuesMap.put(uID, value);
                 if(statusListSize == newStatusValuesMap.size()) {
-                    newStatusValuesMap.put(uID, value);
+                    //newStatusValuesMap.put(uID, value);
                     ConfigContainer.getInstance().updateStatusGetValueMap(newStatusValuesMap);
                 }
             } else {
