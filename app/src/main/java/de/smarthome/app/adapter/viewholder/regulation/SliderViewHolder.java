@@ -61,8 +61,6 @@ public class SliderViewHolder extends RegulationAdapter.ViewHolder{
             if(adapter.getBoundaryMap().get(datapoint).getMin() != null){
                 min = Float.parseFloat(adapter.getBoundaryMap().get(datapoint).getMin());
                 slider.setValueFrom(min);
-                slider.setValue(min);
-
             }
 
             if(adapter.getBoundaryMap().get(datapoint).getMax() != null){
@@ -80,6 +78,11 @@ public class SliderViewHolder extends RegulationAdapter.ViewHolder{
                 }else{
                     slider.setValue(inputValue);
                 }
+            }
+        }else{
+            if(value.isPresent()){
+                float inputValue = Float.parseFloat(value.get());
+                slider.setValue(inputValue);
             }
         }
     }
