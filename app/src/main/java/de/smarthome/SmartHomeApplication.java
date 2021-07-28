@@ -78,10 +78,11 @@ public class SmartHomeApplication extends AppCompatActivity {
         });
 
         viewModel.checkBeacon().observe(this, aBoolean -> {
-            if(aBoolean){
+            if(aBoolean && viewModel.hasTimerCompleted()){
                 viewModel.initBeaconCheck();
                 if(!beaconDialogShown){
                     beaconDialogShown = true;
+                    viewModel.startTimer();
                     startBeaconDialog(viewModel.getBeaconLocation());
                 }
             }
@@ -169,10 +170,13 @@ public class SmartHomeApplication extends AppCompatActivity {
             dialog.dismiss();
             viewModel.confirmBeacon();
             setStartFragment(R.id.roomOverviewFragment);
+            beaconDialogShown = false;
         });
 
-        buttonNo.setOnClickListener(v -> dialog.dismiss());
-        beaconDialogShown = false;
+        buttonNo.setOnClickListener(v -> {
+            dialog.dismiss();
+            beaconDialogShown = false;
+        });
     }
 
     private void setStartFragment(int destinationFragment) {
@@ -208,29 +212,24 @@ public class SmartHomeApplication extends AppCompatActivity {
         }
     }
 
-    //TODO: Move to viewmodel
     public void getSavedCredentials() {
         CredentialRequest credentialRequest = new CredentialRequest.Builder()
                 .setPasswordLoginSupported(true)
                 .build();
 
         CredentialsClient credentialsClient = Credentials.getClient(this);
-
         credentialsClient.request(credentialRequest).addOnCompleteListener(new OnCompleteListener<CredentialRequestResponse>() {
             @Override
             public void onComplete(@NonNull Task<CredentialRequestResponse> task) {
-
                 if (task.isSuccessful()) {
-                    // See "Handle successful credential requests"
                     onCredentialRetrieved(task.getResult().getCredential());
                 }else{
-                    // See "Handle unsuccessful and incomplete credential requests"
                     setStartFragment(R.id.loginFragment);
                 }
             }
         });
     }
-    //TODO: Move to viewmodel
+
     private void onCredentialRetrieved(Credential credential) {
         String accountType = credential.getAccountType();
         if (accountType == null) {
