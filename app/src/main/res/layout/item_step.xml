@@ -42,7 +42,8 @@
                 android:layout_centerInParent="true"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="60dp"
-                android:background="@drawable/ic_decrease" />
+                android:src="@drawable/ic_decrease"
+                android:background="@drawable/ripple_effect_button" />
 
             <ImageButton
                 android:id="@+id/imageView_plus"
@@ -53,7 +54,8 @@
                 android:layout_centerInParent="true"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="15dp"
-                android:background="@drawable/ic_increase" />
+                android:src="@drawable/ic_increase"
+                android:background="@drawable/ripple_effect_button" />
 
         </RelativeLayout>
 

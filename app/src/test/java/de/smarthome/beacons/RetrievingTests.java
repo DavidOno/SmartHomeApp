@@ -193,7 +193,7 @@ public class RetrievingTests {
     }
 
     @Test
-    public void testStrongestBeaconConsistency_disapperingBeacon() {
+    public void testStrongestBeaconConsistency_disappearingBeacon() {
         RetrievingStrategy strategy = new ThresholderStrategy();
         Map<BeaconID, Integer> newSignals;
         newSignals = new HashMap<>();
@@ -211,7 +211,7 @@ public class RetrievingTests {
     }
 
     @Test
-    public void testStrongestBeaconConsistency_disapperingBeacon2() {
+    public void testStrongestBeaconConsistency_disappearingBeacon2() {
         RetrievingStrategy strategy = new ThresholderStrategy();
         Map<BeaconID, Integer> newSignals;
         newSignals = new HashMap<>();
