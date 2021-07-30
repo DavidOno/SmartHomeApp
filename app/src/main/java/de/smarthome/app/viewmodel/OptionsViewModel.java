@@ -29,7 +29,6 @@ public class OptionsViewModel extends AndroidViewModel {
         credentialsClient.delete(credential).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 toastUtility.prepareToast("Login data deleted.");
-
             }
         });
 
