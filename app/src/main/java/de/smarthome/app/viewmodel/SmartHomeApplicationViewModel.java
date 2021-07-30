@@ -14,16 +14,16 @@ import de.smarthome.app.repository.Repository;
 public class SmartHomeApplicationViewModel extends AndroidViewModel {
     private static final String TAG = "SmartHomeApplicationViewModel";
     private Repository repository;
-    private boolean timerCompleted;
+    private boolean timerCompletionStatus;
 
     public SmartHomeApplicationViewModel(@NonNull Application application) {
         super(application);
         repository = Repository.getInstance(application);
-        timerCompleted = true;
+        timerCompletionStatus = true;
     }
 
     public boolean hasTimerCompleted() {
-        return timerCompleted;
+        return timerCompletionStatus;
     }
 
     public LiveData<Boolean> checkBeacon() {
@@ -50,13 +50,12 @@ public class SmartHomeApplicationViewModel extends AndroidViewModel {
         repository.requestRegisterUser(credential);
     }
 
-    //TODO: Check if Timer works as intended
     public void startTimer(){
-        timerCompleted = false;
+        timerCompletionStatus = false;
         Thread timerThread = new Thread(() -> {
             try {
-                Thread.sleep(10000);
-                timerCompleted = true;
+                Thread.sleep(3000);
+                timerCompletionStatus = true;
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
