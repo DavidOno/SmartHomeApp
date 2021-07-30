@@ -6,12 +6,15 @@ import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +35,7 @@ import com.google.android.gms.auth.api.credentials.Credentials;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -92,7 +96,8 @@ public class SmartHomeApplication extends AppCompatActivity {
                 if(!beaconDialogShown){
                     beaconDialogShown = true;
                     viewModel.startTimer();
-                    startBeaconDialog(viewModel.getBeaconLocation());
+                    //startBeaconDialog(viewModel.getBeaconLocation());
+                    showSnackbar(viewModel.getBeaconLocation());
                 }
             }
         });
@@ -106,6 +111,20 @@ public class SmartHomeApplication extends AppCompatActivity {
         });
     }
 
+    public void showSnackbar(Location location) {
+        LinearLayout usedLayout = findViewById(R.id.smartHomeApplicationLinearLayout);
+        Snackbar snackbar = Snackbar.make(usedLayout,
+                "Switch to " + location.getName(), Snackbar.LENGTH_LONG)
+                .setAction("ACCEPT", v -> {
+                    Snackbar resultMessageSnackbar = Snackbar.make(usedLayout, "Switch successful", Snackbar.LENGTH_SHORT);
+                    resultMessageSnackbar.show();
+
+                    viewModel.confirmBeacon();
+                    setStartFragment(R.id.roomOverviewFragment);
+                });
+        snackbar.show();
+        beaconDialogShown = false;
+    }
 
     @Override
     protected void onDestroy() {
