@@ -40,19 +40,26 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
     private Repository repository;
     private ChannelConfig channelConfig;
 
-    public void setFunctionList(Map<Function, Function> functions, Application application) {
-        functionList = new ArrayList<>(functions.keySet());
-        functionMap = functions;
+    public void initialiseAdapter(Map<Function, Function> functions, Application application) {
+        setFunctionList(functions);
+        setFunctionMap(functions);
 
         repository = Repository.getInstance(application);
-        channelConfig = repository.getSmartHomeChannelConfig();
+        channelConfig = repository.getChannelConfig();
 
-        requestCurrentStatus();
-
+        requestFunctionCurrentStatus();
         notifyDataSetChanged();
     }
 
-    private void requestCurrentStatus(){
+    private void setFunctionMap(Map<Function, Function> functions) {
+        functionMap = functions;
+    }
+
+    private void setFunctionList(Map<Function, Function> functions) {
+        functionList = new ArrayList<>(functions.keySet());
+    }
+
+    private void requestFunctionCurrentStatus(){
         for(Function func : functionList){
             if(channelConfig.isFirstDataPointBinary(func)){
                 if(functionMap.get(func) != null){
@@ -70,20 +77,20 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
         }
     }
 
-    public void updateStatusValue(String changedStatusFunctionUID, String changedStatusFunctionValue){
-        if(containsViewStatusFunction(changedStatusFunctionUID, changedStatusFunctionValue)){
+    public void updateSingleFunctionStatusValue(String changedStatusFunctionUID, String changedStatusFunctionValue){
+        if(hasStatusFunction(changedStatusFunctionUID, changedStatusFunctionValue)){
             notifyItemChanged(getItemPosition());
         }
     }
 
-    public void updateMultipleStatusValues(Map<String, String> newInput){
+    public void updateMultipleFunctionStatusValues(Map<String, String> newInput){
         if(newInput.size() == 1){
-            updateStatusValue(newInput.keySet().iterator().next(),
+            updateSingleFunctionStatusValue(newInput.keySet().iterator().next(),
                     newInput.get(newInput.keySet().iterator().next()));
         }else{
             notifyDataSetChanged();
             for(String key: newInput.keySet()) {
-                containsViewStatusFunction(key, newInput.get(key));
+                hasStatusFunction(key, newInput.get(key));
             }
         }
     }
@@ -99,7 +106,7 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
         return -1;
     }
 
-    private boolean containsViewStatusFunction(String changedStatusFunctionUID, String value) {
+    private boolean hasStatusFunction(String changedStatusFunctionUID, String value) {
         for(Function function : functionList){
             //Has to be this check because: No Status function => value of map is null! so it contains the function
             if (functionMap.get(function) != null) {
@@ -163,7 +170,6 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
         if(!statusValueMap.isEmpty() &&
                 statusValueMap.containsKey(function.getID())){
             value = Optional.ofNullable(statusValueMap.get(function.getID()));
-
             removeStatusVariables(function.getID());
         }
         return value;
@@ -203,6 +209,7 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
     public void setOnSwitchClickListener(RoomOverviewAdapter.OnSwitchClickListener listener) {
         this.switchClickListener = listener;
     }
+
 
     public abstract static class ViewHolder extends RecyclerView.ViewHolder {
 

@@ -18,16 +18,15 @@ import de.smarthome.app.adapter.RegulationAdapter;
 
 public class RegulationFragment extends Fragment {
     private static final String TAG = "RegulationFragment";
-    private RegulationViewModel regulationViewModel;
-
-    private RecyclerView recyclerViewRegulation;
+    private RegulationViewModel viewModel;
+    private RecyclerView recyclerView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_regulation, container, false);
 
-        recyclerViewRegulation = view.findViewById(R.id.recycler_view_regulation);
-        regulationViewModel = new ViewModelProvider(requireActivity()).get(RegulationViewModel.class);
+        recyclerView = view.findViewById(R.id.recycler_view_regulation);
+        viewModel = new ViewModelProvider(requireActivity()).get(RegulationViewModel.class);
 
         return view;
     }
@@ -35,27 +34,43 @@ public class RegulationFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if(regulationViewModel.getSelectedFunction() != null)
-            requireActivity().setTitle(regulationViewModel.getSelectedFunction().getName());
+        if(viewModel.getSelectedFunction() != null)
+            requireActivity().setTitle(viewModel.getSelectedFunction().getName());
 
-        recyclerViewRegulation.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerViewRegulation.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setHasFixedSize(true);
 
         RegulationAdapter adapter = new RegulationAdapter();
-        recyclerViewRegulation.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);
 
-        regulationViewModel.getDataPointMap().observe(getViewLifecycleOwner(), dataPoints -> adapter.setDataPointList(dataPoints, getActivity().getApplication()));
+        setDataPointObserver(adapter);
+        setStatusUpdateObserver(adapter);
+        setStatusGetValueObserver(adapter);
+        setBoundaryObserver(adapter);
+        setOnClickListener(adapter);
+    }
 
-        regulationViewModel.getStatusUpdateMap().observe(getViewLifecycleOwner(), stringStringMap -> {
+    private void setOnClickListener(RegulationAdapter adapter) {
+        adapter.setOnItemClickListener((datapoint, value) -> viewModel.requestSetValue(datapoint.getID(), value));
+    }
+
+    private void setBoundaryObserver(RegulationAdapter adapter) {
+        viewModel.getBoundaryMap().observe(getViewLifecycleOwner(), adapter::setBoundaryMap);
+    }
+
+    private void setStatusGetValueObserver(RegulationAdapter adapter) {
+        viewModel.getStatusGetValueMap().observe(getViewLifecycleOwner(), adapter::updateMultipleDatapointStatusValues);
+    }
+
+    private void setDataPointObserver(RegulationAdapter adapter) {
+        viewModel.getDataPointMap().observe(getViewLifecycleOwner(), dataPoints -> adapter.initialiseAdapter(dataPoints, getActivity().getApplication()));
+    }
+
+    private void setStatusUpdateObserver(RegulationAdapter adapter) {
+        viewModel.getStatusUpdateMap().observe(getViewLifecycleOwner(), stringStringMap -> {
             String uid = stringStringMap.keySet().iterator().next();
             String value = stringStringMap.get(uid);
-            adapter.updateStatusValue(uid, value);
+            adapter.updateSingleDatapointStatusValue(uid, value);
         });
-
-        regulationViewModel.getStatusGetValueMap().observe(getViewLifecycleOwner(), adapter::updateMultipleStatusValues);
-
-        regulationViewModel.getBoundaryMap().observe(getViewLifecycleOwner(), adapter::setBoundaryMap);
-
-        adapter.setOnItemClickListener((datapoint, value) -> regulationViewModel.requestSetValue(datapoint.getID(), value));
     }
 }

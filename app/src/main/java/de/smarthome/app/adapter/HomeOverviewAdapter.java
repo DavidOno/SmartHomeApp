@@ -14,12 +14,9 @@ import java.util.List;
 import de.smarthome.R;
 import de.smarthome.app.model.Location;
 
-
 public class HomeOverviewAdapter extends RecyclerView.Adapter<HomeOverviewAdapter.RoomHolder> {
-
     private List<Location> roomList = new ArrayList<>();
     private OnItemClickListener listener;
-
 
     @NonNull
     @Override
@@ -33,14 +30,9 @@ public class HomeOverviewAdapter extends RecyclerView.Adapter<HomeOverviewAdapte
     @Override
     public void onBindViewHolder(@NonNull RoomHolder holder, int position) {
         Location currentWorkoutPosition = roomList.get(position);
-
         holder.textViewName.setText(currentWorkoutPosition.getName());
-
     }
 
-    /**Returns the size of the workoutList
-     * @return current size of the workoutList
-     */
     @Override
     public int getItemCount() {
         return roomList.size();
@@ -52,10 +44,6 @@ public class HomeOverviewAdapter extends RecyclerView.Adapter<HomeOverviewAdapte
         notifyDataSetChanged();
     }
 
-    /**Returns the Workout in the workoutList at a given position
-     * @param  position position in the list
-     * @return Workout at the specified position
-     */
     public Location getRoomAt(int position) {
         return roomList.get(position);
     }
@@ -65,8 +53,6 @@ public class HomeOverviewAdapter extends RecyclerView.Adapter<HomeOverviewAdapte
     class RoomHolder extends RecyclerView.ViewHolder {
         TextView textViewName;
 
-        /**Creates the onItemClickListeners, onItemLingClickListeners and the UI for the list items
-         */
         public RoomHolder(View itemView) {
             super(itemView);
 
@@ -84,15 +70,10 @@ public class HomeOverviewAdapter extends RecyclerView.Adapter<HomeOverviewAdapte
         }
     }
 
-    /**Handles short onClick Events
-     */
     public interface OnItemClickListener {
         void onItemClick(Location location);
     }
 
-
-    /**Sets listener for short onClick Events
-     */
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
     }

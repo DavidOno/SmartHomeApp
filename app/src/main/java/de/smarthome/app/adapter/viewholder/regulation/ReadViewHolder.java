@@ -18,15 +18,17 @@ public class ReadViewHolder extends RegulationAdapter.ViewHolder{
 
     public ReadViewHolder(@NonNull ViewGroup parent) {
         super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_read, parent, false));
-        textViewName = itemView.findViewById(R.id.textView_item);
+        findViewsByID();
+    }
 
+    private void findViewsByID() {
+        textViewName = itemView.findViewById(R.id.textView_item);
         textViewOutput = itemView.findViewById(R.id.textView_read_output_item);
     }
 
     @Override
     public void onBindViewHolder(RegulationAdapter.ViewHolder holder, int position, Datapoint datapoint, Optional<String> value) {
         textViewName.setText(datapoint.getName().replace("_", " "));
-
         value.ifPresent(s -> textViewOutput.setText(s));
     }
 }

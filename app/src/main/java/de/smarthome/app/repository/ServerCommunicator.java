@@ -77,26 +77,21 @@ public class ServerCommunicator {
         }
         return INSTANCE;
     }
-
-    public void updateLoginDataStatus(Boolean status) {
-        requestStatusLoginUser.postValue(status);
-    }
-
-    public LiveData<Boolean> getRequestStatusLoginUser() {
-        return requestStatusLoginUser;
-    }
-
     private void addToExecutorService(Thread newThread) {
         SmartHomeApplication.EXECUTOR_SERVICE.execute(newThread);
     }
 
-    public void requestRegisterUser(Credential credential) {
-        initialisationOfApplication(credential.getId(), credential.getPassword());
+    public void setLoginStatus(Boolean status) {
+        requestStatusLoginUser.postValue(status);
     }
 
-    private void initialisationOfApplication(String userName, String pwd) {
+    public LiveData<Boolean> getLoginStatusForUser() {
+        return requestStatusLoginUser;
+    }
+
+    public void initialisationOfApplication(Credential credential) {
         MultiReactorCommandChainImpl multiCommandChain = new MultiReactorCommandChainImpl();
-        registerAppAtGiraServer(userName, pwd, multiCommandChain);
+        registerAppAtGiraServer(credential.getId(), credential.getPassword(), multiCommandChain);
         getAllConfigs(multiCommandChain);
         serverHandler.sendRequest(multiCommandChain);
     }
@@ -131,8 +126,8 @@ public class ServerCommunicator {
     }
 
     private void registerAppAtGiraServer(String userName, String pwd, MultiReactorCommandChainImpl multiCommandChain) {
-        multiCommandChain.add(new RegisterClientCommand(userName, pwd), new ResponseReactorClient());
         multiCommandChain.add(new CheckAvailabilityCommand(), new ResponseReactorCheckAvailability());
+        multiCommandChain.add(new RegisterClientCommand(userName, pwd), new ResponseReactorClient());
         multiCommandChain.add(new RegisterCallbackServerAtGiraServer(IP_OF_CALLBACK_SERVER), new ResponseReactorGiraCallbackServer());
         multiCommandChain.add(new RegisterCallback(IP_OF_CALLBACK_SERVER), new ResponseReactorCallbackServer());
     }
@@ -170,7 +165,7 @@ public class ServerCommunicator {
         }
     }
 
-    public void requestUnRegisterCallbackServerAtGiraServer() {
+    public void requestUnregisterCallbackServerAtGiraServer() {
         Thread requestUnRegisterCallbackServerAtGiraServerThread = new Thread(() -> {
             Command unregisterAtGira = new UnRegisterCallbackServerAtGiraServer();
             serverHandler.sendRequest(unregisterAtGira);
@@ -190,7 +185,7 @@ public class ServerCommunicator {
 
                 newStatusValuesMap.put(uID, value);
                 if(statusListSize == newStatusValuesMap.size()) {
-                    ConfigContainer.getInstance().updateStatusGetValueMap(newStatusValuesMap);
+                    ConfigContainer.getInstance().setStatusGetValueMap(newStatusValuesMap);
                 }
             } else {
                 Log.d(TAG, "error occurred");
@@ -204,7 +199,7 @@ public class ServerCommunicator {
 
     public void unsubscribeFromEverything() {
         requestUnregisterClient(IP_OF_CALLBACK_SERVER);
-        requestUnRegisterCallbackServerAtGiraServer();
+        requestUnregisterCallbackServerAtGiraServer();
     }
 
     public void getSavedCredentialsForLoginAfterRestart() {
@@ -213,11 +208,9 @@ public class ServerCommunicator {
                 .build();
 
         CredentialsClient credentialsClient = Credentials.getClient(parentApplication);
-
         credentialsClient.request(credentialRequest).addOnCompleteListener(new OnCompleteListener<CredentialRequestResponse>() {
             @Override
             public void onComplete(@NonNull Task<CredentialRequestResponse> task) {
-
                 if (task.isSuccessful()) {
                     initialisationOfApplicationAfterRestart(task.getResult().getCredential());
                 }else{

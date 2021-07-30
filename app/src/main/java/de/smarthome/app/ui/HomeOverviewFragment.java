@@ -20,45 +20,49 @@ import de.smarthome.app.adapter.HomeOverviewAdapter;
 
 public class HomeOverviewFragment extends Fragment {
     private static final String TAG = "HomeOverviewFragment";
-    private RecyclerView recyclerViewHome;
-    private HomeOverviewViewModel homeOverviewViewModel;
-
+    private RecyclerView recyclerView;
+    private HomeOverviewViewModel viewModel;
     private HomeOverviewAdapter adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        homeOverviewViewModel = new ViewModelProvider(requireActivity()).get(HomeOverviewViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(HomeOverviewViewModel.class);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home_overview, container, false);
 
-        recyclerViewHome  = view.findViewById(R.id.recycler_view_home_overview);
-        recyclerViewHome.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerViewHome.setHasFixedSize(true);
+        recyclerView = view.findViewById(R.id.recycler_view_home_overview);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setHasFixedSize(true);
 
         adapter = new HomeOverviewAdapter();
-        recyclerViewHome.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);
 
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        setLocationListObserver();
+        setOnClickListener();
+        super.onViewCreated(view, savedInstanceState);
+    }
 
-        homeOverviewViewModel.getLocationList().observe(getViewLifecycleOwner(), rooms -> {
+    private void setOnClickListener() {
+        adapter.setOnItemClickListener(location -> {
+            viewModel.setSelectedLocation(location);
+            navigateToRoomOverviewFragment();
+        });
+    }
+
+    private void setLocationListObserver() {
+        viewModel.getLocationList().observe(getViewLifecycleOwner(), rooms -> {
             adapter.setRoomList(rooms);
             requireActivity().setTitle(rooms.get(0).getName());
         });
-
-        adapter.setOnItemClickListener(location -> {
-            homeOverviewViewModel.setSelectedLocation(location);
-            navigateToRoomOverviewFragment();
-        });
-
-        super.onViewCreated(view, savedInstanceState);
     }
 
     private void navigateToRoomOverviewFragment() {

@@ -6,16 +6,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import de.smarthome.app.repository.ConfigContainer;
+import de.smarthome.app.repository.Repository;
 import de.smarthome.beacons.BeaconLocations;
 import de.smarthome.command.ResponseReactor;
 
 public class ResponseReactorBeaconConfig implements ResponseReactor {
     private static final String TAG = "ResponseReactorBeaconConfig";
-    private BeaconLocations responseBeaconConfig;
     private ConfigContainer configContainer;
+    private Repository repository;
 
     public ResponseReactorBeaconConfig() {
-        this.configContainer = ConfigContainer.getInstance();
+        configContainer = ConfigContainer.getInstance();
+        repository = Repository.getInstance(null);
     }
 
     @Override
@@ -25,7 +27,7 @@ public class ResponseReactorBeaconConfig implements ResponseReactor {
                 Log.d(TAG, "response received BeaconConfig");
                 Log.d(TAG, responseEntity.getBody().toString());
 
-                responseBeaconConfig = (BeaconLocations) responseEntity.getBody();
+                BeaconLocations responseBeaconConfig = (BeaconLocations) responseEntity.getBody();
                 sendBeaconLocationsToRepo(responseBeaconConfig);
 
                 Log.d(TAG, "BeaconConfig successfully retrieved.\nStatus: " + responseEntity.getStatusCode());
@@ -41,11 +43,8 @@ public class ResponseReactorBeaconConfig implements ResponseReactor {
         }
     }
 
-    public BeaconLocations getResponseBeaconLocations() {
-        return responseBeaconConfig;
-    }
-
     public void sendBeaconLocationsToRepo(BeaconLocations newBeaconConfig){
-        configContainer.setBeaconConfig(newBeaconConfig);
+        configContainer.setBeaconLocations(newBeaconConfig);
+        repository.initBeaconObserver();
     }
 }

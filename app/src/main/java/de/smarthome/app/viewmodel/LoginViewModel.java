@@ -33,8 +33,8 @@ public class LoginViewModel extends AndroidViewModel {
         repository.requestRegisterUser(userCredential);
     }
 
-    public LiveData<Boolean> getLoginDataStatus(){
-        return repository.getLoginDataStatus();
+    public LiveData<Boolean> getLoginStatus(){
+        return repository.getLoginStatus();
     }
 
     public void saveCredential(Activity activity, Credential userCredential){
@@ -43,31 +43,24 @@ public class LoginViewModel extends AndroidViewModel {
                 .build();
 
         CredentialsClient credentialsClient = Credentials.getClient(activity, options);
-
         credentialsClient.save(userCredential).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Log.d(TAG, "SAVE: OK");
-                toastUtility.prepareToast("Credentials saved");
+                toastUtility.prepareToast("Credentials saved.");
                 return;
             }
-
             Exception e = task.getException();
             if (e instanceof ResolvableApiException) {
-                // Try to resolve the save request. This will prompt the user if
-                // the credential is new.
                 ResolvableApiException rae = (ResolvableApiException) e;
                 try {
                     rae.startResolutionForResult(activity, 1);
-
                 } catch (IntentSender.SendIntentException exception) {
-                    // Could not resolve the request
                     Log.e(TAG, "Failed to send resolution.", exception);
-                    toastUtility.prepareToast("Save failed");
+                    toastUtility.prepareToast("Failed to save Login Data.");
                     e.printStackTrace();
                 }
             } else {
-                // Request has no resolution
-                toastUtility.prepareToast("Save failed");
+                toastUtility.prepareToast("Failed to save Login Data.");
             }
         });
     }

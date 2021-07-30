@@ -24,9 +24,12 @@ public class SwitchViewHolder extends RoomOverviewAdapter.ViewHolder{
                             @NonNull RoomOverviewAdapter adapter) {
         super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_switch, parent, false));
 
-        textViewName = itemView.findViewById(R.id.textView_item);
-        binarySwitch = itemView.findViewById(R.id.switch_item);
+        findViewById();
 
+        setOnClickListener(onSwitchClickListener, adapter);
+    }
+
+    private void setOnClickListener(@NonNull RoomOverviewAdapter.OnSwitchClickListener onSwitchClickListener, @NonNull RoomOverviewAdapter adapter) {
         binarySwitch.setOnClickListener(v -> {
             int position = getAdapterPosition();
             if (onSwitchClickListener != null && position != RecyclerView.NO_POSITION) {
@@ -35,10 +38,19 @@ public class SwitchViewHolder extends RoomOverviewAdapter.ViewHolder{
         });
     }
 
+    private void findViewById() {
+        textViewName = itemView.findViewById(R.id.textView_item);
+        binarySwitch = itemView.findViewById(R.id.switch_item);
+    }
+
     @Override
     public void onBindViewHolder(RoomOverviewAdapter.ViewHolder holder, int position, Function function, Optional<String> value) {
         textViewName.setText(function.getName().replace("_", " "));
 
+        setSwitchByValue(value);
+    }
+
+    private void setSwitchByValue(Optional<String> value) {
         if(value.isPresent()){
             if (value.get().equals("true")) {
                 binarySwitch.setChecked(true);

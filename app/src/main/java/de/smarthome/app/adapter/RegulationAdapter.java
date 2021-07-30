@@ -49,19 +49,26 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
         return boundaryMap;
     }
 
-    public void setDataPointList(Map<Datapoint, Datapoint> dataPoints, Application application) {
-        dataPointList = new ArrayList<>(dataPoints.keySet());
-        dataPointMap = dataPoints;
+    public void initialiseAdapter(Map<Datapoint, Datapoint> dataPoints, Application application) {
+        setDataPointList(dataPoints);
+        setDataPointMap(dataPoints);
 
         repository = Repository.getInstance(application);
-        channelConfig = repository.getSmartHomeChannelConfig();
+        channelConfig = repository.getChannelConfig();
 
-        requestCurrentStatus();
-
+        requestCurrentDatapointStatus();
         notifyDataSetChanged();
     }
 
-    private void requestCurrentStatus(){
+    private void setDataPointMap(Map<Datapoint, Datapoint> dataPoints) {
+        dataPointMap = dataPoints;
+    }
+
+    private void setDataPointList(Map<Datapoint, Datapoint> dataPoints) {
+        dataPointList = new ArrayList<>(dataPoints.keySet());
+    }
+
+    private void requestCurrentDatapointStatus(){
         List<String> requestList = new ArrayList<>();
         for(Datapoint dp : dataPointList){
             //Status Function always have the same amount of DataPoints BUT only a few of them get answers
@@ -72,20 +79,20 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
         repository.requestGetValue(requestList);
     }
 
-    public void updateStatusValue(String changedStatusFunctionUID, String changedStatusFunctionValue){
-        if(containsViewStatusFunction(changedStatusFunctionUID, changedStatusFunctionValue)){
+    public void updateSingleDatapointStatusValue(String changedStatusFunctionUID, String changedStatusFunctionValue){
+        if(hasStatusFunction(changedStatusFunctionUID, changedStatusFunctionValue)){
             notifyItemChanged(getItemPosition());
         }
     }
 
-    public void updateMultipleStatusValues(Map<String, String> newInput) {
+    public void updateMultipleDatapointStatusValues(Map<String, String> newInput) {
         if (newInput.size() == 1) {
-            updateStatusValue(newInput.keySet().iterator().next(),
+            updateSingleDatapointStatusValue(newInput.keySet().iterator().next(),
                     newInput.get(newInput.keySet().iterator().next()));
         } else {
             notifyDataSetChanged();
             for (String key : newInput.keySet()) {
-                containsViewStatusFunction(key, newInput.get(key));
+                hasStatusFunction(key, newInput.get(key));
             }
         }
     }
@@ -101,7 +108,7 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
         return -1;
     }
 
-    private boolean containsViewStatusFunction(String changedStatusFunctionUID, String value) {
+    private boolean hasStatusFunction(String changedStatusFunctionUID, String value) {
         for(Datapoint datapoint : dataPointList){
             if (dataPointMap.get(datapoint) != null && changedStatusFunctionUID.equals(dataPointMap.get(datapoint).getID())) {
                 statusValueMap.put(datapoint.getID(), value);
@@ -201,6 +208,7 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
     public void setOnItemClickListener(RegulationAdapter.OnItemClickListener listener) {
         this.listener = listener;
     }
+
 
     public abstract static class ViewHolder extends RecyclerView.ViewHolder {
 

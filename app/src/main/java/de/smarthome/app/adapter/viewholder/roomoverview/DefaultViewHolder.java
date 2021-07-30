@@ -24,6 +24,10 @@ public class DefaultViewHolder extends RoomOverviewAdapter.ViewHolder{
 
         textViewName = itemView.findViewById(R.id.textView_item);
 
+        setOnClickListener(onItemClickListener, adapter);
+    }
+
+    private void setOnClickListener(@NonNull RoomOverviewAdapter.OnItemClickListener onItemClickListener, @NonNull RoomOverviewAdapter adapter) {
         itemView.setOnClickListener(v -> {
             int position = getAdapterPosition();
             if (onItemClickListener != null && position != RecyclerView.NO_POSITION) {

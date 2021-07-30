@@ -10,7 +10,6 @@ import de.smarthome.app.utility.ToastUtility;
 
 public class ResponseReactorCallbackServer implements ResponseReactor {
     private static final String TAG = "ResponseReactorCallbackServer";
-
     private ToastUtility toastUtility;
 
     public ResponseReactorCallbackServer() {
@@ -32,7 +31,7 @@ public class ResponseReactorCallbackServer implements ResponseReactor {
             }
         }catch(Exception e){
             Log.d(TAG, "Exception: " + e.toString());
-            toastUtility.prepareToast("Exception: Unable to register CallbackServer!");
+            toastUtility.prepareToast("Unable to register CallbackServer!");
             e.printStackTrace();
         }
     }

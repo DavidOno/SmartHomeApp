@@ -36,7 +36,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     private BeaconObserverImplementation beaconObserver;
     private Application parentApplication;
     private Location beaconLocation = null;
-    private MutableLiveData<Boolean> beaconUpdated = new MutableLiveData<>();
+    private MutableLiveData<Boolean> beaconCheck = new MutableLiveData<>();
 
     public static Repository getInstance(@Nullable Application application) {
         if (INSTANCE == null) {
@@ -49,13 +49,17 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         }
         return INSTANCE;
     }
-
-    public void test(){
-        //configContainer.fillWithDummyValueAllConfigs();
+    //TODO: Remove after Testing
+    public void fillWithDummyValues(){
+        configContainer.fillWithDummyValueAllConfigs();
     }
 
-    public void updateLoginDataStatus(boolean update){
-        serverCommunicator.updateLoginDataStatus(update);
+    public void setLoginStatus(boolean update){
+        serverCommunicator.setLoginStatus(update);
+    }
+
+    public LiveData<Boolean> getLoginStatus() {
+        return serverCommunicator.getLoginStatusForUser();
     }
 
     public void setSelectedFunction(Function function) {
@@ -66,50 +70,46 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         return configContainer.getSelectedFunction();
     }
 
-    public Location getSelectedLocation() {
-        return configContainer.getSelectedLocation();
-    }
-
     public void setSelectedLocation(Location newLocation) {
         configContainer.setSelectedLocation(newLocation);
     }
 
-    public void initBeaconCheck() {
-        beaconUpdated.postValue(false);
+    public Location getSelectedLocation() {
+        return configContainer.getSelectedLocation();
     }
 
-    public LiveData<Boolean> checkBeacon() {
-        return beaconUpdated;
+    public void resetBeaconCheck() {
+        beaconCheck.postValue(false);
+    }
+
+    public LiveData<Boolean> getBeaconCheck() {
+        return beaconCheck;
     }
 
     public Location getBeaconLocation() {
         return beaconLocation;
     }
 
-    public LiveData<Boolean> getLoginDataStatus() {
-        return serverCommunicator.getRequestStatusLoginUser();
+    public ChannelConfig getChannelConfig() {
+        return configContainer.getChannelConfig();
     }
 
-    public ChannelConfig getSmartHomeChannelConfig() {
-        return configContainer.getSmartHomeChannelConfig();
-    }
-
-    public void confirmBeacon() {
+    public void confirmBeaconLocation() {
         setSelectedLocation(beaconLocation);
         beaconLocation = null;
     }
 
     public void initBeaconObserver() {
         beaconObserver = new BeaconObserverImplementation(parentApplication, parentApplication.getApplicationContext(),
-                configContainer.getSmartHomeUiConfig(), configContainer.getSmartHomeBeaconLocations(),
+                configContainer.getUIConfig(), configContainer.getBeaconLocations(),
                 new DefaultBeaconManagerCreator());
         beaconObserver.subscribe(this);
         beaconObserver.init();
-        initBeaconCheck();
+        resetBeaconCheck();
     }
 
     public void requestRegisterUser(Credential credential) {
-        serverCommunicator.requestRegisterUser(credential);
+        serverCommunicator.initialisationOfApplication(credential);
         subscribeToMyFirebaseMessagingService();
     }
 
@@ -155,7 +155,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         if (input.getEvent() == null && input.getValue() != null) {
             String value = String.valueOf(input.getValue());
             String uID = input.getUid();
-            configContainer.updateStatusUpdateMap(uID, value);
+            configContainer.setStatusUpdateMap(uID, value);
         }
     }
 
@@ -191,7 +191,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     public void update(Location newLocation) {
         if(newLocation != configContainer.getSelectedLocation()){
             beaconLocation = newLocation;
-            beaconUpdated.postValue(true);
+            beaconCheck.postValue(true);
         }
     }
 

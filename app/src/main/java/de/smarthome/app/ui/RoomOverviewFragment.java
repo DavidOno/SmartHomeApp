@@ -50,21 +50,38 @@ public class RoomOverviewFragment extends Fragment {
         RoomOverviewAdapter adapter = new RoomOverviewAdapter();
         recyclerViewRoom.setAdapter(adapter);
 
-        roomOverviewViewModel.getFunctionMap().observe(getViewLifecycleOwner(), functions -> adapter.setFunctionList(functions, getActivity().getApplication()));
+        setFunctionObserver(adapter);
+        setStatusUpdateObserver(adapter);
+        setGetValueMapObserver(adapter);
 
+        setOnClickListener(adapter);
+        setOnSwitchClickListener(adapter);
+    }
+
+    private void setFunctionObserver(RoomOverviewAdapter adapter) {
+        roomOverviewViewModel.getFunctionMap().observe(getViewLifecycleOwner(), functions -> adapter.initialiseAdapter(functions, getActivity().getApplication()));
+    }
+
+    private void setStatusUpdateObserver(RoomOverviewAdapter adapter) {
         roomOverviewViewModel.getStatusUpdateMap().observe(getViewLifecycleOwner(), stringStringMap -> {
             String uid = stringStringMap.keySet().iterator().next();
             String value = stringStringMap.get(uid);
-            adapter.updateStatusValue(uid, value);
+            adapter.updateSingleFunctionStatusValue(uid, value);
         });
+    }
 
-        roomOverviewViewModel.getStatusGetValueMap().observe(getViewLifecycleOwner(), adapter::updateMultipleStatusValues);
+    private void setGetValueMapObserver(RoomOverviewAdapter adapter) {
+        roomOverviewViewModel.getStatusGetValueMap().observe(getViewLifecycleOwner(), adapter::updateMultipleFunctionStatusValues);
+    }
 
+    private void setOnClickListener(RoomOverviewAdapter adapter) {
         adapter.setOnItemClickListener(function -> {
             roomOverviewViewModel.setSelectedFunction(function);
             navigateToRegulationFragment();
         });
+    }
 
+    private void setOnSwitchClickListener(RoomOverviewAdapter adapter) {
         adapter.setOnSwitchClickListener((function, isChecked) -> {
             //There is only a switch if binary is the first (!) input type. So the first DataPoint is needed.
             if(isChecked){

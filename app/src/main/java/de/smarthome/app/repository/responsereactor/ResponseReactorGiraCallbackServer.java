@@ -10,7 +10,6 @@ import de.smarthome.app.utility.ToastUtility;
 
 public class ResponseReactorGiraCallbackServer implements ResponseReactor {
     private static final String TAG = "ResponseReactorGiraCallbackServer";
-
     private ToastUtility toastUtility;
 
     public ResponseReactorGiraCallbackServer() {
@@ -23,12 +22,11 @@ public class ResponseReactorGiraCallbackServer implements ResponseReactor {
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
                 Log.d(TAG, "response received " + TAG);
                 Log.d(TAG, "No Problems when registering CallbackServer at Gira.\nStatus: " + responseEntity.getStatusCode());
-
             } else {
                 Log.d(TAG, "error occurred");
                 Log.d(TAG, responseEntity.getStatusCode().toString());
-
                 Log.d(TAG, "Problem when registering CallbackServer at Gira.\nStatus: " + responseEntity.getStatusCode());
+
                 toastUtility.prepareToast("Unable to reach Gira Server");
             }
         }catch(Exception e){

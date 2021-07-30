@@ -27,15 +27,15 @@ public class SmartHomeApplicationViewModel extends AndroidViewModel {
     }
 
     public LiveData<Boolean> checkBeacon() {
-        return repository.checkBeacon();
+        return repository.getBeaconCheck();
     }
 
     public void initBeaconCheck() {
-        repository.initBeaconCheck();
+        repository.resetBeaconCheck();
     }
 
     public void confirmBeacon() {
-        repository.confirmBeacon();
+        repository.confirmBeaconLocation();
     }
 
     public Location getBeaconLocation() {

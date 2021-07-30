@@ -22,10 +22,9 @@ import de.smarthome.R;
 import de.smarthome.app.viewmodel.LoginViewModel;
 import de.smarthome.app.utility.ToastUtility;
 
-
 public class LoginFragment extends Fragment {
     private static final String TAG = "LoginFragment";
-    private LoginViewModel loginViewModel;
+    private LoginViewModel viewModel;
     private EditText editTextUserName;
     private EditText editTextPwd;
     private Button buttonLogin;
@@ -36,14 +35,12 @@ public class LoginFragment extends Fragment {
     private String userName;
     private String password;
 
-    ToastUtility toastUtility;
+    private ToastUtility toastUtility;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
-
         findViewsByID(view);
-
         return view;
     }
 
@@ -57,9 +54,13 @@ public class LoginFragment extends Fragment {
         //TODO: Remove at the end of testing
         buttonDummy.setOnClickListener(v -> navigateToHomeOverviewFragment());
 
-        loginViewModel.getLoginDataStatus().observe(this.getViewLifecycleOwner(), requestStatus -> {
+        setLoginStatusObserver();
+    }
+
+    private void setLoginStatusObserver() {
+        viewModel.getLoginStatus().observe(this.getViewLifecycleOwner(), requestStatus -> {
             if(requestStatus){
-                loginViewModel.saveCredential(this.getActivity(), buildCredential(userName, password));
+                viewModel.saveCredential(this.getActivity(), buildCredential(userName, password));
                 navigateToHomeOverviewFragment();
             }else{
                 toastUtility.prepareToast("Login Data incorrect!");
@@ -71,7 +72,7 @@ public class LoginFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        loginViewModel = new ViewModelProvider(requireActivity()).get(LoginViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(LoginViewModel.class);
         toastUtility = ToastUtility.getInstance();
 
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
@@ -94,13 +95,12 @@ public class LoginFragment extends Fragment {
             Toast.makeText(getActivity(), "Username or Password is empty!", Toast.LENGTH_LONG).show();
             return false;
         }
-
         return true;
     }
 
     private void registerNewUser(){
         if(getCredentialsFromUI()){
-            loginViewModel.registerUser(buildCredential(userName, password));
+            viewModel.registerUser(buildCredential(userName, password));
         }
     }
 

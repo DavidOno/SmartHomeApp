@@ -71,12 +71,21 @@ public class SmartHomeApplication extends AppCompatActivity {
         viewModel = new ViewModelProvider(this).get(SmartHomeApplicationViewModel.class);
 
         toastUtility = ToastUtility.getInstance();
-        toastUtility.getNewToast().observe(this, aBoolean -> {
-            if(aBoolean){
-                Toast.makeText(getApplicationContext(), toastUtility.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
 
+        setNewToastObserver();
+        setBeaconObserver();
+
+        navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        navController = NavHostFragment.findNavController(navHostFragment);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        if(savedInstanceState == null){
+            getSavedCredentials();
+        }
+    }
+
+    private void setBeaconObserver() {
         viewModel.checkBeacon().observe(this, aBoolean -> {
             if(aBoolean && viewModel.hasTimerCompleted()){
                 viewModel.initBeaconCheck();
@@ -87,15 +96,14 @@ public class SmartHomeApplication extends AppCompatActivity {
                 }
             }
         });
+    }
 
-        navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
-        navController = NavHostFragment.findNavController(navHostFragment);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        if(savedInstanceState == null){
-            getSavedCredentials();
-        }
+    private void setNewToastObserver() {
+        toastUtility.getNewToast().observe(this, aBoolean -> {
+            if(aBoolean){
+                Toast.makeText(getApplicationContext(), toastUtility.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 

@@ -18,15 +18,13 @@ import de.smarthome.app.viewmodel.OptionsViewModel;
 
 public class OptionsFragment extends Fragment {
     private static final String TAG = "OptionsFragment";
-    private OptionsViewModel optionsViewModel;
+    private OptionsViewModel viewModel;
     private Button buttonLogout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_options, container, false);
-
         findViewsByID(view);
-
         return view;
     }
 
@@ -34,10 +32,8 @@ public class OptionsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         requireActivity().setTitle("Option");
-
         buttonLogout.setOnClickListener(v -> logoutUser());
-
-        optionsViewModel = new ViewModelProvider(requireActivity()).get(OptionsViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(OptionsViewModel.class);
     }
 
     private void findViewsByID(View view) {
@@ -45,13 +41,12 @@ public class OptionsFragment extends Fragment {
     }
 
     private void logoutUser(){
-        optionsViewModel.getDataFromGoogleAndDelete();
+        viewModel.getDataFromGoogleAndDelete();
         navigateToLoginFragment();
     }
 
     private void navigateToLoginFragment() {
         NavController navController = NavHostFragment.findNavController(this);
-
         navController.navigate(R.id.loginFragment);
     }
 }

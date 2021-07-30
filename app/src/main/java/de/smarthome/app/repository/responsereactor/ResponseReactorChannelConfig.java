@@ -11,7 +11,6 @@ import de.smarthome.app.model.configs.ChannelConfig;
 
 public class ResponseReactorChannelConfig implements ResponseReactor {
     private static final String TAG = "ResponseReactorChannelConfig";
-    private ChannelConfig responseChannelConfig;
     private ConfigContainer configContainer;
 
     public ResponseReactorChannelConfig() {
@@ -25,7 +24,7 @@ public class ResponseReactorChannelConfig implements ResponseReactor {
                 Log.d(TAG, "response received ChannelConfig");
                 Log.d(TAG, responseEntity.getBody().toString());
 
-                responseChannelConfig = (ChannelConfig) responseEntity.getBody();
+                ChannelConfig responseChannelConfig = (ChannelConfig) responseEntity.getBody();
                 sendChannelConfigToRepo(responseChannelConfig);
 
                 Log.d(TAG, "ChannelConfig retrieved successfully.\nStatus: " + responseEntity.getStatusCode());
@@ -41,10 +40,6 @@ public class ResponseReactorChannelConfig implements ResponseReactor {
             Log.d(TAG, "Exception: " + e.toString());
             e.printStackTrace();
         }
-    }
-
-    public ChannelConfig getResponseChannelConfig() {
-        return responseChannelConfig;
     }
 
     public void sendChannelConfigToRepo(ChannelConfig newChannelConfig){

@@ -23,24 +23,26 @@ public class StepViewHolder extends RegulationAdapter.ViewHolder{
                           @NonNull RegulationAdapter.OnItemClickListener onItemClickListener,
                           @NonNull RegulationAdapter adapter) {
         super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_step, parent, false));
-        textViewName = itemView.findViewById(R.id.textView_item);
 
-        plus = itemView.findViewById(R.id.imageView_plus);
-        minus = itemView.findViewById(R.id.imageView_minus);
+        findViewsByID();
+        setButtonOnClickListener(onItemClickListener, adapter, plus, "1");
+        setButtonOnClickListener(onItemClickListener, adapter, minus, "0");
+    }
 
+    private void setButtonOnClickListener(@NonNull RegulationAdapter.OnItemClickListener onItemClickListener,
+                                          @NonNull RegulationAdapter adapter, ImageButton plus, String output) {
         plus.setOnClickListener(v -> {
             int position = getAdapterPosition();
             if (onItemClickListener != null && position != RecyclerView.NO_POSITION) {
-                onItemClickListener.onItemClick(adapter.getDataPointAt(position), "1");
+                onItemClickListener.onItemClick(adapter.getDataPointAt(position), output);
             }
         });
+    }
 
-        minus.setOnClickListener(v -> {
-            int position = getAdapterPosition();
-            if (onItemClickListener != null && position != RecyclerView.NO_POSITION) {
-                onItemClickListener.onItemClick(adapter.getDataPointAt(position), "0");
-            }
-        });
+    private void findViewsByID() {
+        textViewName = itemView.findViewById(R.id.textView_item);
+        plus = itemView.findViewById(R.id.imageView_plus);
+        minus = itemView.findViewById(R.id.imageView_minus);
     }
 
     @Override

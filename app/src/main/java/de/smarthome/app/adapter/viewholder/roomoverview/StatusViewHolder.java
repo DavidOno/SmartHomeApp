@@ -1,7 +1,6 @@
 package de.smarthome.app.adapter.viewholder.roomoverview;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -23,15 +22,22 @@ public class StatusViewHolder extends RoomOverviewAdapter.ViewHolder{
                             @NonNull RoomOverviewAdapter adapter) {
         super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_status, parent, false));
 
-        textViewName = itemView.findViewById(R.id.textView_item);
-        textViewStatus = itemView.findViewById(R.id.textView_item_status);
+        findViewById();
+        setOnClickListener(onItemClickListener, adapter);
+    }
 
+    private void setOnClickListener(@NonNull RoomOverviewAdapter.OnItemClickListener onItemClickListener, @NonNull RoomOverviewAdapter adapter) {
         itemView.setOnClickListener(v -> {
             int position = getAdapterPosition();
             if (onItemClickListener != null && position != RecyclerView.NO_POSITION) {
                 onItemClickListener.onItemClick(adapter.getFunctionAt(position));
             }
         });
+    }
+
+    private void findViewById() {
+        textViewName = itemView.findViewById(R.id.textView_item);
+        textViewStatus = itemView.findViewById(R.id.textView_item_status);
     }
 
     @Override

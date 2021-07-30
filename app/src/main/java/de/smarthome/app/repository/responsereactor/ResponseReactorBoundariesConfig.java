@@ -11,7 +11,6 @@ import de.smarthome.command.ResponseReactor;
 
 public class ResponseReactorBoundariesConfig implements ResponseReactor {
     private static final String TAG = "ResponseReactorBoundariesConfig";
-    private BoundariesConfig responseBoundariesConfig;
     private ConfigContainer configContainer;
 
     public ResponseReactorBoundariesConfig() {
@@ -24,7 +23,7 @@ public class ResponseReactorBoundariesConfig implements ResponseReactor {
                 Log.d(TAG, "response received UIConfig");
                 Log.d(TAG, responseEntity.getBody().toString());
 
-                responseBoundariesConfig = (BoundariesConfig) responseEntity.getBody();
+                BoundariesConfig responseBoundariesConfig = (BoundariesConfig) responseEntity.getBody();
                 sendBoundariesConfigToRepo(responseBoundariesConfig);
 
                 Log.d(TAG, "BoundaryConfig successfully retrieved.\nStatus: " + responseEntity.getStatusCode());
@@ -37,10 +36,6 @@ public class ResponseReactorBoundariesConfig implements ResponseReactor {
             Log.d(TAG, "Exception: " + e.toString());
             e.printStackTrace();
         }
-    }
-
-    public BoundariesConfig getResponseBoundariesConfig() {
-        return responseBoundariesConfig;
     }
 
     public void sendBoundariesConfigToRepo(BoundariesConfig newBoundariesConfig){

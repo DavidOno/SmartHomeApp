@@ -17,15 +17,11 @@ public class ResponseReactorCheckAvailability implements ResponseReactor {
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
                 Log.d(TAG, "response received " + TAG);
                 Log.d(TAG, responseEntity.getBody().toString());
-
                 Log.d(TAG, "Communication with Server possible.\nStatus: " + responseEntity.getStatusCode());
-
             } else {
                 Log.d(TAG, "error occurred");
                 Log.d(TAG, responseEntity.getStatusCode().toString());
-
                 Log.d(TAG, "Problem when trying to reach Server.\nStatus: " + responseEntity.getStatusCode());
-
             }
         }catch(Exception e){
             Log.d(TAG, "Exception: " + e.toString());

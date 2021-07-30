@@ -32,10 +32,10 @@ public class ConfigContainer {
     private static ConfigContainer INSTANCE;
     private final ToastUtility toastUtility = ToastUtility.getInstance();
 
-    private UIConfig smartHomeUiConfig;
-    private ChannelConfig smartHomeChannelConfig;
-    private BeaconLocations smartHomeBeaconLocations;
-    private BoundariesConfig smartHomeBoundariesConfig;
+    private UIConfig uiConfig;
+    private ChannelConfig channelConfig;
+    private BeaconLocations beaconLocations;
+    private BoundariesConfig boundariesConfig;
 
     private Location selectedLocation = null;
     private Function selectedFunction = null;
@@ -58,8 +58,8 @@ public class ConfigContainer {
     public void setSelectedFunction(Function function) {
         selectedFunction = function;
         if(function != null) {
-            updateBoundaryMap();
-            updateDataPointMap(function);
+            setBoundaryMap();
+            setDataPointMap(function);
         }
     }
 
@@ -70,7 +70,7 @@ public class ConfigContainer {
     public void setSelectedLocation(Location newLocation) {
         selectedLocation = newLocation;
         if(newLocation != null) {
-            updateFunctionMap(selectedLocation);
+            setFunctionMap(selectedLocation);
         }
     }
 
@@ -78,48 +78,51 @@ public class ConfigContainer {
         return selectedLocation;
     }
 
-    public void setUIConfig(UIConfig newUiConfig) {
-        smartHomeUiConfig = newUiConfig;
-        smartHomeUiConfig.initParentLocations();
+    public void initNewUIConfig(UIConfig newUiConfig) {
+        setUIConfig(newUiConfig);
+        uiConfig.initParentLocations();
 
-        updateLocationList();
+        setLocationList();
         if (selectedLocation != null) {
-            checkCurrentSelectedLocation();
+            checkForCurrentlySelectedLocation();
             Repository.getInstance(null).initBeaconObserver();
         }
         if (selectedFunction != null) {
-            checkCurrentSelectedFunction();
+            checkForCurrentlySelectedFunction();
         }
     }
 
-    public UIConfig getSmartHomeUiConfig() {
-        return smartHomeUiConfig;
+    private void setUIConfig(UIConfig newUiConfig) {
+        uiConfig = newUiConfig;
     }
 
-    public void setBeaconConfig(BeaconLocations newBeaconConfig) {
-        smartHomeBeaconLocations = newBeaconConfig;
-        Repository.getInstance(null).initBeaconObserver();
+    public UIConfig getUIConfig() {
+        return uiConfig;
     }
 
-    public BeaconLocations getSmartHomeBeaconLocations() {
-        return smartHomeBeaconLocations;
+    public void setBeaconLocations(BeaconLocations newBeaconConfig) {
+        beaconLocations = newBeaconConfig;
+    }
+
+    public BeaconLocations getBeaconLocations() {
+        return beaconLocations;
     }
 
     public void setChannelConfig(ChannelConfig newChannelConfig) {
-        smartHomeChannelConfig = newChannelConfig;
+        channelConfig = newChannelConfig;
     }
 
-    public ChannelConfig getSmartHomeChannelConfig() {
-        return smartHomeChannelConfig;
+    public ChannelConfig getChannelConfig() {
+        return channelConfig;
     }
 
     public void setBoundaryConfig(BoundariesConfig newBoundaryConfig) {
-        smartHomeBoundariesConfig = newBoundaryConfig;
+        boundariesConfig = newBoundaryConfig;
     }
 
-    private void checkCurrentSelectedLocation() {
+    private void checkForCurrentlySelectedLocation() {
         boolean notFound = true;
-        for (Location loc : smartHomeUiConfig.getAllLocations()) {
+        for (Location loc : uiConfig.getAllLocations()) {
             if (loc.getName().equals(selectedLocation.getName())) {
                 setSelectedLocation(loc);
                 notFound = false;
@@ -131,9 +134,9 @@ public class ConfigContainer {
         }
     }
 
-    private void checkCurrentSelectedFunction() {
+    private void checkForCurrentlySelectedFunction() {
         boolean notFound = true;
-        for (Function func : selectedLocation.getFunctions(smartHomeUiConfig)) {
+        for (Function func : selectedLocation.getFunctions(uiConfig)) {
             if (func.getName().equals(selectedFunction.getName())) {
                 setSelectedFunction(func);
                 notFound = false;
@@ -149,8 +152,8 @@ public class ConfigContainer {
         return locationList;
     }
 
-    public void updateLocationList() {
-        List<Location> allLocations = new ArrayList<>(smartHomeUiConfig.getLocations());
+    public void setLocationList() {
+        List<Location> allLocations = new ArrayList<>(uiConfig.getLocations());
         for (Location location : allLocations) {
             location.getAllChildrenFromLocation(allLocations);
         }
@@ -161,7 +164,7 @@ public class ConfigContainer {
         return functionMap;
     }
 
-    public void updateFunctionMap(Location viewedLocation) {
+    public void setFunctionMap(Location viewedLocation) {
         Map<Function, Function> completeFunctionMap = mapStatusFunctionToFunction(viewedLocation);
 
         if (!viewedLocation.getParentLocation().equals(Location.ROOT)) {
@@ -173,10 +176,10 @@ public class ConfigContainer {
     private LinkedHashMap<Function, Function> mapStatusFunctionToFunction(Location location) {
         LinkedHashMap<Function, Function> completeFunctionMap = new LinkedHashMap<>();
         String regex = "_";
-        for (Function func : location.getFunctions(smartHomeUiConfig)) {
+        for (Function func : location.getFunctions(uiConfig)) {
             Function functionStatus = null;
             if (!func.isStatusFunction()) {
-                for (Function comparedFunction : location.getFunctions(smartHomeUiConfig)) {
+                for (Function comparedFunction : location.getFunctions(uiConfig)) {
                     if (comparedFunction.isStatusFunction() &&
                             //If they share the same name "Light_on" and "Light_Status"
                             func.getName().split(regex)[0].equals(
@@ -191,7 +194,7 @@ public class ConfigContainer {
         return completeFunctionMap;
     }
 
-    public void updateBoundaryMap() {
+    public void setBoundaryMap() {
         Map<Datapoint, BoundaryDataPoint> completeFunctionMap = mapBoundaryToFunction();
         boundaryMap.postValue(completeFunctionMap);
     }
@@ -203,18 +206,18 @@ public class ConfigContainer {
     private LinkedHashMap<Datapoint, BoundaryDataPoint> mapBoundaryToFunction() {
         LinkedHashMap<Datapoint, BoundaryDataPoint> datapointBoundaryDataPointMap = new LinkedHashMap<>();
         String regex = "_";
-        for (Boundary boundary : smartHomeBoundariesConfig.getBoundaries()) {
+        for (Boundary boundary : boundariesConfig.getBoundaries()) {
             if (boundary.getLocation().equals(selectedLocation.getName()) &&
                     boundary.getName().split(regex)[0].equals(selectedFunction.getName().split(regex)[0])) {
 
-                datapointBoundaryDataPointMap.putAll(findCorrespondingBoundaryDataPoint(boundary));
+                datapointBoundaryDataPointMap.putAll(mapCorrespondingBoundaryDataPoint(boundary));
                 break;
             }
         }
         return datapointBoundaryDataPointMap;
     }
 
-    private LinkedHashMap<Datapoint, BoundaryDataPoint> findCorrespondingBoundaryDataPoint(Boundary boundary) {
+    private LinkedHashMap<Datapoint, BoundaryDataPoint> mapCorrespondingBoundaryDataPoint(Boundary boundary) {
         LinkedHashMap<Datapoint, BoundaryDataPoint> datapointBoundaryDataPointMap = new LinkedHashMap<>();
         for (BoundaryDataPoint bdp : boundary.getDatapoints()) {
             for (Datapoint dp : selectedFunction.getDataPoints())
@@ -226,7 +229,7 @@ public class ConfigContainer {
         return datapointBoundaryDataPointMap;
     }
 
-    public void updateDataPointMap(Function function) {
+    public void setDataPointMap(Function function) {
         Map<Datapoint, Datapoint> newValue = new LinkedHashMap<>();
         if (functionMap.getValue().get(function) != null) {
             for (int i = 0; i < function.getDataPoints().size(); i++) {
@@ -248,7 +251,7 @@ public class ConfigContainer {
         return dataPointMap;
     }
 
-    public void updateStatusUpdateMap(String functionUID, String value) {
+    public void setStatusUpdateMap(String functionUID, String value) {
         Map<String, String> newValue = new HashMap<>();
         newValue.put(functionUID, value);
         statusUpdateMap.postValue(newValue);
@@ -258,7 +261,7 @@ public class ConfigContainer {
         return statusUpdateMap;
     }
 
-    public void updateStatusGetValueMap(Map<String, String> newValues) {
+    public void setStatusGetValueMap(Map<String, String> newValues) {
         statusGetValueMap.postValue(newValues);
     }
 
@@ -379,7 +382,7 @@ public class ConfigContainer {
 
             UIConfig newUiConfig = new UIConfig(funcList1, uiconfigloc2, "cczk");
             //Log.d("Hello", "New UIConfig " + newUiConfig.toString());
-            setUIConfig(newUiConfig);
+            initNewUIConfig(newUiConfig);
         }).start();
     }
 
@@ -412,7 +415,7 @@ public class ConfigContainer {
 
             ChannelConfig output = new ChannelConfig(channelList);
             //Log.d(TAG, output.toString());
-            smartHomeChannelConfig = output;
+            channelConfig = output;
         }).start();
     }
 
@@ -436,9 +439,8 @@ public class ConfigContainer {
 
         ObjectMapper mapper = new ObjectMapper();
         try {
-            setBeaconConfig(mapper.readValue(locationConfigString, new TypeReference<BeaconLocations>() {
-            }));
-
+            setBeaconLocations(mapper.readValue(locationConfigString, new TypeReference<BeaconLocations>() {}));
+            Repository.getInstance(null).initBeaconObserver();
         } catch (Exception e) {
             Log.d(TAG, "BeaconConfig Exception " + e.toString());
             e.printStackTrace();
@@ -460,6 +462,6 @@ public class ConfigContainer {
         z.add(y);
         z.add(x);
 
-        smartHomeBoundariesConfig = new BoundariesConfig(z);
+        boundariesConfig = new BoundariesConfig(z);
     }
 }

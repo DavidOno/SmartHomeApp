@@ -8,18 +8,13 @@ import org.springframework.http.ResponseEntity;
 import de.smarthome.app.repository.ConfigContainer;
 import de.smarthome.command.ResponseReactor;
 import de.smarthome.app.model.UIConfig;
-import de.smarthome.app.utility.ToastUtility;
 
 public class ResponseReactorUIConfig implements ResponseReactor {
     private static final String TAG = "ResponseReactorUIConfig";
-    private UIConfig responseUIConfig;
     private ConfigContainer configContainer;
-
-    private ToastUtility toastUtility;
 
     public ResponseReactorUIConfig() {
         this.configContainer = ConfigContainer.getInstance();
-        this.toastUtility = ToastUtility.getInstance();
     }
 
     @Override
@@ -29,7 +24,7 @@ public class ResponseReactorUIConfig implements ResponseReactor {
                 Log.d(TAG, "response received UIConfig");
                 Log.d(TAG, responseEntity.getBody().toString());
 
-                responseUIConfig = (UIConfig) responseEntity.getBody();
+                UIConfig responseUIConfig = (UIConfig) responseEntity.getBody();
                 sendUIConfigToRepo(responseUIConfig);
 
                 Log.d(TAG, "UIConfig successfully retrieved.\nStatus: " + responseEntity.getStatusCode());
@@ -46,11 +41,7 @@ public class ResponseReactorUIConfig implements ResponseReactor {
         }
     }
 
-    public UIConfig getResponseUIConfig() {
-        return responseUIConfig;
-    }
-
     public void sendUIConfigToRepo(UIConfig newUIConfig){
-        configContainer.setUIConfig(newUIConfig);
+        configContainer.initNewUIConfig(newUIConfig);
     }
 }

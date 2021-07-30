@@ -24,9 +24,12 @@ public class SwitchViewHolder extends RegulationAdapter.ViewHolder{
                             @NonNull RegulationAdapter adapter) {
         super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_switch, parent, false));
 
-        textViewName = itemView.findViewById(R.id.textView_item);
-        binarySwitch = itemView.findViewById(R.id.switch_item);
+        findViewsByID();
+        setSwitchOnClickListener(onSwitchClickListener, adapter);
+    }
 
+    private void setSwitchOnClickListener(@NonNull RegulationAdapter.OnItemClickListener onSwitchClickListener,
+                                          @NonNull RegulationAdapter adapter) {
         binarySwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -40,6 +43,11 @@ public class SwitchViewHolder extends RegulationAdapter.ViewHolder{
                 }
             }
         });
+    }
+
+    private void findViewsByID() {
+        textViewName = itemView.findViewById(R.id.textView_item);
+        binarySwitch = itemView.findViewById(R.id.switch_item);
     }
 
     @Override
