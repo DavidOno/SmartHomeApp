@@ -63,7 +63,8 @@ public class LoginFragment extends Fragment {
                 viewModel.saveCredential(this.getActivity(), buildCredential(userName, password));
                 navigateToHomeOverviewFragment();
             }else{
-                toastUtility.prepareToast("Login Data incorrect!");
+                if(userName != null && password != null)
+                    toastUtility.prepareToast("Login Data incorrect!");
             }
         });
     }
