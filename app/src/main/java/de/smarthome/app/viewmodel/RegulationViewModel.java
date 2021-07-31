@@ -11,6 +11,7 @@ import java.util.Map;
 import de.smarthome.app.model.Datapoint;
 import de.smarthome.app.model.Function;
 import de.smarthome.app.model.configs.BoundaryDataPoint;
+import de.smarthome.app.model.configs.ChannelConfig;
 import de.smarthome.app.repository.Repository;
 
 public class RegulationViewModel extends AndroidViewModel {
@@ -45,5 +46,9 @@ public class RegulationViewModel extends AndroidViewModel {
 
     public LiveData<Map<String, String>> getStatusGetValueMap() {
         return repository.getStatusGetValueMap();
+    }
+
+    public ChannelConfig getChannelConfig(){
+        return repository.getChannelConfig();
     }
 }

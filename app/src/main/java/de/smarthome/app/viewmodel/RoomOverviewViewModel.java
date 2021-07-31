@@ -10,6 +10,7 @@ import java.util.Map;
 
 import de.smarthome.app.model.Function;
 import de.smarthome.app.model.Location;
+import de.smarthome.app.model.configs.ChannelConfig;
 import de.smarthome.app.repository.Repository;
 
 public class RoomOverviewViewModel  extends AndroidViewModel {
@@ -44,5 +45,9 @@ public class RoomOverviewViewModel  extends AndroidViewModel {
 
     public LiveData<Map<String, String>> getStatusGetValueMap(){
         return repository.getStatusGetValueMap();
+    }
+
+    public ChannelConfig getChannelConfig(){
+        return repository.getChannelConfig();
     }
 }
