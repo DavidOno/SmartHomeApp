@@ -22,13 +22,16 @@ public class ChannelConfig {
     public boolean isFirstDataPointBinary(Function function){
         Channel channel = findChannelByName(function);
 
-        if(channel.getDatapoints().size() >= 1){
-            if(channel.getDatapoints().get(0).getType().equals(DatapointType.BINARY)
-                    && channel.getDatapoints().get(0).getAccess().equals(DatapointAccess.READ_WRITE)){
-                return true;
-            }
+        if(channel.getDatapoints().isEmpty()){
+            return channel.getDatapoints().get(0).getType().equals(DatapointType.BINARY)
+                    && channel.getDatapoints().get(0).getAccess().equals(DatapointAccess.READ_WRITE);
         }
         return false;
+    }
+
+    public boolean isStatusViewHolder(Function function){
+        Channel channel = findChannelByName(function);
+        return getRoomOverviewItemViewType(channel) == RoomOverviewAdapter.STATUS_VIEW_HOLDER;
     }
 
     public Channel findChannelByName(Function function){
