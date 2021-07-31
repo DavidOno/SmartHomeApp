@@ -24,6 +24,13 @@ public class BeaconRanging implements BeaconConsumer {
     private final BeaconLocationManager beaconLocationManager;
     private final Context context;
 
+    /**
+     *
+     * @param context
+     * @param newUIConfig
+     * @param newBeaconConfig
+     * @param beaconManagerCreator
+     */
     public BeaconRanging(Context context, UIConfig newUIConfig, BeaconLocations newBeaconConfig,
                          BeaconManagerCreator beaconManagerCreator) {
         this.context = context;
@@ -41,10 +48,9 @@ public class BeaconRanging implements BeaconConsumer {
         beaconManager.unbind(this);
     }
 
-    public void onDestroy() {
-        beaconManager.unbind(this);
-    }
-
+    /**
+     *
+     */
     @Override
     public void onBeaconServiceConnect() {
         RangeNotifier rangeNotifier = (beacons, region) -> {
@@ -61,14 +67,10 @@ public class BeaconRanging implements BeaconConsumer {
             }
         };
 
-        try {
-            beaconManager.startRangingBeaconsInRegion(new Region("myRangingUniqueId", null, null, null));
-            beaconManager.addRangeNotifier(rangeNotifier);
-            beaconManager.startRangingBeaconsInRegion(new Region("myRangingUniqueId", null, null, null));
-            beaconManager.addRangeNotifier(rangeNotifier);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+        beaconManager.startRangingBeacons(new Region("myRangingUniqueId", null, null, null));
+        beaconManager.addRangeNotifier(rangeNotifier);
+        beaconManager.startRangingBeacons(new Region("myRangingUniqueId", null, null, null));
+        beaconManager.addRangeNotifier(rangeNotifier);
     }
 
     @Override
