@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Model class, which represents the ui-config stored in the GIRA-server.
+ * It holds all locations and functions in a users home.
+ */
 public class UIConfig {
 
     private List<Function> functions;

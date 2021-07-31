@@ -27,7 +27,7 @@ import de.smarthome.app.model.UIConfig;
 import de.smarthome.app.model.responses.AvailabilityResponse;
 import de.smarthome.app.model.responses.GetValueResponse;
 import de.smarthome.app.model.responses.RegisterResponse;
-import de.smarthome.server.RestTemplateCreater;
+import de.smarthome.server.RestTemplateCreator;
 import de.smarthome.server.StandardErrorHandler;
 
 public class HomeServerCommandInterpreter implements CommandInterpreter {
@@ -39,15 +39,15 @@ public class HomeServerCommandInterpreter implements CommandInterpreter {
     public static final String HTTPS = "https://";
     private String token;
     private String uriPrefix = "https://192.168.132.101";
-    private RestTemplateCreater restTemplateCreater;
+    private RestTemplateCreator restTemplateCreator;
     private Supplier<RestTemplate> createRestTemplate = () -> {
-        RestTemplate restTemplate = restTemplateCreater.create();
+        RestTemplate restTemplate = restTemplateCreator.create();
         restTemplate.setErrorHandler(new StandardErrorHandler());
         return restTemplate;
     };
 
-    public HomeServerCommandInterpreter(RestTemplateCreater restTemplateCreater) {
-        this.restTemplateCreater = restTemplateCreater;
+    public HomeServerCommandInterpreter(RestTemplateCreator restTemplateCreator) {
+        this.restTemplateCreator = restTemplateCreator;
     }
 
     @Override

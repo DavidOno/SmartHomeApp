@@ -50,7 +50,7 @@ public class ServerHandlerTest {
     @Test
     public void testAvailabilityCommand(){
         RestTemplate mockedRestTemplate = mock(RestTemplate.class);
-        RestTemplateCreater mockedRestTemplateCreator = mock(RestTemplateCreater.class);
+        RestTemplateCreator mockedRestTemplateCreator = mock(RestTemplateCreator.class);
         when(mockedRestTemplateCreator.create()).thenReturn(mockedRestTemplate);
         CommandInterpreter ci = new HomeServerCommandInterpreter(mockedRestTemplateCreator);
         GiraServerHandler sh = new GiraServerHandler(ci);
@@ -78,7 +78,7 @@ public class ServerHandlerTest {
     @Test
     public void testUIConfigCommand(){
         RestTemplate mockedRestTemplate = mock(RestTemplate.class);
-        RestTemplateCreater mockedRestTemplateCreator = mock(RestTemplateCreater.class);
+        RestTemplateCreator mockedRestTemplateCreator = mock(RestTemplateCreator.class);
         when(mockedRestTemplateCreator.create()).thenReturn(mockedRestTemplate);
         CommandInterpreter ci = new HomeServerCommandInterpreter(mockedRestTemplateCreator);
         GiraServerHandler sh = new GiraServerHandler(ci);
@@ -103,7 +103,7 @@ public class ServerHandlerTest {
     @Test
     public void testRegisterClientCommand(){
         RestTemplate mockedRestTemplate = mock(RestTemplate.class);
-        RestTemplateCreater mockedRestTemplateCreator = mock(RestTemplateCreater.class);
+        RestTemplateCreator mockedRestTemplateCreator = mock(RestTemplateCreator.class);
         when(mockedRestTemplateCreator.create()).thenReturn(mockedRestTemplate);
         CommandInterpreter ci = new HomeServerCommandInterpreter(mockedRestTemplateCreator);
         GiraServerHandler sh = new GiraServerHandler(ci);
@@ -131,7 +131,7 @@ public class ServerHandlerTest {
     @Test
     public void testGetValueCommand(){
         RestTemplate mockedRestTemplate = mock(RestTemplate.class);
-        RestTemplateCreater mockedRestTemplateCreator = mock(RestTemplateCreater.class);
+        RestTemplateCreator mockedRestTemplateCreator = mock(RestTemplateCreator.class);
         when(mockedRestTemplateCreator.create()).thenReturn(mockedRestTemplate);
         CommandInterpreter ci = new HomeServerCommandInterpreter(mockedRestTemplateCreator);
         GiraServerHandler sh = new GiraServerHandler(ci);
@@ -164,7 +164,7 @@ public class ServerHandlerTest {
     @Test
     public void testChangeValueCommand(){
         RestTemplate mockedRestTemplate = mock(RestTemplate.class);
-        RestTemplateCreater mockedRestTemplateCreator = mock(RestTemplateCreater.class);
+        RestTemplateCreator mockedRestTemplateCreator = mock(RestTemplateCreator.class);
         when(mockedRestTemplateCreator.create()).thenReturn(mockedRestTemplate);
         CommandInterpreter ci = new HomeServerCommandInterpreter(mockedRestTemplateCreator);
         GiraServerHandler sh = new GiraServerHandler(ci);
@@ -188,7 +188,7 @@ public class ServerHandlerTest {
     @Test
     public void testAdditionalConfigCommand_CHANNEL(){
         RestTemplate mockedRestTemplate = mock(RestTemplate.class);
-        RestTemplateCreater mockedRestTemplateCreator = mock(RestTemplateCreater.class);
+        RestTemplateCreator mockedRestTemplateCreator = mock(RestTemplateCreator.class);
         when(mockedRestTemplateCreator.create()).thenReturn(mockedRestTemplate);
         CommandInterpreter ci = new HomeServerCommandInterpreter(mockedRestTemplateCreator);
         GiraServerHandler sh = new GiraServerHandler(ci);
@@ -215,7 +215,7 @@ public class ServerHandlerTest {
     @Test
     public void testAdditionalConfigCommand_LOCATION(){
         RestTemplate mockedRestTemplate = mock(RestTemplate.class);
-        RestTemplateCreater mockedRestTemplateCreator = mock(RestTemplateCreater.class);
+        RestTemplateCreator mockedRestTemplateCreator = mock(RestTemplateCreator.class);
         when(mockedRestTemplateCreator.create()).thenReturn(mockedRestTemplate);
         CommandInterpreter ci = new HomeServerCommandInterpreter(mockedRestTemplateCreator);
         GiraServerHandler sh = new GiraServerHandler(ci);
@@ -270,7 +270,7 @@ public class ServerHandlerTest {
     @Test
     public void testUnregisterClientCommand(){
         RestTemplate mockedRestTemplate = mock(RestTemplate.class);
-        RestTemplateCreater mockedRestTemplateCreator = mock(RestTemplateCreater.class);
+        RestTemplateCreator mockedRestTemplateCreator = mock(RestTemplateCreator.class);
         when(mockedRestTemplateCreator.create()).thenReturn(mockedRestTemplate);
         CommandInterpreter ci = new HomeServerCommandInterpreter(mockedRestTemplateCreator);
         GiraServerHandler sh = new GiraServerHandler(ci);
@@ -294,7 +294,7 @@ public class ServerHandlerTest {
     @Test
     public void testRegisterCallbackServerAtGiraCommand(){
         RestTemplate mockedRestTemplate = mock(RestTemplate.class);
-        RestTemplateCreater mockedRestTemplateCreator = mock(RestTemplateCreater.class);
+        RestTemplateCreator mockedRestTemplateCreator = mock(RestTemplateCreator.class);
         when(mockedRestTemplateCreator.create()).thenReturn(mockedRestTemplate);
         CommandInterpreter ci = new HomeServerCommandInterpreter(mockedRestTemplateCreator);
         GiraServerHandler sh = new GiraServerHandler(ci);
@@ -318,7 +318,7 @@ public class ServerHandlerTest {
     @Test
     public void testUnRegisterCallbackServerAtGiraCommand(){
         RestTemplate mockedRestTemplate = mock(RestTemplate.class);
-        RestTemplateCreater mockedRestTemplateCreator = mock(RestTemplateCreater.class);
+        RestTemplateCreator mockedRestTemplateCreator = mock(RestTemplateCreator.class);
         when(mockedRestTemplateCreator.create()).thenReturn(mockedRestTemplate);
         CommandInterpreter ci = new HomeServerCommandInterpreter(mockedRestTemplateCreator);
         GiraServerHandler sh = new GiraServerHandler(ci);

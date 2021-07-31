@@ -1,5 +1,7 @@
 package de.smarthome.command.impl;
 
+import android.util.Log;
+
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ public class MultiReactorCommandChainImpl implements MultiReactorCommandChain {
 
     @Override
     public MultiReactorCommandChain add(Command command, ResponseReactor reactor) {
+        Log.d("Test", "Test");
         commands.add(command);
         reactors.add(reactor);
         return this;

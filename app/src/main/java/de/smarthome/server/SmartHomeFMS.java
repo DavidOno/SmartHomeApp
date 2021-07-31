@@ -13,7 +13,11 @@ import java.util.Objects;
 
 import de.smarthome.app.model.responses.CallbackValueInput;
 
-public class MyFirebaseMessagingService extends FirebaseMessagingService {
+/**
+ * This class implements the FirebaseMessagingService.
+ * Received messages are forwarded to subscribers.
+ */
+public class SmartHomeFMS extends FirebaseMessagingService {
     private static final String TAG = "MyFirebaseMessagingService";
     private static final CallbackObserver valueObserver = new CallbackObserver();
     private static final CallbackObserver serviceObserver = new CallbackObserver();
@@ -26,6 +30,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         return serviceObserver;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         Log.d(TAG, "From: " + remoteMessage.getFrom());
