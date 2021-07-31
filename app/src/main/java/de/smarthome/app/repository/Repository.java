@@ -9,9 +9,12 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.auth.api.credentials.Credential;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
+import de.smarthome.app.adapter.RoomOverviewAdapter;
 import de.smarthome.app.model.configs.BoundaryDataPoint;
 import de.smarthome.beacons.BeaconObserverImplementation;
 import de.smarthome.beacons.BeaconObserverSubscriber;
@@ -131,7 +134,30 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     public MutableLiveData<Map<Function, Function>> getFunctionMap() {
+        requestCurrentFunctionValues(Objects.requireNonNull(configContainer.getFunctionMap().getValue()));
         return configContainer.getFunctionMap();
+    }
+
+    //TODO: Check if this works fine
+    private void requestCurrentFunctionValues(Map<Function, Function> functionMap){
+        List<Function> functionList = new ArrayList<>(functionMap.keySet());
+        List<String> requestList = new ArrayList<>();
+        for(Function func : functionList){
+            if(configContainer.getChannelConfig().isFirstDataPointBinary(func)){
+                if(functionMap.get(func) != null){
+                    requestList.add(functionMap.get(func).getDataPoints().get(0).getID());
+                }
+            }else{
+                //Check if the function has a StatusViewHolder
+                if(RoomOverviewAdapter.STATUS_VIEW_HOLDER == configContainer.getChannelConfig()
+                        .getRoomOverviewItemViewType(configContainer.getChannelConfig().findChannelByName(func))){
+                    requestList.add(functionMap.get(func).getDataPoints().get(0).getID());
+                }
+            }
+        }
+        if(!requestList.isEmpty()){
+            requestGetValue(requestList);
+        }
     }
 
     public LiveData<Map<Datapoint, BoundaryDataPoint>> getBoundaryMap() {
@@ -139,7 +165,20 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     public MutableLiveData<Map<Datapoint, Datapoint>> getDataPointMap() {
+        requestCurrentDataPointValues(Objects.requireNonNull(configContainer.getDataPointMap().getValue()));
         return configContainer.getDataPointMap();
+    }
+
+    //TODO: Check if this works fine
+    private void requestCurrentDataPointValues(Map<Datapoint, Datapoint> dataPointMap){
+        List<Datapoint> dataPointList = new ArrayList<>(dataPointMap.keySet());
+        List<String> requestList = new ArrayList<>();
+        for(Datapoint dp : dataPointList){
+            if(dataPointMap.get(dp) != null && !dataPointMap.get(dp).getID().equals(dp.getID())){
+                requestList.add(dataPointMap.get(dp).getID());
+            }
+        }
+        requestGetValue(requestList);
     }
 
     public MutableLiveData<Map<String, String>> getStatusUpdateMap() {
