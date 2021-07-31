@@ -12,6 +12,9 @@ import de.smarthome.command.CommandChainable;
 import de.smarthome.command.ResponseReactor;
 import de.smarthome.command.SingleReactorCommandChain;
 
+/**
+ * This class implements the {@link SingleReactorCommandChain}
+ */
 public class SingleReactorCommandChainImpl implements SingleReactorCommandChain {
 
     private Iterator<CommandChainable> iterator;
@@ -22,19 +25,27 @@ public class SingleReactorCommandChainImpl implements SingleReactorCommandChain 
         this.reactor = reactor;
     }
 
-
+    /**
+     * @inheritDoc
+     */
     @Override
     public SingleReactorCommandChain add(Command command) {
         commands.add(command);
         return this;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public SingleReactorCommandChain add(AsyncCommand command) {
         commands.add(command);
         return this;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean hasNext(){
         if(iterator == null){
@@ -43,11 +54,17 @@ public class SingleReactorCommandChainImpl implements SingleReactorCommandChain 
         return iterator.hasNext();
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public CommandChainable getNext() {
        return iterator.next();
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public void putResult(ResponseEntity responseEntity) {
         reactor.react(responseEntity);

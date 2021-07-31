@@ -48,7 +48,7 @@ import de.smarthome.command.impl.RegisterCallbackServerAtGiraServer;
 import de.smarthome.command.impl.RegisterClientCommand;
 import de.smarthome.command.impl.SingleReactorCommandChainImpl;
 import de.smarthome.command.impl.UIConfigCommand;
-import de.smarthome.command.impl.UnRegisterCallback;
+import de.smarthome.command.impl.UnRegisterAtCallbackServer;
 import de.smarthome.command.impl.UnRegisterCallbackServerAtGiraServer;
 import de.smarthome.server.NoSSLRestTemplateCreator;
 import de.smarthome.server.ServerHandler;
@@ -139,7 +139,7 @@ public class ServerCommunicator {
 
     public void requestUnregisterClient(String ipOfServer) {
         Thread requestUnregisterClientThread = new Thread(() -> {
-            AsyncCommand register = new UnRegisterCallback(ipOfServer);
+            AsyncCommand register = new UnRegisterAtCallbackServer(ipOfServer);
             serverHandler.sendRequest(register);
         });
         addToExecutorService(requestUnregisterClientThread);
