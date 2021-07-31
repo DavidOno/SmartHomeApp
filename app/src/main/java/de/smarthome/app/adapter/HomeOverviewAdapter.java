@@ -23,7 +23,6 @@ public class HomeOverviewAdapter extends RecyclerView.Adapter<HomeOverviewAdapte
     public RoomHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_home_overview, parent, false);
-
         return new RoomHolder(itemView);
     }
 
