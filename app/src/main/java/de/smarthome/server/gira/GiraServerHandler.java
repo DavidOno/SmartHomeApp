@@ -19,7 +19,7 @@ import de.smarthome.server.ServerHandler;
 import static de.smarthome.SmartHomeApplication.EXECUTOR_SERVICE;
 
 /**
- * This class implements how user can can issue their requests to the GIRA-server.
+ * This class implements how user can issue their requests to the GIRA-server.
  */
 public class GiraServerHandler implements ServerHandler {
 

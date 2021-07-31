@@ -4,11 +4,22 @@ import org.altbeacon.beacon.Identifier;
 
 import java.util.Objects;
 
+/**
+ * This class creates a beacon object.
+ * The object is used to save all information to clearly identify a bluetooth beacon.
+ */
 public class BeaconID {
     private final Identifier uuid;
     private final Identifier minor;
     private final Identifier major;
 
+    /**
+     * Constructor to build the object BeaconID.
+     * The BeaconID is unambiguously used for every known beacon.
+     * @param uuid Universally Unique Identifier. Identifier of the scanned beacon.
+     * @param minor Identifier for greater accuracy. Identify and distinguish group of beacons.
+     * @param major Identifier for greater accuracy. Identify and distinguish an individual.
+     */
     BeaconID(Identifier uuid, Identifier minor, Identifier major) {
         this.uuid = uuid;
         this.minor = minor;
