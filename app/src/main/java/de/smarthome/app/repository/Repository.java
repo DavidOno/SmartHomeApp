@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import de.smarthome.app.adapter.RoomOverviewAdapter;
 import de.smarthome.app.model.configs.BoundaryDataPoint;
 import de.smarthome.beacons.BeaconObserverImplementation;
 import de.smarthome.beacons.BeaconObserverSubscriber;
@@ -148,9 +147,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
                     requestList.add(functionMap.get(func).getDataPoints().get(0).getID());
                 }
             }else{
-                //Check if the function has a StatusViewHolder
-                if(RoomOverviewAdapter.STATUS_VIEW_HOLDER == configContainer.getChannelConfig()
-                        .getRoomOverviewItemViewType(configContainer.getChannelConfig().findChannelByName(func))){
+                if(configContainer.getChannelConfig().isStatusViewHolder(func)){
                     requestList.add(functionMap.get(func).getDataPoints().get(0).getID());
                 }
             }
