@@ -14,7 +14,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import de.smarthome.app.model.UIConfig;
+import de.smarthome.app.model.configs.BoundariesConfig;
 import de.smarthome.app.model.configs.BoundaryDataPoint;
+import de.smarthome.beacons.BeaconLocations;
 import de.smarthome.beacons.BeaconObserverImplementation;
 import de.smarthome.beacons.BeaconObserverSubscriber;
 import de.smarthome.app.model.configs.ChannelConfig;
@@ -184,6 +187,23 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
 
     public MutableLiveData<Map<String, String>> getStatusGetValueMap() {
         return configContainer.getStatusGetValueMap();
+    }
+
+    public void sendBeaconLocationToConfigContainer(BeaconLocations newBeaconConfig){
+        configContainer.setBeaconLocations(newBeaconConfig);
+        initBeaconObserver();
+    }
+
+    public void setBoundaryConfig(BoundariesConfig newBoundariesConfig){
+        configContainer.setBoundaryConfig(newBoundariesConfig);
+    }
+
+    public void setChannelConfig(ChannelConfig newChannelConfig){
+        configContainer.setChannelConfig(newChannelConfig);
+    }
+
+    public void initNewUIConfig(UIConfig newUIConfig){
+        configContainer.initNewUIConfig(newUIConfig);
     }
 
     @Override
