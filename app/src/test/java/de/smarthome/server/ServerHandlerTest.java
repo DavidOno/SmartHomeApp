@@ -25,7 +25,7 @@ import de.smarthome.app.model.responses.GetValueResponse;
 import de.smarthome.app.model.responses.RegisterResponse;
 import de.smarthome.app.model.responses.UID_Value;
 import de.smarthome.beacons.BeaconLocations;
-import de.smarthome.command.AdditionalConfigs;
+import de.smarthome.app.model.configs.AdditionalConfig;
 import de.smarthome.command.CommandInterpreter;
 import de.smarthome.command.gira.HomeServerCommandInterpreter;
 import de.smarthome.command.impl.AdditionalConfigCommand;
@@ -194,7 +194,7 @@ public class ServerHandlerTest {
         GiraServerHandler sh = new GiraServerHandler(ci);
 
         String IP = "someIP";
-        AdditionalConfigs channel = AdditionalConfigs.CHANNEL;
+        AdditionalConfig channel = AdditionalConfig.CHANNEL;
         AdditionalConfigCommand additionalConfigCommand = new AdditionalConfigCommand(IP, channel);
         ResponseEntity<ChannelConfig> myEntity = new ResponseEntity<>(new ChannelConfig(new ArrayList<>()), HttpStatus.OK);
         Mockito.when(mockedRestTemplate.exchange(
@@ -221,7 +221,7 @@ public class ServerHandlerTest {
         GiraServerHandler sh = new GiraServerHandler(ci);
 
         String IP = "someIP";
-        AdditionalConfigs location = AdditionalConfigs.LOCATION;
+        AdditionalConfig location = AdditionalConfig.LOCATION;
         AdditionalConfigCommand additionalConfigCommand = new AdditionalConfigCommand(IP, location);
         ResponseEntity<BeaconLocations> myEntity = new ResponseEntity<>(new BeaconLocations(new ArrayList<>()), HttpStatus.OK);
         Mockito.when(mockedRestTemplate.exchange(
