@@ -287,6 +287,7 @@ public class ConfigContainer {
         functionIDs.add("aae4");
 
         functionIDs.add("aae8");
+        functionIDs.add("aae9");
         functionIDs.add("aafe");
         List<Location> loc = new ArrayList<>();
 
@@ -298,6 +299,7 @@ public class ConfigContainer {
         functionIDs.add("aaet");
         functionIDs.add("aae2");
         functionIDs.add("aae8");
+        functionIDs.add("aae9");
 
         functionIDs.add("aaafe");
 
@@ -313,6 +315,7 @@ public class ConfigContainer {
 
         functionIDs.add("aael");
         functionIDs.add("aae8");
+        functionIDs.add("aae9");
 
         List<Location> loc = new ArrayList<>();
 
@@ -351,6 +354,11 @@ public class ConfigContainer {
             dataPoints5.add(new Datapoint("aajfa", "OnOff"));
             funcList1.add(new Function("Temperatur_Wohnen", "aae8", "de.gira.schema.channels.RoomTemperatureSwitchable", "de.gira.schema.functions.KNX.HeatingCooling", dataPoints5));
 
+            ArrayList<Datapoint> dataPoints9 = new ArrayList<>();
+            dataPoints9.add(new Datapoint("aajf11", "Current"));
+            dataPoints9.add(new Datapoint("aajfd11", "Set-Point"));
+            dataPoints9.add(new Datapoint("aajfa11", "OnOff"));
+            funcList1.add(new Function("Temperatur_Status", "aae9", "de.gira.schema.channels.RoomTemperatureSwitchable", "de.gira.schema.functions.KNX.HeatingCooling", dataPoints9));
 
             ArrayList<Datapoint> dataPoints6 = new ArrayList<>();
             dataPoints6.add(new Datapoint("aajv", "Step-Up-Down"));
@@ -397,7 +405,7 @@ public class ConfigContainer {
 
 
             List<ChannelDatapoint> channelDatapoints2 = new ArrayList<>();
-            channelDatapoints2.add(new ChannelDatapoint("Current", "Float", "re"));
+            channelDatapoints2.add(new ChannelDatapoint("Current", "Float", "rwe"));
             channelDatapoints2.add(new ChannelDatapoint("Set-Point", "Float", "rwe"));
             channelDatapoints2.add(new ChannelDatapoint("OnOff", "Binary", "rwe"));
             Channel c2 = new Channel("de.gira.schema.channels.RoomTemperatureSwitchable", channelDatapoints2);
