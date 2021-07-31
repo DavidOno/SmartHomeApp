@@ -2,6 +2,10 @@ package de.smarthome.app.model.responses;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+/**
+ * This class stores stores all information given by GIRA when the callback-service-loop detects
+ * a change in the observed values.
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CallbackValueInput {
 

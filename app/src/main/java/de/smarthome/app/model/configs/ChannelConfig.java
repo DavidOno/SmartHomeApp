@@ -8,6 +8,10 @@ import de.smarthome.app.model.Function;
 import de.smarthome.app.adapter.RegulationAdapter;
 import de.smarthome.app.adapter.RoomOverviewAdapter;
 
+/**
+ * This class represents the channelconfig from the callbackserver.
+ * It holds all of the channels.
+ */
 public class ChannelConfig {
     private final List<Channel> channels;
 

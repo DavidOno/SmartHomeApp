@@ -2,6 +2,9 @@ package de.smarthome.app.model.configs;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * This class represents a GIRA-channeldatapoint.
+ */
 public class ChannelDatapoint {
     private final String name;
     private final DatapointType type;

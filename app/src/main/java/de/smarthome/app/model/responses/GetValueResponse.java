@@ -3,7 +3,10 @@ package de.smarthome.app.model.responses;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
-
+/**
+ * This class is capable of storing all information given as response from GIRA when
+ * requesting values from GIRA.
+ */
 public class GetValueResponse {
 
     private final List<UID_Value> values;

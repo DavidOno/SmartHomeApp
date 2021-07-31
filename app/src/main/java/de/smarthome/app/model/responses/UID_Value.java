@@ -2,6 +2,10 @@ package de.smarthome.app.model.responses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * This class is capable of storing a uid and value.
+ * This is in general used by GIRA when handling value-changes/updates.
+ */
 public class UID_Value {
 
     private final String uid;

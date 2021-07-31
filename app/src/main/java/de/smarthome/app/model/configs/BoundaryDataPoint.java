@@ -2,6 +2,11 @@ package de.smarthome.app.model.configs;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * This class describes how a datapoint is limited.
+ * Currently only a lower and upper limit are supported.
+ * E.g.: the temperature in a users home, should not be lower below 15°C and above 24°C.
+ */
 public class BoundaryDataPoint {
     private final String name;
     private final String min;
