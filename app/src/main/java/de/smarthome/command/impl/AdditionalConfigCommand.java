@@ -5,6 +5,9 @@ import de.smarthome.command.Command;
 import de.smarthome.command.CommandInterpreter;
 import de.smarthome.command.Request;
 
+/**
+ * With this class a user's intention of getting additional configs can be described.
+ */
 public class AdditionalConfigCommand implements Command {
 
     private final AdditionalConfig config;
@@ -15,6 +18,9 @@ public class AdditionalConfigCommand implements Command {
         this.ip = ip;
     }
 
+    /*
+     * @inheritDoc
+     */
     @Override
     public Request accept(CommandInterpreter commandInterpreter) {
         return commandInterpreter.buildAdditionalConfigRequest(ip, config);
