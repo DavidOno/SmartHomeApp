@@ -34,7 +34,7 @@ import de.smarthome.app.repository.responsereactor.ResponseReactorClient;
 import de.smarthome.app.repository.responsereactor.ResponseReactorGiraCallbackServer;
 import de.smarthome.app.repository.responsereactor.ResponseReactorUIConfig;
 import de.smarthome.app.utility.ToastUtility;
-import de.smarthome.command.AdditionalConfigs;
+import de.smarthome.app.model.configs.AdditionalConfig;
 import de.smarthome.command.AsyncCommand;
 import de.smarthome.command.Command;
 import de.smarthome.command.gira.HomeServerCommandInterpreter;
@@ -108,9 +108,9 @@ public class ServerCommunicator {
     }
 
     private void getAdditionalConfigs(MultiReactorCommandChainImpl multiCommandChain) {
-        multiCommandChain.add(new AdditionalConfigCommand(IP_OF_CALLBACK_SERVER, AdditionalConfigs.CHANNEL), new ResponseReactorChannelConfig());
-        multiCommandChain.add(new AdditionalConfigCommand(IP_OF_CALLBACK_SERVER, AdditionalConfigs.LOCATION), new ResponseReactorBeaconConfig());
-        multiCommandChain.add(new AdditionalConfigCommand(IP_OF_CALLBACK_SERVER, AdditionalConfigs.BOUNDARIES), new ResponseReactorBoundariesConfig());
+        multiCommandChain.add(new AdditionalConfigCommand(IP_OF_CALLBACK_SERVER, AdditionalConfig.CHANNEL), new ResponseReactorChannelConfig());
+        multiCommandChain.add(new AdditionalConfigCommand(IP_OF_CALLBACK_SERVER, AdditionalConfig.LOCATION), new ResponseReactorBeaconConfig());
+        multiCommandChain.add(new AdditionalConfigCommand(IP_OF_CALLBACK_SERVER, AdditionalConfig.BOUNDARIES), new ResponseReactorBoundariesConfig());
     }
 
     public void getUIConfigAfterRestart(){
