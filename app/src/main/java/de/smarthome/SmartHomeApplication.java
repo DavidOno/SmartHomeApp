@@ -6,12 +6,10 @@ import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -92,7 +90,7 @@ public class SmartHomeApplication extends AppCompatActivity {
     private void setBeaconObserver() {
         viewModel.checkBeacon().observe(this, aBoolean -> {
             if(aBoolean && viewModel.hasTimerCompleted()){
-                viewModel.initBeaconCheck();
+                viewModel.setBeaconCheckFalse();
                 if(!beaconDialogShown){
                     beaconDialogShown = true;
                     viewModel.startTimer();

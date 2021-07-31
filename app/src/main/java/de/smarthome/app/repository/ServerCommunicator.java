@@ -77,6 +77,7 @@ public class ServerCommunicator {
         }
         return INSTANCE;
     }
+
     private void addToExecutorService(Thread newThread) {
         SmartHomeApplication.EXECUTOR_SERVICE.execute(newThread);
     }
@@ -96,7 +97,7 @@ public class ServerCommunicator {
         serverHandler.sendRequest(multiCommandChain);
     }
 
-    public void initialisationOfApplicationAfterRestart(Credential credential) {
+    private void initialisationOfApplicationAfterRestart(Credential credential) {
         MultiReactorCommandChainImpl multiCommandChain = new MultiReactorCommandChainImpl();
         registerAppAtGiraServerAfterRestart(credential.getId(), credential.getPassword(), multiCommandChain);
         serverHandler.sendRequest(multiCommandChain);
@@ -113,13 +114,13 @@ public class ServerCommunicator {
         multiCommandChain.add(new AdditionalConfigCommand(IP_OF_CALLBACK_SERVER, AdditionalConfigs.BOUNDARIES), new ResponseReactorBoundariesConfig());
     }
 
-    public void getUIConfigAfterRestart(){
+    public void requestUIConfigAfterRestart(){
         SingleReactorCommandChainImpl singleCommandChain = new SingleReactorCommandChainImpl(new ResponseReactorUIConfig());
         singleCommandChain.add(new UIConfigCommand());
         serverHandler.sendRequest(singleCommandChain);
     }
 
-    public void getAdditionalConfigsAfterRestart() {
+    public void requestAdditionalConfigsAfterRestart() {
         MultiReactorCommandChainImpl multiCommandChain = new MultiReactorCommandChainImpl();
         getAdditionalConfigs(multiCommandChain);
         serverHandler.sendRequest(multiCommandChain);
@@ -137,7 +138,7 @@ public class ServerCommunicator {
         multiCommandChain.add(new RegisterCallbackServerAtGiraServer(IP_OF_CALLBACK_SERVER), new ResponseReactorGiraCallbackServer());
     }
 
-    public void requestUnregisterClient(String ipOfServer) {
+    private void requestUnregisterClient(String ipOfServer) {
         Thread requestUnregisterClientThread = new Thread(() -> {
             AsyncCommand register = new UnRegisterCallback(ipOfServer);
             serverHandler.sendRequest(register);
@@ -165,7 +166,7 @@ public class ServerCommunicator {
         }
     }
 
-    public void requestUnregisterCallbackServerAtGiraServer() {
+    private void requestUnregisterCallbackServerAtGiraServer() {
         Thread requestUnRegisterCallbackServerAtGiraServerThread = new Thread(() -> {
             Command unregisterAtGira = new UnRegisterCallbackServerAtGiraServer();
             serverHandler.sendRequest(unregisterAtGira);
@@ -173,7 +174,7 @@ public class ServerCommunicator {
         addToExecutorService(requestUnRegisterCallbackServerAtGiraServerThread);
     }
 
-    public void handleResponseGetValue(ResponseEntity responseEntity) {
+    private void handleResponseGetValue(ResponseEntity responseEntity) {
         try {
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
                 Log.d(TAG, "response received");

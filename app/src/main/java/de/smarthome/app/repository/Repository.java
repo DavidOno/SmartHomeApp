@@ -65,7 +65,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     public void setSelectedFunction(Function function) {
-        configContainer.setSelectedFunction(function);
+        configContainer.initSelectedFunction(function);
     }
 
     public Function getSelectedFunction() {
@@ -73,14 +73,14 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     public void setSelectedLocation(Location newLocation) {
-        configContainer.setSelectedLocation(newLocation);
+        configContainer.initSelectedLocation(newLocation);
     }
 
     public Location getSelectedLocation() {
         return configContainer.getSelectedLocation();
     }
 
-    public void resetBeaconCheck() {
+    public void setBeaconCheckFalse() {
         beaconCheck.postValue(false);
     }
 
@@ -107,7 +107,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
                 new DefaultBeaconManagerCreator());
         beaconObserver.subscribe(this);
         beaconObserver.init();
-        resetBeaconCheck();
+        setBeaconCheckFalse();
     }
 
     public void requestRegisterUser(Credential credential) {
@@ -191,7 +191,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         if (input.getEvent() == null && input.getValue() != null) {
             String value = String.valueOf(input.getValue());
             String uID = input.getUid();
-            configContainer.setStatusUpdateMap(uID, value);
+            configContainer.initStatusUpdateMap(uID, value);
         }
     }
 
@@ -209,11 +209,11 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
                         break;
                     case UI_CONFIG_CHANGED:
                         Log.d(TAG, "UI_CONFIG_CHANGED");
-                        serverCommunicator.getUIConfigAfterRestart();
+                        serverCommunicator.requestUIConfigAfterRestart();
                         break;
                     case PROJECT_CONFIG_CHANGED:
                         Log.d(TAG, "PROJECT_CONFIG_CHANGED");
-                        serverCommunicator.getAdditionalConfigsAfterRestart();
+                        serverCommunicator.requestAdditionalConfigsAfterRestart();
                         break;
                     default:
                         Log.d(TAG, "Unknown CallBackServiceInputEvent");

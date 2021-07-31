@@ -55,23 +55,31 @@ public class ConfigContainer {
         return INSTANCE;
     }
 
+    public void initSelectedFunction(Function function) {
+        setSelectedFunction(function);
+        if(function != null) {
+            initBoundaryMap();
+            initDataPointMap(function);
+        }
+    }
+
     public void setSelectedFunction(Function function) {
         selectedFunction = function;
-        if(function != null) {
-            setBoundaryMap();
-            setDataPointMap(function);
-        }
     }
 
     public Function getSelectedFunction() {
         return selectedFunction;
     }
 
+    public void initSelectedLocation(Location newLocation) {
+        setSelectedLocation(newLocation);
+        if(newLocation != null) {
+            initFunctionMap(selectedLocation);
+        }
+    }
+
     public void setSelectedLocation(Location newLocation) {
         selectedLocation = newLocation;
-        if(newLocation != null) {
-            setFunctionMap(selectedLocation);
-        }
     }
 
     public Location getSelectedLocation() {
@@ -82,7 +90,7 @@ public class ConfigContainer {
         setUIConfig(newUiConfig);
         uiConfig.initParentLocations();
 
-        setLocationList();
+        initLocationList();
         if (selectedLocation != null) {
             checkForCurrentlySelectedLocation();
             Repository.getInstance(null).initBeaconObserver();
@@ -92,7 +100,7 @@ public class ConfigContainer {
         }
     }
 
-    private void setUIConfig(UIConfig newUiConfig) {
+    public void setUIConfig(UIConfig newUiConfig) {
         uiConfig = newUiConfig;
     }
 
@@ -124,7 +132,7 @@ public class ConfigContainer {
         boolean notFound = true;
         for (Location loc : uiConfig.getAllLocations()) {
             if (loc.getName().equals(selectedLocation.getName())) {
-                setSelectedLocation(loc);
+                initSelectedLocation(loc);
                 notFound = false;
                 break;
             }
@@ -138,7 +146,7 @@ public class ConfigContainer {
         boolean notFound = true;
         for (Function func : selectedLocation.getFunctions(uiConfig)) {
             if (func.getName().equals(selectedFunction.getName())) {
-                setSelectedFunction(func);
+                initSelectedFunction(func);
                 notFound = false;
                 break;
             }
@@ -152,25 +160,33 @@ public class ConfigContainer {
         return locationList;
     }
 
-    public void setLocationList() {
+    private void initLocationList() {
         List<Location> allLocations = new ArrayList<>(uiConfig.getLocations());
         for (Location location : allLocations) {
             location.getAllChildrenFromLocation(allLocations);
         }
+        setLocationList(allLocations);
+    }
+
+    public void setLocationList(List<Location> allLocations) {
         locationList.postValue(allLocations);
+    }
+
+    public void setFunctionMap(Map<Function, Function> completeFunctionMap) {
+        functionMap.postValue(completeFunctionMap);
     }
 
     public MutableLiveData<Map<Function, Function>> getFunctionMap() {
         return functionMap;
     }
 
-    public void setFunctionMap(Location viewedLocation) {
+    private void initFunctionMap(Location viewedLocation) {
         Map<Function, Function> completeFunctionMap = mapStatusFunctionToFunction(viewedLocation);
 
         if (!viewedLocation.getParentLocation().equals(Location.ROOT)) {
             completeFunctionMap.putAll(mapStatusFunctionToFunction(viewedLocation.getParentLocation()));
         }
-        functionMap.postValue(completeFunctionMap);
+        setFunctionMap(completeFunctionMap);
     }
 
     private LinkedHashMap<Function, Function> mapStatusFunctionToFunction(Location location) {
@@ -181,7 +197,6 @@ public class ConfigContainer {
             if (!func.isStatusFunction()) {
                 for (Function comparedFunction : location.getFunctions(uiConfig)) {
                     if (comparedFunction.isStatusFunction() &&
-                            //If they share the same name "Light_on" and "Light_Status"
                             func.getName().split(regex)[0].equals(
                                     comparedFunction.getName().split(regex)[0])) {
                             functionStatus = comparedFunction;
@@ -194,8 +209,12 @@ public class ConfigContainer {
         return completeFunctionMap;
     }
 
-    public void setBoundaryMap() {
+    private void initBoundaryMap() {
         Map<Datapoint, BoundaryDataPoint> completeFunctionMap = mapBoundaryToFunction();
+        setBoundaryMap(completeFunctionMap);
+    }
+
+    public void setBoundaryMap(Map<Datapoint, BoundaryDataPoint> completeFunctionMap) {
         boundaryMap.postValue(completeFunctionMap);
     }
 
@@ -229,7 +248,7 @@ public class ConfigContainer {
         return datapointBoundaryDataPointMap;
     }
 
-    public void setDataPointMap(Function function) {
+    private void initDataPointMap(Function function) {
         Map<Datapoint, Datapoint> newValue = new LinkedHashMap<>();
         if (functionMap.getValue().get(function) != null) {
             for (int i = 0; i < function.getDataPoints().size(); i++) {
@@ -244,6 +263,10 @@ public class ConfigContainer {
                 newValue.put(datapoint, null);
             }
         }
+        setDataPointMap(newValue);
+    }
+
+    public void setDataPointMap(Map<Datapoint, Datapoint> newValue) {
         dataPointMap.postValue(newValue);
     }
 
@@ -251,9 +274,13 @@ public class ConfigContainer {
         return dataPointMap;
     }
 
-    public void setStatusUpdateMap(String functionUID, String value) {
+    public void initStatusUpdateMap(String functionUID, String value) {
         Map<String, String> newValue = new HashMap<>();
         newValue.put(functionUID, value);
+        setStatusUpdateMap(newValue);
+    }
+
+    public void setStatusUpdateMap(Map<String, String> newValue){
         statusUpdateMap.postValue(newValue);
     }
 

@@ -30,8 +30,8 @@ public class SmartHomeApplicationViewModel extends AndroidViewModel {
         return repository.getBeaconCheck();
     }
 
-    public void initBeaconCheck() {
-        repository.resetBeaconCheck();
+    public void setBeaconCheckFalse() {
+        repository.setBeaconCheckFalse();
     }
 
     public void confirmBeacon() {
