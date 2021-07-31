@@ -6,15 +6,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import de.smarthome.app.repository.ConfigContainer;
+import de.smarthome.app.repository.Repository;
 import de.smarthome.command.ResponseReactor;
 import de.smarthome.app.model.configs.ChannelConfig;
 
 public class ResponseReactorChannelConfig implements ResponseReactor {
     private static final String TAG = "ResponseReactorChannelConfig";
-    private ConfigContainer configContainer;
+    private Repository repository;
 
     public ResponseReactorChannelConfig() {
-        configContainer = ConfigContainer.getInstance();
+        repository = Repository.getInstance(null);
     }
 
     @Override
@@ -43,6 +44,6 @@ public class ResponseReactorChannelConfig implements ResponseReactor {
     }
 
     public void sendChannelConfigToRepo(ChannelConfig newChannelConfig){
-        configContainer.setChannelConfig(newChannelConfig);
+        repository.setChannelConfig(newChannelConfig);
     }
 }

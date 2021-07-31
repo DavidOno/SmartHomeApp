@@ -6,15 +6,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import de.smarthome.app.repository.ConfigContainer;
+import de.smarthome.app.repository.Repository;
 import de.smarthome.command.ResponseReactor;
 import de.smarthome.app.model.UIConfig;
 
 public class ResponseReactorUIConfig implements ResponseReactor {
     private static final String TAG = "ResponseReactorUIConfig";
-    private ConfigContainer configContainer;
+    private Repository repository;
 
     public ResponseReactorUIConfig() {
-        this.configContainer = ConfigContainer.getInstance();
+        this.repository = Repository.getInstance(null);
     }
 
     @Override
@@ -42,6 +43,6 @@ public class ResponseReactorUIConfig implements ResponseReactor {
     }
 
     public void sendUIConfigToRepo(UIConfig newUIConfig){
-        configContainer.initNewUIConfig(newUIConfig);
+        repository.initNewUIConfig(newUIConfig);
     }
 }
