@@ -14,17 +14,13 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import de.smarthome.R;
-import de.smarthome.app.model.Function;
 import de.smarthome.app.viewmodel.RoomOverviewViewModel;
 import de.smarthome.app.adapter.RoomOverviewAdapter;
 
 public class RoomOverviewFragment extends Fragment {
     private static final String TAG = "RoomOverviewFragment";
-    private RoomOverviewViewModel roomOverviewViewModel;
+    private RoomOverviewViewModel viewViewModel;
     private RecyclerView recyclerViewRoom;
 
     @Override
@@ -32,7 +28,7 @@ public class RoomOverviewFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_room_overview, container, false);
 
         recyclerViewRoom = view.findViewById(R.id.recycler_view_room_overview);
-        roomOverviewViewModel = new ViewModelProvider(requireActivity()).get(RoomOverviewViewModel.class);
+        viewViewModel = new ViewModelProvider(requireActivity()).get(RoomOverviewViewModel.class);
 
         return view;
     }
@@ -41,13 +37,13 @@ public class RoomOverviewFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if(roomOverviewViewModel.getSelectedLocation() != null)
-            requireActivity().setTitle(roomOverviewViewModel.getSelectedLocation().getName());
+        if(viewViewModel.getSelectedLocation() != null)
+            requireActivity().setTitle(viewViewModel.getSelectedLocation().getName());
 
         recyclerViewRoom.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewRoom.setHasFixedSize(true);
 
-        RoomOverviewAdapter adapter = new RoomOverviewAdapter();
+        RoomOverviewAdapter adapter = new RoomOverviewAdapter(getActivity());
         recyclerViewRoom.setAdapter(adapter);
 
         setFunctionObserver(adapter);
@@ -59,11 +55,11 @@ public class RoomOverviewFragment extends Fragment {
     }
 
     private void setFunctionObserver(RoomOverviewAdapter adapter) {
-        roomOverviewViewModel.getFunctionMap().observe(getViewLifecycleOwner(), functions -> adapter.initialiseAdapter(functions, getActivity().getApplication()));
+        viewViewModel.getFunctionMap().observe(getViewLifecycleOwner(), adapter::initialiseAdapter);
     }
 
     private void setStatusUpdateObserver(RoomOverviewAdapter adapter) {
-        roomOverviewViewModel.getStatusUpdateMap().observe(getViewLifecycleOwner(), stringStringMap -> {
+        viewViewModel.getStatusUpdateMap().observe(getViewLifecycleOwner(), stringStringMap -> {
             String uid = stringStringMap.keySet().iterator().next();
             String value = stringStringMap.get(uid);
             adapter.updateSingleFunctionStatusValue(uid, value);
@@ -71,12 +67,12 @@ public class RoomOverviewFragment extends Fragment {
     }
 
     private void setGetValueMapObserver(RoomOverviewAdapter adapter) {
-        roomOverviewViewModel.getStatusGetValueMap().observe(getViewLifecycleOwner(), adapter::updateMultipleFunctionStatusValues);
+        viewViewModel.getStatusGetValueMap().observe(getViewLifecycleOwner(), adapter::updateMultipleFunctionStatusValues);
     }
 
     private void setOnClickListener(RoomOverviewAdapter adapter) {
         adapter.setOnItemClickListener(function -> {
-            roomOverviewViewModel.setSelectedFunction(function);
+            viewViewModel.setSelectedFunction(function);
             navigateToRegulationFragment();
         });
     }
@@ -85,9 +81,9 @@ public class RoomOverviewFragment extends Fragment {
         adapter.setOnSwitchClickListener((function, isChecked) -> {
             //There is only a switch if binary is the first (!) input type. So the first DataPoint is needed.
             if(isChecked){
-                roomOverviewViewModel.requestSetValue(function.getDataPoints().get(0).getID(), "1");
+                viewViewModel.requestSetValue(function.getDataPoints().get(0).getID(), "1");
             }else{
-                roomOverviewViewModel.requestSetValue(function.getDataPoints().get(0).getID(), "0");
+                viewViewModel.requestSetValue(function.getDataPoints().get(0).getID(), "0");
             }
         });
     }

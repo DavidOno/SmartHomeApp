@@ -40,7 +40,7 @@ public class RegulationFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);
 
-        RegulationAdapter adapter = new RegulationAdapter();
+        RegulationAdapter adapter = new RegulationAdapter(getActivity());
         recyclerView.setAdapter(adapter);
 
         setDataPointObserver(adapter);
@@ -63,7 +63,7 @@ public class RegulationFragment extends Fragment {
     }
 
     private void setDataPointObserver(RegulationAdapter adapter) {
-        viewModel.getDataPointMap().observe(getViewLifecycleOwner(), dataPoints -> adapter.initialiseAdapter(dataPoints, getActivity().getApplication()));
+        viewModel.getDataPointMap().observe(getViewLifecycleOwner(), adapter::initialiseAdapter);
     }
 
     private void setStatusUpdateObserver(RegulationAdapter adapter) {
