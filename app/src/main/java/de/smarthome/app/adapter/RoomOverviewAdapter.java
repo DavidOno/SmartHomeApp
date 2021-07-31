@@ -1,10 +1,11 @@
 package de.smarthome.app.adapter;
 
-import android.app.Application;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -21,12 +22,12 @@ import de.smarthome.app.adapter.viewholder.roomoverview.DefaultViewHolder;
 import de.smarthome.app.adapter.viewholder.roomoverview.StatusViewHolder;
 import de.smarthome.app.adapter.viewholder.roomoverview.SwitchViewHolder;
 import de.smarthome.app.adapter.viewholder.roomoverview.SwitchArrowViewHolder;
+import de.smarthome.app.viewmodel.RoomOverviewViewModel;
 
 public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapter.ViewHolder>{
     List<Function> functionList;
     Map<Function, Function> functionMap;
 
-    List<String> requestList = new ArrayList<>();
     public static final int DEFAULT_VIEW_HOLDER = 0;
     public static final int SWITCH_VIEW_HOLDER = 1;
     public static final int SWITCH_ARROW_HOLDER = 2;
@@ -39,15 +40,17 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
 
     private Repository repository;
     private ChannelConfig channelConfig;
+    private RoomOverviewViewModel viewViewModel;
 
-    public void initialiseAdapter(Map<Function, Function> functions, Application application) {
+    public RoomOverviewAdapter(FragmentActivity parent){
+        viewViewModel = new ViewModelProvider(parent).get(RoomOverviewViewModel.class);
+    }
+
+    public void initialiseAdapter(Map<Function, Function> functions) {
         setFunctionList(functions);
         setFunctionMap(functions);
 
-        repository = Repository.getInstance(application);
-        channelConfig = repository.getChannelConfig();
-
-        requestFunctionCurrentStatus();
+        //requestFunctionCurrentStatus();
         notifyDataSetChanged();
     }
 
@@ -60,6 +63,7 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
     }
 
     private void requestFunctionCurrentStatus(){
+        List<String> requestList = new ArrayList<>();
         for(Function func : functionList){
             if(channelConfig.isFirstDataPointBinary(func)){
                 if(functionMap.get(func) != null){
@@ -108,9 +112,8 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
 
     private boolean hasStatusFunction(String changedStatusFunctionUID, String value) {
         for(Function function : functionList){
-            //Has to be this check because: No Status function => value of map is null! so it contains the function
+            //Has to be this check because: No Status function => value of map is null! so it contains something
             if (functionMap.get(function) != null) {
-
                 for(Datapoint datapoint : functionMap.get(function).getDataPoints()){
                     if (changedStatusFunctionUID.equals(datapoint.getID())) {
                         statusValueMap.put(function.getID(), value);
@@ -187,7 +190,7 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
     @Override
     public int getItemViewType(int position){
         Function item = getFunctionAt(position);
-        return channelConfig.getRoomOverviewItemViewType(channelConfig.findChannelByName(item));
+        return viewViewModel.getChannelConfig().getRoomOverviewItemViewType(viewViewModel.getChannelConfig().findChannelByName(item));
     }
 
     public Function getFunctionAt(int position) {

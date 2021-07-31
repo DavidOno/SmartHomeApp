@@ -1,10 +1,11 @@
 package de.smarthome.app.adapter;
 
-import android.app.Application;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import de.smarthome.app.adapter.viewholder.regulation.ReadViewHolder;
 import de.smarthome.app.adapter.viewholder.regulation.SliderViewHolder;
 import de.smarthome.app.adapter.viewholder.regulation.StepViewHolder;
 import de.smarthome.app.adapter.viewholder.regulation.SwitchViewHolder;
+import de.smarthome.app.viewmodel.RegulationViewModel;
 
 public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.ViewHolder>{
     private List<Datapoint> dataPointList;
@@ -41,6 +43,13 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
     private ChannelConfig channelConfig;
     private Repository repository;
 
+    private RegulationViewModel viewModel;
+
+    public RegulationAdapter(FragmentActivity parent){
+        viewModel = new ViewModelProvider(parent).get(RegulationViewModel.class);
+        //channelConfig = viewModel.getChannelConfig();
+    }
+
     public void setBoundaryMap(Map<Datapoint, BoundaryDataPoint> newData){
         boundaryMap = newData;
     }
@@ -49,14 +58,11 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
         return boundaryMap;
     }
 
-    public void initialiseAdapter(Map<Datapoint, Datapoint> dataPoints, Application application) {
+    public void initialiseAdapter(Map<Datapoint, Datapoint> dataPoints) {
         setDataPointList(dataPoints);
         setDataPointMap(dataPoints);
 
-        repository = Repository.getInstance(application);
-        channelConfig = repository.getChannelConfig();
-
-        requestCurrentDatapointStatus();
+        //requestCurrentDatapointStatus();
         notifyDataSetChanged();
     }
 
@@ -121,7 +127,6 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
         if(viewType == SWITCH_VIEW_HOLDER){
             return new SwitchViewHolder(
                     parent,
@@ -193,8 +198,8 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
 
     @Override
     public int getItemViewType(int position){
-        Optional<ChannelDatapoint> channelDatapoint = channelConfig.findChannelByName(repository.getSelectedFunction()).getCorrespondingChannelDataPoint(dataPointList.get(position));
-        return channelDatapoint.map(datapoint -> channelConfig.getRegulationItemViewType(datapoint)).orElse(-1);
+        Optional<ChannelDatapoint> channelDatapoint = viewModel.getChannelConfig().findChannelByName(viewModel.getSelectedFunction()).getCorrespondingChannelDataPoint(dataPointList.get(position));
+        return channelDatapoint.map(datapoint -> viewModel.getChannelConfig().getRegulationItemViewType(datapoint)).orElse(-1);
     }
 
     public Datapoint getDataPointAt(int position) {
