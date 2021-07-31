@@ -256,7 +256,7 @@ public class RetrievingTests {
         newSignals.put(beaconID3, -50);
         BeaconID nearest = strategy.getNearest(newSignals);
 
-        assertThat(nearest).isEqualTo(beaconID3);
+        assertThat(nearest).isEqualTo(beaconID2);
     }
 
     @Test
@@ -294,5 +294,49 @@ public class RetrievingTests {
         BeaconID nearest = strategy.getNearest(newSignals);
 
         assertThat(nearest).isEqualTo(beaconID1);
+    }
+
+    @Test
+    public void testStrongestBeaconConsistency_threeBeacons_strongestIsConsistent_whenSignalsEqual() {
+        RetrievingStrategy strategy = new ThresholderStrategy();
+        Map<BeaconID, Integer> newSignals;
+        newSignals = new HashMap<>();
+        BeaconID beaconID1 = mock(BeaconID.class);
+        BeaconID beaconID2 = mock(BeaconID.class);
+        BeaconID beaconID3 = mock(BeaconID.class);
+        newSignals.put(beaconID1, -30);
+        newSignals.put(beaconID2, -90);
+        newSignals.put(beaconID3, -50);
+        strategy.getNearest(newSignals);
+
+        newSignals = new HashMap<>();
+        newSignals.put(beaconID1, -30);
+        newSignals.put(beaconID2, -30);
+        newSignals.put(beaconID3, -50);
+        BeaconID nearest = strategy.getNearest(newSignals);
+
+        assertThat(nearest).isEqualTo(beaconID1);
+    }
+
+    @Test
+    public void testStrongestBeaconConsistency_threeBeacons_strongestIsNOTConsistent() {
+        RetrievingStrategy strategy = new ThresholderStrategy();
+        Map<BeaconID, Integer> newSignals;
+        newSignals = new HashMap<>();
+        BeaconID beaconID1 = mock(BeaconID.class);
+        BeaconID beaconID2 = mock(BeaconID.class);
+        BeaconID beaconID3 = mock(BeaconID.class);
+        newSignals.put(beaconID1, -30);
+        newSignals.put(beaconID2, -90);
+        newSignals.put(beaconID3, -50);
+        strategy.getNearest(newSignals);
+
+        newSignals = new HashMap<>();
+        newSignals.put(beaconID1, -30);
+        newSignals.put(beaconID2, -29);
+        newSignals.put(beaconID3, -50);
+        BeaconID nearest = strategy.getNearest(newSignals);
+
+        assertThat(nearest).isNull();
     }
 }
