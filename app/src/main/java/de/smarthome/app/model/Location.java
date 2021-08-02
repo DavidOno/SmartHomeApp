@@ -81,7 +81,8 @@ public class Location {
 
     public void getAllChildrenFromLocation(List<Location> resultList) {
         for (Location loc : this.getLocations()) {
-            resultList.add(loc);
+            if(!resultList.contains(loc))
+                resultList.add(loc);
             loc.getAllChildrenFromLocation(resultList);
         }
     }
