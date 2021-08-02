@@ -209,14 +209,11 @@ public class ServerCommunicator {
                 .build();
 
         CredentialsClient credentialsClient = Credentials.getClient(parentApplication);
-        credentialsClient.request(credentialRequest).addOnCompleteListener(new OnCompleteListener<CredentialRequestResponse>() {
-            @Override
-            public void onComplete(@NonNull Task<CredentialRequestResponse> task) {
-                if (task.isSuccessful()) {
-                    initialisationOfApplicationAfterRestart(task.getResult().getCredential());
-                }else{
-                    toastUtility.prepareToast("Not able to retrieve Login data");
-                }
+        credentialsClient.request(credentialRequest).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                initialisationOfApplicationAfterRestart(task.getResult().getCredential());
+            }else{
+                toastUtility.prepareToast("Not able to retrieve Login data");
             }
         });
     }
