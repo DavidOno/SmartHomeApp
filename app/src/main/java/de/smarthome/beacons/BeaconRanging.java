@@ -3,7 +3,6 @@ package de.smarthome.beacons;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.os.RemoteException;
 import android.util.Log;
 
 import org.altbeacon.beacon.Beacon;
@@ -19,11 +18,21 @@ import java.util.Map;
 import de.smarthome.app.model.UIConfig;
 import de.smarthome.beacons.nearest.ThresholderStrategy;
 
+/**
+ * This class enables the app to detect movement in-and-out of regions.
+ */
 public class BeaconRanging implements BeaconConsumer {
     private final BeaconManager beaconManager;
     private final BeaconLocationManager beaconLocationManager;
     private final Context context;
 
+    /**
+     *
+     * @param context
+     * @param newUIConfig
+     * @param newBeaconConfig
+     * @param beaconManagerCreator
+     */
     public BeaconRanging(Context context, UIConfig newUIConfig, BeaconLocations newBeaconConfig,
                          BeaconManagerCreator beaconManagerCreator) {
         this.context = context;
@@ -41,10 +50,9 @@ public class BeaconRanging implements BeaconConsumer {
         beaconManager.unbind(this);
     }
 
-    public void onDestroy() {
-        beaconManager.unbind(this);
-    }
-
+    /**
+     *
+     */
     @Override
     public void onBeaconServiceConnect() {
         RangeNotifier rangeNotifier = (beacons, region) -> {
@@ -61,14 +69,10 @@ public class BeaconRanging implements BeaconConsumer {
             }
         };
 
-        try {
-            beaconManager.startRangingBeaconsInRegion(new Region("myRangingUniqueId", null, null, null));
-            beaconManager.addRangeNotifier(rangeNotifier);
-            beaconManager.startRangingBeaconsInRegion(new Region("myRangingUniqueId", null, null, null));
-            beaconManager.addRangeNotifier(rangeNotifier);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+        beaconManager.startRangingBeacons(new Region("myRangingUniqueId", null, null, null));
+        beaconManager.addRangeNotifier(rangeNotifier);
+        beaconManager.startRangingBeacons(new Region("myRangingUniqueId", null, null, null));
+        beaconManager.addRangeNotifier(rangeNotifier);
     }
 
     @Override

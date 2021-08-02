@@ -18,9 +18,17 @@ import java.security.NoSuchAlgorithmException;
 
 import javax.net.ssl.SSLContext;
 
-public class NoSSLRestTemplateCreator implements RestTemplateCreater {
+/**
+ * This class creates resttemplates, which are capable of avoiding SSL-verification.
+ */
+public class NoSSLRestTemplateCreator implements RestTemplateCreator {
     private static final String TAG = "NoSSLRestTemplateCreater";
 
+    /**
+     * Creates a resttemplate, which is capable of avoiding SSL-verification and
+     * converting Http-messages to JSON.
+     * @return
+     */
     @Override
     public RestTemplate create() {
         RestTemplate restTemplate = new RestTemplate(avoidSSLVerification());

@@ -18,6 +18,9 @@ import de.smarthome.server.ServerHandler;
 
 import static de.smarthome.SmartHomeApplication.EXECUTOR_SERVICE;
 
+/**
+ * This class implements how user can issue their requests to the GIRA-server.
+ */
 public class GiraServerHandler implements ServerHandler {
 
     private static final String TAG = "GiraServerHandler";
@@ -27,6 +30,9 @@ public class GiraServerHandler implements ServerHandler {
         this.commandInterpreter = commandInterpreter;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public void sendRequest(CommandChain commandChain) {
         if(commandChain.hasNext()) {
@@ -35,6 +41,9 @@ public class GiraServerHandler implements ServerHandler {
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public void proceedInChain(Command command, CommandChain commandChain) {
         ResponseEntity responseEntitiy = sendRequest(command);
@@ -42,6 +51,9 @@ public class GiraServerHandler implements ServerHandler {
         sendRequest(commandChain);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public void proceedInChain(AsyncCommand command, CommandChain commandChain) {
         Consumer<Request> requestCallback = request ->
@@ -54,6 +66,9 @@ public class GiraServerHandler implements ServerHandler {
         command.accept(commandInterpreter, requestCallback);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public ResponseEntity sendRequest(Command command) {
         Request request = command.accept(commandInterpreter);
@@ -91,6 +106,9 @@ public class GiraServerHandler implements ServerHandler {
         return response.getStatusCode() == HttpStatus.NO_CONTENT;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public void sendRequest(AsyncCommand command) {
         Consumer<Request> requestCallback = request ->

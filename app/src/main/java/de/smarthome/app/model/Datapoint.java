@@ -1,7 +1,10 @@
 package de.smarthome.app.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+/**
+ * Model class for the datapoints, stored inside functions, inside ui-config.
+ * These represent current data, like temperature, light-intensity in the users home.
+ */
 public class Datapoint {
 
     private final String ID;

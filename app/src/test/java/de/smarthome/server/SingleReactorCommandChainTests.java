@@ -1,14 +1,11 @@
 package de.smarthome.server;
 
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -21,7 +18,6 @@ import java.util.List;
 import de.smarthome.app.model.UIConfig;
 import de.smarthome.app.model.responses.AvailabilityResponse;
 import de.smarthome.app.repository.responsereactor.ResponseReactorUIConfig;
-import de.smarthome.command.CommandChain;
 import de.smarthome.command.CommandInterpreter;
 import de.smarthome.command.SingleReactorCommandChain;
 import de.smarthome.command.gira.HomeServerCommandInterpreter;
@@ -45,7 +41,7 @@ public class SingleReactorCommandChainTests {
                 .add(new UIConfigCommand());
 
         RestTemplate mockedRestTemplate = mock(RestTemplate.class);
-        RestTemplateCreater mockedRestTemplateCreator = mock(RestTemplateCreater.class);
+        RestTemplateCreator mockedRestTemplateCreator = mock(RestTemplateCreator.class);
         when(mockedRestTemplateCreator.create()).thenReturn(mockedRestTemplate);
         CommandInterpreter ci = new HomeServerCommandInterpreter(mockedRestTemplateCreator);
 
@@ -75,7 +71,7 @@ public class SingleReactorCommandChainTests {
         cc.add(new UIConfigCommand());
 
         RestTemplate mockedRestTemplate = mock(RestTemplate.class);
-        RestTemplateCreater mockedRestTemplateCreator = mock(RestTemplateCreater.class);
+        RestTemplateCreator mockedRestTemplateCreator = mock(RestTemplateCreator.class);
         when(mockedRestTemplateCreator.create()).thenReturn(mockedRestTemplate);
         CommandInterpreter ci = new HomeServerCommandInterpreter(mockedRestTemplateCreator);
 

@@ -4,7 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 import java.util.Optional;
-
+/**
+ * Model class for the functions, stored in the ui-config.
+ * These functions represent locations in the users home.
+ */
 public class Function {
 
     private final String name;

@@ -10,5 +10,10 @@ public interface CommandChain {
 
     boolean hasNext();
     CommandChainable getNext();
+
+    /**
+     * This method stores the result of the single request.
+     * @param responseEntity The result of a request.
+     */
     void putResult(ResponseEntity responseEntity);
 }

@@ -7,7 +7,9 @@ import java.util.Optional;
 
 import de.smarthome.app.model.Datapoint;
 
-
+/**
+ * This class represents GIRA-channels.
+ */
 public class Channel {
     private final String channelID;
     private final List<ChannelDatapoint> datapoints;

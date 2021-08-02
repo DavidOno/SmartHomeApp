@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class stores stores all information given by GIRA when the callback-event-loop detects an event.
+ */
 public class CallBackServiceInput {
 
     private final int failures;

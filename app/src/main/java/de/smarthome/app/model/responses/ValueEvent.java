@@ -6,6 +6,9 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * This class is capable of storing a value-event emitted by GIRA.
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ValueEvent {
 	

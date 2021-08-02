@@ -2,6 +2,10 @@ package de.smarthome.app.model.responses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * This class is capable of storing all information given as response from GIRA when
+ * checking its availability.
+ */
 public class AvailabilityResponse {
 
     private final String info;

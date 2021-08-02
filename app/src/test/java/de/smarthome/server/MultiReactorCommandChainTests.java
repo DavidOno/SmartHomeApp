@@ -1,13 +1,10 @@
 package de.smarthome.server;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -15,20 +12,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
-
 import de.smarthome.app.model.UIConfig;
 import de.smarthome.app.model.responses.AvailabilityResponse;
 import de.smarthome.app.repository.responsereactor.ResponseReactorCheckAvailability;
 import de.smarthome.app.repository.responsereactor.ResponseReactorUIConfig;
-import de.smarthome.command.CommandChain;
 import de.smarthome.command.CommandInterpreter;
 import de.smarthome.command.MultiReactorCommandChain;
-import de.smarthome.command.SingleReactorCommandChain;
 import de.smarthome.command.gira.HomeServerCommandInterpreter;
 import de.smarthome.command.impl.CheckAvailabilityCommand;
 import de.smarthome.command.impl.MultiReactorCommandChainImpl;
-import de.smarthome.command.impl.SingleReactorCommandChainImpl;
 import de.smarthome.command.impl.UIConfigCommand;
 import de.smarthome.server.gira.GiraServerHandler;
 
@@ -47,7 +39,7 @@ public class MultiReactorCommandChainTests {
                 .add(new UIConfigCommand(), responseReactor);
 
         RestTemplate mockedRestTemplate = mock(RestTemplate.class);
-        RestTemplateCreater mockedRestTemplateCreator = mock(RestTemplateCreater.class);
+        RestTemplateCreator mockedRestTemplateCreator = mock(RestTemplateCreator.class);
         when(mockedRestTemplateCreator.create()).thenReturn(mockedRestTemplate);
         CommandInterpreter ci = new HomeServerCommandInterpreter(mockedRestTemplateCreator);
 
@@ -77,7 +69,7 @@ public class MultiReactorCommandChainTests {
         cc.add(new UIConfigCommand(), uiResponseReactor);
 
         RestTemplate mockedRestTemplate = mock(RestTemplate.class);
-        RestTemplateCreater mockedRestTemplateCreator = mock(RestTemplateCreater.class);
+        RestTemplateCreator mockedRestTemplateCreator = mock(RestTemplateCreator.class);
         when(mockedRestTemplateCreator.create()).thenReturn(mockedRestTemplate);
         CommandInterpreter ci = new HomeServerCommandInterpreter(mockedRestTemplateCreator);
 

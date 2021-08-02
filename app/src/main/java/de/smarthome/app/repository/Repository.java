@@ -30,7 +30,7 @@ import de.smarthome.app.model.responses.CallbackValueInput;
 import de.smarthome.app.model.responses.ServiceEvent;
 import de.smarthome.beacons.DefaultBeaconManagerCreator;
 import de.smarthome.server.CallbackSubscriber;
-import de.smarthome.server.MyFirebaseMessagingService;
+import de.smarthome.server.SmartHomeFMS;
 
 public class Repository implements CallbackSubscriber, BeaconObserverSubscriber {
     private static final String TAG = "Repository";
@@ -123,8 +123,8 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     private void subscribeToMyFirebaseMessagingService() {
-        MyFirebaseMessagingService.getValueObserver().subscribe(this);
-        MyFirebaseMessagingService.getServiceObserver().subscribe(this);
+        SmartHomeFMS.getValueObserver().subscribe(this);
+        SmartHomeFMS.getServiceObserver().subscribe(this);
     }
 
     public void requestSetValue(String id, String value) {
@@ -257,8 +257,8 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
 
     public void unsubscribeFromEverything() {
         try {
-            MyFirebaseMessagingService.getValueObserver().unsubscribe(this);
-            MyFirebaseMessagingService.getServiceObserver().unsubscribe(this);
+            SmartHomeFMS.getValueObserver().unsubscribe(this);
+            SmartHomeFMS.getServiceObserver().unsubscribe(this);
             serverCommunicator.unsubscribeFromEverything();
             beaconObserver.unsubscribe();
         }catch (Exception e){

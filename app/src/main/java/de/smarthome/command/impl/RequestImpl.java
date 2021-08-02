@@ -2,36 +2,23 @@ package de.smarthome.command.impl;
 
 import android.util.Log;
 
-import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLContexts;
-import org.apache.http.conn.ssl.TrustStrategy;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import javax.net.ssl.SSLContext;
-
 import de.smarthome.SmartHomeApplication;
 import de.smarthome.command.Request;
-import de.smarthome.server.StandardErrorHandler;
 
-
+/**
+ * This class implements the Request-interface.
+ */
 public class RequestImpl implements Request {
 
     private static final String TAG = "RequestImpl";
@@ -50,7 +37,9 @@ public class RequestImpl implements Request {
     }
 
 
-
+    /*
+     * @inheritDoc
+     */
     @Override
     public ResponseEntity execute() {
 //        checkNetworkConnection();
@@ -67,6 +56,10 @@ public class RequestImpl implements Request {
         }
     }
 
+    /**
+     * Checks if the device has access to the internet.
+     * @return true if the device has access to the internet, otherwise false.
+     */
     public boolean isOnline() {
         Runtime runtime = Runtime.getRuntime();
         try {

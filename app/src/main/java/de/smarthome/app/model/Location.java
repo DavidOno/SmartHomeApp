@@ -5,7 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Model class for the locations, stored in the ui-config.
+ * These locations represent locations in the users home.
+ */
 public class Location {
 
     public static final Location ROOT = new Location();

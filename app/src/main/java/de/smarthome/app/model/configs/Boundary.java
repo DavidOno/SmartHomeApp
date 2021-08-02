@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
+/**
+ * This class represents the boundaries, which are specified for some datapoints in certain locations.
+ */
 public class Boundary {
     private final String boundaryName;
     private final String location;

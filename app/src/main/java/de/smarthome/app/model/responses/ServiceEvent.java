@@ -2,6 +2,9 @@ package de.smarthome.app.model.responses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * This class is capable of storing all information about an event that happened at GIRA.
+ */
 public class ServiceEvent {
 
     private final Enum serviceEventEnum;

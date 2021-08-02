@@ -48,6 +48,7 @@ public class BeaconApplication implements BootstrapNotifier {
             regionBootstrap = null;
         }
     }
+
     public void enableMonitoring() {
         Log.d(TAG, "enabling monitoring");
         Region region = new Region("backgroundRegion",

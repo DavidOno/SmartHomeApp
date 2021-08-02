@@ -1,9 +1,11 @@
-package de.smarthome.server;
+package de.smarthome.app.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * Model class for capturing errors, which happen when interactivng with GIRA-server.
+ */
 public class ServerError {
-
 
     private final ErrorObject error;
 
