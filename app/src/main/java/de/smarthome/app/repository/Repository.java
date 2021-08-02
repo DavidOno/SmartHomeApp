@@ -1,6 +1,7 @@
 package de.smarthome.app.repository;
 
 import android.app.Application;
+import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -105,11 +106,14 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     public void initBeaconObserver() {
-        beaconObserver = new BeaconObserverImplementation(parentApplication, parentApplication.getApplicationContext(),
-                configContainer.getUIConfig(), configContainer.getBeaconLocations(),
-                new DefaultBeaconManagerCreator());
-        beaconObserver.subscribe(this);
-        beaconObserver.init();
+        if(parentApplication != null){
+            Context c = parentApplication.getApplicationContext();
+            beaconObserver = new BeaconObserverImplementation(parentApplication, parentApplication.getApplicationContext(),
+                    configContainer.getUIConfig(), configContainer.getBeaconLocations(),
+                    new DefaultBeaconManagerCreator());
+            beaconObserver.subscribe(this);
+            beaconObserver.init();
+        }
         setBeaconCheckFalse();
     }
 
@@ -189,7 +193,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         return configContainer.getStatusGetValueMap();
     }
 
-    public void sendBeaconLocationToConfigContainer(BeaconLocations newBeaconConfig){
+    public void initBeaconObserverWithBeaconConfig(BeaconLocations newBeaconConfig){
         configContainer.setBeaconLocations(newBeaconConfig);
         initBeaconObserver();
     }

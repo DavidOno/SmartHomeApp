@@ -130,29 +130,33 @@ public class ConfigContainer {
 
     private void checkForCurrentlySelectedLocation() {
         boolean notFound = true;
-        for (Location loc : uiConfig.getAllLocations()) {
-            if (loc.getName().equals(selectedLocation.getName())) {
-                initSelectedLocation(loc);
-                notFound = false;
-                break;
+        if(uiConfig != null && selectedLocation != null){
+            for (Location loc : uiConfig.getAllLocations()) {
+                if (loc.getName().equals(selectedLocation.getName())) {
+                    initSelectedLocation(loc);
+                    notFound = false;
+                    break;
+                }
             }
-        }
-        if(notFound){
-            toastUtility.prepareToast("Current Location was not fund in new UIConfig!");
+            if(notFound){
+                toastUtility.prepareToast("Current Location was not fund in new UIConfig!");
+            }
         }
     }
 
     private void checkForCurrentlySelectedFunction() {
         boolean notFound = true;
-        for (Function func : selectedLocation.getFunctions(uiConfig)) {
-            if (func.getName().equals(selectedFunction.getName())) {
-                initSelectedFunction(func);
-                notFound = false;
-                break;
+        if(selectedLocation != null && selectedFunction != null) {
+            for (Function func : selectedLocation.getFunctions(uiConfig)) {
+                if (func.getName().equals(selectedFunction.getName())) {
+                    initSelectedFunction(func);
+                    notFound = false;
+                    break;
+                }
             }
-        }
-        if(notFound){
-            toastUtility.prepareToast("Selected Function was not fund in new UIConfig!");
+            if (notFound) {
+                toastUtility.prepareToast("Selected Function was not fund in new UIConfig!");
+            }
         }
     }
 
@@ -161,11 +165,13 @@ public class ConfigContainer {
     }
 
     private void initLocationList() {
-        List<Location> allLocations = new ArrayList<>(uiConfig.getLocations());
-        for (Location location : allLocations) {
-            location.getAllChildrenFromLocation(allLocations);
+        if(uiConfig != null){
+            List<Location> allLocations = new ArrayList<>(uiConfig.getLocations());
+            for (Location location : uiConfig.getLocations()) {
+                location.getAllChildrenFromLocation(allLocations);
+            }
+            setLocationList(allLocations);
         }
-        setLocationList(allLocations);
     }
 
     public void setLocationList(List<Location> allLocations) {
@@ -183,7 +189,7 @@ public class ConfigContainer {
     private void initFunctionMap(Location viewedLocation) {
         Map<Function, Function> completeFunctionMap = mapStatusFunctionToFunction(viewedLocation);
 
-        if (!viewedLocation.getParentLocation().equals(Location.ROOT)) {
+        if(viewedLocation.getParentLocation() != null && !viewedLocation.getParentLocation().equals(Location.ROOT)) {
             completeFunctionMap.putAll(mapStatusFunctionToFunction(viewedLocation.getParentLocation()));
         }
         setFunctionMap(completeFunctionMap);
@@ -191,19 +197,21 @@ public class ConfigContainer {
 
     private LinkedHashMap<Function, Function> mapStatusFunctionToFunction(Location location) {
         LinkedHashMap<Function, Function> completeFunctionMap = new LinkedHashMap<>();
-        String regex = "_";
-        for (Function func : location.getFunctions(uiConfig)) {
-            Function functionStatus = null;
-            if (!func.isStatusFunction()) {
-                for (Function comparedFunction : location.getFunctions(uiConfig)) {
-                    if (comparedFunction.isStatusFunction() &&
-                            func.getName().split(regex)[0].equals(
-                                    comparedFunction.getName().split(regex)[0])) {
+        if(uiConfig != null) {
+            String regex = "_";
+            for (Function func : location.getFunctions(uiConfig)) {
+                Function functionStatus = null;
+                if (!func.isStatusFunction()) {
+                    for (Function comparedFunction : location.getFunctions(uiConfig)) {
+                        if (comparedFunction.isStatusFunction() &&
+                                func.getName().split(regex)[0].equals(
+                                        comparedFunction.getName().split(regex)[0])) {
                             functionStatus = comparedFunction;
                             break;
+                        }
                     }
+                    completeFunctionMap.put(func, functionStatus);
                 }
-                completeFunctionMap.put(func, functionStatus);
             }
         }
         return completeFunctionMap;
@@ -224,13 +232,15 @@ public class ConfigContainer {
 
     private LinkedHashMap<Datapoint, BoundaryDataPoint> mapBoundaryToFunction() {
         LinkedHashMap<Datapoint, BoundaryDataPoint> datapointBoundaryDataPointMap = new LinkedHashMap<>();
-        String regex = "_";
-        for (Boundary boundary : boundariesConfig.getBoundaries()) {
-            if (boundary.getLocation().equals(selectedLocation.getName()) &&
-                    boundary.getName().split(regex)[0].equals(selectedFunction.getName().split(regex)[0])) {
+        if(boundariesConfig != null && selectedLocation != null && selectedFunction != null) {
+            String regex = "_";
+            for (Boundary boundary : boundariesConfig.getBoundaries()) {
+                if (boundary.getLocation().equals(selectedLocation.getName()) &&
+                        boundary.getName().split(regex)[0].equals(selectedFunction.getName().split(regex)[0])) {
 
-                datapointBoundaryDataPointMap.putAll(mapCorrespondingBoundaryDataPoint(boundary));
-                break;
+                    datapointBoundaryDataPointMap.putAll(mapCorrespondingBoundaryDataPoint(boundary));
+                    break;
+                }
             }
         }
         return datapointBoundaryDataPointMap;
@@ -238,30 +248,32 @@ public class ConfigContainer {
 
     private LinkedHashMap<Datapoint, BoundaryDataPoint> mapCorrespondingBoundaryDataPoint(Boundary boundary) {
         LinkedHashMap<Datapoint, BoundaryDataPoint> datapointBoundaryDataPointMap = new LinkedHashMap<>();
-        for (BoundaryDataPoint bdp : boundary.getDatapoints()) {
-            for (Datapoint dp : selectedFunction.getDataPoints())
-                if (bdp.getName().equals(dp.getName())) {
-                    datapointBoundaryDataPointMap.put(dp, bdp);
-                    break;
-                }
+        if(selectedFunction != null) {
+            for (BoundaryDataPoint bdp : boundary.getDatapoints()) {
+                for (Datapoint dp : selectedFunction.getDataPoints())
+                    if (bdp.getName().equals(dp.getName())) {
+                        datapointBoundaryDataPointMap.put(dp, bdp);
+                        break;
+                    }
+            }
         }
         return datapointBoundaryDataPointMap;
     }
 
     private void initDataPointMap(Function function) {
         Map<Datapoint, Datapoint> newValue = new LinkedHashMap<>();
-        if (functionMap.getValue().get(function) != null) {
-            for (int i = 0; i < function.getDataPoints().size(); i++) {
-                if(functionMap.getValue().get(function).getDataPoints().size() > i){
-                    newValue.put(function.getDataPoints().get(i), functionMap.getValue().get(function).getDataPoints().get(i));
-                }else{
-                    newValue.put(function.getDataPoints().get(i), null);
+        if (functionMap != null && functionMap.getValue() != null
+                && functionMap.getValue().get(function) != null) {
+                for (int i = 0; i < function.getDataPoints().size(); i++) {
+                    if (functionMap.getValue().get(function).getDataPoints().size() > i) {
+                        newValue.put(function.getDataPoints().get(i), functionMap.getValue().get(function).getDataPoints().get(i));
+                    } else {
+                        newValue.put(function.getDataPoints().get(i), null);
+                    }
                 }
-            }
-        } else {
-            for (Datapoint datapoint : function.getDataPoints()) {
-                newValue.put(datapoint, null);
-            }
+            } else {
+                for (Datapoint datapoint : function.getDataPoints()) {
+                    newValue.put(datapoint, null); }
         }
         setDataPointMap(newValue);
     }
