@@ -5,7 +5,6 @@ import android.util.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import de.smarthome.app.repository.ConfigContainer;
 import de.smarthome.app.repository.Repository;
 import de.smarthome.beacons.BeaconLocations;
 import de.smarthome.command.ResponseReactor;
@@ -42,6 +41,6 @@ public class ResponseReactorBeaconConfig implements ResponseReactor {
     }
 
     public void sendBeaconLocationsToRepo(BeaconLocations newBeaconConfig){
-        repository.sendBeaconLocationToConfigContainer(newBeaconConfig);
+        repository.initBeaconObserverWithBeaconConfig(newBeaconConfig);
     }
 }
