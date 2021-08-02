@@ -62,6 +62,7 @@ public class ConfigContainerTests {
         cc.setBoundaryMap(null);
     }
 
+    //ok
     @Test
     public void testInitNewUIConfigWithNothingSelected(){
         ConfigContainer cc = ConfigContainer.getInstance();
@@ -75,46 +76,48 @@ public class ConfigContainerTests {
         assertThat(cc.getUIConfig()).isEqualTo(newUiConfig);
     }
 
+    //ok
     @Test
     public void testInitNewUIConfigWithOnlyLocationSelected() throws InterruptedException {
         ConfigContainer cc = ConfigContainer.getInstance();
 
-        LinkedList<String> fl = new LinkedList<>();
-        fl.add("1");
-        fl.add("2");
-        LinkedList<Location> ll = new LinkedList<>();
-        Location location = new Location("l1", "1","dummy", fl, ll,"dummy");
+        LinkedList<String> functionIdList = new LinkedList<>();
+        functionIdList.add("1");
+        functionIdList.add("2");
+        LinkedList<Location> emptyLocationList = new LinkedList<>();
+        Location location = new Location("l1", "1","dummy", functionIdList, emptyLocationList,"dummy");
 
         cc.setSelectedLocation(location);
         cc.setSelectedFunction(null);
 
-        LinkedList<Function> fl2 = new LinkedList<>();
-        Function f1 = new Function("f_function", "1", "dummy", "dummy", null);
-        Function f2 = new Function("f_Status", "2", "dummy", "dummy", null);
-        fl2.add(f1);
-        fl2.add(f2);
-        LinkedList<Location> ll2 = new LinkedList<>();
-        ll2.add(location);
-        UIConfig uiConfig = new UIConfig(fl2, ll2, "2");
+        LinkedList<Function> functionList = new LinkedList<>();
+        Function function = new Function("f_function", "1", "dummy", "dummy", null);
+        Function functionStatus = new Function("f_Status", "2", "dummy", "dummy", null);
+        functionList.add(function);
+        functionList.add(functionStatus);
+        LinkedList<Location> locationList = new LinkedList<>();
+        locationList.add(location);
+        UIConfig uiConfig = new UIConfig(functionList, locationList, "2");
 
         cc.initNewUIConfig(uiConfig);
 
-        assertThat(cc.getFunctionMap().getValue()).containsEntry(f1, f2);
+        assertThat(cc.getFunctionMap().getValue()).containsEntry(function, functionStatus);
         assertThat(cc.getUIConfig()).isEqualTo(uiConfig);
     }
 
+    //ok
     @Test
     public void testInitNewUIConfigWithOnlyFunctionSelected(){
         ConfigContainer cc = ConfigContainer.getInstance();
 
-        Function f1 = new Function("f_function", "1", "dummy", "dummy", null);
+        Function function = new Function("f_function", "1", "dummy", "dummy", null);
         cc.setSelectedLocation(null);
-        cc.setSelectedFunction(f1);
+        cc.setSelectedFunction(function);
 
-        LinkedList<Function> fl2 = new LinkedList<>();
-        fl2.add(f1);
-        LinkedList<Location> ll2 = new LinkedList<>();
-        UIConfig uiConfig = new UIConfig(fl2, ll2, "2");
+        LinkedList<Function> functionList = new LinkedList<>();
+        functionList.add(function);
+        LinkedList<Location> locationList = new LinkedList<>();
+        UIConfig uiConfig = new UIConfig(functionList, locationList, "2");
 
         cc.initNewUIConfig(uiConfig);
 
@@ -123,30 +126,31 @@ public class ConfigContainerTests {
         assertThat(cc.getUIConfig()).isEqualTo(uiConfig);
     }
 
+    //ok
     @Test
     public void testInitNewUIConfigWithLocationAndFunctionSelected(){
         ConfigContainer cc = ConfigContainer.getInstance();
-        LinkedList<String> fl = new LinkedList<>();
-        fl.add("1");
-        fl.add("2");
-        LinkedList<Location> ll = new LinkedList<>();
-        Location location = new Location("l1", "1","dummy", fl, ll,"dummy");
+        LinkedList<String> functionIdList = new LinkedList<>();
+        functionIdList.add("1");
+        functionIdList.add("2");
+        LinkedList<Location> emptyLocationList = new LinkedList<>();
+        Location location = new Location("l1", "1","dummy", functionIdList, emptyLocationList,"dummy");
 
-        LinkedList<Function> fl2 = new LinkedList<>();
-        LinkedList<Datapoint> dpl = new LinkedList<>();
+        LinkedList<Datapoint> datapointList = new LinkedList<>();
         Datapoint dp = new Datapoint("1", "datapoint1");
-        dpl.add(dp);
-        Function f1 = new Function("f_function", "1", "dummy", "dummy", dpl);
-        Function f2 = new Function("f_Status", "2", "dummy", "dummy", dpl);
+        datapointList.add(dp);
+        Function function = new Function("f_function", "1", "dummy", "dummy", datapointList);
+        Function functionStatus = new Function("f_Status", "2", "dummy", "dummy", datapointList);
+
+        LinkedList<Function> functionList = new LinkedList<>();
+        functionList.add(function);
+        functionList.add(functionStatus);
         cc.setSelectedLocation(location);
-        cc.setSelectedFunction(f1);
+        cc.setSelectedFunction(function);
 
-
-        fl2.add(f1);
-        fl2.add(f2);
         LinkedList<Location> ll2 = new LinkedList<>();
         ll2.add(location);
-        UIConfig uiConfig = new UIConfig(fl2, ll2, "2");
+        UIConfig uiConfig = new UIConfig(functionList, ll2, "2");
 
         cc.initNewUIConfig(uiConfig);
 
@@ -156,18 +160,19 @@ public class ConfigContainerTests {
         assertThat(cc.getUIConfig()).isEqualTo(uiConfig);
     }
 
+    //ok
     @Test
     public void testInitSelectedLocationWithOutUiConfigInitialised(){
         ConfigContainer cc = ConfigContainer.getInstance();
 
-        Function f1 = new Function("f_function", "1", "dummy", "dummy", null);
-        Function f2 = new Function("f_Status", "2", "dummy", "dummy", null);
-        LinkedList<String> fl = new LinkedList<>();
-        fl.add(f1.getID());
-        fl.add(f2.getID());
+        Function function = new Function("f_function", "1", "dummy", "dummy", null);
+        Function functionStatus = new Function("f_Status", "2", "dummy", "dummy", null);
+        LinkedList<String> functionIdList = new LinkedList<>();
+        functionIdList.add(function.getID());
+        functionIdList.add(functionStatus.getID());
 
-        LinkedList<Location> ll = new LinkedList<>();
-        Location location = new Location("l1", "1","dummy", fl, ll,"dummy");
+        LinkedList<Location> emptyLocationLost = new LinkedList<>();
+        Location location = new Location("l1", "1","dummy", functionIdList, emptyLocationLost,"dummy");
 
         cc.initSelectedLocation(location);
 
@@ -175,51 +180,53 @@ public class ConfigContainerTests {
         assertThat(cc.getFunctionMap().getValue()).isEmpty();
     }
 
+    //ok
     @Test
     public void testInitSelectedLocationWithUiConfigInitialised(){
         ConfigContainer cc = setUpConfigContainerWithEmptyUIConfig();
-        Function f1 = new Function("f_function", "1", "dummy", "dummy", null);
-        Function f2 = new Function("f_Status", "2", "dummy", "dummy", null);
-        LinkedList<String> fl = new LinkedList<>();
-        fl.add(f1.getID());
-        fl.add(f2.getID());
+        Function function = new Function("f_function", "1", "dummy", "dummy", null);
+        Function functionStatus = new Function("f_Status", "2", "dummy", "dummy", null);
+        LinkedList<String> functionIdList = new LinkedList<>();
+        functionIdList.add(function.getID());
+        functionIdList.add(functionStatus.getID());
 
-        LinkedList<Location> ll = new LinkedList<>();
-        Location location = new Location("l1", "1","dummy", fl, ll,"dummy");
+        LinkedList<Location> locationList = new LinkedList<>();
+        Location location = new Location("l1", "1","dummy", functionIdList, locationList,"dummy");
 
         cc.getUIConfig().getLocations().add(location);
-        cc.getUIConfig().getFunctions().add(f1);
-        cc.getUIConfig().getFunctions().add(f2);
+        cc.getUIConfig().getFunctions().add(function);
+        cc.getUIConfig().getFunctions().add(functionStatus);
         cc.initNewUIConfig(cc.getUIConfig());
 
         cc.initSelectedLocation(location);
 
         assertThat(cc.getSelectedLocation()).isEqualTo(location);
-        assertThat(cc.getFunctionMap().getValue()).containsEntry(f1, f2);
+        assertThat(cc.getFunctionMap().getValue()).containsEntry(function, functionStatus);
     }
 
+    //ok
     @Test
     public void testInitSelectedFunctionWithUiConfigInitialisedStatusFunctionHasFewerDataPoints(){
         ConfigContainer cc = setUpConfigContainerWithEmptyUIConfig();
-        LinkedList<Datapoint> dpl = new LinkedList<>();
-        Datapoint dp = new Datapoint("1", "datapoint1");
-        dpl.add(dp);
-        dpl.add(dp);
-        LinkedList<Datapoint> dpl2 = new LinkedList<>();
-        dpl2.add(dp);
-        Function f2 = new Function("f_Status", "2", "dummy", "dummy", dpl2);
-        Function function = new Function("f_function", "1","dummy", "22", dpl);
+        LinkedList<Datapoint> datapointListLong = new LinkedList<>();
+        Datapoint datapoint = new Datapoint("1", "datapoint1");
+        datapointListLong.add(datapoint);
+        datapointListLong.add(datapoint);
+        LinkedList<Datapoint> dataPointListShort = new LinkedList<>();
+        dataPointListShort.add(datapoint);
+        Function functionStatus = new Function("f_Status", "2", "dummy", "dummy", dataPointListShort);
+        Function function = new Function("f_function", "1","dummy", "22", datapointListLong);
 
-        LinkedList<Function> fl2 = new LinkedList<>();
-        fl2.add(f2);
-        fl2.add(function);
+        LinkedList<Function> functionList = new LinkedList<>();
+        functionList.add(functionStatus);
+        functionList.add(function);
 
-        LinkedList<String> fl = new LinkedList<>();
-        fl.add("1");
-        fl.add("2");
-        LinkedList<Location> ll2 = new LinkedList<>();
-        Location location = new Location("l1", "1","dummy", fl, ll2,"dummy");
-        UIConfig uiConfig = new UIConfig(fl2, ll2, "2");
+        LinkedList<String> functionIdList = new LinkedList<>();
+        functionIdList.add("1");
+        functionIdList.add("2");
+        LinkedList<Location> locationList = new LinkedList<>();
+        Location location = new Location("l1", "1","dummy", functionIdList, locationList,"dummy");
+        UIConfig uiConfig = new UIConfig(functionList, locationList, "2");
         cc.initNewUIConfig(uiConfig);
         cc.initSelectedLocation(location);
 
@@ -227,78 +234,82 @@ public class ConfigContainerTests {
 
         assertThat(cc.getSelectedFunction()).isEqualTo(function);
         assertThat(cc.getBoundaryMap()).isNotNull();
-        assertThat(cc.getDataPointMap().getValue()).containsKey(dp);
+        assertThat(cc.getDataPointMap().getValue()).containsKey(datapoint);
     }
 
+    //ok
     @Test
     public void testInitSelectedFunctionWithUiConfigInitialised(){
         ConfigContainer cc = setUpConfigContainerWithEmptyUIConfig();
-        LinkedList<Datapoint> dpl = new LinkedList<>();
-        Datapoint dp = new Datapoint("1", "datapoint1");
-        dpl.add(dp);
-        Function function = new Function("l1", "1","dummy", "22", dpl);
+        LinkedList<Datapoint> datapointList = new LinkedList<>();
+        Datapoint datapoint = new Datapoint("1", "datapoint1");
+        datapointList.add(datapoint);
+        Function function = new Function("l1", "1","dummy", "22", datapointList);
 
-        LinkedList<Function> fl2 = new LinkedList<>();
-        LinkedList<Location> ll2 = new LinkedList<>();
-        UIConfig uiConfig = new UIConfig(fl2, ll2, "2");
+        LinkedList<Function> functionList = new LinkedList<>();
+        LinkedList<Location> locationList = new LinkedList<>();
+        UIConfig uiConfig = new UIConfig(functionList, locationList, "2");
         cc.initNewUIConfig(uiConfig);
 
         cc.initSelectedFunction(function);
 
         assertThat(cc.getSelectedFunction()).isEqualTo(function);
         assertThat(cc.getBoundaryMap()).isNotNull();
-        assertThat(cc.getDataPointMap().getValue()).containsKey(dp);
+        assertThat(cc.getDataPointMap().getValue()).containsKey(datapoint);
     }
 
+    //ok
     @Test
     public void testInitSelectedFunctionWithOutUiConfigInitialised(){
         ConfigContainer cc = ConfigContainer.getInstance();
-        LinkedList<Datapoint> dpl = new LinkedList<>();
-        Datapoint dp = new Datapoint("1", "datapoint1");
-        dpl.add(dp);
-        Function function = new Function("l1", "1","dummy", "22", dpl);
+        LinkedList<Datapoint> datapointList = new LinkedList<>();
+        Datapoint datapoint = new Datapoint("1", "datapoint1");
+        datapointList.add(datapoint);
+        Function function = new Function("l1", "1","dummy", "22", datapointList);
 
         cc.initSelectedFunction(function);
 
         assertThat(cc.getSelectedFunction()).isEqualTo(function);
         assertThat(cc.getBoundaryMap()).isNotNull();
-        assertThat(cc.getDataPointMap().getValue()).containsKey(dp);
+        assertThat(cc.getDataPointMap().getValue()).containsKey(datapoint);
     }
 
+    //ok
     @Test
     public void testInitSelectedFunctionBoundaryMapInitialised(){
         ConfigContainer cc = ConfigContainer.getInstance();
-        LinkedList<Datapoint> dpl = new LinkedList<>();
-        Datapoint dp = new Datapoint("1", "datapoint1");
-        dpl.add(dp);
-        Function function = new Function("f1", "1","dummy", "22", dpl);
+        LinkedList<Datapoint> datapointList = new LinkedList<>();
+        Datapoint datapoint = new Datapoint("1", "datapoint1");
+        datapointList.add(datapoint);
+        Function function = new Function("f1", "1","dummy", "22", datapointList);
 
-        LinkedList<String> fl = new LinkedList<>();
-        fl.add("1");
-        LinkedList<Location> ll = new LinkedList<>();
-        Location location = new Location("l1", "1","dummy", fl, ll,"dummy");
+        LinkedList<String> functionIdList = new LinkedList<>();
+        functionIdList.add("1");
+        LinkedList<Location> locationList = new LinkedList<>();
+        Location location = new Location("l1", "1","dummy", functionIdList, locationList,"dummy");
 
         cc.setSelectedLocation(location);
-        LinkedList<Boundary> x = new LinkedList<>();
-        LinkedList<BoundaryDataPoint> y = new LinkedList<>();
-        y.add(new BoundaryDataPoint("datapoint1", "10", "20"));
-        x.add(new Boundary("f1_boundary", "l1", y));
-        cc.setBoundaryConfig(new BoundariesConfig(x));
+        LinkedList<Boundary> boundaryList = new LinkedList<>();
+        LinkedList<BoundaryDataPoint> boundaryDatapointList = new LinkedList<>();
+        boundaryDatapointList.add(new BoundaryDataPoint("datapoint1", "10", "20"));
+        boundaryList.add(new Boundary("f1_boundary", "l1", boundaryDatapointList));
+        cc.setBoundaryConfig(new BoundariesConfig(boundaryList));
 
         cc.initSelectedFunction(function);
 
         assertThat(cc.getSelectedFunction()).isEqualTo(function);
-        assertThat(cc.getBoundaryMap().getValue()).containsKey(dp);
-        assertThat(cc.getDataPointMap().getValue()).containsKey(dp);
+        assertThat(cc.getBoundaryMap().getValue()).containsKey(datapoint);
+        assertThat(cc.getDataPointMap().getValue()).containsKey(datapoint);
     }
 
+    //ok
     @Test
     public void testInitUiConfigSelectedLocationNotContained(){
         ConfigContainer cc = setUpConfigContainerWithEmptyUIConfig();
-        LinkedList<String> fl = new LinkedList<>();
+        LinkedList<String> functionIdList = new LinkedList<>();
 
-        LinkedList<Location> ll = new LinkedList<>();
-        Location location = new Location("l1", "1","dummy", fl, ll,"dummy");
+        LinkedList<Location> loactionList = new LinkedList<>();
+        Location location = new Location("l1", "1","dummy", functionIdList, loactionList,"dummy");
         cc.initSelectedLocation(location);
 
         cc.initNewUIConfig(cc.getUIConfig());
@@ -310,44 +321,44 @@ public class ConfigContainerTests {
     @Test
     public void testInitUiConfigSelectedFunctionNotContained(){
         ConfigContainer cc = setUpConfigContainerWithEmptyUIConfig();
-        LinkedList<String> fl = new LinkedList<>();
-        LinkedList<Location> ll = new LinkedList<>();
-        Location location = new Location("l1", "1","dummy", fl, ll,"dummy");
+        LinkedList<String> functionIdList = new LinkedList<>();
+        LinkedList<Location> locationList = new LinkedList<>();
+        Location location = new Location("l1", "1","dummy", functionIdList, locationList,"dummy");
 
         cc.initSelectedLocation(location);
-        Function test = new Function("f_notContained", "3", "dummy", "dummy", null);
-        cc.setSelectedFunction(test);
+        Function function = new Function("f_notContained", "3", "dummy", "dummy", null);
+        cc.setSelectedFunction(function);
 
         cc.initNewUIConfig(cc.getUIConfig());
 
-        assertThat(cc.getSelectedFunction()).isEqualTo(test);
+        assertThat(cc.getSelectedFunction()).isEqualTo(function);
         assertThat(ToastUtility.getInstance().getNewToast().getValue()).isTrue();
     }
 
     @Test
     public void testInitFunctionMapWithParentLocation(){
         ConfigContainer cc = setUpConfigContainerWithEmptyUIConfig();
-        LinkedList<String> fl = new LinkedList<>();
-        Function f2 = new Function("f_parent", "2", "dummy", "dummy", null);
-        fl.add(f2.getID());
-        LinkedList<Location> ll = new LinkedList<>();
-        Location location = new Location("l2", "2","dummy", fl, ll,"dummy");
+        LinkedList<String> functionIdListChild = new LinkedList<>();
+        Function functionChild = new Function("f_child", "2", "dummy", "dummy", null);
+        functionIdListChild.add(functionChild.getID());
+        LinkedList<Location> locationListChild = new LinkedList<>();
+        Location locationChild = new Location("lChild", "2","dummy", functionIdListChild, locationListChild,"dummy");
 
-        LinkedList<String> fl2 = new LinkedList<>();
-        Function f1 = new Function("f_child", "1","dummy", "22", null);
-        fl2.add(f1.getID());
-        LinkedList<Location> ll2 = new LinkedList<>();
-        ll2.add(location);
-        Location parentLocation = new Location("l1", "1","dummy", fl2, ll2,"dummy");
+        LinkedList<String> functionIdListParent = new LinkedList<>();
+        Function functionParent = new Function("f_parent", "1","dummy", "22", null);
+        functionIdListParent.add(functionParent.getID());
+        LinkedList<Location> locationListParent = new LinkedList<>();
+        locationListParent.add(locationChild);
+        Location parentLocation = new Location("lParent", "1","dummy", functionIdListParent, locationListParent,"dummy");
 
-        cc.getUIConfig().getFunctions().add(f1);
-        cc.getUIConfig().getFunctions().add(f2);
+        cc.getUIConfig().getFunctions().add(functionChild);
+        cc.getUIConfig().getFunctions().add(functionParent);
         cc.getUIConfig().getLocations().add(parentLocation);
         cc.initNewUIConfig(cc.getUIConfig());
 
-        cc.initSelectedLocation(location);
+        cc.initSelectedLocation(locationChild);
 
-        assertThat(cc.getSelectedLocation()).isEqualTo(location);
+        assertThat(cc.getSelectedLocation()).isEqualTo(locationChild);
         assertThat(cc.getLocationList().getValue()).hasSize(2);
         assertThat(cc.getFunctionMap().getValue()).hasSize(2);
     }

@@ -33,8 +33,8 @@ import de.smarthome.app.repository.ConfigContainer;
 import de.smarthome.app.repository.Repository;
 import de.smarthome.app.repository.ServerCommunicator;
 import de.smarthome.beacons.BeaconLocations;
-import de.smarthome.server.MyFirebaseMessagingService;
 import de.smarthome.server.ServerHandler;
+import de.smarthome.server.SmartHomeFMS;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -107,8 +107,8 @@ public class RepositoryTests {
                 .build();
         r.requestRegisterUser(credential);
 
-        MyFirebaseMessagingService.getServiceObserver().notify(new CallbackValueInput(0,"", "", null, null));
-        MyFirebaseMessagingService.getValueObserver().notify(new CallbackValueInput(0,"", "", null, null));
+        SmartHomeFMS.getServiceObserver().notify(new CallbackValueInput(0,"", "", null, null));
+        SmartHomeFMS.getValueObserver().notify(new CallbackValueInput(0,"", "", null, null));
 
 
     }
