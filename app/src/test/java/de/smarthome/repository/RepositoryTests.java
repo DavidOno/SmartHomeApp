@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.auth.api.credentials.Credential;
 
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,10 +62,9 @@ public class RepositoryTests {
         }
     }
 
-    // cc.selectedLoc == beaconLocation
-    // rep.beaconLocation = null;
+    //ok
     @Test
-    public void confirmBeaconLocation(){
+    public void testConfirmBeaconLocation(){
         Repository r = Repository.getInstance(null);
         LinkedList<String> fl = new LinkedList<>();
         LinkedList<Location> ll = new LinkedList<>();
@@ -95,6 +95,7 @@ public class RepositoryTests {
 
         r.initBeaconObserver();
 
+        assertThat(r.getBeaconCheck().getValue()).isFalse();
     }
 
     //assert that notify MyFirebaseSubscriber ==> trigger update in Repo
@@ -102,18 +103,15 @@ public class RepositoryTests {
     public void requestRegisterUser(){
         Repository r = Repository.getInstance(null);
 
-        Credential credential = new Credential.Builder("userName")
+        /*Credential credential = new Credential.Builder("userName")
                 .setPassword("pwd")
                 .build();
-        r.requestRegisterUser(credential);
+        r.requestRegisterUser(credential);*/
 
-        SmartHomeFMS.getServiceObserver().notify(new CallbackValueInput(0,"", "", null, null));
-        SmartHomeFMS.getValueObserver().notify(new CallbackValueInput(0,"", "", null, null));
-
-
+        //SmartHomeFMS.getServiceObserver().notify(new CallbackValueInput(0,"", "", null, null));
+        //SmartHomeFMS.getValueObserver().notify(new CallbackValueInput(0,"", "", null, null));
     }
 
-    @Test
     //assert length of requestlist
     public void getFunctionMap(){
         //because requestCurrentFunctionValues is called
@@ -132,14 +130,40 @@ public class RepositoryTests {
     //assert that  serverCommunicator.requestUIConfigAfterRestart() is called
     //assert that  serverCommunicator.requestAdditionalConfigsAfterRestart() is called
     //assert that  serverCommunicator.getSavedCredentialsForLoginAfterRestart() is called
+    //assert taht I reached RESTART && DEFAULT
     public void updateCallBackServiceInput(){
         //For CallBackServiceInput
     }
 
-    //assert that  beaconLocation = newLocation;
-    //beaconCheck == true
-    public void updateLocation(){
-        //For Location
+    //ok
+    @Test
+    public void testUpdateLocationWithNewLocation(){
+        Repository r = Repository.getInstance(null);
+        LinkedList<String> emptyFunctionIdList = new LinkedList<>();
+        LinkedList<Location> emptyLocationList = new LinkedList<>();
+        Location location = new Location("l1", "1","dummy", emptyFunctionIdList, emptyLocationList,"dummy");
+
+        r.update(location);
+
+        assertThat(r.getBeaconLocation()).isEqualTo(location);
+        assertThat(r.getBeaconCheck().getValue()).isTrue();
+    }
+
+    //ok
+    @Test
+    public void testUpdateLocationWithSameLocation(){
+        Repository r = Repository.getInstance(null);
+        LinkedList<String> emptyFunctionIdList = new LinkedList<>();
+        LinkedList<Location> emptyLocationList = new LinkedList<>();
+        Location location = new Location("l1", "1","dummy", emptyFunctionIdList, emptyLocationList,"dummy");
+        r.update(location);
+        r.setSelectedLocation(location);
+        r.setBeaconCheckFalse();
+
+        r.update(location);
+
+        assertThat(r.getBeaconLocation()).isEqualTo(location);
+        assertThat(r.getBeaconCheck().getValue()).isFalse();
     }
 
     //assert that all subscribers are empty
