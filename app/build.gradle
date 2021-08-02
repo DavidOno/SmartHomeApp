@@ -96,7 +96,7 @@ dependencies {
     implementation 'org.altbeacon:android-beacon-library:2+'
     implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
 
-
+    testImplementation "android.arch.core:core-testing"
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.7.0"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.7.0"
     testImplementation "org.junit.jupiter:junit-jupiter-params:5.7.0"
