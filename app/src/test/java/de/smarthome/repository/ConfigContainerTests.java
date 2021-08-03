@@ -37,7 +37,7 @@ public class ConfigContainerTests {
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
     public ConfigContainer setUpConfigContainerWithEmptyUIConfig(){
-        ConfigContainer cc = ConfigContainer.getInstance();
+        ConfigContainer cc = new ConfigContainer();
         LinkedList<Function> emptyFunctionList = new LinkedList<>();
         LinkedList<Location> emptyLocationList = new LinkedList<>();
         UIConfig uiConfig = new UIConfig(emptyFunctionList, emptyLocationList, "1");
@@ -45,10 +45,9 @@ public class ConfigContainerTests {
         return cc;
     }
 
-    //TODO: This is a terrible solution, maybe deconstructor in cc?
-    @After
+
     public void cleanUp(){
-        ConfigContainer cc = ConfigContainer.getInstance();
+        ConfigContainer cc = new ConfigContainer();
         cc.setUIConfig(null);
         cc.setChannelConfig(null);
         cc.setBeaconLocations(null);
@@ -66,7 +65,7 @@ public class ConfigContainerTests {
     //ok
     @Test
     public void testInitNewUIConfigWithNothingSelected(){
-        ConfigContainer cc = ConfigContainer.getInstance();
+        ConfigContainer cc = new ConfigContainer();
         cc.setSelectedLocation(null);
         cc.setSelectedFunction(null);
 
@@ -80,7 +79,7 @@ public class ConfigContainerTests {
     //ok
     @Test
     public void testInitNewUIConfigWithOnlyLocationSelected() throws InterruptedException {
-        ConfigContainer cc = ConfigContainer.getInstance();
+        ConfigContainer cc = new ConfigContainer();
 
         LinkedList<String> functionIdList = new LinkedList<>();
         functionIdList.add("1");
@@ -109,7 +108,7 @@ public class ConfigContainerTests {
     //ok
     @Test
     public void testInitNewUIConfigWithOnlyFunctionSelected(){
-        ConfigContainer cc = ConfigContainer.getInstance();
+        ConfigContainer cc = new ConfigContainer();
 
         Function function = new Function("f_function", "1", "dummy", "dummy", null);
         cc.setSelectedLocation(null);
@@ -130,7 +129,7 @@ public class ConfigContainerTests {
     //ok
     @Test
     public void testInitNewUIConfigWithLocationAndFunctionSelected(){
-        ConfigContainer cc = ConfigContainer.getInstance();
+        ConfigContainer cc = new ConfigContainer();
         LinkedList<String> functionIdList = new LinkedList<>();
         functionIdList.add("1");
         functionIdList.add("2");
@@ -164,7 +163,7 @@ public class ConfigContainerTests {
     //ok
     @Test
     public void testInitSelectedLocationWithOutUiConfigInitialised(){
-        ConfigContainer cc = ConfigContainer.getInstance();
+        ConfigContainer cc = new ConfigContainer();
 
         Function function = new Function("f_function", "1", "dummy", "dummy", null);
         Function functionStatus = new Function("f_Status", "2", "dummy", "dummy", null);
@@ -262,7 +261,7 @@ public class ConfigContainerTests {
     //ok
     @Test
     public void testInitSelectedFunctionWithOutUiConfigInitialised(){
-        ConfigContainer cc = ConfigContainer.getInstance();
+        ConfigContainer cc = new ConfigContainer();
         LinkedList<Datapoint> datapointList = new LinkedList<>();
         Datapoint datapoint = new Datapoint("1", "datapoint1");
         datapointList.add(datapoint);
@@ -278,7 +277,7 @@ public class ConfigContainerTests {
     //ok
     @Test
     public void testInitSelectedFunctionBoundaryMapInitialised(){
-        ConfigContainer cc = ConfigContainer.getInstance();
+        ConfigContainer cc = new ConfigContainer();
         LinkedList<Datapoint> datapointList = new LinkedList<>();
         Datapoint datapoint = new Datapoint("1", "datapoint1");
         datapointList.add(datapoint);

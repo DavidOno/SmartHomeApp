@@ -56,7 +56,7 @@ public class RepositoryTests {
                 "\t\t}]}";
         ObjectMapper mapper = new ObjectMapper();
         try {
-            ConfigContainer.getInstance().setBeaconLocations(mapper.readValue(locationConfigString, new TypeReference<BeaconLocations>() {}));
+            //Repository.getInstance(null).setBeaconLocations(mapper.readValue(locationConfigString, new TypeReference<BeaconLocations>() {}));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -65,7 +65,7 @@ public class RepositoryTests {
     //ok
     @Test
     public void testConfirmBeaconLocation(){
-        Repository r = Repository.getInstance(null);
+        Repository r = Repository.getInstance();
         LinkedList<String> fl = new LinkedList<>();
         LinkedList<Location> ll = new LinkedList<>();
         Location location = new Location("l1", "1","dummy", fl, ll,"dummy");
@@ -86,8 +86,9 @@ public class RepositoryTests {
         Mockito.when(a.getApplicationContext()).thenReturn(c);
 
         a.getApplicationContext();
-        Repository r = Repository.getInstance(a);
-        fillWithDummyValueBeaconConfig();
+        Repository r = Repository.getInstance();
+        r.setParentApplication(a);
+        //fillWithDummyValueBeaconConfig();
         LinkedList<Function> emptyFunctionList = new LinkedList<>();
         LinkedList<Location> emptyLocationList = new LinkedList<>();
         UIConfig uiConfig = new UIConfig(emptyFunctionList, emptyLocationList, "1");
@@ -101,7 +102,7 @@ public class RepositoryTests {
     //assert that notify MyFirebaseSubscriber ==> trigger update in Repo
     @Test
     public void requestRegisterUser(){
-        Repository r = Repository.getInstance(null);
+        Repository r = Repository.getInstance();
 
         /*Credential credential = new Credential.Builder("userName")
                 .setPassword("pwd")
@@ -138,7 +139,7 @@ public class RepositoryTests {
     //ok
     @Test
     public void testUpdateLocationWithNewLocation(){
-        Repository r = Repository.getInstance(null);
+        Repository r = Repository.getInstance();
         LinkedList<String> emptyFunctionIdList = new LinkedList<>();
         LinkedList<Location> emptyLocationList = new LinkedList<>();
         Location location = new Location("l1", "1","dummy", emptyFunctionIdList, emptyLocationList,"dummy");
@@ -152,7 +153,7 @@ public class RepositoryTests {
     //ok
     @Test
     public void testUpdateLocationWithSameLocation(){
-        Repository r = Repository.getInstance(null);
+        Repository r = Repository.getInstance();
         LinkedList<String> emptyFunctionIdList = new LinkedList<>();
         LinkedList<Location> emptyLocationList = new LinkedList<>();
         Location location = new Location("l1", "1","dummy", emptyFunctionIdList, emptyLocationList,"dummy");

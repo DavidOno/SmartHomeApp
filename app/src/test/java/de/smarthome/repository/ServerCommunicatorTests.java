@@ -18,7 +18,7 @@ import de.smarthome.app.repository.ServerCommunicator;
 import static org.mockito.Mockito.mock;
 
 
-@RunWith(MockitoJUnitRunner.class)
+//@RunWith(MockitoJUnitRunner.class)
 public class ServerCommunicatorTests {
 
     //assert that RRCheckAvailability
@@ -29,12 +29,12 @@ public class ServerCommunicatorTests {
     // are called
     public void initialisationOfApplication(){
         Application parent = mock(Application.class);
-        ServerCommunicator sc = ServerCommunicator.getInstance(parent);
+        //ServerCommunicator sc = ServerCommunicator.getInstance(parent);
         Credential credential = new Credential.Builder("userName")
                 .setPassword("pwd")
                 .build();
 
-        sc.initialisationOfApplication(credential);
+        //sc.initialisationOfApplication(credential);
     }
 
     //assert that RR UI
