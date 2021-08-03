@@ -14,7 +14,7 @@ public class ResponseReactorBeaconConfig implements ResponseReactor {
     private Repository repository;
 
     public ResponseReactorBeaconConfig() {
-        repository = Repository.getInstance(null);
+        repository = Repository.getInstance();
     }
 
     @Override

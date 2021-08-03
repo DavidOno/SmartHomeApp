@@ -15,7 +15,7 @@ public class ResponseReactorUIConfig implements ResponseReactor {
     private Repository repository;
 
     public ResponseReactorUIConfig() {
-        this.repository = Repository.getInstance(null);
+        this.repository = Repository.getInstance();
     }
 
     @Override

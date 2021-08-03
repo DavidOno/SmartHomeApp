@@ -15,7 +15,7 @@ public class ResponseReactorClient implements ResponseReactor {
     private ToastUtility toastUtility;
 
     public ResponseReactorClient() {
-        this.repository = Repository.getInstance(null);
+        this.repository = Repository.getInstance();
         this.toastUtility = ToastUtility.getInstance();
     }
 

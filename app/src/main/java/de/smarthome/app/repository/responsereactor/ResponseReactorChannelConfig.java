@@ -15,7 +15,7 @@ public class ResponseReactorChannelConfig implements ResponseReactor {
     private Repository repository;
 
     public ResponseReactorChannelConfig() {
-        repository = Repository.getInstance(null);
+        repository = Repository.getInstance();
     }
 
     @Override

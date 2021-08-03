@@ -14,7 +14,7 @@ public class ResponseReactorBoundariesConfig implements ResponseReactor {
     private Repository repository;
 
     public ResponseReactorBoundariesConfig() {
-        this.repository = Repository.getInstance(null);
+        this.repository = Repository.getInstance();
     }
     @Override
     public void react(ResponseEntity responseEntity) {
