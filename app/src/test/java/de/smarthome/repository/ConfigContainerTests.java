@@ -45,6 +45,7 @@ public class ConfigContainerTests {
         return cc;
     }
 
+    //TODO: This is a terrible solution, maybe deconstructor in cc?
     @After
     public void cleanUp(){
         ConfigContainer cc = ConfigContainer.getInstance();
