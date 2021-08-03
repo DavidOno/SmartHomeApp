@@ -26,7 +26,7 @@ public class ChannelConfig {
     public boolean isFirstDataPointBinary(Function function){
         Channel channel = findChannelByName(function);
 
-        if(channel.getDatapoints().isEmpty()){
+        if(!channel.getDatapoints().isEmpty()){
             return channel.getDatapoints().get(0).getType().equals(DatapointType.BINARY)
                     && channel.getDatapoints().get(0).getAccess().equals(DatapointAccess.READ_WRITE);
         }
