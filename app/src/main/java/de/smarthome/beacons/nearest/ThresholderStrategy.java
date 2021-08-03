@@ -11,7 +11,7 @@ import de.smarthome.beacons.BeaconID;
 
 public class ThresholderStrategy implements RetrievingStrategy{
 
-    public static final int SIGNAL_HISTORY_LENGTH = 5;
+    public static final int SIGNAL_HISTORY_LENGTH = 3;
 
     private final List<BeaconThresholder> beaconThresholders = new ArrayList<>();
     private Context context;
