@@ -18,6 +18,7 @@ import java.util.Objects;
 import de.smarthome.app.model.UIConfig;
 import de.smarthome.app.model.configs.BoundariesConfig;
 import de.smarthome.app.model.configs.BoundaryDataPoint;
+import de.smarthome.app.model.responses.Events;
 import de.smarthome.beacons.BeaconLocations;
 import de.smarthome.beacons.BeaconObserverImplementation;
 import de.smarthome.beacons.BeaconObserverSubscriber;
@@ -57,7 +58,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
     //TODO: Remove after Testing
     public void fillWithDummyValues(){
-        configContainer.fillWithDummyValueAllConfigs();
+        //configContainer.fillWithDummyValueAllConfigs();
     }
 
     public void setLoginStatus(boolean update){
@@ -144,7 +145,6 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         return configContainer.getFunctionMap();
     }
 
-    //TODO: Check if this works fine
     private void requestCurrentFunctionValues(Map<Function, Function> functionMap){
         List<Function> functionList = new ArrayList<>(functionMap.keySet());
         List<String> requestList = new ArrayList<>();
@@ -215,6 +215,33 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
             String value = String.valueOf(input.getValue());
             String uID = input.getUid();
             configContainer.initStatusUpdateMap(uID, value);
+        }else{
+            update(input.getEvent());
+        }
+    }
+
+    private void update(Events input){
+        if (input != null) {
+            switch (input) {
+                case STARTUP:
+                    Log.d(TAG, "Server has started.");
+                    serverCommunicator.getSavedCredentialsForLoginAfterRestart();
+                    break;
+                case RESTART:
+                    Log.d(TAG, "Server got restarted.");
+                    break;
+                case UI_CONFIG_CHANGED:
+                    Log.d(TAG, "UI_CONFIG_CHANGED");
+                    serverCommunicator.requestUIConfigAfterRestart();
+                    break;
+                case PROJECT_CONFIG_CHANGED:
+                    Log.d(TAG, "PROJECT_CONFIG_CHANGED");
+                    serverCommunicator.requestAdditionalConfigsAfterRestart();
+                    break;
+                default:
+                    Log.d(TAG, "Unknown CallBackServiceInputEvent");
+                    break;
+            }
         }
     }
 
