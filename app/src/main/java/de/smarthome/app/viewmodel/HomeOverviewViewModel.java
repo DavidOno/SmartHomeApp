@@ -17,7 +17,7 @@ public class HomeOverviewViewModel extends AndroidViewModel {
 
     public HomeOverviewViewModel(@NonNull Application application)  {
         super(application);
-        repository = Repository.getInstance(application);
+        repository = Repository.getInstance();
         //TODO: Remove after Testing
         repository.fillWithDummyValues();
     }

@@ -19,8 +19,7 @@ public class RoomOverviewViewModel  extends AndroidViewModel {
 
     public RoomOverviewViewModel(@NonNull Application application)  {
         super(application);
-
-        repository = Repository.getInstance(application);
+        repository = Repository.getInstance();
     }
 
     public LiveData<Map<Function, Function>> getFunctionMap(){

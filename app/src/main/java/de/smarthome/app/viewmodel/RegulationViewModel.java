@@ -15,13 +15,12 @@ import de.smarthome.app.model.configs.ChannelConfig;
 import de.smarthome.app.repository.Repository;
 
 public class RegulationViewModel extends AndroidViewModel {
-    private  static final String TAG = "RegulationViewModel";
-    private  Repository repository;
+    private static final String TAG = "RegulationViewModel";
+    private Repository repository;
 
     public RegulationViewModel(@NonNull Application application)  {
         super(application);
-
-        repository = Repository.getInstance(application);
+        repository = Repository.getInstance();
     }
 
     public void requestSetValue(String id, String value){

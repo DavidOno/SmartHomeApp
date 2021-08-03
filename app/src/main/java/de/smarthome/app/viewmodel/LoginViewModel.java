@@ -25,7 +25,7 @@ public class LoginViewModel extends AndroidViewModel {
 
     public LoginViewModel(@NonNull Application application) {
         super(application);
-        repository = Repository.getInstance(application);
+        repository = Repository.getInstance();
         toastUtility = ToastUtility.getInstance();
     }
 

@@ -21,7 +21,7 @@ public class OptionsViewModel extends AndroidViewModel {
     public OptionsViewModel(@NonNull Application application) {
         super(application);
         toastUtility = ToastUtility.getInstance();
-        repository = Repository.getInstance(application);
+        repository = Repository.getInstance();
     }
 
     private void deleteCredential(Credential credential){
