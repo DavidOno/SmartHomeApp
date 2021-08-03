@@ -59,7 +59,7 @@ public class ServerCommunicator {
     private static ServerCommunicator INSTANCE;
     private ToastUtility toastUtility;
 
-    private static final String IP_OF_CALLBACK_SERVER = "192.168.132.218:8443";
+    private static final String IP_OF_CALLBACK_SERVER = "192.168.132.222:8443";
     private final ServerHandler serverHandler = new GiraServerHandler(new HomeServerCommandInterpreter(new NoSSLRestTemplateCreator()));
 
     private MutableLiveData<Boolean> requestStatusLoginUser = new MutableLiveData<>();
