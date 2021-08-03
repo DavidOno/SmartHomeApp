@@ -45,23 +45,6 @@ public class ConfigContainerTests {
         return cc;
     }
 
-
-    public void cleanUp(){
-        ConfigContainer cc = new ConfigContainer();
-        cc.setUIConfig(null);
-        cc.setChannelConfig(null);
-        cc.setBeaconLocations(null);
-        cc.setBoundaryConfig(null);
-
-        cc.setSelectedLocation(null);
-        cc.setSelectedFunction(null);
-
-        cc.setLocationList(null);
-        cc.setFunctionMap(null);
-        cc.setDataPointMap(null);
-        cc.setBoundaryMap(null);
-    }
-
     //ok
     @Test
     public void testInitNewUIConfigWithNothingSelected(){
@@ -154,7 +137,7 @@ public class ConfigContainerTests {
 
         cc.initNewUIConfig(uiConfig);
 
-        assertThat(Repository.getInstance(null).getBeaconCheck().getValue()).isFalse();
+        assertThat(Repository.getInstance().getBeaconCheck().getValue()).isFalse();
         assertThat(cc.getBoundaryMap().getValue()).isEmpty();
         assertThat(cc.getDataPointMap().getValue()).containsEntry(dp, dp);
         assertThat(cc.getUIConfig()).isEqualTo(uiConfig);
