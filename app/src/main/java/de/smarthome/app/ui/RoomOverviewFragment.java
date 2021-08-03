@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import de.smarthome.R;
+import de.smarthome.app.utility.InternalStorageWriter;
 import de.smarthome.app.viewmodel.RoomOverviewViewModel;
 import de.smarthome.app.adapter.RoomOverviewAdapter;
 
@@ -55,7 +56,10 @@ public class RoomOverviewFragment extends Fragment {
     }
 
     private void setFunctionObserver(RoomOverviewAdapter adapter) {
-        viewViewModel.getFunctionMap().observe(getViewLifecycleOwner(), adapter::initialiseAdapter);
+        viewViewModel.getFunctionMap().observe(getViewLifecycleOwner(), functionFunctionMap -> {
+            adapter.initialiseAdapter(functionFunctionMap);
+            InternalStorageWriter.writeFileOnInternalStorage(this.getContext(), "GIRA", "ObserverFragment\n");
+        });
     }
 
     private void setStatusUpdateObserver(RoomOverviewAdapter adapter) {

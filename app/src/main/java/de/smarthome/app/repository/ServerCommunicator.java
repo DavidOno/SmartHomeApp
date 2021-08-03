@@ -33,6 +33,7 @@ import de.smarthome.app.repository.responsereactor.ResponseReactorCheckAvailabil
 import de.smarthome.app.repository.responsereactor.ResponseReactorClient;
 import de.smarthome.app.repository.responsereactor.ResponseReactorGiraCallbackServer;
 import de.smarthome.app.repository.responsereactor.ResponseReactorUIConfig;
+import de.smarthome.app.utility.InternalStorageWriter;
 import de.smarthome.app.utility.ToastUtility;
 import de.smarthome.app.model.configs.AdditionalConfig;
 import de.smarthome.command.AsyncCommand;
@@ -150,16 +151,18 @@ public class ServerCommunicator {
         addToExecutorService(requestSetValueThread);
     }
 
-    public void requestGetValue(List<String> ids) {
+    public synchronized void requestGetValue(List<String> ids) {
         statusListSize = ids.size();
         newStatusValuesMap.clear();
-        for(String id :ids){
-            Thread requestGetValueThread = new Thread(() -> {
+        InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(),
+                "GIRA", "SC RequestGetValue, size: " + statusListSize + "\n");
+        Thread requestGetValueThread = new Thread(() -> {
+            for(String id :ids) {
                 Command getValueCommand = new GetValueCommand(id);
                 handleResponseGetValue(serverHandler.sendRequest(getValueCommand));
-            });
-            addToExecutorService(requestGetValueThread);
-        }
+            }
+        });
+        addToExecutorService(requestGetValueThread);
     }
 
     private void requestUnregisterCallbackServerAtGiraServer() {
@@ -170,7 +173,7 @@ public class ServerCommunicator {
         addToExecutorService(requestUnRegisterCallbackServerAtGiraServerThread);
     }
 
-    private void handleResponseGetValue(ResponseEntity responseEntity) {
+    private synchronized void handleResponseGetValue(ResponseEntity responseEntity) {
         try {
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
                 Log.d(TAG, "response received");
