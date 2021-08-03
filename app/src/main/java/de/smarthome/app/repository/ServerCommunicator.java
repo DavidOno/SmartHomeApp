@@ -185,6 +185,7 @@ public class ServerCommunicator {
                 String uID = valueResponse.getValues().get(0).getUid();
 
                 newStatusValuesMap.put(uID, value);
+                InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(), "GIRA", statusListSize+"###"+newStatusValuesMap.size());
                 if(statusListSize == newStatusValuesMap.size()) {
                     ConfigContainer.getInstance().setStatusGetValueMap(newStatusValuesMap);
                 }
