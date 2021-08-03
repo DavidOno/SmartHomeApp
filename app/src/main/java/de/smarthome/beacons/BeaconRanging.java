@@ -39,7 +39,7 @@ public class BeaconRanging implements BeaconConsumer {
         BeaconManager.setRssiFilterImplClass(RunningAverageRssiFilter.class);
         RunningAverageRssiFilter.setSampleExpirationMilliseconds(5000);
         beaconManager = beaconManagerCreator.create(context);
-        beaconLocationManager = new BeaconLocationManager(context, newUIConfig, newBeaconConfig, new ThresholderStrategy(context));
+        beaconLocationManager = new BeaconLocationManager(newUIConfig, newBeaconConfig, new ThresholderStrategy());
     }
 
     public void onResume() {
