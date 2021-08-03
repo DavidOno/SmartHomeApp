@@ -29,7 +29,6 @@ import de.smarthome.beacons.BeaconLocations;
 
 public class ConfigContainer {
     private static final String TAG = "ConfigContainer";
-    private static ConfigContainer INSTANCE;
     private final ToastUtility toastUtility = ToastUtility.getInstance();
 
     private UIConfig uiConfig;
@@ -47,13 +46,6 @@ public class ConfigContainer {
 
     private MutableLiveData<Map<String, String>> statusUpdateMap = new MutableLiveData<>();
     private MutableLiveData<Map<String, String>> statusGetValueMap = new MutableLiveData<>();
-
-    public static ConfigContainer getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new ConfigContainer();
-        }
-        return INSTANCE;
-    }
 
     public void initSelectedFunction(Function function) {
         setSelectedFunction(function);
@@ -93,7 +85,7 @@ public class ConfigContainer {
         initLocationList();
         if (selectedLocation != null) {
             checkForCurrentlySelectedLocation();
-            Repository.getInstance(null).initBeaconObserver();
+            Repository.getInstance().initBeaconObserver();
         }
         if (selectedFunction != null) {
             checkForCurrentlySelectedFunction();
@@ -315,9 +307,9 @@ public class ConfigContainer {
 
     public void fillWithDummyValueAllConfigs() {
         fillWithDummyValuesUIConfig();
-        //fillWithDummyValuesChannelConfig();
-        //fillWithDummyValueBeaconConfig();
-        //fillWithDummyValueBoundaryConfig();
+        fillWithDummyValuesChannelConfig();
+        fillWithDummyValueBeaconConfig();
+        fillWithDummyValueBoundaryConfig();
     }
 
     private Location createEssen() {
@@ -487,7 +479,7 @@ public class ConfigContainer {
         ObjectMapper mapper = new ObjectMapper();
         try {
             setBeaconLocations(mapper.readValue(locationConfigString, new TypeReference<BeaconLocations>() {}));
-            Repository.getInstance(null).initBeaconObserver();
+            Repository.getInstance().initBeaconObserver();
         } catch (Exception e) {
             Log.d(TAG, "BeaconConfig Exception " + e.toString());
             e.printStackTrace();

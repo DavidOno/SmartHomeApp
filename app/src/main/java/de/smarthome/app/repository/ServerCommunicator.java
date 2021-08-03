@@ -56,26 +56,22 @@ import de.smarthome.server.gira.GiraServerHandler;
 
 public class ServerCommunicator {
     private static final String TAG = "ServerCommunicator";
-    private static ServerCommunicator INSTANCE;
-    private ToastUtility toastUtility;
+    private ToastUtility toastUtility = ToastUtility.getInstance();
 
-    private static final String IP_OF_CALLBACK_SERVER = "192.168.132.222:8443";
-    private final ServerHandler serverHandler = new GiraServerHandler(new HomeServerCommandInterpreter(new NoSSLRestTemplateCreator()));
+    private static final String IP_OF_CALLBACK_SERVER = "192.168.132.222:9090";
+    private final ServerHandler serverHandler;
 
     private MutableLiveData<Boolean> requestStatusLoginUser = new MutableLiveData<>();
-    private Application parentApplication;
+    private Application parentApplication = null;
     private int statusListSize = 0;
     private Map<String, String> newStatusValuesMap = new LinkedHashMap<>();
 
-    public static ServerCommunicator getInstance(@Nullable Application application) {
-        if (INSTANCE == null) {
-            INSTANCE = new ServerCommunicator();
-            if(application != null){
-                INSTANCE.parentApplication = application;
-            }
-            INSTANCE.toastUtility = ToastUtility.getInstance();
-        }
-        return INSTANCE;
+    public ServerCommunicator(@NonNull ServerHandler serverHandler){
+        this.serverHandler = serverHandler;
+    }
+
+    public void setParentApplication(Application parentApplication) {
+        this.parentApplication = parentApplication;
     }
 
     private void addToExecutorService(Thread newThread) {
@@ -186,7 +182,7 @@ public class ServerCommunicator {
 
                 newStatusValuesMap.put(uID, value);
                 if(statusListSize == newStatusValuesMap.size()) {
-                    ConfigContainer.getInstance().setStatusGetValueMap(newStatusValuesMap);
+                    Repository.getInstance().setStatusGetValueMap(newStatusValuesMap);
                 }
             } else {
                 Log.d(TAG, "error occurred");
@@ -208,13 +204,15 @@ public class ServerCommunicator {
                 .setPasswordLoginSupported(true)
                 .build();
 
-        CredentialsClient credentialsClient = Credentials.getClient(parentApplication);
-        credentialsClient.request(credentialRequest).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                initialisationOfApplicationAfterRestart(task.getResult().getCredential());
-            }else{
-                toastUtility.prepareToast("Not able to retrieve Login data");
-            }
-        });
+        if(parentApplication != null){
+            CredentialsClient credentialsClient = Credentials.getClient(parentApplication);
+            credentialsClient.request(credentialRequest).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    initialisationOfApplicationAfterRestart(task.getResult().getCredential());
+                }else{
+                    toastUtility.prepareToast("Not able to retrieve Login data");
+                }
+            });
+        }
     }
 }
