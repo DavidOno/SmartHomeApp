@@ -20,7 +20,7 @@ public class BeaconThresholder{
         List<Integer> history = new ArrayList<>();
         int numberOfTrailingZeros = ThresholderStrategy.SIGNAL_HISTORY_LENGTH - signals.size();
         for(int i = 0; i < numberOfTrailingZeros; i++){
-            history.add(0);
+            history.add(-100);
         }
         for(Integer signal: signals){
             history.add(signal);
