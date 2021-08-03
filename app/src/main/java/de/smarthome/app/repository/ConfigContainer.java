@@ -315,9 +315,9 @@ public class ConfigContainer {
 
     public void fillWithDummyValueAllConfigs() {
         fillWithDummyValuesUIConfig();
-        fillWithDummyValuesChannelConfig();
-        fillWithDummyValueBeaconConfig();
-        fillWithDummyValueBoundaryConfig();
+        //fillWithDummyValuesChannelConfig();
+        //fillWithDummyValueBeaconConfig();
+        //fillWithDummyValueBoundaryConfig();
     }
 
     private Location createEssen() {
