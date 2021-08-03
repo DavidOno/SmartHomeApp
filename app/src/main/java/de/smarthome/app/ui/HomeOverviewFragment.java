@@ -54,7 +54,7 @@ public class HomeOverviewFragment extends Fragment {
 
     private void setOnClickListener() {
         adapter.setOnItemClickListener(location -> {
-            InternalStorageWriter.writeFileOnInternalStorage(this.getContext(), "GIRA", "Room Selected\n");
+            InternalStorageWriter.writeFileOnInternalStorage(this.getContext(), "GIRA", "1. Room Selected\n");
             viewModel.setSelectedLocation(location);
             navigateToRoomOverviewFragment();
         });

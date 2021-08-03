@@ -65,6 +65,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     public void setParentApplication(Application parentApplication) {
         this.parentApplication = parentApplication;
         serverCommunicator.setParentApplication(parentApplication);
+        configContainer.setParentApplication(parentApplication);
     }
 
     public void setLoginStatus(boolean update){
@@ -146,7 +147,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     public MutableLiveData<Map<Function, Function>> getFunctionMap() {
-        InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(), "GIRA", "Repo getFunctionMap\n");
+        InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(), "GIRA", "3. Repo getFunctionMap\n");
         requestCurrentFunctionValues(Objects.requireNonNull(configContainer.getFunctionMap().getValue()));
         return configContainer.getFunctionMap();
     }
@@ -165,6 +166,8 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
                 }
             }
         }
+        InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(),
+                "GIRA", "4.1 Repo RequestGetValueFunction, size: " + requestList.size() + "\n");
         if(!requestList.isEmpty()){
             requestGetValue(requestList);
         }
@@ -175,6 +178,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     public MutableLiveData<Map<Datapoint, Datapoint>> getDataPointMap() {
+        InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(), "GIRA", "3. Repo getDatapointMap\n");
         requestCurrentDataPointValues(Objects.requireNonNull(configContainer.getDataPointMap().getValue()));
         return configContainer.getDataPointMap();
     }
@@ -187,7 +191,10 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
                 requestList.add(dataPointMap.get(dp).getID());
             }
         }
-        requestGetValue(requestList);
+        InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(),
+                "GIRA", "4.1 Repo RequestGetValueDataPoint, size: " + requestList.size() + "\n");
+        if(!requestList.isEmpty())
+            requestGetValue(requestList);
     }
 
     public MutableLiveData<Map<String, String>> getStatusUpdateMap() {

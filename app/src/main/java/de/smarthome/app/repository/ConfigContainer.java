@@ -1,5 +1,6 @@
 package de.smarthome.app.repository;
 
+import android.app.Application;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -24,6 +25,7 @@ import de.smarthome.app.model.configs.BoundaryDataPoint;
 import de.smarthome.app.model.configs.Channel;
 import de.smarthome.app.model.configs.ChannelConfig;
 import de.smarthome.app.model.configs.ChannelDatapoint;
+import de.smarthome.app.utility.InternalStorageWriter;
 import de.smarthome.app.utility.ToastUtility;
 import de.smarthome.beacons.BeaconLocations;
 
@@ -47,12 +49,18 @@ public class ConfigContainer {
     private MutableLiveData<Map<String, String>> statusUpdateMap = new MutableLiveData<>();
     private MutableLiveData<Map<String, String>> statusGetValueMap = new MutableLiveData<>();
 
+    //TODO: Remove together with StorageWriter after testing
+    private Application parentApplication = null;
     public void initSelectedFunction(Function function) {
         setSelectedFunction(function);
         if(function != null) {
             initBoundaryMap();
             initDataPointMap(function);
         }
+    }
+    //TODO: Remove together with StorageWriter after testing
+    public void setParentApplication(Application parentApplication) {
+        this.parentApplication = parentApplication;
     }
 
     public void setSelectedFunction(Function function) {
@@ -184,6 +192,7 @@ public class ConfigContainer {
         if(viewedLocation.getParentLocation() != null && !viewedLocation.getParentLocation().equals(Location.ROOT)) {
             completeFunctionMap.putAll(mapStatusFunctionToFunction(viewedLocation.getParentLocation()));
         }
+        InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(), "GIRA", "2. initFunctionMap\n");
         setFunctionMap(completeFunctionMap);
     }
 
@@ -253,6 +262,7 @@ public class ConfigContainer {
     }
 
     private void initDataPointMap(Function function) {
+        InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(), "GIRA", "2. initDatapointMap\n");
         Map<Datapoint, Datapoint> newValue = new LinkedHashMap<>();
         if (functionMap != null && functionMap.getValue() != null
                 && functionMap.getValue().get(function) != null) {

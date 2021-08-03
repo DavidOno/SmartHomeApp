@@ -57,8 +57,8 @@ public class RoomOverviewFragment extends Fragment {
 
     private void setFunctionObserver(RoomOverviewAdapter adapter) {
         viewViewModel.getFunctionMap().observe(getViewLifecycleOwner(), functionFunctionMap -> {
+            InternalStorageWriter.writeFileOnInternalStorage(this.getContext(), "GIRA", "5. RoomOverview Observer\n\n");
             adapter.initialiseAdapter(functionFunctionMap);
-            InternalStorageWriter.writeFileOnInternalStorage(this.getContext(), "GIRA", "ObserverFragment\n");
         });
     }
 
@@ -76,6 +76,7 @@ public class RoomOverviewFragment extends Fragment {
 
     private void setOnClickListener(RoomOverviewAdapter adapter) {
         adapter.setOnItemClickListener(function -> {
+            InternalStorageWriter.writeFileOnInternalStorage(this.getContext(), "GIRA", "1. Function Selected\n");
             viewViewModel.setSelectedFunction(function);
             navigateToRegulationFragment();
         });

@@ -155,7 +155,7 @@ public class ServerCommunicator {
         statusListSize = ids.size();
         newStatusValuesMap.clear();
         InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(),
-                "GIRA", "SC RequestGetValue, size: " + statusListSize + "\n");
+                "GIRA", "4.2 SC RequestGetValue, size: " + statusListSize + "\n");
         Thread requestGetValueThread = new Thread(() -> {
             for(String id :ids) {
                 Command getValueCommand = new GetValueCommand(id);
