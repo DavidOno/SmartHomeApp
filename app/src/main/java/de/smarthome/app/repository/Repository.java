@@ -19,6 +19,7 @@ import de.smarthome.app.model.UIConfig;
 import de.smarthome.app.model.configs.BoundariesConfig;
 import de.smarthome.app.model.configs.BoundaryDataPoint;
 import de.smarthome.app.model.responses.Events;
+import de.smarthome.app.utility.InternalStorageWriter;
 import de.smarthome.beacons.BeaconLocations;
 import de.smarthome.beacons.BeaconObserverImplementation;
 import de.smarthome.beacons.BeaconObserverSubscriber;
@@ -30,8 +31,11 @@ import de.smarthome.app.model.responses.CallBackServiceInput;
 import de.smarthome.app.model.responses.CallbackValueInput;
 import de.smarthome.app.model.responses.ServiceEvent;
 import de.smarthome.beacons.DefaultBeaconManagerCreator;
+import de.smarthome.command.gira.HomeServerCommandInterpreter;
 import de.smarthome.server.CallbackSubscriber;
+import de.smarthome.server.NoSSLRestTemplateCreator;
 import de.smarthome.server.SmartHomeFMS;
+import de.smarthome.server.gira.GiraServerHandler;
 
 public class Repository implements CallbackSubscriber, BeaconObserverSubscriber {
     private static final String TAG = "Repository";
@@ -45,20 +49,22 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     private Location beaconLocation = null;
     private MutableLiveData<Boolean> beaconCheck = new MutableLiveData<>();
 
-    public static Repository getInstance(@Nullable Application application) {
+    public static Repository getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new Repository();
-            INSTANCE.configContainer = ConfigContainer.getInstance();
-            if(application != null){
-                INSTANCE.serverCommunicator = ServerCommunicator.getInstance(application);
-                INSTANCE.parentApplication = application;
-            }
+            INSTANCE.configContainer = new ConfigContainer();
+            INSTANCE.serverCommunicator = new ServerCommunicator(new GiraServerHandler(new HomeServerCommandInterpreter(new NoSSLRestTemplateCreator())));
         }
         return INSTANCE;
     }
     //TODO: Remove after Testing
     public void fillWithDummyValues(){
-        //configContainer.fillWithDummyValueAllConfigs();
+        configContainer.fillWithDummyValueAllConfigs();
+    }
+
+    public void setParentApplication(Application parentApplication) {
+        this.parentApplication = parentApplication;
+        serverCommunicator.setParentApplication(parentApplication);
     }
 
     public void setLoginStatus(boolean update){
@@ -108,7 +114,6 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
 
     public void initBeaconObserver() {
         if(parentApplication != null){
-            Context c = parentApplication.getApplicationContext();
             beaconObserver = new BeaconObserverImplementation(parentApplication, parentApplication.getApplicationContext(),
                     configContainer.getUIConfig(), configContainer.getBeaconLocations(),
                     new DefaultBeaconManagerCreator());
@@ -141,6 +146,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     public MutableLiveData<Map<Function, Function>> getFunctionMap() {
+        InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(), "GIRA", "Repo getFunctionMap\n");
         requestCurrentFunctionValues(Objects.requireNonNull(configContainer.getFunctionMap().getValue()));
         return configContainer.getFunctionMap();
     }
@@ -291,5 +297,9 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
             Log.d(TAG, e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    public void setStatusGetValueMap(Map<String, String> newStatusValuesMap) {
+        configContainer.setStatusGetValueMap(newStatusValuesMap);
     }
 }
