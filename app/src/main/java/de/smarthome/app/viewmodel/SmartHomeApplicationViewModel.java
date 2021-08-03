@@ -15,11 +15,20 @@ public class SmartHomeApplicationViewModel extends AndroidViewModel {
     private static final String TAG = "SmartHomeApplicationViewModel";
     private Repository repository;
     private boolean timerCompletionStatus;
+    private int timerDuration = 15000;
 
     public SmartHomeApplicationViewModel(@NonNull Application application) {
         super(application);
         repository = Repository.getInstance(application);
         timerCompletionStatus = true;
+    }
+
+    public int getTimerDuration() {
+        return timerDuration;
+    }
+
+    public void setSelectedLocation(Location location){
+        repository.setSelectedLocation(location);
     }
 
     public boolean hasTimerCompleted() {
@@ -54,7 +63,7 @@ public class SmartHomeApplicationViewModel extends AndroidViewModel {
         timerCompletionStatus = false;
         Thread timerThread = new Thread(() -> {
             try {
-                Thread.sleep(3000);
+                Thread.sleep(timerDuration);
                 timerCompletionStatus = true;
             } catch (InterruptedException e) {
                 e.printStackTrace();
