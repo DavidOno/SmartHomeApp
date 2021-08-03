@@ -173,7 +173,6 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         return configContainer.getDataPointMap();
     }
 
-    //TODO: Check if this works fine
     private void requestCurrentDataPointValues(Map<Datapoint, Datapoint> dataPointMap){
         List<Datapoint> dataPointList = new ArrayList<>(dataPointMap.keySet());
         List<String> requestList = new ArrayList<>();
