@@ -33,6 +33,7 @@ import de.smarthome.app.repository.responsereactor.ResponseReactorCheckAvailabil
 import de.smarthome.app.repository.responsereactor.ResponseReactorClient;
 import de.smarthome.app.repository.responsereactor.ResponseReactorGiraCallbackServer;
 import de.smarthome.app.repository.responsereactor.ResponseReactorUIConfig;
+import de.smarthome.app.utility.InternalStorageWriter;
 import de.smarthome.app.utility.ToastUtility;
 import de.smarthome.app.model.configs.AdditionalConfig;
 import de.smarthome.command.AsyncCommand;
@@ -59,7 +60,7 @@ public class ServerCommunicator {
     private static ServerCommunicator INSTANCE;
     private ToastUtility toastUtility;
 
-    private static final String IP_OF_CALLBACK_SERVER = "192.168.132.218:8443";
+    private static final String IP_OF_CALLBACK_SERVER = "192.168.132.222:8443";
     private final ServerHandler serverHandler = new GiraServerHandler(new HomeServerCommandInterpreter(new NoSSLRestTemplateCreator()));
 
     private MutableLiveData<Boolean> requestStatusLoginUser = new MutableLiveData<>();
@@ -179,7 +180,7 @@ public class ServerCommunicator {
                 Log.d(TAG, "response received");
                 Log.d(TAG, responseEntity.getBody().toString());
                 GetValueResponse valueResponse = (GetValueResponse) responseEntity.getBody();
-
+                InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(), "GIRA", valueResponse.toString());
                 String value = valueResponse.getValues().get(0).getValue();
                 String uID = valueResponse.getValues().get(0).getUid();
 
