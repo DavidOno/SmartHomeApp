@@ -59,6 +59,7 @@ public class SmartHomeApplication extends AppCompatActivity {
     private SmartHomeApplicationViewModel viewModel;
     private ToastUtility toastUtility;
 
+    private int timerReduction = 5000;
     private boolean beaconDialogShown;
 
     @Override
@@ -112,7 +113,7 @@ public class SmartHomeApplication extends AppCompatActivity {
     public void showSnackbar(Location location) {
         LinearLayout usedLayout = findViewById(R.id.smartHomeApplicationLinearLayout);
         Snackbar snackbar = Snackbar.make(usedLayout,
-                "Switch to " + location.getName(), Snackbar.LENGTH_LONG)
+                "Switch to " + location.getName(), viewModel.getTimerDuration()-timerReduction)
                 .setAction("ACCEPT", v -> {
                     Snackbar resultMessageSnackbar = Snackbar.make(usedLayout, "Switch successful", Snackbar.LENGTH_SHORT);
                     resultMessageSnackbar.show();
@@ -162,6 +163,7 @@ public class SmartHomeApplication extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_home_overview:
+                viewModel.setSelectedLocation(null);
                 goToFragment(R.id.action_home_overview);
                 return true;
 
