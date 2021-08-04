@@ -24,6 +24,14 @@ public class SmartHomeApplicationViewModel extends AndroidViewModel {
         timerCompletionStatus = true;
     }
 
+    public LiveData<Boolean> getServerConnectionStatus() {
+        return repository.getServerConnectionStatus();
+    }
+
+    public void retryConnectionToServer(){
+        repository.retryConnectionToServer();
+    }
+
     public int getTimerDuration() {
         return TIMER_DURATION;
     }
