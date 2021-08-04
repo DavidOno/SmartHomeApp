@@ -91,9 +91,10 @@ public class ConfigContainer {
         uiConfig.initParentLocations();
 
         initLocationList();
+        Repository.getInstance().initBeaconObserver();
+
         if (selectedLocation != null) {
             checkForCurrentlySelectedLocation();
-            Repository.getInstance().initBeaconObserver();
         }
         if (selectedFunction != null) {
             checkForCurrentlySelectedFunction();
@@ -192,21 +193,18 @@ public class ConfigContainer {
         if(viewedLocation.getParentLocation() != null && !viewedLocation.getParentLocation().equals(Location.ROOT)) {
             completeFunctionMap.putAll(mapStatusFunctionToFunction(viewedLocation.getParentLocation()));
         }
-        InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(), "GIRA", "2. initFunctionMap\n");
+        //InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(), "GIRA", "2. initFunctionMap\n");
         setFunctionMap(completeFunctionMap);
     }
 
     private LinkedHashMap<Function, Function> mapStatusFunctionToFunction(Location location) {
         LinkedHashMap<Function, Function> completeFunctionMap = new LinkedHashMap<>();
         if(uiConfig != null) {
-            String regex = "_";
             for (Function func : location.getFunctions(uiConfig)) {
                 Function functionStatus = null;
                 if (!func.isStatusFunction()) {
                     for (Function comparedFunction : location.getFunctions(uiConfig)) {
-                        if (comparedFunction.isStatusFunction() &&
-                                func.getName().split(regex)[0].equals(
-                                        comparedFunction.getName().split(regex)[0])) {
+                        if (isMatchingStatusFunction(func, comparedFunction)) {
                             functionStatus = comparedFunction;
                             break;
                         }
@@ -216,6 +214,13 @@ public class ConfigContainer {
             }
         }
         return completeFunctionMap;
+    }
+
+    private boolean isMatchingStatusFunction(Function func, Function comparedFunction) {
+        String regex = "_";
+        return comparedFunction.isStatusFunction() &&
+                func.getName().split(regex)[0].equals(
+                        comparedFunction.getName().split(regex)[0]);
     }
 
     private void initBoundaryMap() {
@@ -262,7 +267,7 @@ public class ConfigContainer {
     }
 
     private void initDataPointMap(Function function) {
-        InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(), "GIRA", "2. initDatapointMap\n");
+        //InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(), "GIRA", "2. initDatapointMap\n");
         Map<Datapoint, Datapoint> newValue = new LinkedHashMap<>();
         if (functionMap != null && functionMap.getValue() != null
                 && functionMap.getValue().get(function) != null) {
