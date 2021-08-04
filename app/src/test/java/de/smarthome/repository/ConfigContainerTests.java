@@ -27,13 +27,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-//@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class ConfigContainerTests {
 
     @Rule
-    //Allows LiveData.postValue() to be executed in the mainThread of the test
-    // => LiveData can be used to verify test results
-    //testImplementation "android.arch.core:core-testing"
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
     public ConfigContainer setUpConfigContainerWithEmptyUIConfig(){
@@ -137,7 +134,6 @@ public class ConfigContainerTests {
 
         cc.initNewUIConfig(uiConfig);
 
-        assertThat(Repository.getInstance().getBeaconCheck().getValue()).isFalse();
         assertThat(cc.getBoundaryMap().getValue()).isEmpty();
         assertThat(cc.getDataPointMap().getValue()).containsEntry(dp, dp);
         assertThat(cc.getUIConfig()).isEqualTo(uiConfig);
