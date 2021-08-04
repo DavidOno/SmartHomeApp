@@ -6,6 +6,7 @@ import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
@@ -16,7 +17,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -28,11 +28,8 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialRequest;
-import com.google.android.gms.auth.api.credentials.CredentialRequestResponse;
 import com.google.android.gms.auth.api.credentials.Credentials;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.concurrent.ExecutorService;
@@ -61,6 +58,7 @@ public class SmartHomeApplication extends AppCompatActivity {
 
     private final int TIMER_REDUCTION = 5000;
     private boolean beaconDialogShown;
+    private boolean connectionSnackbarShown;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +68,7 @@ public class SmartHomeApplication extends AppCompatActivity {
 
         checkBeaconPermissions();
         beaconDialogShown = false;
+        connectionSnackbarShown = false;
 
         viewModel = new ViewModelProvider(this).get(SmartHomeApplicationViewModel.class);
 
@@ -77,6 +76,7 @@ public class SmartHomeApplication extends AppCompatActivity {
 
         setNewToastObserver();
         setBeaconObserver();
+        setServerConnectionObserver();
 
         navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         navController = NavHostFragment.findNavController(navHostFragment);
@@ -88,6 +88,17 @@ public class SmartHomeApplication extends AppCompatActivity {
         }
     }
 
+    private void setServerConnectionObserver() {
+        viewModel.getServerConnectionStatus().observe(this, aBoolean -> {
+            Fragment currentFragment = navHostFragment.getChildFragmentManager().getFragments().get(0);
+            if(!aBoolean && !connectionSnackbarShown
+                    && !currentFragment.getClass().equals(LoginFragment.class)){
+                connectionSnackbarShown = true;
+                showConnectionSnackbar();
+            }
+        });
+    }
+
     private void setBeaconObserver() {
         viewModel.checkBeacon().observe(this, aBoolean -> {
             if(aBoolean && viewModel.hasTimerCompleted()){
@@ -96,7 +107,7 @@ public class SmartHomeApplication extends AppCompatActivity {
                     beaconDialogShown = true;
                     viewModel.startTimer();
                     //startBeaconDialog(viewModel.getBeaconLocation());
-                    showSnackbar(viewModel.getBeaconLocation());
+                    showBeaconSnackbar(viewModel.getBeaconLocation());
                 }
             }
         });
@@ -110,13 +121,13 @@ public class SmartHomeApplication extends AppCompatActivity {
         });
     }
 
-    public void showSnackbar(Location location) {
+    private void showBeaconSnackbar(Location location) {
         LinearLayout usedLayout = findViewById(R.id.smartHomeApplicationLinearLayout);
         int snackBarDuration = viewModel.getTimerDuration()-TIMER_REDUCTION;
         Snackbar snackbar = Snackbar.make(usedLayout,
                 "Switch to " + location.getName(), snackBarDuration)
                 .setAction("ACCEPT", v -> {
-                    Snackbar resultMessageSnackbar = Snackbar.make(usedLayout, "Switch successful", Snackbar.LENGTH_SHORT);
+                    Snackbar resultMessageSnackbar = Snackbar.make(usedLayout, "Switch successful", Snackbar.LENGTH_LONG);
                     resultMessageSnackbar.show();
 
                     viewModel.confirmBeacon();
@@ -124,6 +135,21 @@ public class SmartHomeApplication extends AppCompatActivity {
                 });
         snackbar.show();
         beaconDialogShown = false;
+    }
+
+    public void showConnectionSnackbar() {
+        LinearLayout usedLayout = findViewById(R.id.smartHomeApplicationLinearLayout);
+        Snackbar snackbar = Snackbar.make(usedLayout,
+                "Connection to Server failed.", Snackbar.LENGTH_INDEFINITE)
+                .setAction("RETRY", v -> {
+                    Snackbar resultMessageSnackbar = Snackbar.make(usedLayout, "Trying to connect to Server...", Snackbar.LENGTH_LONG);
+                    resultMessageSnackbar.show();
+
+                    viewModel.retryConnectionToServer();
+                    connectionSnackbarShown = false;
+                })
+                .setActionTextColor(Color.RED);
+        snackbar.show();
     }
 
     @Override
@@ -240,7 +266,7 @@ public class SmartHomeApplication extends AppCompatActivity {
         }
     }
 
-    public void getSavedCredentials() {
+    private void getSavedCredentials() {
         CredentialRequest credentialRequest = new CredentialRequest.Builder()
                 .setPasswordLoginSupported(true)
                 .build();
