@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.auth.api.credentials.Credential;
 
 
+import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,7 +42,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 
-//@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class RepositoryTests {
 
     @Rule
@@ -62,6 +63,11 @@ public class RepositoryTests {
         }
     }
 
+    @After
+    public void cleanUp(){
+        Repository.destroyInstance();
+    }
+
     //ok
     @Test
     public void testConfirmBeaconLocation(){
@@ -79,7 +85,7 @@ public class RepositoryTests {
 
     //assert BeaconCheck = false
     //how to check that I get subscribed??
-    @Test
+
     public void initBeaconObserver(){
         Application a = mock(Application.class);
         Context c = mock(Context.class);
@@ -100,7 +106,7 @@ public class RepositoryTests {
     }
 
     //assert that notify MyFirebaseSubscriber ==> trigger update in Repo
-    @Test
+
     public void requestRegisterUser(){
         Repository r = Repository.getInstance();
 
