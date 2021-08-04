@@ -14,6 +14,7 @@ import de.smarthome.app.model.UIConfig;
 import de.smarthome.app.model.responses.AvailabilityResponse;
 import de.smarthome.app.model.responses.RegisterResponse;
 import de.smarthome.app.repository.ServerCommunicator;
+import de.smarthome.server.gira.GiraServerHandler;
 
 import static org.mockito.Mockito.mock;
 
@@ -28,8 +29,8 @@ public class ServerCommunicatorTests {
     //assert that RR for UI && Channel && Beacon && Boundary
     // are called
     public void initialisationOfApplication(){
-        Application parent = mock(Application.class);
-        //ServerCommunicator sc = ServerCommunicator.getInstance(parent);
+        GiraServerHandler gh = mock(GiraServerHandler.class);
+        ServerCommunicator sc = new ServerCommunicator(gh);
         Credential credential = new Credential.Builder("userName")
                 .setPassword("pwd")
                 .build();
