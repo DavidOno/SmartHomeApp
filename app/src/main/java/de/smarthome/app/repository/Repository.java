@@ -1,10 +1,8 @@
 package de.smarthome.app.repository;
 
 import android.app.Application;
-import android.content.Context;
 import android.util.Log;
 
-import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -19,7 +17,7 @@ import de.smarthome.app.model.UIConfig;
 import de.smarthome.app.model.configs.BoundariesConfig;
 import de.smarthome.app.model.configs.BoundaryDataPoint;
 import de.smarthome.app.model.responses.Events;
-import de.smarthome.app.utility.InternalStorageWriter;
+import de.smarthome.app.repository.responsereactor.ServerConnectionEvent;
 import de.smarthome.beacons.BeaconLocations;
 import de.smarthome.beacons.BeaconObserverImplementation;
 import de.smarthome.beacons.BeaconObserverSubscriber;
@@ -49,6 +47,8 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     private Location beaconLocation = null;
     private MutableLiveData<Boolean> beaconCheck = new MutableLiveData<>();
 
+    private Repository(){}
+
     public static Repository getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new Repository();
@@ -57,6 +57,11 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         }
         return INSTANCE;
     }
+
+    public static void destroyInstance(){
+        INSTANCE = null;
+    }
+
     //TODO: Remove after Testing
     public void fillWithDummyValues(){
         configContainer.fillWithDummyValueAllConfigs();
@@ -66,6 +71,19 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         this.parentApplication = parentApplication;
         serverCommunicator.setParentApplication(parentApplication);
         configContainer.setParentApplication(parentApplication);
+    }
+
+    public void serverConnectionEvent(ServerConnectionEvent type){
+        serverCommunicator.serverConnectionEvent(type);
+    }
+
+    public MutableLiveData<Boolean> getServerConnectionStatus(){
+        return serverCommunicator.getServerConnectionStatus();
+    }
+
+    public void retryConnectionToServer(){
+        serverCommunicator.setServerConnectionStatus(true);
+        serverCommunicator.retryConnectionToServer();
     }
 
     public void setLoginStatus(boolean update){
@@ -114,7 +132,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     public void initBeaconObserver() {
-        if(parentApplication != null){
+        if(parentApplication != null && configContainer.getUIConfig() != null && configContainer.getBeaconLocations() != null){
             beaconObserver = new BeaconObserverImplementation(parentApplication, parentApplication.getApplicationContext(),
                     configContainer.getUIConfig(), configContainer.getBeaconLocations(),
                     new DefaultBeaconManagerCreator());
@@ -125,7 +143,8 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     public void requestRegisterUser(Credential credential) {
-        serverCommunicator.initialisationOfApplication(credential);
+        serverCommunicator.connectToGira(credential.getId(), credential.getPassword());
+        serverCommunicator.connectToCallbackServer();
         subscribeToMyFirebaseMessagingService();
     }
 
@@ -147,7 +166,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     public MutableLiveData<Map<Function, Function>> getFunctionMap() {
-        InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(), "GIRA", "3. Repo getFunctionMap\n");
+        //InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(), "GIRA", "3. Repo getFunctionMap\n");
         requestCurrentFunctionValues(Objects.requireNonNull(configContainer.getFunctionMap().getValue()));
         return configContainer.getFunctionMap();
     }
@@ -166,8 +185,8 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
                 }
             }
         }
-        InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(),
-                "GIRA", "4.1 Repo RequestGetValueFunction, size: " + requestList.size() + "\n");
+        //InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(),
+        //        "GIRA", "4.1 Repo RequestGetValueFunction, size: " + requestList.size() + "\n");
         if(!requestList.isEmpty()){
             requestGetValue(requestList);
         }
@@ -178,7 +197,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     public MutableLiveData<Map<Datapoint, Datapoint>> getDataPointMap() {
-        InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(), "GIRA", "3. Repo getDatapointMap\n");
+        //InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(), "GIRA", "3. Repo getDatapointMap\n");
         requestCurrentDataPointValues(Objects.requireNonNull(configContainer.getDataPointMap().getValue()));
         return configContainer.getDataPointMap();
     }
@@ -191,8 +210,8 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
                 requestList.add(dataPointMap.get(dp).getID());
             }
         }
-        InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(),
-                "GIRA", "4.1 Repo RequestGetValueDataPoint, size: " + requestList.size() + "\n");
+        //InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(),
+        //"GIRA", "4.1 Repo RequestGetValueDataPoint, size: " + requestList.size() + "\n");
         if(!requestList.isEmpty())
             requestGetValue(requestList);
     }
@@ -203,6 +222,10 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
 
     public MutableLiveData<Map<String, String>> getStatusGetValueMap() {
         return configContainer.getStatusGetValueMap();
+    }
+
+    public void setStatusGetValueMap(Map<String, String> newStatusValuesMap) {
+        configContainer.setStatusGetValueMap(newStatusValuesMap);
     }
 
     public void initBeaconObserverWithBeaconConfig(BeaconLocations newBeaconConfig){
@@ -238,18 +261,18 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
             switch (input) {
                 case STARTUP:
                     Log.d(TAG, "Server has started.");
-                    serverCommunicator.getSavedCredentialsForLoginAfterRestart();
+                    serverCommunicator.getSavedCredentialsForLogin(true);
                     break;
                 case RESTART:
                     Log.d(TAG, "Server got restarted.");
                     break;
                 case UI_CONFIG_CHANGED:
                     Log.d(TAG, "UI_CONFIG_CHANGED");
-                    serverCommunicator.requestUIConfigAfterRestart();
+                    serverCommunicator.requestOnlyUIConfig();
                     break;
                 case PROJECT_CONFIG_CHANGED:
                     Log.d(TAG, "PROJECT_CONFIG_CHANGED");
-                    serverCommunicator.requestAdditionalConfigsAfterRestart();
+                    serverCommunicator.requestOnlyAdditionalConfigs();
                     break;
                 default:
                     Log.d(TAG, "Unknown CallBackServiceInputEvent");
@@ -262,21 +285,21 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     public void update(CallBackServiceInput input) {
         if (input.getServiceEvents() != null) {
             for (ServiceEvent serviceEvent : input.getServiceEvents()) {
-                switch (serviceEvent.getEvent()) {
+                switch(serviceEvent.getEvent()) {
                     case STARTUP:
                         Log.d(TAG, "Server has started.");
-                        serverCommunicator.getSavedCredentialsForLoginAfterRestart();
+                        serverCommunicator.getSavedCredentialsForLogin(true);
                         break;
                     case RESTART:
                         Log.d(TAG, "Server got restarted.");
                         break;
                     case UI_CONFIG_CHANGED:
                         Log.d(TAG, "UI_CONFIG_CHANGED");
-                        serverCommunicator.requestUIConfigAfterRestart();
+                        serverCommunicator.requestOnlyUIConfig();
                         break;
                     case PROJECT_CONFIG_CHANGED:
                         Log.d(TAG, "PROJECT_CONFIG_CHANGED");
-                        serverCommunicator.requestAdditionalConfigsAfterRestart();
+                        serverCommunicator.requestOnlyAdditionalConfigs();
                         break;
                     default:
                         Log.d(TAG, "Unknown CallBackServiceInputEvent");
@@ -304,9 +327,5 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
             Log.d(TAG, e.getMessage());
             e.printStackTrace();
         }
-    }
-
-    public void setStatusGetValueMap(Map<String, String> newStatusValuesMap) {
-        configContainer.setStatusGetValueMap(newStatusValuesMap);
     }
 }
