@@ -56,7 +56,6 @@ public class SmartHomeApplication extends AppCompatActivity {
     private SmartHomeApplicationViewModel viewModel;
     private ToastUtility toastUtility;
 
-    private final int TIMER_REDUCTION = 5000;
     private boolean beaconDialogShown;
     private boolean connectionSnackbarShown;
 
@@ -101,29 +100,26 @@ public class SmartHomeApplication extends AppCompatActivity {
 
     private void setBeaconObserver() {
         viewModel.checkBeacon().observe(this, aBoolean -> {
-            if(aBoolean && viewModel.hasTimerCompleted()){
-                viewModel.setBeaconCheckFalse();
-                if(!beaconDialogShown){
+            if(aBoolean && !beaconDialogShown){
+                    viewModel.setBeaconCheckFalse();
                     beaconDialogShown = true;
-                    viewModel.startTimer();
                     //startBeaconDialog(viewModel.getBeaconLocation());
                     showBeaconSnackbar(viewModel.getBeaconLocation());
                 }
-            }
         });
     }
 
     private void setNewToastObserver() {
         toastUtility.getNewToast().observe(this, aBoolean -> {
             if(aBoolean){
-                Toast.makeText(getApplicationContext(), toastUtility.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), toastUtility.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
 
     private void showBeaconSnackbar(Location location) {
         LinearLayout usedLayout = findViewById(R.id.smartHomeApplicationLinearLayout);
-        int snackBarDuration = viewModel.getTimerDuration()-TIMER_REDUCTION;
+        int snackBarDuration = 10000;
         Snackbar snackbar = Snackbar.make(usedLayout,
                 "Switch to " + location.getName(), snackBarDuration)
                 .setAction("ACCEPT", v -> {
