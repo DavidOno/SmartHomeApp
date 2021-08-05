@@ -18,6 +18,7 @@ import de.smarthome.app.model.configs.BoundariesConfig;
 import de.smarthome.app.model.configs.BoundaryDataPoint;
 import de.smarthome.app.model.responses.Events;
 import de.smarthome.app.repository.responsereactor.ServerConnectionEvent;
+import de.smarthome.app.utility.InternalStorageWriter;
 import de.smarthome.beacons.BeaconLocations;
 import de.smarthome.beacons.BeaconObserverImplementation;
 import de.smarthome.beacons.BeaconObserverSubscriber;
@@ -64,7 +65,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
 
     //TODO: Remove after Testing
     public void fillWithDummyValues(){
-        configContainer.fillWithDummyValueAllConfigs();
+        //configContainer.fillWithDummyValueAllConfigs();
     }
 
     public void setParentApplication(Application parentApplication) {
@@ -166,7 +167,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     public MutableLiveData<Map<Function, Function>> getFunctionMap() {
-        //InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(), "GIRA", "3. Repo getFunctionMap\n");
+        InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(), "GIRA", "3. Repo getFunctionMap\n");
         requestCurrentFunctionValues(Objects.requireNonNull(configContainer.getFunctionMap().getValue()));
         return configContainer.getFunctionMap();
     }
@@ -185,8 +186,8 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
                 }
             }
         }
-        //InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(),
-        //        "GIRA", "4.1 Repo RequestGetValueFunction, size: " + requestList.size() + "\n");
+        InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(),
+                "GIRA", "4.1 Repo RequestGetValueFunction, size: " + requestList.size() + "\n");
         if(!requestList.isEmpty()){
             requestGetValue(requestList);
         }
@@ -197,7 +198,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     public MutableLiveData<Map<Datapoint, Datapoint>> getDataPointMap() {
-        //InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(), "GIRA", "3. Repo getDatapointMap\n");
+        InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(), "GIRA", "3. Repo getDatapointMap\n");
         requestCurrentDataPointValues(Objects.requireNonNull(configContainer.getDataPointMap().getValue()));
         return configContainer.getDataPointMap();
     }
@@ -210,8 +211,8 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
                 requestList.add(dataPointMap.get(dp).getID());
             }
         }
-        //InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(),
-        //"GIRA", "4.1 Repo RequestGetValueDataPoint, size: " + requestList.size() + "\n");
+        InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(),
+        "GIRA", "4.1 Repo RequestGetValueDataPoint, size: " + requestList.size() + "\n");
         if(!requestList.isEmpty())
             requestGetValue(requestList);
     }

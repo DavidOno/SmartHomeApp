@@ -28,6 +28,7 @@ import de.smarthome.app.repository.responsereactor.ResponseReactorClient;
 import de.smarthome.app.repository.responsereactor.ResponseReactorGiraCallbackServer;
 import de.smarthome.app.repository.responsereactor.ResponseReactorUIConfig;
 import de.smarthome.app.repository.responsereactor.ServerConnectionEvent;
+import de.smarthome.app.utility.InternalStorageWriter;
 import de.smarthome.app.utility.ToastUtility;
 import de.smarthome.app.model.configs.AdditionalConfig;
 import de.smarthome.command.AsyncCommand;
@@ -84,8 +85,7 @@ public class ServerCommunicator {
         }
 
         if(callbackServerConnectionStatus == ServerConnectionEvent.CALLBACK_CONNECTION_FAIL
-        || (giraServerConnectionStatus == ServerConnectionEvent.GIRA_CONNECTION_FAIL
-                && callbackServerConnectionStatus == ServerConnectionEvent.CALLBACK_CONNECTION_SUCCESS)){
+        || giraServerConnectionStatus == ServerConnectionEvent.GIRA_CONNECTION_FAIL){
             setServerConnectionStatus(false);
         }
     }
@@ -177,8 +177,8 @@ public class ServerCommunicator {
     public synchronized void requestGetValue(List<String> ids) {
         statusListSize = ids.size();
         newStatusValuesMap.clear();
-        //InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(),
-        //        "GIRA", "4.2 SC RequestGetValue, size: " + statusListSize + "\n");
+        InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(),
+                "GIRA", "4.2 SC RequestGetValue, size: " + statusListSize + "\n");
         Thread requestGetValueThread = new Thread(() -> {
             for(String id :ids) {
                 Command getValueCommand = new GetValueCommand(id);
@@ -208,8 +208,8 @@ public class ServerCommunicator {
 
 
                 newStatusValuesMap.put(uID, value);
-                //InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(),
-                //        "GIRA", "SC handleResponseGetValue, statusListSize: " + statusListSize + "\n" + "MapSize" + newStatusValuesMap.size());
+                InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(),
+                        "GIRA", "SC handleResponseGetValue, statusListSize: " + statusListSize + "\n" + "MapSize" + newStatusValuesMap.size());
                 if(statusListSize == newStatusValuesMap.size()) {
                     Repository.getInstance().setStatusGetValueMap(newStatusValuesMap);
                 }
