@@ -74,6 +74,7 @@ public class ServerCommunicator {
         SmartHomeApplication.EXECUTOR_SERVICE.execute(newThread);
     }
 
+    //TODO: Add to all ResponseReactors and add check that they do not overwrite event with equal
     public void serverConnectionEvent(ServerConnectionEvent event){
         switch(event){
             case CALLBACK_CONNECTION_FAIL:
