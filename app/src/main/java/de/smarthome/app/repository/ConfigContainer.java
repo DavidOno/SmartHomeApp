@@ -193,7 +193,7 @@ public class ConfigContainer {
         if(viewedLocation.getParentLocation() != null && !viewedLocation.getParentLocation().equals(Location.ROOT)) {
             completeFunctionMap.putAll(mapStatusFunctionToFunction(viewedLocation.getParentLocation()));
         }
-        InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(), "GIRA", "2. initFunctionMap\n");
+        //InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(), "GIRA", "2. initFunctionMap\n");
         setFunctionMap(completeFunctionMap);
     }
 
@@ -267,7 +267,7 @@ public class ConfigContainer {
     }
 
     private void initDataPointMap(Function function) {
-        InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(), "GIRA", "2. initDatapointMap\n");
+        //InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(), "GIRA", "2. initDatapointMap\n");
         Map<Datapoint, Datapoint> newValue = new LinkedHashMap<>();
         if (functionMap != null && functionMap.getValue() != null
                 && functionMap.getValue().get(function) != null) {

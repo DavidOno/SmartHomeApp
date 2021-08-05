@@ -178,8 +178,8 @@ public class ServerCommunicator {
     public synchronized void requestGetValue(List<String> ids) {
         statusListSize = ids.size();
         newStatusValuesMap.clear();
-        InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(),
-                "GIRA", "4.2 SC RequestGetValue, size: " + statusListSize + "\n");
+        //InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(),
+        //        "GIRA", "4.2 SC RequestGetValue, size: " + statusListSize + "\n");
         Thread requestGetValueThread = new Thread(() -> {
             for(String id :ids) {
                 Command getValueCommand = new GetValueCommand(id);
@@ -206,13 +206,13 @@ public class ServerCommunicator {
 
                 String value = valueResponse.getValues().get(0).getValue();
                 String uID = valueResponse.getValues().get(0).getUid();
-                InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(),
-                        "GIRA", "SC handleResponseGetValue, uID: " + uID + " value " + value + "\n");
+                //InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(),
+                //       "GIRA", "SC handleResponseGetValue, uID: " + uID + " value " + value + "\n");
 
 
                 newStatusValuesMap.put(uID, value);
-                InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(),
-                        "GIRA", "SC handleResponseGetValue, statusListSize: " + statusListSize + " MapSize " + newStatusValuesMap.size() + "\n\n");
+                //InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(),
+                //        "GIRA", "SC handleResponseGetValue, statusListSize: " + statusListSize + " MapSize " + newStatusValuesMap.size() + "\n\n");
                 if(statusListSize == newStatusValuesMap.size()) {
                     Repository.getInstance().setStatusGetValueMap(newStatusValuesMap);
                 }
