@@ -54,9 +54,11 @@ public class HomeOverviewFragment extends Fragment {
 
     private void setOnClickListener() {
         adapter.setOnItemClickListener(location -> {
-            InternalStorageWriter.writeFileOnInternalStorage(this.getContext(), "GIRA", "1. Room Selected\n");
-            viewModel.setSelectedLocation(location);
-            navigateToRoomOverviewFragment();
+            if(viewModel.isChannelConfigLoaded()) {
+                InternalStorageWriter.writeFileOnInternalStorage(this.getContext(), "GIRA", "1. Room Selected\n");
+                viewModel.setSelectedLocation(location);
+                navigateToRoomOverviewFragment();
+            }
         });
     }
 
@@ -68,9 +70,7 @@ public class HomeOverviewFragment extends Fragment {
     }
 
     private void navigateToRoomOverviewFragment() {
-        if(viewModel.isChannelConfigLoaded()){
-            NavController navController = NavHostFragment.findNavController(this);
-            navController.navigate(R.id.action_homeOverviewFragment_to_roomOverviewFragment);
-        }
+        NavController navController = NavHostFragment.findNavController(this);
+        navController.navigate(R.id.action_homeOverviewFragment_to_roomOverviewFragment);
     }
 }
