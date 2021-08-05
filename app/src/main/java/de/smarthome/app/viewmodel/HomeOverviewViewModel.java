@@ -30,4 +30,7 @@ public class HomeOverviewViewModel extends AndroidViewModel {
         repository.setSelectedLocation(location);
     }
 
+    public boolean isChannelConfigLoaded(){
+        return repository.getChannelConfig() != null;
+    }
 }
