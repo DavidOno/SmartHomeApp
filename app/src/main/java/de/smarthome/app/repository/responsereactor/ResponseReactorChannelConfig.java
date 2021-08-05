@@ -28,17 +28,17 @@ public class ResponseReactorChannelConfig implements ResponseReactor {
                 ChannelConfig responseChannelConfig = (ChannelConfig) responseEntity.getBody();
                 sendChannelConfigToRepo(responseChannelConfig);
 
+                repository.serverConnectionEvent(ServerConnectionEvent.CALLBACK_CONNECTION_SUCCESS);
                 Log.d(TAG, "ChannelConfig retrieved successfully.\nStatus: " + responseEntity.getStatusCode());
-
             } else {
                 Log.d(TAG, "error occurred");
                 Log.d(TAG, responseEntity.getStatusCode().toString());
-
+                repository.serverConnectionEvent(ServerConnectionEvent.CALLBACK_CONNECTION_FAIL);
                 Log.d(TAG, "Problem when trying to retrieve ChannelConfig.\nStatus: " + responseEntity.getStatusCode());
-
             }
         }catch(Exception e){
             Log.d(TAG, "Exception: " + e.toString());
+            repository.serverConnectionEvent(ServerConnectionEvent.CALLBACK_CONNECTION_FAIL);
             e.printStackTrace();
         }
     }

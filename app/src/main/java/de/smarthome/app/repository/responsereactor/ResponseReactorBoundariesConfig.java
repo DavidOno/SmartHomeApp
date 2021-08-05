@@ -26,14 +26,17 @@ public class ResponseReactorBoundariesConfig implements ResponseReactor {
                 BoundariesConfig responseBoundariesConfig = (BoundariesConfig) responseEntity.getBody();
                 sendBoundariesConfigToRepo(responseBoundariesConfig);
 
+                repository.serverConnectionEvent(ServerConnectionEvent.CALLBACK_CONNECTION_SUCCESS);
                 Log.d(TAG, "BoundaryConfig successfully retrieved.\nStatus: " + responseEntity.getStatusCode());
             } else {
                 Log.d(TAG, "error occurred");
                 Log.d(TAG, responseEntity.getStatusCode().toString());
+                repository.serverConnectionEvent(ServerConnectionEvent.CALLBACK_CONNECTION_FAIL);
                 Log.d(TAG, "Problem when trying get BoundaryConfig.\nStatus: " + responseEntity.getStatusCode());
             }
         }catch(Exception e){
             Log.d(TAG, "Exception: " + e.toString());
+            repository.serverConnectionEvent(ServerConnectionEvent.CALLBACK_CONNECTION_FAIL);
             e.printStackTrace();
         }
     }
