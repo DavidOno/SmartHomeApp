@@ -206,11 +206,13 @@ public class ServerCommunicator {
 
                 String value = valueResponse.getValues().get(0).getValue();
                 String uID = valueResponse.getValues().get(0).getUid();
+                InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(),
+                        "GIRA", "SC handleResponseGetValue, uID: " + uID + " value " + value + "\n");
 
 
                 newStatusValuesMap.put(uID, value);
                 InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(),
-                        "GIRA", "SC handleResponseGetValue, statusListSize: " + statusListSize + "\n" + "MapSize" + newStatusValuesMap.size());
+                        "GIRA", "SC handleResponseGetValue, statusListSize: " + statusListSize + " MapSize " + newStatusValuesMap.size() + "\n\n");
                 if(statusListSize == newStatusValuesMap.size()) {
                     Repository.getInstance().setStatusGetValueMap(newStatusValuesMap);
                 }
