@@ -65,7 +65,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
 
     //TODO: Remove after Testing
     public void fillWithDummyValues(){
-        //configContainer.fillWithDummyValueAllConfigs();
+        configContainer.fillWithDummyValueAllConfigs();
     }
 
     public void setParentApplication(Application parentApplication) {
