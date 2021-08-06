@@ -41,6 +41,7 @@ public class LoginFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         findViewsByID(view);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         return view;
     }
 
@@ -75,8 +76,6 @@ public class LoginFragment extends Fragment {
 
         viewModel = new ViewModelProvider(requireActivity()).get(LoginViewModel.class);
         toastUtility = ToastUtility.getInstance();
-
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
     public Credential buildCredential(String userName, String pwd) {
