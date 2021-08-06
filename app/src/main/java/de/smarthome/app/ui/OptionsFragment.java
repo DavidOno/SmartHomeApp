@@ -21,6 +21,7 @@ public class OptionsFragment extends Fragment {
     private static final String TAG = "OptionsFragment";
     private OptionsViewModel viewModel;
     private Button buttonLogout;
+    private Button buttonConnectionRestart;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -35,16 +36,23 @@ public class OptionsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         requireActivity().setTitle("Option");
         buttonLogout.setOnClickListener(v -> logoutUser());
+        buttonConnectionRestart.setOnClickListener(v -> retryConnectionToServer());
+
         viewModel = new ViewModelProvider(requireActivity()).get(OptionsViewModel.class);
     }
 
     private void findViewsByID(View view) {
         buttonLogout = view.findViewById(R.id.button_logout);
+        buttonConnectionRestart = view.findViewById(R.id.button_restart_connection);
     }
 
     private void logoutUser(){
         viewModel.getDataFromGoogleAndDelete();
         navigateToLoginFragment();
+    }
+
+    private void retryConnectionToServer(){
+        viewModel.restartConnectionToServer();
     }
 
     private void navigateToLoginFragment() {
