@@ -70,7 +70,6 @@ public class SmartHomeApplication extends AppCompatActivity {
         connectionSnackbarShown = false;
 
         viewModel = new ViewModelProvider(this).get(SmartHomeApplicationViewModel.class);
-
         toastUtility = ToastUtility.getInstance();
 
         setNewToastObserver();
@@ -79,8 +78,6 @@ public class SmartHomeApplication extends AppCompatActivity {
 
         navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         navController = NavHostFragment.findNavController(navHostFragment);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if(savedInstanceState == null){
             getSavedCredentials();
