@@ -103,7 +103,7 @@ public class ServerCommunicator {
 
     public void retryConnectionToServer(){
         if(giraServerConnectionStatus == ServerConnectionEvent.GIRA_CONNECTION_FAIL){
-            getSavedCredentialsForLogin(false);
+            getSavedCredentialsForLogin();
         }
         if(callbackServerConnectionStatus == ServerConnectionEvent.CALLBACK_CONNECTION_FAIL){
             connectToCallbackServer();
@@ -240,7 +240,7 @@ public class ServerCommunicator {
         requestUnregisterCallbackServerAtGiraServer();
     }
 
-    public void getSavedCredentialsForLogin(boolean restart) {
+    public void getSavedCredentialsForLogin() {
         CredentialRequest credentialRequest = new CredentialRequest.Builder()
                 .setPasswordLoginSupported(true)
                 .build();

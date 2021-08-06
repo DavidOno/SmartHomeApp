@@ -26,8 +26,8 @@ public class HomeOverviewViewModel extends AndroidViewModel {
         return repository.getLocationList();
     }
 
-    public void setSelectedLocation(Location location){
-        repository.setSelectedLocation(location);
+    public void initSelectedLocation(Location location){
+        repository.initSelectedLocation(location);
     }
 
     public boolean isChannelConfigLoaded(){

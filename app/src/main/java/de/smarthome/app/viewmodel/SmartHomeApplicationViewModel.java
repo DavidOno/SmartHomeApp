@@ -25,12 +25,12 @@ public class SmartHomeApplicationViewModel extends AndroidViewModel {
         return repository.getServerConnectionStatus();
     }
 
-    public void retryConnectionToServer(){
-        repository.retryConnectionToServer();
+    public void retryConnectionToServerAfterFailure(){
+        repository.retryConnectionToServerAfterFailure();
     }
 
     public void setSelectedLocation(Location location){
-        repository.setSelectedLocation(location);
+        repository.initSelectedLocation(location);
     }
 
     public LiveData<Boolean> checkBeacon() {
