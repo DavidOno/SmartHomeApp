@@ -74,20 +74,30 @@ public class ServerCommunicator {
         SmartHomeApplication.EXECUTOR_SERVICE.execute(newThread);
     }
 
-    //TODO: Add to all ResponseReactors and add check that they do not overwrite event with equal
     public void serverConnectionEvent(ServerConnectionEvent event){
         switch(event){
             case CALLBACK_CONNECTION_FAIL:
-                callbackServerConnectionStatus = event;
+                if(callbackServerConnectionStatus != ServerConnectionEvent.CALLBACK_CONNECTION_FAIL)
+                    callbackServerConnectionStatus = event;
+                setServerConnectionStatus(false);
+                break;
+            case CALLBACK_CONNECTION_SUCCESS:
+                if(callbackServerConnectionStatus != ServerConnectionEvent.CALLBACK_CONNECTION_SUCCESS){
+                    toastUtility.prepareToast("Successfully connected to CallbackServer");
+                    callbackServerConnectionStatus = event;
+                }
                 break;
             case GIRA_CONNECTION_FAIL:
-                giraServerConnectionStatus = event;
+                if(giraServerConnectionStatus != ServerConnectionEvent.GIRA_CONNECTION_FAIL)
+                    giraServerConnectionStatus = event;
+                setServerConnectionStatus(false);
                 break;
-        }
-
-        if(callbackServerConnectionStatus == ServerConnectionEvent.CALLBACK_CONNECTION_FAIL
-        || giraServerConnectionStatus == ServerConnectionEvent.GIRA_CONNECTION_FAIL){
-            setServerConnectionStatus(false);
+            case GIRA_CONNECTION_SUCCESS:
+                if(giraServerConnectionStatus != ServerConnectionEvent.GIRA_CONNECTION_SUCCESS){
+                    toastUtility.prepareToast("Successfully connected to Gira.");
+                    giraServerConnectionStatus = event;
+                }
+                break;
         }
     }
 
@@ -208,7 +218,6 @@ public class ServerCommunicator {
                 String uID = valueResponse.getValues().get(0).getUid();
                 //InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(),
                 //       "GIRA", "SC handleResponseGetValue, uID: " + uID + " value " + value + "\n");
-
 
                 newStatusValuesMap.put(uID, value);
                 //InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(),
