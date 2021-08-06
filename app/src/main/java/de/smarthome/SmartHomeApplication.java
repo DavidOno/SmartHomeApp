@@ -124,7 +124,8 @@ public class SmartHomeApplication extends AppCompatActivity {
                     resultMessageSnackbar.show();
 
                     viewModel.confirmBeacon();
-                    setStartFragment(R.id.roomOverviewFragment);
+                    goToRoomFragment();
+                    //setStartFragment(R.id.roomOverviewFragment);
                 });
         snackbar.show();
         beaconDialogShown = false;
@@ -138,7 +139,7 @@ public class SmartHomeApplication extends AppCompatActivity {
                     Snackbar resultMessageSnackbar = Snackbar.make(usedLayout, "Trying to connect to Server...", Snackbar.LENGTH_LONG);
                     resultMessageSnackbar.show();
 
-                    viewModel.retryConnectionToServer();
+                    viewModel.retryConnectionToServerAfterFailure();
                     connectionSnackbarShown = false;
                 })
                 .setActionTextColor(Color.RED);
@@ -225,6 +226,21 @@ public class SmartHomeApplication extends AppCompatActivity {
             beaconDialogShown = false;
         });
     }
+
+    private void goToRoomFragment() {
+        Fragment currentFragment = navHostFragment.getChildFragmentManager().getFragments().get(0);
+
+        if (currentFragment.getClass().equals(HomeOverviewFragment.class)){
+            navController.navigate(R.id.action_homeOverviewFragment_to_roomOverviewFragment);
+
+        }else if(currentFragment.getClass().equals(RegulationFragment.class)){
+            navController.navigate(R.id.action_regulationFragment_to_roomOverviewFragment);
+
+        }else if(currentFragment.getClass().equals(OptionsFragment.class) ){
+            navController.navigate(R.id.action_optionsFragment_to_roomOverviewFragment);
+        }
+    }
+
 
     private void setStartFragment(int destinationFragment) {
         NavInflater navInflater = navController.getNavInflater();
