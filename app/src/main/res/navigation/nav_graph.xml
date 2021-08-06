@@ -38,6 +38,9 @@
             app:destination="@id/HomeOverviewFragment"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_optionsFragment_to_roomOverviewFragment"
+            app:destination="@id/roomOverviewFragment" />
     </fragment>
     <fragment
         android:id="@+id/roomOverviewFragment"
@@ -70,5 +73,8 @@
             app:destination="@id/HomeOverviewFragment"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_regulationFragment_to_roomOverviewFragment"
+            app:destination="@id/roomOverviewFragment" />
     </fragment>
 </navigation>
