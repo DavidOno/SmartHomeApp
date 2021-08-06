@@ -49,4 +49,8 @@ public class OptionsViewModel extends AndroidViewModel {
             }
         });
     }
+
+    public void restartConnectionToServer() {
+        repository.restartConnectionToServer();
+    }
 }

@@ -18,7 +18,6 @@ import de.smarthome.app.model.configs.BoundariesConfig;
 import de.smarthome.app.model.configs.BoundaryDataPoint;
 import de.smarthome.app.model.responses.Events;
 import de.smarthome.app.repository.responsereactor.ServerConnectionEvent;
-import de.smarthome.app.utility.InternalStorageWriter;
 import de.smarthome.beacons.BeaconLocations;
 import de.smarthome.beacons.BeaconObserverImplementation;
 import de.smarthome.beacons.BeaconObserverSubscriber;
@@ -82,9 +81,15 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         return serverCommunicator.getServerConnectionStatus();
     }
 
-    public void retryConnectionToServer(){
+    public void retryConnectionToServerAfterFailure(){
         serverCommunicator.setServerConnectionStatus(true);
         serverCommunicator.retryConnectionToServer();
+    }
+
+    public void restartConnectionToServer(){
+        serverCommunicator.setGiraServerConnectionStatus(ServerConnectionEvent.GIRA_CONNECTION_FAIL);
+        serverCommunicator.setCallbackServerConnectionStatus(ServerConnectionEvent.CALLBACK_CONNECTION_FAIL);
+        retryConnectionToServerAfterFailure();
     }
 
     public void setLoginStatus(boolean update){
@@ -103,7 +108,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         return configContainer.getSelectedFunction();
     }
 
-    public void setSelectedLocation(Location newLocation) {
+    public void initSelectedLocation(Location newLocation) {
         configContainer.initSelectedLocation(newLocation);
     }
 
@@ -128,7 +133,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     public void confirmBeaconLocation() {
-        setSelectedLocation(beaconLocation);
+        initSelectedLocation(beaconLocation);
         beaconLocation = null;
     }
 
@@ -262,7 +267,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
             switch (input) {
                 case STARTUP:
                     Log.d(TAG, "Server has started.");
-                    serverCommunicator.getSavedCredentialsForLogin(true);
+                    serverCommunicator.getSavedCredentialsForLogin();
                     break;
                 case RESTART:
                     Log.d(TAG, "Server got restarted.");
@@ -289,7 +294,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
                 switch(serviceEvent.getEvent()) {
                     case STARTUP:
                         Log.d(TAG, "Server has started.");
-                        serverCommunicator.getSavedCredentialsForLogin(true);
+                        serverCommunicator.getSavedCredentialsForLogin();
                         break;
                     case RESTART:
                         Log.d(TAG, "Server got restarted.");
