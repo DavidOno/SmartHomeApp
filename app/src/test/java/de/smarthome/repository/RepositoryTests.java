@@ -2,41 +2,25 @@ package de.smarthome.repository;
 
 import android.app.Application;
 import android.content.Context;
-import android.util.Log;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.android.gms.auth.api.credentials.Credential;
 
 
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.stubbing.OngoingStubbing;
 
 import java.util.LinkedList;
-
-import javax.inject.Inject;
 
 import de.smarthome.app.model.Function;
 import de.smarthome.app.model.Location;
 import de.smarthome.app.model.UIConfig;
-import de.smarthome.app.model.configs.BoundariesConfig;
-import de.smarthome.app.model.configs.ChannelConfig;
-import de.smarthome.app.model.responses.CallbackValueInput;
-import de.smarthome.app.repository.ConfigContainer;
 import de.smarthome.app.repository.Repository;
-import de.smarthome.app.repository.ServerCommunicator;
-import de.smarthome.beacons.BeaconLocations;
-import de.smarthome.server.ServerHandler;
-import de.smarthome.server.SmartHomeFMS;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -164,7 +148,7 @@ public class RepositoryTests {
         LinkedList<Location> emptyLocationList = new LinkedList<>();
         Location location = new Location("l1", "1","dummy", emptyFunctionIdList, emptyLocationList,"dummy");
         r.update(location);
-        r.setSelectedLocation(location);
+        r.initSelectedLocation(location);
         r.setBeaconCheckFalse();
 
         r.update(location);
