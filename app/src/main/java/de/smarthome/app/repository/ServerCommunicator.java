@@ -28,7 +28,6 @@ import de.smarthome.app.repository.responsereactor.ResponseReactorClient;
 import de.smarthome.app.repository.responsereactor.ResponseReactorGiraCallbackServer;
 import de.smarthome.app.repository.responsereactor.ResponseReactorUIConfig;
 import de.smarthome.app.repository.responsereactor.ServerConnectionEvent;
-import de.smarthome.app.utility.InternalStorageWriter;
 import de.smarthome.app.utility.ToastUtility;
 import de.smarthome.app.model.configs.AdditionalConfig;
 import de.smarthome.command.AsyncCommand;
@@ -78,24 +77,24 @@ public class ServerCommunicator {
         switch(event){
             case CALLBACK_CONNECTION_FAIL:
                 if(callbackServerConnectionStatus != ServerConnectionEvent.CALLBACK_CONNECTION_FAIL)
-                    callbackServerConnectionStatus = event;
+                    setCallbackServerConnectionStatus(event);
                 setServerConnectionStatus(false);
                 break;
             case CALLBACK_CONNECTION_SUCCESS:
                 if(callbackServerConnectionStatus != ServerConnectionEvent.CALLBACK_CONNECTION_SUCCESS){
                     toastUtility.prepareToast("Successfully connected to CallbackServer");
-                    callbackServerConnectionStatus = event;
+                    setCallbackServerConnectionStatus(event);
                 }
                 break;
             case GIRA_CONNECTION_FAIL:
                 if(giraServerConnectionStatus != ServerConnectionEvent.GIRA_CONNECTION_FAIL)
-                    giraServerConnectionStatus = event;
+                    setGiraServerConnectionStatus(event);
                 setServerConnectionStatus(false);
                 break;
             case GIRA_CONNECTION_SUCCESS:
                 if(giraServerConnectionStatus != ServerConnectionEvent.GIRA_CONNECTION_SUCCESS){
                     toastUtility.prepareToast("Successfully connected to Gira.");
-                    giraServerConnectionStatus = event;
+                    setGiraServerConnectionStatus(event);
                 }
                 break;
         }
@@ -103,7 +102,7 @@ public class ServerCommunicator {
 
     public void retryConnectionToServer(){
         if(giraServerConnectionStatus == ServerConnectionEvent.GIRA_CONNECTION_FAIL){
-            getSavedCredentialsForLogin();
+            getSavedCredentialsForLoginAtGira();
         }
         if(callbackServerConnectionStatus == ServerConnectionEvent.CALLBACK_CONNECTION_FAIL){
             connectToCallbackServer();
@@ -141,6 +140,14 @@ public class ServerCommunicator {
 
     public void setGiraServerConnectionStatus(ServerConnectionEvent giraServerConnectionStatus) {
         this.giraServerConnectionStatus = giraServerConnectionStatus;
+    }
+
+    public ServerConnectionEvent getCallbackServerConnectionStatus() {
+        return callbackServerConnectionStatus;
+    }
+
+    public ServerConnectionEvent getGiraServerConnectionStatus() {
+        return giraServerConnectionStatus;
     }
 
     public void setLoginStatus(Boolean status) {
@@ -240,7 +247,7 @@ public class ServerCommunicator {
         requestUnregisterCallbackServerAtGiraServer();
     }
 
-    public void getSavedCredentialsForLogin() {
+    public void getSavedCredentialsForLoginAtGira() {
         CredentialRequest credentialRequest = new CredentialRequest.Builder()
                 .setPasswordLoginSupported(true)
                 .build();
