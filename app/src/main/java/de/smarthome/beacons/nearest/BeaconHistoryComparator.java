@@ -3,14 +3,24 @@ package de.smarthome.beacons.nearest;
 import java.util.Comparator;
 import java.util.List;
 
-public class TimeThresholdComparator implements Comparator<BeaconThresholder> {
+/**
+ * Comparator for beacon signal histories
+ */
+public class BeaconHistoryComparator implements Comparator<BeaconSignalHistory> {
 
+    /**
+     * Compares two beacon histories
+     * @param o1 First beacon history
+     * @param o2 Second beacon history
+     * @return -1 if all signals in first history are greater than in the second one. 1 if the first
+     * one is lower than the second one otherwise 0.
+     */
     @Override
-    public int compare(BeaconThresholder o1, BeaconThresholder o2) {
-        List<Integer> firstLastNSignals = o1.getLastNSignals(ThresholderStrategy.SIGNAL_HISTORY_LENGTH);
-        List<Integer> secondLastNSignals1 = o2.getLastNSignals(ThresholderStrategy.SIGNAL_HISTORY_LENGTH);
+    public int compare(BeaconSignalHistory o1, BeaconSignalHistory o2) {
+        List<Integer> firstLastNSignals = o1.getLastNSignals(HistoryBestStrategy.SIGNAL_HISTORY_LENGTH);
+        List<Integer> secondLastNSignals1 = o2.getLastNSignals(HistoryBestStrategy.SIGNAL_HISTORY_LENGTH);
         State state = new GreaterState();
-        for(int i = 0; i < ThresholderStrategy.SIGNAL_HISTORY_LENGTH; i++){
+        for(int i = 0; i < HistoryBestStrategy.SIGNAL_HISTORY_LENGTH; i++){
             State newState = state.compare(firstLastNSignals.get(i), secondLastNSignals1.get(i));
             if(newState != state){
                 i = resetCounter();
@@ -27,12 +37,15 @@ public class TimeThresholdComparator implements Comparator<BeaconThresholder> {
         return -1;
     }
 
-    public static interface State {
+    /**
+     * Specifies the current state within the comparison process.
+     */
+    private interface State {
         State compare(int a, int b);
         int getReturnValue();
     }
 
-    public static class GreaterState implements State {
+    private static class GreaterState implements State {
         private final State nextState = new LowerState();
 
         @Override
@@ -49,7 +62,7 @@ public class TimeThresholdComparator implements Comparator<BeaconThresholder> {
         }
     }
 
-    public static class EqualState implements State {
+    private static class EqualState implements State {
 
         @Override
         public State compare(int a, int b) {
@@ -62,7 +75,7 @@ public class TimeThresholdComparator implements Comparator<BeaconThresholder> {
         }
     }
 
-    public static class LowerState implements State {
+    private static class LowerState implements State {
         private final State nextState = new EqualState();
 
         @Override

@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.smarthome.app.model.UIConfig;
-import de.smarthome.beacons.nearest.ThresholderStrategy;
+import de.smarthome.beacons.nearest.HistoryBestStrategy;
 
 /**
  * This class enables the app to detect movement in-and-out of regions.
@@ -39,7 +39,7 @@ public class BeaconRanging implements BeaconConsumer {
         BeaconManager.setRssiFilterImplClass(RunningAverageRssiFilter.class);
         RunningAverageRssiFilter.setSampleExpirationMilliseconds(5000);
         beaconManager = beaconManagerCreator.create(context);
-        beaconLocationManager = new BeaconLocationManager(newUIConfig, newBeaconConfig, new ThresholderStrategy());
+        beaconLocationManager = new BeaconLocationManager(newUIConfig, newBeaconConfig, new HistoryBestStrategy());
     }
 
     public void onResume() {
