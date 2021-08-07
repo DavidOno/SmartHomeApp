@@ -30,16 +30,13 @@ public class SwitchViewHolder extends RegulationAdapter.ViewHolder{
 
     private void setSwitchOnClickListener(@NonNull RegulationAdapter.OnItemClickListener onSwitchClickListener,
                                           @NonNull RegulationAdapter adapter) {
-        binarySwitch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = getAdapterPosition();
-                if (onSwitchClickListener != null && position != RecyclerView.NO_POSITION) {
-                    if(binarySwitch.isChecked()){
-                        onSwitchClickListener.onItemClick(adapter.getDataPointAt(position), "1");
-                    }else{
-                        onSwitchClickListener.onItemClick(adapter.getDataPointAt(position), "0");
-                    }
+        binarySwitch.setOnClickListener(v -> {
+            int position = getAdapterPosition();
+            if (onSwitchClickListener != null && position != RecyclerView.NO_POSITION) {
+                if(binarySwitch.isChecked()){
+                    onSwitchClickListener.onItemClick(adapter.getDataPointAt(position), "1");
+                }else{
+                    onSwitchClickListener.onItemClick(adapter.getDataPointAt(position), "0");
                 }
             }
         });
