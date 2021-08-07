@@ -272,7 +272,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
             switch (input) {
                 case STARTUP:
                     Log.d(TAG, "Server has started.");
-                    serverCommunicator.getSavedCredentialsForLogin();
+                    serverCommunicator.getSavedCredentialsForLoginAtGira();
                     break;
                 case RESTART:
                     Log.d(TAG, "Server got restarted.");
@@ -299,7 +299,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
                 switch(serviceEvent.getEvent()) {
                     case STARTUP:
                         Log.d(TAG, "Server has started.");
-                        serverCommunicator.getSavedCredentialsForLogin();
+                        serverCommunicator.getSavedCredentialsForLoginAtGira();
                         break;
                     case RESTART:
                         Log.d(TAG, "Server got restarted.");
