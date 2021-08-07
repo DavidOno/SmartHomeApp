@@ -13,6 +13,7 @@ import de.smarthome.app.model.Function;
 import de.smarthome.app.model.configs.BoundaryDataPoint;
 import de.smarthome.app.model.configs.ChannelConfig;
 import de.smarthome.app.repository.Repository;
+import de.smarthome.app.repository.StatusRequestType;
 
 public class RegulationViewModel extends AndroidViewModel {
     private static final String TAG = "RegulationViewModel";
@@ -28,6 +29,7 @@ public class RegulationViewModel extends AndroidViewModel {
     }
 
     public LiveData<Map<Datapoint, Datapoint>> getDataPointMap(){
+        repository.requestCurrentStatusValues(StatusRequestType.DATAPOINT);
         return repository.getDataPointMap();
     }
 

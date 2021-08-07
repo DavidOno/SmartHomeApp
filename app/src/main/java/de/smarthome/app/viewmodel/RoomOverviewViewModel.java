@@ -12,6 +12,7 @@ import de.smarthome.app.model.Function;
 import de.smarthome.app.model.Location;
 import de.smarthome.app.model.configs.ChannelConfig;
 import de.smarthome.app.repository.Repository;
+import de.smarthome.app.repository.StatusRequestType;
 
 public class RoomOverviewViewModel  extends AndroidViewModel {
     private static final String TAG = "RoomOverviewViewModel";
@@ -23,6 +24,7 @@ public class RoomOverviewViewModel  extends AndroidViewModel {
     }
 
     public LiveData<Map<Function, Function>> getFunctionMap(){
+        repository.requestCurrentStatusValues(StatusRequestType.FUNCTION);
         return repository.getFunctionMap();
     }
 
