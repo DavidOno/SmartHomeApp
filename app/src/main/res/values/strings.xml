@@ -27,4 +27,5 @@
     <string name="room_name">Room Name</string>
     <string name="light_regulation">Light_regulation</string>
     <string name="item_status">Status</string>
+    <string name="arrow_description">Shows more options</string>
 </resources>
