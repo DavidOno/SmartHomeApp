@@ -110,7 +110,7 @@ public class ServerCommunicator {
         }
     }
 
-    public  void connectToGira(String userName, String pwd){
+    public void connectToGira(String userName, String pwd){
         setGiraServerConnectionStatus(ServerConnectionEvent.GIRA_CONNECTION_ACTIVE);
         MultiReactorCommandChainImpl multiCommandChain = new MultiReactorCommandChainImpl();
         multiCommandChain.add(new RegisterClientCommand(userName, pwd), new ResponseReactorClient());
@@ -119,7 +119,7 @@ public class ServerCommunicator {
         serverHandler.sendRequest(multiCommandChain);
     }
 
-    public  void connectToCallbackServer(){
+    public void connectToCallbackServer(){
         setCallbackServerConnectionStatus(ServerConnectionEvent.CALLBACK_CONNECTION_ACTIVE);
         MultiReactorCommandChainImpl multiCommandChain = new MultiReactorCommandChainImpl();
         multiCommandChain.add(new RegisterCallback(IP_OF_CALLBACK_SERVER), new ResponseReactorCallbackServer());

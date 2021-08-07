@@ -173,11 +173,14 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
 
     public MutableLiveData<Map<Function, Function>> getFunctionMap() {
         //InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(), "GIRA", "3. Repo getFunctionMap\n");
-        requestCurrentFunctionValues(Objects.requireNonNull(configContainer.getFunctionMap().getValue()));
+        List<String> requestList = requestCurrentFunctionValues(Objects.requireNonNull(configContainer.getFunctionMap().getValue()));
+        if(!requestList.isEmpty()){
+            requestGetValue(requestList);
+        }
         return configContainer.getFunctionMap();
     }
 
-    private void requestCurrentFunctionValues(Map<Function, Function> functionMap){
+    private List<String> requestCurrentFunctionValues(Map<Function, Function> functionMap){
         List<Function> functionList = new ArrayList<>(functionMap.keySet());
         List<String> requestList = new ArrayList<>();
         for(Function func : functionList){
@@ -193,9 +196,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         }
         //InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(),
         //        "GIRA", "4.1 Repo RequestGetValueFunction, size: " + requestList.size() + "\n");
-        if(!requestList.isEmpty()){
-            requestGetValue(requestList);
-        }
+        return requestList;
     }
 
     public LiveData<Map<Datapoint, BoundaryDataPoint>> getBoundaryMap() {
@@ -204,11 +205,14 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
 
     public MutableLiveData<Map<Datapoint, Datapoint>> getDataPointMap() {
         //InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(), "GIRA", "3. Repo getDatapointMap\n");
-        requestCurrentDataPointValues(Objects.requireNonNull(configContainer.getDataPointMap().getValue()));
+        List<String> requestList = requestCurrentDataPointValues(Objects.requireNonNull(configContainer.getDataPointMap().getValue()));
+        if(!requestList.isEmpty()) {
+            requestGetValue(requestList);
+        }
         return configContainer.getDataPointMap();
     }
 
-    private void requestCurrentDataPointValues(Map<Datapoint, Datapoint> dataPointMap){
+    private List<String> requestCurrentDataPointValues(Map<Datapoint, Datapoint> dataPointMap){
         List<Datapoint> dataPointList = new ArrayList<>(dataPointMap.keySet());
         List<String> requestList = new ArrayList<>();
         for(Datapoint dp : dataPointList){
@@ -218,8 +222,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         }
         //InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(),
         //"GIRA", "4.1 Repo RequestGetValueDataPoint, size: " + requestList.size() + "\n");
-        if(!requestList.isEmpty())
-            requestGetValue(requestList);
+        return requestList;
     }
 
     public MutableLiveData<Map<String, String>> getStatusUpdateMap() {
