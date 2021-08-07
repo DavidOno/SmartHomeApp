@@ -26,13 +26,6 @@ public class BeaconRanging implements BeaconConsumer {
     private final BeaconLocationManager beaconLocationManager;
     private final Context context;
 
-    /**
-     *
-     * @param context
-     * @param newUIConfig
-     * @param newBeaconConfig
-     * @param beaconManagerCreator
-     */
     public BeaconRanging(Context context, UIConfig newUIConfig, BeaconLocations newBeaconConfig,
                          BeaconManagerCreator beaconManagerCreator) {
         this.context = context;
@@ -42,16 +35,22 @@ public class BeaconRanging implements BeaconConsumer {
         beaconLocationManager = new BeaconLocationManager(newUIConfig, newBeaconConfig, new HistoryBestStrategy());
     }
 
-    public void onResume() {
+    /**
+     * Binds beacon manager
+     */
+    public void bind() {
         beaconManager.bind(this);
     }
 
-    public void onPause() {
+    /**
+     * Unbinds beacon manager
+     */
+    public void unbind() {
         beaconManager.unbind(this);
     }
 
     /**
-     *
+     * Specifies range notifier which sends updates to the BeaconLocationManager
      */
     @Override
     public void onBeaconServiceConnect() {
@@ -75,16 +74,25 @@ public class BeaconRanging implements BeaconConsumer {
         beaconManager.addRangeNotifier(rangeNotifier);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public Context getApplicationContext() {
         return context;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public void unbindService(ServiceConnection serviceConnection) {
         context.unbindService(serviceConnection);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean bindService(Intent intent, ServiceConnection serviceConnection, int i) {
         return context.bindService(intent, serviceConnection, i);

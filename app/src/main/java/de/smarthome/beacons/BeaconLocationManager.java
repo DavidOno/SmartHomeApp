@@ -7,8 +7,10 @@ import de.smarthome.app.model.Location;
 import de.smarthome.app.model.UIConfig;
 import de.smarthome.beacons.nearest.NearestBeaconStrategy;
 
+/**
+ * Handler for updating locations based on the information from the class nearestBeaconStrategy
+ */
 public class BeaconLocationManager {
-    private static final String TAG = "BeaconLocationManager";
     private final UIConfig uiConfig;
     private final BeaconLocations locationConfig;
     private BeaconObserver beaconObserver;
@@ -21,8 +23,9 @@ public class BeaconLocationManager {
     }
 
     /**
-     *
-     * @param updatedBeaconSignals
+     * Gets information of nearestBeaconStrategy and sets nearest beacon.
+     * If nearest beacon isn't null current location is selected an send to the beacon observer
+     * @param updatedBeaconSignals Mapped product of beaconID and rssi signal
      */
     void updateCurrentLocation(Map<BeaconID, Integer> updatedBeaconSignals) {
         BeaconID nearestBeacon = nearestBeaconStrategy.getNearest(updatedBeaconSignals);

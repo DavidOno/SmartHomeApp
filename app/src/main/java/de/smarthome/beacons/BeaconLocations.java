@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- *
+ * List of locations
  */
 public class BeaconLocations {
     private static final String TAG = "BeaconLocations";
