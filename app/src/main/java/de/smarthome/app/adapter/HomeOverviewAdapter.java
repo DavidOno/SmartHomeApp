@@ -57,13 +57,10 @@ public class HomeOverviewAdapter extends RecyclerView.Adapter<HomeOverviewAdapte
 
             textViewName = itemView.findViewById(R.id.text_view_name);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = getAdapterPosition();
-                    if (listener != null && position != RecyclerView.NO_POSITION) {
-                        listener.onItemClick(roomList.get(position));
-                    }
+            itemView.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (listener != null && position != RecyclerView.NO_POSITION) {
+                    listener.onItemClick(roomList.get(position));
                 }
             });
         }
