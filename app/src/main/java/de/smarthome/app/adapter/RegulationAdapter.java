@@ -15,10 +15,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import de.smarthome.app.model.configs.BoundaryDataPoint;
-import de.smarthome.app.model.configs.ChannelConfig;
 import de.smarthome.app.model.Datapoint;
 import de.smarthome.app.model.configs.ChannelDatapoint;
-import de.smarthome.app.repository.Repository;
 import de.smarthome.app.adapter.viewholder.regulation.ReadViewHolder;
 import de.smarthome.app.adapter.viewholder.regulation.SliderViewHolder;
 import de.smarthome.app.adapter.viewholder.regulation.StepViewHolder;
@@ -29,6 +27,10 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
     private List<Datapoint> dataPointList;
     private Map<Datapoint, Datapoint> dataPointMap;
     private Map<Datapoint, BoundaryDataPoint> boundaryMap;
+    private Map<String, String> statusValueMap = new LinkedHashMap<>();
+
+    private OnItemClickListener listener;
+    private RegulationViewModel viewModel;
 
     public static final int STEP_VIEW_HOLDER = 0;
     public static final int SWITCH_VIEW_HOLDER = 1;
@@ -36,18 +38,8 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
     public static final int FLOAT_SLIDER_VIEW_HOLDER = 3;
     public static final int READ_VIEW_HOLDER = 4;
 
-    private OnItemClickListener listener;
-
-    private Map<String, String> statusValueMap = new LinkedHashMap<>();
-
-    private ChannelConfig channelConfig;
-    private Repository repository;
-
-    private RegulationViewModel viewModel;
-
     public RegulationAdapter(FragmentActivity parent){
         viewModel = new ViewModelProvider(parent).get(RegulationViewModel.class);
-        //channelConfig = viewModel.getChannelConfig();
     }
 
     public void setBoundaryMap(Map<Datapoint, BoundaryDataPoint> newData){
@@ -61,8 +53,6 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
     public void initialiseAdapter(Map<Datapoint, Datapoint> dataPoints) {
         setDataPointList(dataPoints);
         setDataPointMap(dataPoints);
-
-        //requestCurrentDatapointStatus();
         notifyDataSetChanged();
     }
 
@@ -72,17 +62,6 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
 
     private void setDataPointList(Map<Datapoint, Datapoint> dataPoints) {
         dataPointList = new ArrayList<>(dataPoints.keySet());
-    }
-
-    private void requestCurrentDatapointStatus(){
-        List<String> requestList = new ArrayList<>();
-        for(Datapoint dp : dataPointList){
-            //Status Function always have the same amount of DataPoints BUT only a few of them get answers
-            if(dataPointMap.get(dp) != null && !dataPointMap.get(dp).getID().equals(dp.getID())){
-                requestList.add(dataPointMap.get(dp).getID());
-            }
-        }
-        repository.requestGetValue(requestList);
     }
 
     public void updateSingleDatapointStatusValue(String changedStatusFunctionUID, String changedStatusFunctionValue){

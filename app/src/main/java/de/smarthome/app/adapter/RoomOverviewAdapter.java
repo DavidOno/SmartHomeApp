@@ -14,10 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import de.smarthome.app.model.configs.ChannelConfig;
 import de.smarthome.app.model.Datapoint;
 import de.smarthome.app.model.Function;
-import de.smarthome.app.repository.Repository;
 import de.smarthome.app.adapter.viewholder.roomoverview.DefaultViewHolder;
 import de.smarthome.app.adapter.viewholder.roomoverview.StatusViewHolder;
 import de.smarthome.app.adapter.viewholder.roomoverview.SwitchViewHolder;
@@ -25,22 +23,18 @@ import de.smarthome.app.adapter.viewholder.roomoverview.SwitchArrowViewHolder;
 import de.smarthome.app.viewmodel.RoomOverviewViewModel;
 
 public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapter.ViewHolder>{
-    List<Function> functionList;
-    Map<Function, Function> functionMap;
+    private List<Function> functionList;
+    private Map<Function, Function> functionMap;
+    private Map<String, String> statusValueMap = new LinkedHashMap<>();
+
+    private OnItemClickListener listener;
+    private OnSwitchClickListener switchClickListener;
+    private RoomOverviewViewModel viewViewModel;
 
     public static final int DEFAULT_VIEW_HOLDER = 0;
     public static final int SWITCH_VIEW_HOLDER = 1;
     public static final int SWITCH_ARROW_HOLDER = 2;
     public static final int STATUS_VIEW_HOLDER = 3;
-
-    private OnItemClickListener listener;
-    private OnSwitchClickListener switchClickListener;
-
-    private Map<String, String> statusValueMap = new LinkedHashMap<>();
-
-    private Repository repository;
-    private ChannelConfig channelConfig;
-    private RoomOverviewViewModel viewViewModel;
 
     public RoomOverviewAdapter(FragmentActivity parent){
         viewViewModel = new ViewModelProvider(parent).get(RoomOverviewViewModel.class);
@@ -49,8 +43,6 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
     public void initialiseAdapter(Map<Function, Function> functions) {
         setFunctionList(functions);
         setFunctionMap(functions);
-
-        //requestFunctionCurrentStatus();
         notifyDataSetChanged();
     }
 
@@ -60,25 +52,6 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
 
     private void setFunctionList(Map<Function, Function> functions) {
         functionList = new ArrayList<>(functions.keySet());
-    }
-
-    private void requestFunctionCurrentStatus(){
-        List<String> requestList = new ArrayList<>();
-        for(Function func : functionList){
-            if(channelConfig.isFirstDataPointBinary(func)){
-                if(functionMap.get(func) != null){
-                    requestList.add(functionMap.get(func).getDataPoints().get(0).getID());
-                }
-            }else{
-                //Check if the function has a StatusViewHolder
-                if(STATUS_VIEW_HOLDER == channelConfig.getRoomOverviewItemViewType(channelConfig.findChannelByName(func))){
-                    requestList.add(functionMap.get(func).getDataPoints().get(0).getID());
-                }
-            }
-        }
-        if(!requestList.isEmpty()){
-            repository.requestGetValue(requestList);
-        }
     }
 
     public void updateSingleFunctionStatusValue(String changedStatusFunctionUID, String changedStatusFunctionValue){
