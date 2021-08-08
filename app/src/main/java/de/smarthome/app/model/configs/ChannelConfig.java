@@ -35,7 +35,11 @@ public class ChannelConfig {
 
     public boolean isStatusViewHolder(Function function){
         Channel channel = findChannelByName(function);
-        return getRoomOverviewItemViewType(channel) == RoomOverviewAdapter.STATUS_VIEW_HOLDER;
+
+        if(!channel.getDatapoints().isEmpty()) {
+            return channel.getDatapoints().get(0).getAccess().equals(DatapointAccess.READ_WRITE);
+        }
+        return false;
     }
 
     public Channel findChannelByName(Function function){

@@ -33,7 +33,7 @@ public class RoomOverviewViewModel  extends AndroidViewModel {
     }
 
     public void setSelectedFunction(Function function){
-        repository.setSelectedFunction(function);
+        repository.initSelectedFunction(function);
     }
 
     public LiveData<Map<String, String>> getStatusUpdateMap(){

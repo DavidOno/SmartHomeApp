@@ -100,7 +100,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         return serverCommunicator.getLoginStatusForUser();
     }
 
-    public void setSelectedFunction(Function function) {
+    public void initSelectedFunction(Function function) {
         configContainer.initSelectedFunction(function);
     }
 
@@ -177,10 +177,12 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
 
     public void requestCurrentStatusValues(StatusRequestType inputType){
         List<String> requestList = new ArrayList<>();
-        if(inputType == StatusRequestType.FUNCTION) {
-            requestList = getFunctionDataPointsForStatusValues(Objects.requireNonNull(configContainer.getFunctionMap().getValue()));
-        }else if(inputType == StatusRequestType.DATAPOINT){
-            requestList = requestCurrentDataPointValues(Objects.requireNonNull(configContainer.getDataPointMap().getValue()));
+        if(inputType == StatusRequestType.FUNCTION
+                && configContainer.getFunctionMap().getValue() != null){
+                requestList = getFunctionDataPointsForStatusValues(configContainer.getFunctionMap().getValue());
+        }else if(inputType == StatusRequestType.DATAPOINT
+                && configContainer.getDataPointMap().getValue() != null){
+                requestList = requestCurrentDataPointValues(configContainer.getDataPointMap().getValue());
         }
         if(!requestList.isEmpty()){
             requestGetValue(requestList);
@@ -190,14 +192,16 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     private List<String> getFunctionDataPointsForStatusValues(Map<Function, Function> functionMap){
         List<Function> functionList = new ArrayList<>(functionMap.keySet());
         List<String> requestList = new ArrayList<>();
-        for(Function func : functionList){
-            if(configContainer.getChannelConfig().isFirstDataPointBinary(func)){
-                if(functionMap.get(func) != null){
-                    requestList.add(functionMap.get(func).getDataPoints().get(0).getID());
-                }
-            }else{
-                if(configContainer.getChannelConfig().isStatusViewHolder(func)){
-                    requestList.add(functionMap.get(func).getDataPoints().get(0).getID());
+        if(configContainer.getChannelConfig() != null){
+            for(Function func : functionList){
+                if(configContainer.getChannelConfig().isFirstDataPointBinary(func)){
+                    if(functionMap.get(func) != null){
+                        requestList.add(functionMap.get(func).getDataPoints().get(0).getID());
+                    }
+                }else{
+                    if(configContainer.getChannelConfig().isStatusViewHolder(func)){
+                        requestList.add(functionMap.get(func).getDataPoints().get(0).getID());
+                    }
                 }
             }
         }
