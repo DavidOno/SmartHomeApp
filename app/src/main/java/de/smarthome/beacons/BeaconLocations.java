@@ -14,16 +14,12 @@ public class BeaconLocations {
     private static final String TAG = "BeaconLocations";
     private final List<BeaconLocation> beaconLocationList;
 
-    /**
-     *
-     * @param beaconLocationList
-     */
     public BeaconLocations(@JsonProperty("locations") List<BeaconLocation> beaconLocationList) {
         this.beaconLocationList = beaconLocationList;
     }
 
     /**
-     *
+     * Based on a beaconID a roomID can be extracted out of a list of locations.
      * @param beaconID Unique id of the beacon. Used to check a list of beacons for occurrence.
      * @return The associated roomUID for a beaconID. If empty, an empty Object of the type
      * optional is returned.
