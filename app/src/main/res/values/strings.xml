@@ -28,4 +28,7 @@
     <string name="light_regulation">Light_regulation</string>
     <string name="item_status">Status</string>
     <string name="arrow_description">Shows more options</string>
+
+    <string name="title_options_fragment">Option</string>
+    <string name="title_login_fragment">Login</string>
 </resources>
