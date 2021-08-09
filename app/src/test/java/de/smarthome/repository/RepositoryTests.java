@@ -58,7 +58,7 @@ public class RepositoryTests {
 
     //ok?
     @Test
-    public void restartConnectionToServer(){
+    public void testRestartConnectionToServer(){
         MutableLiveData<Boolean> x = new MutableLiveData<>(true);
         Mockito.when(mockSc.getServerConnectionStatus()).thenReturn(x);
         Mockito.when(mockSc.getGiraServerConnectionStatus()).thenReturn(ServerConnectionEvent.GIRA_CONNECTION_FAIL);
@@ -88,7 +88,7 @@ public class RepositoryTests {
 
     //ok
      @Test
-    public void initBeaconObserver(){
+    public void testInitBeaconObserver(){
         r.initBeaconObserver();
 
         assertThat(r.getBeaconCheck().getValue()).isFalse();
@@ -96,7 +96,7 @@ public class RepositoryTests {
 
     //assert that notify MyFirebaseSubscriber ==> trigger update in Repo
     @Test
-    public void requestRegisterUser(){
+    public void testRequestRegisterUser(){
         Credential mockCredential = mock(Credential.class);
         Mockito.when(mockCredential.getId()).thenReturn("ID");
         Mockito.when(mockCredential.getPassword()).thenReturn("password");
@@ -113,7 +113,7 @@ public class RepositoryTests {
         verify(mockSc,  times(1)).getSavedCredentialsForLoginAtGira();
     }
     @Test
-    public void requestCurrentStatusValuesWithEmptyLists(){
+    public void testRequestCurrentStatusValuesWithEmptyLists(){
         r.requestCurrentStatusValues(StatusRequestType.FUNCTION);
         verify(mockSc,  times(0)).getSavedCredentialsForLoginAtGira();
 
@@ -124,7 +124,7 @@ public class RepositoryTests {
     @Test
     //Have to set a selected Location for Function map +
     //Brauchen noch eine ChannelConfig mit Switch and StatusViewHolder
-    public void requestCurrentStatusValuesFunction(){
+    public void testRequestCurrentStatusValuesFunction(){
         LinkedList<String> functionIdList = new LinkedList<>();
         functionIdList.add("1");
         functionIdList.add("2");
@@ -170,7 +170,7 @@ public class RepositoryTests {
 
     //ok
     @Test
-    public void requestCurrentStatusValuesDataPoint(){
+    public void testRequestCurrentStatusValuesDataPoint(){
         LinkedList<String> functionIdList = new LinkedList<>();
         functionIdList.add("1");
         functionIdList.add("2");
@@ -203,7 +203,7 @@ public class RepositoryTests {
 
     //ok
     @Test
-    public void updateCallbackValueInputWithValue(){
+    public void testUpdateCallbackValueInputWithValue(){
         String testId = "testID";
         String value = "199";
 
@@ -215,7 +215,7 @@ public class RepositoryTests {
 
     //ok
     @Test
-    public void updateCallbackValueInputWithEvent(){
+    public void testUpdateCallbackValueInputWithEvent(){
         CallbackValueInput callbackValueInput = new CallbackValueInput(0, "token", null, null, "STARTUP");
         r.update(callbackValueInput);
         verify(mockSc,  times(1)).getSavedCredentialsForLoginAtGira();
@@ -232,7 +232,7 @@ public class RepositoryTests {
 
     //ok
     @Test
-    public void updateCallBackServiceInput(){
+    public void testUpdateCallBackServiceInput(){
         List<ServiceEvent> eventList = new ArrayList<>();
         eventList.add(new ServiceEvent("startup"));
         eventList.add(new ServiceEvent("uiConfigChanged"));
