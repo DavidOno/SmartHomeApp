@@ -110,20 +110,26 @@ public class ServerCommunicator {
     }
 
     public void connectToGira(String userName, String pwd){
-        setGiraServerConnectionStatus(ServerConnectionEvent.GIRA_CONNECTION_ACTIVE);
-        MultiReactorCommandChainImpl multiCommandChain = new MultiReactorCommandChainImpl();
-        multiCommandChain.add(new RegisterClientCommand(userName, pwd), new ResponseReactorClient());
-        multiCommandChain.add(new RegisterCallbackServerAtGiraServer(IP_OF_CALLBACK_SERVER), new ResponseReactorGiraCallbackServer());
-        multiCommandChain.add(new UIConfigCommand(), new ResponseReactorUIConfig());
-        serverHandler.sendRequest(multiCommandChain);
+        Thread connectToGiraThread = new Thread(() -> {
+            setGiraServerConnectionStatus(ServerConnectionEvent.GIRA_CONNECTION_ACTIVE);
+            MultiReactorCommandChainImpl multiCommandChain = new MultiReactorCommandChainImpl();
+            multiCommandChain.add(new RegisterClientCommand(userName, pwd), new ResponseReactorClient());
+            multiCommandChain.add(new RegisterCallbackServerAtGiraServer(IP_OF_CALLBACK_SERVER), new ResponseReactorGiraCallbackServer());
+            multiCommandChain.add(new UIConfigCommand(), new ResponseReactorUIConfig());
+            serverHandler.sendRequest(multiCommandChain);
+        });
+        addToExecutorService(connectToGiraThread);
     }
 
     public void connectToCallbackServer(){
-        setCallbackServerConnectionStatus(ServerConnectionEvent.CALLBACK_CONNECTION_ACTIVE);
-        MultiReactorCommandChainImpl multiCommandChain = new MultiReactorCommandChainImpl();
-        multiCommandChain.add(new RegisterCallback(IP_OF_CALLBACK_SERVER), new ResponseReactorCallbackServer());
-        getAdditionalConfigs(multiCommandChain);
-        serverHandler.sendRequest(multiCommandChain);
+        Thread connectToCallbackServerThread = new Thread(() -> {
+            setCallbackServerConnectionStatus(ServerConnectionEvent.CALLBACK_CONNECTION_ACTIVE);
+            MultiReactorCommandChainImpl multiCommandChain = new MultiReactorCommandChainImpl();
+            multiCommandChain.add(new RegisterCallback(IP_OF_CALLBACK_SERVER), new ResponseReactorCallbackServer());
+            getAdditionalConfigs(multiCommandChain);
+            serverHandler.sendRequest(multiCommandChain);
+        });
+        addToExecutorService(connectToCallbackServerThread);
     }
 
     public void setServerConnectionStatus(Boolean status) {
@@ -165,15 +171,21 @@ public class ServerCommunicator {
     }
 
     public void requestOnlyUIConfig(){
-        SingleReactorCommandChainImpl singleCommandChain = new SingleReactorCommandChainImpl(new ResponseReactorUIConfig());
-        singleCommandChain.add(new UIConfigCommand());
-        serverHandler.sendRequest(singleCommandChain);
+        Thread requestOnlyUIConfigThread = new Thread(() -> {
+            SingleReactorCommandChainImpl singleCommandChain = new SingleReactorCommandChainImpl(new ResponseReactorUIConfig());
+            singleCommandChain.add(new UIConfigCommand());
+            serverHandler.sendRequest(singleCommandChain);
+        });
+        addToExecutorService(requestOnlyUIConfigThread);
     }
 
     public void requestOnlyAdditionalConfigs() {
-        MultiReactorCommandChainImpl multiCommandChain = new MultiReactorCommandChainImpl();
-        getAdditionalConfigs(multiCommandChain);
-        serverHandler.sendRequest(multiCommandChain);
+        Thread requestOnlyAdditionalConfigsThread = new Thread(() -> {
+            MultiReactorCommandChainImpl multiCommandChain = new MultiReactorCommandChainImpl();
+            getAdditionalConfigs(multiCommandChain);
+            serverHandler.sendRequest(multiCommandChain);
+        });
+        addToExecutorService(requestOnlyAdditionalConfigsThread);
     }
 
     private void requestUnregisterClient() {
