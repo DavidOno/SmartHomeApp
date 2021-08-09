@@ -13,6 +13,7 @@ import org.altbeacon.beacon.Region;
 import org.altbeacon.beacon.service.RunningAverageRssiFilter;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import de.smarthome.app.model.UIConfig;
@@ -25,6 +26,7 @@ public class BeaconRanging implements BeaconConsumer {
     private final BeaconManager beaconManager;
     private final BeaconLocationManager beaconLocationManager;
     private final Context context;
+    private final BeaconLocations beaconConfig;
 
     public BeaconRanging(Context context, UIConfig newUIConfig, BeaconLocations newBeaconConfig,
                          BeaconManagerCreator beaconManagerCreator) {
@@ -33,6 +35,7 @@ public class BeaconRanging implements BeaconConsumer {
         RunningAverageRssiFilter.setSampleExpirationMilliseconds(5000);
         beaconManager = beaconManagerCreator.create(context);
         beaconLocationManager = new BeaconLocationManager(newUIConfig, newBeaconConfig, new HistoryBestStrategy());
+        this.beaconConfig = newBeaconConfig;
     }
 
     /**
@@ -64,6 +67,7 @@ public class BeaconRanging implements BeaconConsumer {
                 for (Beacon b : beaconsArray) {
                     beaconsOverview.put(new BeaconID(b.getId1(), b.getId2(), b.getId3()), b.getRssi());
                 }
+                filterUnregisteredBeacons(beaconsOverview);
                 beaconLocationManager.updateCurrentLocation(beaconsOverview);
             }
         };
@@ -72,6 +76,16 @@ public class BeaconRanging implements BeaconConsumer {
         beaconManager.addRangeNotifier(rangeNotifier);
         beaconManager.startRangingBeacons(new Region("myRangingUniqueId", null, null, null));
         beaconManager.addRangeNotifier(rangeNotifier);
+    }
+
+    private void filterUnregisteredBeacons(Map<BeaconID, Integer> beaconsOverview) {
+        Iterator<BeaconID> iter = beaconsOverview.keySet().iterator();
+        while (iter.hasNext()) {
+            BeaconID beaconID = iter.next();
+            if(!beaconConfig.isRegistered(beaconID)){
+                iter.remove();
+            }
+        }
     }
 
     /**

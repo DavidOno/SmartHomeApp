@@ -35,6 +35,15 @@ public class BeaconLocations {
         return Optional.empty();
     }
 
+    /**
+     * Checks whether the given beaconID is registered inside this config.
+     * @param beaconID BeaconID to be checked
+     * @return true if the beaconID is registered, false otherwise.
+     */
+    public boolean isRegistered(BeaconID beaconID){
+        return beaconLocationList.stream().anyMatch(beaconLocation -> beaconLocation.getBeaconId().equals(beaconID));
+    }
+
     @Override
     public String toString() {
         return "BeaconLocations{" +
