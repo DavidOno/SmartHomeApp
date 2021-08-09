@@ -25,7 +25,6 @@ import de.smarthome.app.model.configs.BoundaryDataPoint;
 import de.smarthome.app.model.configs.Channel;
 import de.smarthome.app.model.configs.ChannelConfig;
 import de.smarthome.app.model.configs.ChannelDatapoint;
-import de.smarthome.app.utility.InternalStorageWriter;
 import de.smarthome.app.utility.ToastUtility;
 import de.smarthome.beacons.BeaconLocations;
 
@@ -146,19 +145,36 @@ public class ConfigContainer {
     }
 
     private void checkForCurrentlySelectedFunction() {
-        boolean notFound = true;
-        if(selectedLocation != null && selectedFunction != null) {
-            for (Function func : selectedLocation.getFunctions(uiConfig)) {
-                if (func.getName().equals(selectedFunction.getName())) {
-                    initSelectedFunction(func);
-                    notFound = false;
-                    break;
-                }
-            }
+        boolean notFound;
+        if(selectedLocation != null && selectedFunction != null && uiConfig != null) {
+            notFound = isNotFoundInSelectedLocation( selectedLocation);
+            if(notFound)
+                notFound = isNotFoundInParentLocations();
             if (notFound) {
                 toastUtility.prepareToast("Selected Function was not fund in new UIConfig!");
             }
         }
+    }
+
+    private boolean isNotFoundInSelectedLocation(Location selectedLocation) {
+        for (Function func : selectedLocation.getFunctions(uiConfig)) {
+            if (func.getName().equals(selectedFunction.getName())) {
+                initSelectedFunction(func);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isNotFoundInParentLocations() {
+        boolean result = true;
+        if (selectedLocation.getParentLocation() != null){
+            Location parent = selectedLocation.getParentLocation();
+            while(!parent.equals(Location.ROOT)){
+                result = isNotFoundInSelectedLocation(parent);
+            }
+        }
+        return result;
     }
 
     public MutableLiveData<List<Location>> getLocationList() {
@@ -190,8 +206,12 @@ public class ConfigContainer {
     private void initFunctionMap(Location viewedLocation) {
         Map<Function, Function> completeFunctionMap = mapStatusFunctionToFunction(viewedLocation);
 
-        if(viewedLocation.getParentLocation() != null && !viewedLocation.getParentLocation().equals(Location.ROOT)) {
-            completeFunctionMap.putAll(mapStatusFunctionToFunction(viewedLocation.getParentLocation()));
+        if (viewedLocation.getParentLocation() != null){
+            Location parent = viewedLocation.getParentLocation();
+            while(!parent.equals(Location.ROOT)) {
+                completeFunctionMap.putAll(mapStatusFunctionToFunction(parent));
+                parent = parent.getParentLocation();
+            }
         }
         //InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(), "GIRA", "2. initFunctionMap\n");
         setFunctionMap(completeFunctionMap);
@@ -269,8 +289,7 @@ public class ConfigContainer {
     private void initDataPointMap(Function function) {
         //InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(), "GIRA", "2. initDatapointMap\n");
         Map<Datapoint, Datapoint> newValue = new LinkedHashMap<>();
-        if (functionMap != null && functionMap.getValue() != null
-                && functionMap.getValue().get(function) != null) {
+        if (functionMap != null && functionMap.getValue() != null && functionMap.getValue().get(function) != null) {
                 for (int i = 0; i < function.getDataPoints().size(); i++) {
                     if (functionMap.getValue().get(function).getDataPoints().size() > i) {
                         newValue.put(function.getDataPoints().get(i), functionMap.getValue().get(function).getDataPoints().get(i));
