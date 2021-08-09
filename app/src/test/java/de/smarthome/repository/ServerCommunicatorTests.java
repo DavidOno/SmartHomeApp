@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.smarthome.SmartHomeApplication;
 import de.smarthome.app.model.responses.GetValueResponse;
 import de.smarthome.app.model.responses.UID_Value;
 import de.smarthome.app.repository.Repository;
@@ -87,7 +86,7 @@ public class ServerCommunicatorTests {
         assertThat(sc.getGiraServerConnectionStatus()).isEqualTo(event);
     }
 
-    //ok
+    //not ok
     @Test
     public void retryConnectionToServerCallbackFail(){
         ServerConnectionEvent event = ServerConnectionEvent.CALLBACK_CONNECTION_FAIL;
@@ -96,7 +95,7 @@ public class ServerCommunicatorTests {
         sc.setCallbackServerConnectionStatus(event);
 
         sc.retryConnectionToServer();
-
+        sleep();
         assertThat(sc.getCallbackServerConnectionStatus()).isEqualTo(ServerConnectionEvent.CALLBACK_CONNECTION_ACTIVE);
     }
 
@@ -120,18 +119,18 @@ public class ServerCommunicatorTests {
         ServerCommunicator sc = new ServerCommunicator(mockGsh);
 
         sc.connectToGira("user", "pwd");
-
+        sleep();
         assertThat(sc.getGiraServerConnectionStatus()).isEqualTo(ServerConnectionEvent.GIRA_CONNECTION_ACTIVE);
     }
 
-    //ok
+    //not ok
     @Test
     public void connectToCallbackServer(){
         GiraServerHandler mockGsh = mock(GiraServerHandler.class);
         ServerCommunicator sc = new ServerCommunicator(mockGsh);
 
         sc.connectToCallbackServer();
-
+        sleep();
         assertThat(sc.getCallbackServerConnectionStatus()).isEqualTo(ServerConnectionEvent.CALLBACK_CONNECTION_ACTIVE);
     }
 
@@ -147,13 +146,14 @@ public class ServerCommunicatorTests {
         verify(mockGsh, times(1)).sendRequest(argument.capture());
     }
 
-    //ok
+    //not ok
     @Test
     public void requestOnlyAdditionalConfigs(){
         GiraServerHandler mockGsh = mock(GiraServerHandler.class);
         ServerCommunicator sc = new ServerCommunicator(mockGsh);
 
         sc.requestOnlyAdditionalConfigs();
+        sleep();
 
         ArgumentCaptor<CommandChain> argument = ArgumentCaptor.forClass(MultiReactorCommandChain.class);
         verify(mockGsh, times(1)).sendRequest(argument.capture());
@@ -220,7 +220,7 @@ public class ServerCommunicatorTests {
 
     private void sleep(){
         try{
-            Thread.sleep(10);
+            Thread.sleep(30);
         }catch (Exception e){
             e.printStackTrace();
         }
