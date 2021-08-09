@@ -139,7 +139,7 @@ public class ConfigContainer {
                 }
             }
             if(notFound){
-                toastUtility.prepareToast("Current Location was not fund in new UIConfig!");
+                toastUtility.prepareToast("Current Location was not found in new UIConfig!");
             }
         }
     }
@@ -151,7 +151,7 @@ public class ConfigContainer {
             if(notFound)
                 notFound = isNotFoundInParentLocations();
             if (notFound) {
-                toastUtility.prepareToast("Selected Function was not fund in new UIConfig!");
+                toastUtility.prepareToast("Selected Function was not found in new UIConfig!");
             }
         }
     }
