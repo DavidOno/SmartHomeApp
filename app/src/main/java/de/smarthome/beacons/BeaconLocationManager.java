@@ -1,35 +1,34 @@
 package de.smarthome.beacons;
 
-import android.content.Context;
-
-import java.io.File;
-import java.io.FileWriter;
 import java.util.Map;
 import java.util.Optional;
 
 import de.smarthome.app.model.Location;
 import de.smarthome.app.model.UIConfig;
-import de.smarthome.beacons.nearest.RetrievingStrategy;
+import de.smarthome.beacons.nearest.NearestBeaconStrategy;
 
+/**
+ * Handler for updating locations based on the information from the class nearestBeaconStrategy
+ */
 public class BeaconLocationManager {
-    private static final String TAG = "BeaconLocationManager";
     private final UIConfig uiConfig;
     private final BeaconLocations locationConfig;
     private BeaconObserver beaconObserver;
-    private final RetrievingStrategy retrievingStrategy;
+    private final NearestBeaconStrategy nearestBeaconStrategy;
 
-    public BeaconLocationManager(UIConfig newUIConfig, BeaconLocations newBeaconConfig, RetrievingStrategy retrievingStrategy) {
+    public BeaconLocationManager(UIConfig newUIConfig, BeaconLocations newBeaconConfig, NearestBeaconStrategy nearestBeaconStrategy) {
         this.uiConfig = newUIConfig;
         this.locationConfig = newBeaconConfig;
-        this.retrievingStrategy = retrievingStrategy;
+        this.nearestBeaconStrategy = nearestBeaconStrategy;
     }
 
     /**
-     *
-     * @param updatedBeaconSignals
+     * Gets information of nearestBeaconStrategy and sets nearest beacon.
+     * If nearest beacon isn't null current location is selected an send to the beacon observer
+     * @param updatedBeaconSignals Mapped product of beaconID and rssi signal
      */
     void updateCurrentLocation(Map<BeaconID, Integer> updatedBeaconSignals) {
-        BeaconID nearestBeacon = retrievingStrategy.getNearest(updatedBeaconSignals);
+        BeaconID nearestBeacon = nearestBeaconStrategy.getNearest(updatedBeaconSignals);
 
         if(nearestBeacon != null) {
             Optional<Location> currentLocation = getLocation(nearestBeacon);

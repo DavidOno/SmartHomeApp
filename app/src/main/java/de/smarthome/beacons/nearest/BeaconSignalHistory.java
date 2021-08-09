@@ -6,32 +6,39 @@ import java.util.stream.Collectors;
 
 import de.smarthome.beacons.BeaconID;
 
-public class BeaconThresholder{
+/**
+ * Keeps record of last n beacon signals for a specific beaconID
+ */
+public class BeaconSignalHistory {
 
     private final BeaconID beaconID;
     private final List<Integer> signalHistory;
 
-    public BeaconThresholder(BeaconID beaconID, List<Integer> signals) {
+    public BeaconSignalHistory(BeaconID beaconID, List<Integer> signals) {
         this.beaconID = beaconID;
         this.signalHistory = createHistory(signals);
     }
 
     private List<Integer> createHistory(List<Integer> signals) {
         List<Integer> history = new ArrayList<>();
-        int numberOfTrailingZeros = ThresholderStrategy.SIGNAL_HISTORY_LENGTH - signals.size();
+        int numberOfTrailingZeros = HistoryBestStrategy.SIGNAL_HISTORY_LENGTH - signals.size();
         for(int i = 0; i < numberOfTrailingZeros; i++){
             history.add(-100);
         }
         for(Integer signal: signals){
             history.add(signal);
         }
-        if(history.size() > ThresholderStrategy.SIGNAL_HISTORY_LENGTH){
+        if(history.size() > HistoryBestStrategy.SIGNAL_HISTORY_LENGTH){
             throw new IllegalStateException("history too long");
         }
         return history;
     }
 
-
+    /**
+     * Returns last n beacon signals.
+     * @param n Number of last beacon signal. Should not be greater than signal history.
+     * @return List of last n beacon signals
+     */
     public List<Integer> getLastNSignals(int n){
         if(signalHistory.size() < n){
             throw new IllegalArgumentException("More elements from history requested than stored.");
@@ -39,7 +46,14 @@ public class BeaconThresholder{
         return signalHistory.stream().skip(Math.max(0, signalHistory.size() - n)).collect(Collectors.toList());
     }
 
-    public boolean isAtLeastOnceGreaterThan(BeaconThresholder o, int signalHistoryLength){
+    /**
+     * Checks if own signal history is at least once greater than given signal history based on
+     * n signals.
+     * @param o Given signal history from another beacon.
+     * @param signalHistoryLength Length of signals which are compared.
+     * @return True if own history is at least greater than given signal history otherwise false.
+     */
+    public boolean isAtLeastOnceGreaterThan(BeaconSignalHistory o, int signalHistoryLength){
         List<Integer> lastNSignals = getLastNSignals(signalHistoryLength);
         List<Integer> otherLastNSignals = o.getLastNSignals(signalHistoryLength);
         for(int i = 0; i < signalHistoryLength; i++){
@@ -54,9 +68,13 @@ public class BeaconThresholder{
         return beaconID;
     }
 
+    /**
+     * Adds new signal to signal history and removes oldest one.
+     * @param signalStrength Current signal strength
+     */
     public void addSignal(Integer signalStrength) {
         signalHistory.add(signalStrength);
-        if(signalHistory.size() > ThresholderStrategy.SIGNAL_HISTORY_LENGTH){
+        if(signalHistory.size() > HistoryBestStrategy.SIGNAL_HISTORY_LENGTH){
             signalHistory.remove(0);
         }
     }

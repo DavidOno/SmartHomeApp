@@ -7,8 +7,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.smarthome.beacons.nearest.RetrievingStrategy;
-import de.smarthome.beacons.nearest.ThresholderStrategy;
+import de.smarthome.beacons.nearest.NearestBeaconStrategy;
+import de.smarthome.beacons.nearest.HistoryBestStrategy;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -18,7 +18,7 @@ public class RetrievingTests {
     //ok
     @Test
     public void testStrongestBeaconConsistency_strongestIsConsistent1() {
-        RetrievingStrategy strategy = new ThresholderStrategy();
+        NearestBeaconStrategy strategy = new HistoryBestStrategy();
         Map<BeaconID, Integer> newSignals = new HashMap<>();
         BeaconID beaconID1 = mock(BeaconID.class);
         BeaconID beaconID2 = mock(BeaconID.class);
@@ -31,7 +31,7 @@ public class RetrievingTests {
     //ok
     @Test
     public void testStrongestBeaconConsistency_strongestIsConsistent2() {
-        RetrievingStrategy strategy = new ThresholderStrategy();
+        NearestBeaconStrategy strategy = new HistoryBestStrategy();
         Map<BeaconID, Integer> newSignals = new HashMap<>();
         BeaconID beaconID1 = mock(BeaconID.class);
         BeaconID beaconID2 = mock(BeaconID.class);
@@ -44,7 +44,7 @@ public class RetrievingTests {
     //ok
     @Test
     public void testStrongestBeaconConsistency_strongestIsConsistent3() {
-        RetrievingStrategy strategy = new ThresholderStrategy();
+        NearestBeaconStrategy strategy = new HistoryBestStrategy();
         Map<BeaconID, Integer> newSignals;
         newSignals = new HashMap<>();
         BeaconID beaconID1 = mock(BeaconID.class);
@@ -63,7 +63,7 @@ public class RetrievingTests {
     //to do
     @Test
     public void testStrongestBeaconConsistency_strongestIsNOTConsistent() {
-        RetrievingStrategy strategy = new ThresholderStrategy();
+        NearestBeaconStrategy strategy = new HistoryBestStrategy();
         Map<BeaconID, Integer> newSignals;
         newSignals = new HashMap<>();
         BeaconID beaconID1 = mock(BeaconID.class);
@@ -82,7 +82,7 @@ public class RetrievingTests {
 
     @Test
     public void testStrongestBeaconConsistency_strongestIsNOTConsistent2() {
-        RetrievingStrategy strategy = new ThresholderStrategy();
+        NearestBeaconStrategy strategy = new HistoryBestStrategy();
         Map<BeaconID, Integer> newSignals;
         newSignals = new HashMap<>();
         BeaconID beaconID1 = mock(BeaconID.class);
@@ -106,7 +106,7 @@ public class RetrievingTests {
 
     @Test
     public void testStrongestBeaconConsistency_strongestIsNOTConsistent3() {
-        RetrievingStrategy strategy = new ThresholderStrategy();
+        NearestBeaconStrategy strategy = new HistoryBestStrategy();
         Map<BeaconID, Integer> newSignals;
         newSignals = new HashMap<>();
         BeaconID beaconID1 = mock(BeaconID.class);
@@ -130,7 +130,7 @@ public class RetrievingTests {
 
     @Test
     public void testStrongestBeaconConsistency_strongestIsConsistentWithEqualSignal() {
-        RetrievingStrategy strategy = new ThresholderStrategy();
+        NearestBeaconStrategy strategy = new HistoryBestStrategy();
         Map<BeaconID, Integer> newSignals;
         newSignals = new HashMap<>();
         BeaconID beaconID1 = mock(BeaconID.class);
@@ -149,7 +149,7 @@ public class RetrievingTests {
 
     @Test
     public void testStrongestBeaconConsistency_WithAllSignalsEqual() {
-        RetrievingStrategy strategy = new ThresholderStrategy();
+        NearestBeaconStrategy strategy = new HistoryBestStrategy();
         Map<BeaconID, Integer> newSignals;
         newSignals = new HashMap<>();
         BeaconID beaconID1 = mock(BeaconID.class);
@@ -168,14 +168,14 @@ public class RetrievingTests {
 
     @Test
     public void testStrongestBeaconConsistency_consistentOverHistory() {
-        RetrievingStrategy strategy = new ThresholderStrategy();
+        NearestBeaconStrategy strategy = new HistoryBestStrategy();
         Map<BeaconID, Integer> newSignals;
         newSignals = new HashMap<>();
         BeaconID beaconID1 = mock(BeaconID.class);
         BeaconID beaconID2 = mock(BeaconID.class);
         newSignals.put(beaconID1, -50);
         newSignals.put(beaconID2, -90);
-        for(int i = 0; i < ThresholderStrategy.SIGNAL_HISTORY_LENGTH; i++) {
+        for(int i = 0; i < HistoryBestStrategy.SIGNAL_HISTORY_LENGTH; i++) {
             newSignals = collectNewConsistentSignals(strategy, newSignals, beaconID1, beaconID2);
         }
         BeaconID nearest = strategy.getNearest(newSignals);
@@ -183,7 +183,7 @@ public class RetrievingTests {
         assertThat(nearest).isEqualTo(beaconID2);
     }
 
-    private Map<BeaconID, Integer> collectNewConsistentSignals(RetrievingStrategy strategy, Map<BeaconID, Integer> newSignals, BeaconID beaconID1, BeaconID beaconID2) {
+    private Map<BeaconID, Integer> collectNewConsistentSignals(NearestBeaconStrategy strategy, Map<BeaconID, Integer> newSignals, BeaconID beaconID1, BeaconID beaconID2) {
         strategy.getNearest(newSignals);
 
         newSignals = new HashMap<>();
@@ -194,7 +194,7 @@ public class RetrievingTests {
 
     @Test
     public void testStrongestBeaconConsistency_disappearingBeacon() {
-        RetrievingStrategy strategy = new ThresholderStrategy();
+        NearestBeaconStrategy strategy = new HistoryBestStrategy();
         Map<BeaconID, Integer> newSignals;
         newSignals = new HashMap<>();
         BeaconID beaconID1 = mock(BeaconID.class);
@@ -212,7 +212,7 @@ public class RetrievingTests {
 
     @Test
     public void testStrongestBeaconConsistency_disappearingBeacon2() {
-        RetrievingStrategy strategy = new ThresholderStrategy();
+        NearestBeaconStrategy strategy = new HistoryBestStrategy();
         Map<BeaconID, Integer> newSignals;
         newSignals = new HashMap<>();
         BeaconID beaconID1 = mock(BeaconID.class);
@@ -231,7 +231,7 @@ public class RetrievingTests {
      //Testing three beacons
      @Test
      public void testStrongestBeaconConsistency_threeBeacons_strongestIsConsistent1() {
-         RetrievingStrategy strategy = new ThresholderStrategy();
+         NearestBeaconStrategy strategy = new HistoryBestStrategy();
          Map<BeaconID, Integer> newSignals = new HashMap<>();
          BeaconID beaconID1 = mock(BeaconID.class);
          BeaconID beaconID2 = mock(BeaconID.class);
@@ -246,7 +246,7 @@ public class RetrievingTests {
 
     @Test
     public void testStrongestBeaconConsistency_threeBeacons_strongestIsConsistent2() {
-        RetrievingStrategy strategy = new ThresholderStrategy();
+        NearestBeaconStrategy strategy = new HistoryBestStrategy();
         Map<BeaconID, Integer> newSignals = new HashMap<>();
         BeaconID beaconID1 = mock(BeaconID.class);
         BeaconID beaconID2 = mock(BeaconID.class);
@@ -261,7 +261,7 @@ public class RetrievingTests {
 
     @Test
     public void testStrongestBeaconConsistency_threeBeacons_strongestIsConsistent3() {
-        RetrievingStrategy strategy = new ThresholderStrategy();
+        NearestBeaconStrategy strategy = new HistoryBestStrategy();
         Map<BeaconID, Integer> newSignals = new HashMap<>();
         BeaconID beaconID1 = mock(BeaconID.class);
         BeaconID beaconID2 = mock(BeaconID.class);
@@ -276,7 +276,7 @@ public class RetrievingTests {
 
     @Test
     public void testStrongestBeaconConsistency_threeBeacons_strongestIsConsistent4() {
-        RetrievingStrategy strategy = new ThresholderStrategy();
+        NearestBeaconStrategy strategy = new HistoryBestStrategy();
         Map<BeaconID, Integer> newSignals;
         newSignals = new HashMap<>();
         BeaconID beaconID1 = mock(BeaconID.class);
@@ -298,7 +298,7 @@ public class RetrievingTests {
 
     @Test
     public void testStrongestBeaconConsistency_threeBeacons_strongestIsConsistent_whenSignalsEqual() {
-        RetrievingStrategy strategy = new ThresholderStrategy();
+        NearestBeaconStrategy strategy = new HistoryBestStrategy();
         Map<BeaconID, Integer> newSignals;
         newSignals = new HashMap<>();
         BeaconID beaconID1 = mock(BeaconID.class);
@@ -320,7 +320,7 @@ public class RetrievingTests {
 
     @Test
     public void testStrongestBeaconConsistency_threeBeacons_strongestIsNOTConsistent() {
-        RetrievingStrategy strategy = new ThresholderStrategy();
+        NearestBeaconStrategy strategy = new HistoryBestStrategy();
         Map<BeaconID, Integer> newSignals;
         newSignals = new HashMap<>();
         BeaconID beaconID1 = mock(BeaconID.class);

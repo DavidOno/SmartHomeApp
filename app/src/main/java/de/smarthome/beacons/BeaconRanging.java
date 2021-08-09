@@ -13,10 +13,11 @@ import org.altbeacon.beacon.Region;
 import org.altbeacon.beacon.service.RunningAverageRssiFilter;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import de.smarthome.app.model.UIConfig;
-import de.smarthome.beacons.nearest.ThresholderStrategy;
+import de.smarthome.beacons.nearest.HistoryBestStrategy;
 
 /**
  * This class enables the app to detect movement in-and-out of regions.
@@ -25,33 +26,34 @@ public class BeaconRanging implements BeaconConsumer {
     private final BeaconManager beaconManager;
     private final BeaconLocationManager beaconLocationManager;
     private final Context context;
+    private final BeaconLocations beaconConfig;
 
-    /**
-     *
-     * @param context
-     * @param newUIConfig
-     * @param newBeaconConfig
-     * @param beaconManagerCreator
-     */
     public BeaconRanging(Context context, UIConfig newUIConfig, BeaconLocations newBeaconConfig,
                          BeaconManagerCreator beaconManagerCreator) {
         this.context = context;
         BeaconManager.setRssiFilterImplClass(RunningAverageRssiFilter.class);
         RunningAverageRssiFilter.setSampleExpirationMilliseconds(5000);
         beaconManager = beaconManagerCreator.create(context);
-        beaconLocationManager = new BeaconLocationManager(newUIConfig, newBeaconConfig, new ThresholderStrategy());
+        beaconLocationManager = new BeaconLocationManager(newUIConfig, newBeaconConfig, new HistoryBestStrategy());
+        this.beaconConfig = newBeaconConfig;
     }
 
-    public void onResume() {
+    /**
+     * Binds beacon manager
+     */
+    public void bind() {
         beaconManager.bind(this);
     }
 
-    public void onPause() {
+    /**
+     * Unbinds beacon manager
+     */
+    public void unbind() {
         beaconManager.unbind(this);
     }
 
     /**
-     *
+     * Specifies range notifier which sends updates to the BeaconLocationManager
      */
     @Override
     public void onBeaconServiceConnect() {
@@ -65,6 +67,7 @@ public class BeaconRanging implements BeaconConsumer {
                 for (Beacon b : beaconsArray) {
                     beaconsOverview.put(new BeaconID(b.getId1(), b.getId2(), b.getId3()), b.getRssi());
                 }
+                filterUnregisteredBeacons(beaconsOverview);
                 beaconLocationManager.updateCurrentLocation(beaconsOverview);
             }
         };
@@ -75,16 +78,35 @@ public class BeaconRanging implements BeaconConsumer {
         beaconManager.addRangeNotifier(rangeNotifier);
     }
 
+    private void filterUnregisteredBeacons(Map<BeaconID, Integer> beaconsOverview) {
+        Iterator<BeaconID> iter = beaconsOverview.keySet().iterator();
+        while (iter.hasNext()) {
+            BeaconID beaconID = iter.next();
+            if(!beaconConfig.isRegistered(beaconID)){
+                iter.remove();
+            }
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     @Override
     public Context getApplicationContext() {
         return context;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public void unbindService(ServiceConnection serviceConnection) {
         context.unbindService(serviceConnection);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean bindService(Intent intent, ServiceConnection serviceConnection, int i) {
         return context.bindService(intent, serviceConnection, i);

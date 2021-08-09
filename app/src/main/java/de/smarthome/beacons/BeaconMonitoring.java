@@ -14,14 +14,6 @@ public class BeaconMonitoring {
     private final BeaconRanging ranging;
     private final BeaconApplication application;
 
-    /**
-     *
-     * @param context
-     * @param application
-     * @param newUIConfig
-     * @param newBeaconConfig
-     * @param beaconManagerCreator
-     */
     public BeaconMonitoring(Context context, BeaconApplication application, UIConfig newUIConfig,
                             BeaconLocations newBeaconConfig, BeaconManagerCreator beaconManagerCreator) {
         this.context = context;
@@ -33,7 +25,7 @@ public class BeaconMonitoring {
      * Enables the app to scan the region for beacons
      */
     public void startMonitoring() {
-        ranging.onResume();
+        ranging.bind();
     }
 
     /**
@@ -43,7 +35,7 @@ public class BeaconMonitoring {
     public void stopMonitoring() {
         if (BeaconManager.getInstanceForApplication(context).getMonitoredRegions().size() > 0) {
             application.disableMonitoring();
-            ranging.onPause();
+            ranging.unbind();
         }
         else {
             application.enableMonitoring();
