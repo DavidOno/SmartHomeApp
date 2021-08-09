@@ -11,12 +11,10 @@ import de.smarthome.app.utility.ToastUtility;
 
 public class ResponseReactorGiraCallbackServer implements ResponseReactor {
     private static final String TAG = "ResponseReactorGiraCallbackServer";
-    private ToastUtility toastUtility;
     private Repository repository;
 
     public ResponseReactorGiraCallbackServer() {
         repository = Repository.getInstance();
-        toastUtility = ToastUtility.getInstance();
     }
 
     @Override
@@ -30,12 +28,10 @@ public class ResponseReactorGiraCallbackServer implements ResponseReactor {
                 Log.d(TAG, "error occurred");
                 Log.d(TAG, responseEntity.getStatusCode().toString());
                 Log.d(TAG, "Problem when registering CallbackServer at Gira.\nStatus: " + responseEntity.getStatusCode());
-                toastUtility.prepareToast("Unable to reach Gira Server");
                 repository.serverConnectionEvent(ServerConnectionEvent.GIRA_CONNECTION_FAIL);
             }
         }catch(Exception e){
             Log.d(TAG, "Exception: " + e.toString());
-            toastUtility.prepareToast("Exception: Unable to register CallbackServer at Gira!");
             repository.serverConnectionEvent(ServerConnectionEvent.GIRA_CONNECTION_FAIL);
             e.printStackTrace();
         }

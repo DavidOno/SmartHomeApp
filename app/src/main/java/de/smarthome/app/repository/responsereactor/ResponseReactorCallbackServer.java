@@ -11,12 +11,10 @@ import de.smarthome.app.utility.ToastUtility;
 
 public class ResponseReactorCallbackServer implements ResponseReactor {
     private static final String TAG = "ResponseReactorCallbackServer";
-    private ToastUtility toastUtility;
     private Repository repository;
 
     public ResponseReactorCallbackServer() {
         repository = Repository.getInstance();
-        toastUtility = ToastUtility.getInstance();
     }
 
     @Override
@@ -30,12 +28,10 @@ public class ResponseReactorCallbackServer implements ResponseReactor {
                 Log.d(TAG, "error occurred");
                 Log.d(TAG, responseEntity.getStatusCode().toString());
                 Log.d(TAG, "Problem when trying to register CallbackServer.\nStatus: " + responseEntity.getStatusCode());
-                toastUtility.prepareToast("Unable to reach CallbackServer");
                 repository.serverConnectionEvent(ServerConnectionEvent.CALLBACK_CONNECTION_FAIL);
             }
         }catch(Exception e){
             Log.d(TAG, "Exception: " + e.toString());
-            toastUtility.prepareToast("Unable to register CallbackServer!");
             repository.serverConnectionEvent(ServerConnectionEvent.CALLBACK_CONNECTION_FAIL);
             e.printStackTrace();
         }
