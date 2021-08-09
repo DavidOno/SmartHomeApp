@@ -83,6 +83,7 @@ public class ChannelConfig {
                 if(channelDatapoint.getAccess().equals(DatapointAccess.WRITE)){
                     return RegulationAdapter.STEP_VIEW_HOLDER;
                 }
+                break;
             case FLOAT:
                 if(channelDatapoint.getAccess().equals(DatapointAccess.READ_WRITE)){
                     return RegulationAdapter.FLOAT_SLIDER_VIEW_HOLDER;
@@ -90,6 +91,7 @@ public class ChannelConfig {
                 if(channelDatapoint.getAccess().equals(DatapointAccess.WRITE)){
                     return RegulationAdapter.STEP_VIEW_HOLDER;
                 }
+                break;
             case PERCENT:
             case INTEGER:
             case BYTE:
@@ -99,11 +101,13 @@ public class ChannelConfig {
                 if(channelDatapoint.getAccess().equals(DatapointAccess.WRITE)){
                     return RegulationAdapter.STEP_VIEW_HOLDER;
                 }
+                break;
             case STRING:
                 return RegulationAdapter.READ_VIEW_HOLDER;
 
             default: throw new IllegalArgumentException("Type: "+ channelDatapoint.getType().toString() +" is unknown");
         }
+        return -1;
     }
 
     @Override
