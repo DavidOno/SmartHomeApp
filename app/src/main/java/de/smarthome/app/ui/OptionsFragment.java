@@ -34,7 +34,7 @@ public class OptionsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        requireActivity().setTitle("Option");
+        requireActivity().setTitle(R.string.title_options_fragment);
         buttonLogout.setOnClickListener(v -> logoutUser());
         buttonConnectionRestart.setOnClickListener(v -> retryConnectionToServer());
 

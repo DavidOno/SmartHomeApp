@@ -48,7 +48,7 @@ public class LoginFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        requireActivity().setTitle("Login");
+        requireActivity().setTitle(R.string.title_login_fragment);
 
         buttonLogin.setOnClickListener(v -> registerNewUser());
 
@@ -92,7 +92,7 @@ public class LoginFragment extends Fragment {
         password = editTextPwd.getText().toString();
 
         if(userName.isEmpty() || password.isEmpty()){
-            Toast.makeText(getActivity(), "Username or Password is empty!", Toast.LENGTH_LONG).show();
+            toastUtility.prepareToast("Username or Password is empty!");
             return false;
         }
         return true;
