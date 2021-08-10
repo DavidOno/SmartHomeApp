@@ -44,6 +44,10 @@ import de.smarthome.app.ui.RoomOverviewFragment;
 import de.smarthome.app.utility.ToastUtility;
 import de.smarthome.app.viewmodel.SmartHomeApplicationViewModel;
 
+/**
+ * This is the hostactivity of the entire application. It host the fragment container that displays the fragments
+ * and a threadpool executorservice. It also handles the observers of events that are important during the entire runtime of the app.
+ */
 public class SmartHomeApplication extends AppCompatActivity {
     public static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(4);
 
@@ -131,7 +135,7 @@ public class SmartHomeApplication extends AppCompatActivity {
         beaconDialogShown = false;
     }
 
-    public void showConnectionSnackbar() {
+    private void showConnectionSnackbar() {
         LinearLayout usedLayout = findViewById(R.id.smartHomeApplicationLinearLayout);
         Snackbar snackbar = Snackbar.make(usedLayout,
                 "Connection to Server failed.", Snackbar.LENGTH_INDEFINITE)
@@ -159,6 +163,11 @@ public class SmartHomeApplication extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Enables and disables menu items depending on the currently displayed fragment
+     * @param menu Menu containing the menu items
+     * @return true
+     */
     @Override
     public boolean onPrepareOptionsMenu (Menu menu) {
         Fragment currentFragment = navHostFragment.getChildFragmentManager().getFragments().get(0);

@@ -23,6 +23,9 @@ import de.smarthome.app.adapter.viewholder.regulation.StepViewHolder;
 import de.smarthome.app.adapter.viewholder.regulation.SwitchViewHolder;
 import de.smarthome.app.viewmodel.RegulationViewModel;
 
+/**
+ * Adapter for the display of datapoints in a recyclerView
+ */
 public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.ViewHolder>{
     private List<Datapoint> dataPointList;
     private Map<Datapoint, Datapoint> dataPointMap;
@@ -50,6 +53,9 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
         return boundaryMap;
     }
 
+    /**
+     * Initialises the dataset of the adapter and notifies the adapter that the dataset has changed
+     */
     public void initialiseAdapter(Map<Datapoint, Datapoint> dataPoints) {
         setDataPointList(dataPoints);
         setDataPointMap(dataPoints);
@@ -64,12 +70,20 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
         dataPointList = new ArrayList<>(dataPoints.keySet());
     }
 
+    /**
+     * Checks if the adapter contains the datapoint that has been changed
+     * and notifies the adapter which item needs to be updated
+     */
     public void updateSingleDatapointStatusValue(String changedStatusFunctionUID, String changedStatusFunctionValue){
         if(hasStatusFunction(changedStatusFunctionUID, changedStatusFunctionValue)){
-            notifyItemChanged(getItemPosition());
+            notifyItemChanged(getItemPositionInStatusValueMap());
         }
     }
 
+    /**
+     * Checks if the adapter contains the datapoints that have been changed
+     * and notifies the adapter which items need to be updated
+     */
     public void updateMultipleDatapointStatusValues(Map<String, String> newInput) {
         if (newInput.size() == 1) {
             updateSingleDatapointStatusValue(newInput.keySet().iterator().next(),
@@ -82,7 +96,7 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
         }
     }
 
-    private int getItemPosition(){
+    private int getItemPositionInStatusValueMap(){
         int position = 0;
         for (Datapoint dp : dataPointList){
             if(statusValueMap.containsKey(dp.getID())){
@@ -107,46 +121,28 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if(viewType == SWITCH_VIEW_HOLDER){
-            return new SwitchViewHolder(
-                    parent,
-                    listener,
-                    this
-            );
+            return new SwitchViewHolder(parent, listener,this);
 
         }else if(viewType == STEP_VIEW_HOLDER){
-            return new StepViewHolder(
-                    parent,
-                    listener,
-                    this
-            );
+            return new StepViewHolder(parent, listener,this);
 
         }else if(viewType == INT_SLIDER_VIEW_HOLDER){
-            return new SliderViewHolder(
-                    parent,
-                    listener,
-                    this,
-                    INT_SLIDER_VIEW_HOLDER
-            );
+            return new SliderViewHolder(parent, listener,this, INT_SLIDER_VIEW_HOLDER);
 
         }else if(viewType == FLOAT_SLIDER_VIEW_HOLDER){
-            return new SliderViewHolder(
-                    parent,
-                    listener,
-                    this,
-                    FLOAT_SLIDER_VIEW_HOLDER
-            );
+            return new SliderViewHolder(parent, listener,this, FLOAT_SLIDER_VIEW_HOLDER);
 
         }else if(viewType == READ_VIEW_HOLDER){
-            return new ReadViewHolder(
-                    parent
+            return new ReadViewHolder(parent);
 
-            );
         }else {
             throw new IllegalArgumentException("Input type not known");
         }
     }
 
-
+    /**
+     * Gives the viewHolder the datapoint and the current value
+     */
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Datapoint dp = getDataPointAt(position);
@@ -154,7 +150,7 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
         Optional<String> value = Optional.empty();
         value = getStatusValueString(dp, value);
 
-        holder.onBindViewHolder(holder, position, dp, value);
+        holder.onBindViewHolder(dp, value);
     }
 
     private Optional<String> getStatusValueString(Datapoint datapoint, Optional<String> value) {
@@ -170,6 +166,10 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
         statusValueMap.remove(uID);
     }
 
+    /**
+     * Returns the amount of items in the dataPointList
+     * @return size of dataPointList
+     */
     @Override
     public int getItemCount() {
         return dataPointList.size();
@@ -193,14 +193,13 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
         this.listener = listener;
     }
 
-
     public abstract static class ViewHolder extends RecyclerView.ViewHolder {
 
         protected ViewHolder(@NonNull View itemView) {
             super(itemView);
         }
 
-        public abstract void onBindViewHolder(ViewHolder holder, int position, Datapoint datapoint, Optional<String> value);
+        public abstract void onBindViewHolder(Datapoint datapoint, Optional<String> value);
 
     }
 }

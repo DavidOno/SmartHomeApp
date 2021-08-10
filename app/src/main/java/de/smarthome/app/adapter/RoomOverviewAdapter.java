@@ -22,6 +22,9 @@ import de.smarthome.app.adapter.viewholder.roomoverview.SwitchViewHolder;
 import de.smarthome.app.adapter.viewholder.roomoverview.SwitchArrowViewHolder;
 import de.smarthome.app.viewmodel.RoomOverviewViewModel;
 
+/**
+ * Adapter for the display of functions in a recyclerView
+ */
 public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapter.ViewHolder>{
     private List<Function> functionList;
     private Map<Function, Function> functionMap;
@@ -40,6 +43,9 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
         viewViewModel = new ViewModelProvider(parent).get(RoomOverviewViewModel.class);
     }
 
+    /**
+     * Initialises the dataset of the adapter and notifies the adapter that the dataset has changed
+     */
     public void initialiseAdapter(Map<Function, Function> functions) {
         setFunctionList(functions);
         setFunctionMap(functions);
@@ -54,12 +60,20 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
         functionList = new ArrayList<>(functions.keySet());
     }
 
+    /**
+     * Checks if the adapter contains the datapoint that has been changed
+     * and notifies the adapter which item needs to be updated
+     */
     public void updateSingleFunctionStatusValue(String changedStatusFunctionUID, String changedStatusFunctionValue){
         if(hasStatusFunction(changedStatusFunctionUID, changedStatusFunctionValue)){
-            notifyItemChanged(getItemPosition());
+            notifyItemChanged(getItemPositionInStatusValueMap());
         }
     }
 
+    /**
+     * Checks if the adapter contains the datapoints that have been changed
+     * and notifies the adapter which items need to be updated
+     */
     public void updateMultipleFunctionStatusValues(Map<String, String> newInput){
         if(newInput.size() == 1){
             updateSingleFunctionStatusValue(newInput.keySet().iterator().next(),
@@ -72,7 +86,7 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
         }
     }
 
-    private int getItemPosition(){
+    private int getItemPositionInStatusValueMap(){
         int position = 0;
         for (Function func : functionList){
             if(statusValueMap.containsKey(func.getID())){
@@ -101,37 +115,23 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
         if(viewType == SWITCH_VIEW_HOLDER){
-            return new SwitchViewHolder(
-                    parent,
-                    switchClickListener,
-                    this
-            );
+            return new SwitchViewHolder(parent,switchClickListener,this);
+
         }else if(viewType == SWITCH_ARROW_HOLDER){
-            return new SwitchArrowViewHolder(
-                    parent,
-                    listener,
-                    switchClickListener,
-                    this
+            return new SwitchArrowViewHolder(parent,listener,switchClickListener,this);
 
-            );
         }else if(viewType == STATUS_VIEW_HOLDER){
-            return new StatusViewHolder(
-                    parent,
-                    listener,
-                    this
+            return new StatusViewHolder(parent,listener,this);
 
-            );
         }else{
-            return new DefaultViewHolder(
-                    parent,
-                    listener,
-                    this
-            );
+            return new DefaultViewHolder(parent,listener,this);
         }
     }
 
+    /**
+     * Gives the viewHolder the function and the current value
+     */
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Function function = functionList.get(position);
@@ -139,7 +139,7 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
         Optional<String> value = Optional.empty();
         value = getStatusValueString(function, value);
 
-        holder.onBindViewHolder(holder, position, function, value);
+        holder.onBindViewHolder(function, value);
     }
 
     private Optional<String> getStatusValueString(Function function, Optional<String> value) {
@@ -155,6 +155,10 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
         statusValueMap.remove(uID);
     }
 
+    /**
+     * Returns the amount of items in the functionList
+     * @return size of functionList
+     */
     @Override
     public int getItemCount() {
         return functionList.size();
@@ -169,6 +173,7 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
     public Function getFunctionAt(int position) {
         return functionList.get(position);
     }
+
 
     public interface OnItemClickListener {
         void onItemClick(Function function);
@@ -186,14 +191,13 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
         this.switchClickListener = listener;
     }
 
-
     public abstract static class ViewHolder extends RecyclerView.ViewHolder {
 
         protected ViewHolder(@NonNull View itemView) {
             super(itemView);
         }
 
-        public abstract void onBindViewHolder(ViewHolder holder, int position, Function function, Optional<String> value);
+        public abstract void onBindViewHolder(Function function, Optional<String> value);
 
     }
 }

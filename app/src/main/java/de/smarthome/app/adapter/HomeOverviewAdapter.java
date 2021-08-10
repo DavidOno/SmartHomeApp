@@ -14,6 +14,9 @@ import java.util.List;
 import de.smarthome.R;
 import de.smarthome.app.model.Location;
 
+/**
+ * Adapter for the display of locations in a recyclerView
+ */
 public class HomeOverviewAdapter extends RecyclerView.Adapter<HomeOverviewAdapter.RoomHolder> {
     private List<Location> roomList = new ArrayList<>();
     private OnItemClickListener listener;
@@ -31,13 +34,18 @@ public class HomeOverviewAdapter extends RecyclerView.Adapter<HomeOverviewAdapte
         Location currentWorkoutPosition = roomList.get(position);
         holder.textViewName.setText(currentWorkoutPosition.getName());
     }
-
+    /**
+     * Returns the amount of items in the roomList
+     * @return size of roomList
+     */
     @Override
     public int getItemCount() {
         return roomList.size();
     }
 
-
+    /**
+     * Sets the dataset of the adapter and notifies the adapter that the dataset has changed
+     */
     public void setRoomList(List<Location> locations) {
         roomList = locations;
         notifyDataSetChanged();
@@ -48,7 +56,10 @@ public class HomeOverviewAdapter extends RecyclerView.Adapter<HomeOverviewAdapte
     }
 
 
-
+    /**
+     * RecyclerViewHolder for the homeOverviewAdapter.
+     * Used to display a location in a recyclerView
+     */
     class RoomHolder extends RecyclerView.ViewHolder {
         TextView textViewName;
 

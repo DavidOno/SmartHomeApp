@@ -1,7 +1,6 @@
 package de.smarthome.app.adapter.viewholder.roomoverview;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -14,6 +13,10 @@ import de.smarthome.R;
 import de.smarthome.app.model.Function;
 import de.smarthome.app.adapter.RoomOverviewAdapter;
 
+/**
+ * RecyclerViewHolder for the roomOverviewAdapter.
+ * Used to display a function
+ */
 public class DefaultViewHolder extends RoomOverviewAdapter.ViewHolder{
     private TextView textViewName;
 
@@ -23,7 +26,6 @@ public class DefaultViewHolder extends RoomOverviewAdapter.ViewHolder{
         super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_default, parent, false));
 
         textViewName = itemView.findViewById(R.id.textView_item);
-
         setOnClickListener(onItemClickListener, adapter);
     }
 
@@ -36,8 +38,13 @@ public class DefaultViewHolder extends RoomOverviewAdapter.ViewHolder{
         });
     }
 
+    /**
+     * Displays name of the given function in a textView
+     * @param function Function to be displayed by the viewHolder
+     * @param value Value to be displayed, but is never be used in this type of viewHolder
+     */
     @Override
-    public void onBindViewHolder(RoomOverviewAdapter.ViewHolder holder, int position, Function function, Optional<String> value ) {
+    public void onBindViewHolder(Function function, Optional<String> value ) {
         textViewName.setText(function.getName().replace("_", " "));
     }
 }

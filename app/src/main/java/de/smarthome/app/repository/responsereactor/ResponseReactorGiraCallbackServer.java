@@ -9,9 +9,12 @@ import de.smarthome.app.repository.Repository;
 import de.smarthome.command.ResponseReactor;
 import de.smarthome.app.utility.ToastUtility;
 
+/**
+ * Commandchainreactor to handle requests to register the callbackserver at gira send via a commandchain
+ */
 public class ResponseReactorGiraCallbackServer implements ResponseReactor {
     private static final String TAG = "ResponseReactorGiraCallbackServer";
-    private Repository repository;
+    private final Repository repository;
 
     public ResponseReactorGiraCallbackServer() {
         repository = Repository.getInstance();

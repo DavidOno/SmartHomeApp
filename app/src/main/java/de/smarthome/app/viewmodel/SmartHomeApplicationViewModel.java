@@ -11,9 +11,13 @@ import com.google.android.gms.auth.api.credentials.Credential;
 import de.smarthome.app.model.Location;
 import de.smarthome.app.repository.Repository;
 
+/**
+ * This class is the viewmodel of the smarthomeapplication.
+ * It handles the communication with the repository.
+ */
 public class SmartHomeApplicationViewModel extends AndroidViewModel {
     private static final String TAG = "SmartHomeApplicationViewModel";
-    private Repository repository;
+    private final Repository repository;
 
     public SmartHomeApplicationViewModel(@NonNull Application application) {
         super(application);

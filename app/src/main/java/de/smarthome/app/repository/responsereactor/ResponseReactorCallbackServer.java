@@ -9,9 +9,12 @@ import de.smarthome.app.repository.Repository;
 import de.smarthome.command.ResponseReactor;
 import de.smarthome.app.utility.ToastUtility;
 
+/**
+ * Commandchainreactor to handle requests to connect to the callbackserver send via a commandchain
+ */
 public class ResponseReactorCallbackServer implements ResponseReactor {
     private static final String TAG = "ResponseReactorCallbackServer";
-    private Repository repository;
+    private final Repository repository;
 
     public ResponseReactorCallbackServer() {
         repository = Repository.getInstance();

@@ -22,6 +22,9 @@ import de.smarthome.R;
 import de.smarthome.app.viewmodel.LoginViewModel;
 import de.smarthome.app.utility.ToastUtility;
 
+/**
+ * This fragment handles the login of the user at the initial start of the application
+ */
 public class LoginFragment extends Fragment {
     private static final String TAG = "LoginFragment";
     private LoginViewModel viewModel;
@@ -78,7 +81,7 @@ public class LoginFragment extends Fragment {
         toastUtility = ToastUtility.getInstance();
     }
 
-    public Credential buildCredential(String userName, String pwd) {
+    private Credential buildCredential(String userName, String pwd) {
         if(userName == null || pwd == null){
             throw new IllegalArgumentException();
         }

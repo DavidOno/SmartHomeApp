@@ -12,6 +12,10 @@ import de.smarthome.R;
 import de.smarthome.app.model.Datapoint;
 import de.smarthome.app.adapter.RegulationAdapter;
 
+/**
+ * RecyclerViewHolder for the regulationAdapter.
+ * Used to display a datapoint that has no functionality and only has read access
+ */
 public class ReadViewHolder extends RegulationAdapter.ViewHolder{
     private TextView textViewName;
     private TextView textViewOutput;
@@ -26,8 +30,13 @@ public class ReadViewHolder extends RegulationAdapter.ViewHolder{
         textViewOutput = itemView.findViewById(R.id.textView_read_output_item);
     }
 
+    /**
+     * Displays name of the given Datapoint and a given value in the textViews
+     * @param datapoint Datapoint to be displayed by the viewHolder
+     * @param value Value to be displayed in a textView of the viewHolder
+     */
     @Override
-    public void onBindViewHolder(RegulationAdapter.ViewHolder holder, int position, Datapoint datapoint, Optional<String> value) {
+    public void onBindViewHolder(Datapoint datapoint, Optional<String> value) {
         textViewName.setText(datapoint.getName().replace("_", " "));
         value.ifPresent(s -> textViewOutput.setText(s));
     }

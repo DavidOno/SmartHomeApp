@@ -20,6 +20,10 @@ import de.smarthome.app.utility.InternalStorageWriter;
 import de.smarthome.app.viewmodel.RoomOverviewViewModel;
 import de.smarthome.app.adapter.RoomOverviewAdapter;
 
+/**
+ * This fragment contains a recyclerview that handles the display all functions in a selected location
+ * and interactions of the user with them or their selection.
+ */
 public class RoomOverviewFragment extends Fragment {
     private static final String TAG = "RoomOverviewFragment";
     private RoomOverviewViewModel viewViewModel;
@@ -93,7 +97,7 @@ public class RoomOverviewFragment extends Fragment {
         });
     }
 
-    public void navigateToRegulationFragment() {
+    private void navigateToRegulationFragment() {
         NavController navController = NavHostFragment.findNavController(this);
         navController.navigate(R.id.action_roomOverviewFragment_to_regulationFragment);
     }

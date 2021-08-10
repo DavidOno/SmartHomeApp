@@ -5,14 +5,16 @@ import android.util.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import de.smarthome.app.repository.ConfigContainer;
 import de.smarthome.app.repository.Repository;
 import de.smarthome.command.ResponseReactor;
 import de.smarthome.app.model.UIConfig;
 
+/**
+ * Commandchainreactor to handle requests for the uiconfigconfig send via a commandchain
+ */
 public class ResponseReactorUIConfig implements ResponseReactor {
     private static final String TAG = "ResponseReactorUIConfig";
-    private Repository repository;
+    private final Repository repository;
 
     public ResponseReactorUIConfig() {
         this.repository = Repository.getInstance();
@@ -43,7 +45,7 @@ public class ResponseReactorUIConfig implements ResponseReactor {
         }
     }
 
-    public void sendUIConfigToRepo(UIConfig newUIConfig){
+    private void sendUIConfigToRepo(UIConfig newUIConfig){
         repository.initNewUIConfig(newUIConfig);
     }
 }

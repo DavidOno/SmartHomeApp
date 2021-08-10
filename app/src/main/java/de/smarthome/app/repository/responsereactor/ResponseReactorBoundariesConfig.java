@@ -9,9 +9,12 @@ import de.smarthome.app.model.configs.BoundariesConfig;
 import de.smarthome.app.repository.Repository;
 import de.smarthome.command.ResponseReactor;
 
+/**
+ * Commandchainreactor to handle requests for the boundaryconfig send via a commandchain
+ */
 public class ResponseReactorBoundariesConfig implements ResponseReactor {
     private static final String TAG = "ResponseReactorBoundariesConfig";
-    private Repository repository;
+    private final Repository repository;
 
     public ResponseReactorBoundariesConfig() {
         this.repository = Repository.getInstance();
@@ -41,7 +44,7 @@ public class ResponseReactorBoundariesConfig implements ResponseReactor {
         }
     }
 
-    public void sendBoundariesConfigToRepo(BoundariesConfig newBoundariesConfig){
+    private void sendBoundariesConfigToRepo(BoundariesConfig newBoundariesConfig){
         repository.setBoundaryConfig(newBoundariesConfig);
     }
 }

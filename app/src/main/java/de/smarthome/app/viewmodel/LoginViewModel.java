@@ -18,10 +18,14 @@ import com.google.android.gms.common.api.ResolvableApiException;
 import de.smarthome.app.repository.Repository;
 import de.smarthome.app.utility.ToastUtility;
 
+/**
+ * This class is the viewmodel of the loginfragment.
+ * It handles the communication with the repository.
+ */
 public class LoginViewModel extends AndroidViewModel {
-    private Repository repository;
     private static final String TAG = "LoginViewModel";
-    private ToastUtility toastUtility;
+    private final ToastUtility toastUtility;
+    private final Repository repository;
 
     public LoginViewModel(@NonNull Application application) {
         super(application);
@@ -37,6 +41,11 @@ public class LoginViewModel extends AndroidViewModel {
         return repository.getLoginStatus();
     }
 
+    /**
+     * Saves the credentials by Google
+     * @param activity Activity that is required for error handling
+     * @param userCredential Credentials that are saved
+     */
     public void saveCredential(Activity activity, Credential userCredential){
         CredentialsOptions options = new CredentialsOptions.Builder()
                 .forceEnableSaveDialog()

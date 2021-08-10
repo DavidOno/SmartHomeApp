@@ -9,9 +9,12 @@ import de.smarthome.app.repository.Repository;
 import de.smarthome.beacons.BeaconLocations;
 import de.smarthome.command.ResponseReactor;
 
+/**
+ * Commandchainreactor to handle requests for the beaconconfig send via a commandchain
+ */
 public class ResponseReactorBeaconConfig implements ResponseReactor {
     private static final String TAG = "ResponseReactorBeaconConfig";
-    private Repository repository;
+    private final Repository repository;
 
     public ResponseReactorBeaconConfig() {
         repository = Repository.getInstance();
@@ -42,7 +45,7 @@ public class ResponseReactorBeaconConfig implements ResponseReactor {
         }
     }
 
-    public void sendBeaconLocationsToRepo(BeaconLocations newBeaconConfig){
+    private void sendBeaconLocationsToRepo(BeaconLocations newBeaconConfig){
         repository.initBeaconObserverWithBeaconConfig(newBeaconConfig);
     }
 }

@@ -18,6 +18,10 @@ import de.smarthome.app.utility.InternalStorageWriter;
 import de.smarthome.app.viewmodel.RegulationViewModel;
 import de.smarthome.app.adapter.RegulationAdapter;
 
+/**
+ * This fragment contains a recyclerview that handles the display all datapoints in a selected function
+ * and interactions of the user with them.
+ */
 public class RegulationFragment extends Fragment {
     private static final String TAG = "RegulationFragment";
     private RegulationViewModel viewModel;

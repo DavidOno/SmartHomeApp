@@ -13,10 +13,14 @@ import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import de.smarthome.app.repository.Repository;
 import de.smarthome.app.utility.ToastUtility;
 
+/**
+ * This class is the viewmodel of the optionsfragment.
+ * It handles the communication with the repository.
+ */
 public class OptionsViewModel extends AndroidViewModel {
     private static final String TAG = "OptionsViewModel";
-    private ToastUtility toastUtility;
-    private Repository repository;
+    private final ToastUtility toastUtility;
+    private final Repository repository;
 
     public OptionsViewModel(@NonNull Application application) {
         super(application);
@@ -34,6 +38,9 @@ public class OptionsViewModel extends AndroidViewModel {
 
     }
 
+    /**
+     * Requests credentials saved by Google and deletes them by Google on successful retrieval
+     */
     public void getDataFromGoogleAndDelete() {
         repository.setLoginStatus(false);
         CredentialRequest credentialRequest = new CredentialRequest.Builder()

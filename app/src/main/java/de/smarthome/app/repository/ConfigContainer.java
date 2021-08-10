@@ -28,6 +28,11 @@ import de.smarthome.app.model.configs.ChannelDatapoint;
 import de.smarthome.app.utility.ToastUtility;
 import de.smarthome.beacons.BeaconLocations;
 
+/**
+ * This class is the data storage of the repository.
+ * It contains f.e. all the configs send by gira and the callbackserver.
+ * The data that is used by the ui is stored in livedata objects so any change can be propagated to ui
+ */
 public class ConfigContainer {
     private static final String TAG = "ConfigContainer";
     private final ToastUtility toastUtility = ToastUtility.getInstance();
@@ -40,26 +45,33 @@ public class ConfigContainer {
     private Location selectedLocation = null;
     private Function selectedFunction = null;
 
-    private MutableLiveData<List<Location>> locationList = new MutableLiveData<>();
-    private MutableLiveData<Map<Function, Function>> functionMap = new MutableLiveData<>();
-    private MutableLiveData<Map<Datapoint, Datapoint>> dataPointMap = new MutableLiveData<>();
-    private MutableLiveData<Map<Datapoint, BoundaryDataPoint>> boundaryMap = new MutableLiveData<>();
+    private final MutableLiveData<List<Location>> locationList = new MutableLiveData<>();
+    private final MutableLiveData<Map<Function, Function>> functionMap = new MutableLiveData<>();
+    private final MutableLiveData<Map<Datapoint, Datapoint>> dataPointMap = new MutableLiveData<>();
+    private final MutableLiveData<Map<Datapoint, BoundaryDataPoint>> boundaryMap = new MutableLiveData<>();
 
-    private MutableLiveData<Map<String, String>> statusUpdateMap = new MutableLiveData<>();
-    private MutableLiveData<Map<String, String>> statusGetValueMap = new MutableLiveData<>();
+    private final MutableLiveData<Map<String, String>> statusUpdateMap = new MutableLiveData<>();
+    private final MutableLiveData<Map<String, String>> statusGetValueMap = new MutableLiveData<>();
 
     //TODO: Remove together with StorageWriter after testing
     private Application parentApplication = null;
-    public void initSelectedFunction(Function function) {
-        setSelectedFunction(function);
-        if(function != null) {
-            initBoundaryMap();
-            initDataPointMap(function);
-        }
-    }
     //TODO: Remove together with StorageWriter after testing
     public void setParentApplication(Application parentApplication) {
         this.parentApplication = parentApplication;
+    }
+
+    /**
+     * Sets the given function as selectedFunction and
+     * fills the boundaryMap with the datapoints of the function and their corresponding boundarydatapoints and
+     * fills the datapointMap with the datapoints of the function and their corresponding datapoints of the status function
+     * @param function Function that should initialised as selectedFunction
+     */
+    public void initSelectedFunction(Function function) {
+        setSelectedFunction(function);
+        if (function != null) {
+            initBoundaryMap();
+            initDataPointMap(function);
+        }
     }
 
     public void setSelectedFunction(Function function) {
@@ -70,9 +82,14 @@ public class ConfigContainer {
         return selectedFunction;
     }
 
-    public void initSelectedLocation(Location newLocation) {
-        setSelectedLocation(newLocation);
-        if(newLocation != null) {
+    /**
+     * Sets the given location as selectedLocation and
+     * fills the functionMap with the functions of the Location and their corresponding status functions
+     * @param location Location that should initialised as selectedLocation
+     */
+    public void initSelectedLocation(Location location) {
+        setSelectedLocation(location);
+        if(location != null) {
             initFunctionMap(selectedLocation);
         }
     }
@@ -85,9 +102,16 @@ public class ConfigContainer {
         return selectedLocation;
     }
 
-    public void initNewUIConfig(UIConfig newUiConfig) {
-        setUIConfig(newUiConfig);
-        uiConfig.initParentLocations();
+    /**
+     * Sets the given uiconfig and initialises for the contained the parent location.
+     * Initialises the locationList with every location contained in the config.
+     * Starts initialisation of beaconObserver in Repository
+     * Checks if selectedLocation/selectedFunction are contained in the new uiconfig
+     * @param uiConfig UIConfig that should be initialised
+     */
+    public void initNewUIConfig(UIConfig uiConfig) {
+        setUIConfig(uiConfig);
+        this.uiConfig.initParentLocations();
 
         initLocationList();
         Repository.getInstance().initBeaconObserver();
@@ -312,6 +336,11 @@ public class ConfigContainer {
         return dataPointMap;
     }
 
+    /**
+     * Puts inputs into the statusUpdateMap
+     * @param functionUID ID of the datapoint that was updated
+     * @param value Value of the datapoint that was updated
+     */
     public void initStatusUpdateMap(String functionUID, String value) {
         Map<String, String> newValue = new HashMap<>();
         newValue.put(functionUID, value);
@@ -470,7 +499,7 @@ public class ConfigContainer {
 
 
             List<ChannelDatapoint> channelDatapoints2 = new ArrayList<>();
-            channelDatapoints2.add(new ChannelDatapoint("Current", "Float", "rwe"));
+            channelDatapoints2.add(new ChannelDatapoint("Current", "Float", "re"));
             channelDatapoints2.add(new ChannelDatapoint("Set-Point", "Float", "rwe"));
             channelDatapoints2.add(new ChannelDatapoint("OnOff", "Binary", "rwe"));
             Channel c2 = new Channel("de.gira.schema.channels.RoomTemperatureSwitchable", channelDatapoints2);
@@ -512,8 +541,10 @@ public class ConfigContainer {
 
         ObjectMapper mapper = new ObjectMapper();
         try {
-            setBeaconLocations(mapper.readValue(locationConfigString, new TypeReference<BeaconLocations>() {}));
-            Repository.getInstance().initBeaconObserver();
+            if(beaconLocations == null){
+                setBeaconLocations(mapper.readValue(locationConfigString, new TypeReference<BeaconLocations>() {}));
+                Repository.getInstance().initBeaconObserver();
+            }
         } catch (Exception e) {
             Log.d(TAG, "BeaconConfig Exception " + e.toString());
             e.printStackTrace();

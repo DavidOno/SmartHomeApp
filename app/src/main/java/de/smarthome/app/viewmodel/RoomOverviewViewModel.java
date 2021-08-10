@@ -14,15 +14,23 @@ import de.smarthome.app.model.configs.ChannelConfig;
 import de.smarthome.app.repository.Repository;
 import de.smarthome.app.repository.StatusRequestType;
 
-public class RoomOverviewViewModel  extends AndroidViewModel {
+/**
+ * This class is the viewmodel of the roomoverviewmodel.
+ * It handles the communication with the repository.
+ */
+public class RoomOverviewViewModel extends AndroidViewModel {
     private static final String TAG = "RoomOverviewViewModel";
-    private Repository repository;
+    private final Repository repository;
 
     public RoomOverviewViewModel(@NonNull Application application)  {
         super(application);
         repository = Repository.getInstance();
     }
 
+    /**
+     * Requests the current status values and returns the functionMap
+     * @return map containing all functions of the selected location
+     */
     public LiveData<Map<Function, Function>> getFunctionMap(){
         repository.requestCurrentStatusValues(StatusRequestType.FUNCTION);
         return repository.getFunctionMap();

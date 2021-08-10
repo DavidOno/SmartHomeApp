@@ -11,9 +11,13 @@ import java.util.List;
 import de.smarthome.app.model.Location;
 import de.smarthome.app.repository.Repository;
 
+/**
+ * This class is the viewmodel of the homeoverviewfragment.
+ * It handles the communication with the repository.
+ */
 public class HomeOverviewViewModel extends AndroidViewModel {
     private static final String TAG = "HomeOverviewViewmodel";
-    private Repository repository;
+    private final Repository repository;
 
     public HomeOverviewViewModel(@NonNull Application application)  {
         super(application);

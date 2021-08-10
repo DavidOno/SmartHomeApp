@@ -5,14 +5,16 @@ import android.util.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import de.smarthome.app.repository.ConfigContainer;
 import de.smarthome.app.repository.Repository;
 import de.smarthome.command.ResponseReactor;
 import de.smarthome.app.model.configs.ChannelConfig;
 
+/**
+ * Commandchainreactor to handle requests for the channelconfig send via a commandchain
+ */
 public class ResponseReactorChannelConfig implements ResponseReactor {
     private static final String TAG = "ResponseReactorChannelConfig";
-    private Repository repository;
+    private final Repository repository;
 
     public ResponseReactorChannelConfig() {
         repository = Repository.getInstance();
@@ -43,7 +45,7 @@ public class ResponseReactorChannelConfig implements ResponseReactor {
         }
     }
 
-    public void sendChannelConfigToRepo(ChannelConfig newChannelConfig){
+    private void sendChannelConfigToRepo(ChannelConfig newChannelConfig){
         repository.setChannelConfig(newChannelConfig);
     }
 }

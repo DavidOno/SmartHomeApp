@@ -17,6 +17,9 @@ import androidx.navigation.fragment.NavHostFragment;
 import de.smarthome.R;
 import de.smarthome.app.viewmodel.OptionsViewModel;
 
+/**
+ * This fragment contains two buttons to allow the user to logout and to restart the connections to the servers
+ */
 public class OptionsFragment extends Fragment {
     private static final String TAG = "OptionsFragment";
     private OptionsViewModel viewModel;

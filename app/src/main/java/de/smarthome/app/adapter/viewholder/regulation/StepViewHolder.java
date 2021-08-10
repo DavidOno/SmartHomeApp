@@ -14,6 +14,10 @@ import de.smarthome.R;
 import de.smarthome.app.model.Datapoint;
 import de.smarthome.app.adapter.RegulationAdapter;
 
+/**
+ * RecyclerViewHolder for the regulationAdapter.
+ * Used to display a datapoint that only has write access
+ */
 public class StepViewHolder extends RegulationAdapter.ViewHolder{
     private TextView textViewName;
     private ImageButton plus;
@@ -30,8 +34,8 @@ public class StepViewHolder extends RegulationAdapter.ViewHolder{
     }
 
     private void setButtonOnClickListener(@NonNull RegulationAdapter.OnItemClickListener onItemClickListener,
-                                          @NonNull RegulationAdapter adapter, ImageButton plus, String output) {
-        plus.setOnClickListener(v -> {
+                                          @NonNull RegulationAdapter adapter, ImageButton imageButton, String output) {
+        imageButton.setOnClickListener(v -> {
             int position = getAdapterPosition();
             if (onItemClickListener != null && position != RecyclerView.NO_POSITION) {
                 onItemClickListener.onItemClick(adapter.getDataPointAt(position), output);
@@ -45,8 +49,13 @@ public class StepViewHolder extends RegulationAdapter.ViewHolder{
         minus = itemView.findViewById(R.id.imageView_minus);
     }
 
+    /**
+     * Displays name of the given datapoint in a textView
+     * @param datapoint Datapoint to be displayed by the viewHolder
+     * @param value Value to be displayed, but is never be used in this type of viewHolder
+     */
     @Override
-    public void onBindViewHolder(RegulationAdapter.ViewHolder holder, int position, Datapoint datapoint, Optional<String> value) {
+    public void onBindViewHolder(Datapoint datapoint, Optional<String> value) {
         this.textViewName.setText(datapoint.getName().replace("_", " "));
     }
 }

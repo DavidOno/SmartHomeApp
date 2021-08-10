@@ -1,7 +1,6 @@
 package de.smarthome.app.adapter.viewholder.roomoverview;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -15,6 +14,10 @@ import de.smarthome.R;
 import de.smarthome.app.model.Function;
 import de.smarthome.app.adapter.RoomOverviewAdapter;
 
+/**
+ * RecyclerViewHolder for the roomOverviewAdapter.
+ * Used to display a function which first and only datapoint is a boolean with read/write access
+ */
 public class SwitchViewHolder extends RoomOverviewAdapter.ViewHolder{
     private SwitchCompat binarySwitch;
     private TextView textViewName;
@@ -25,7 +28,6 @@ public class SwitchViewHolder extends RoomOverviewAdapter.ViewHolder{
         super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_switch, parent, false));
 
         findViewById();
-
         setOnClickListener(onSwitchClickListener, adapter);
     }
 
@@ -43,10 +45,14 @@ public class SwitchViewHolder extends RoomOverviewAdapter.ViewHolder{
         binarySwitch = itemView.findViewById(R.id.switch_item);
     }
 
+    /**
+     * Displays name of the given function in a textView and a given value on the switch
+     * @param function Function to be displayed by the viewHolder
+     * @param value Value to be displayed in the switch of the viewHolder
+     */
     @Override
-    public void onBindViewHolder(RoomOverviewAdapter.ViewHolder holder, int position, Function function, Optional<String> value) {
+    public void onBindViewHolder(Function function, Optional<String> value) {
         textViewName.setText(function.getName().replace("_", " "));
-
         setSwitchByValue(value);
     }
 

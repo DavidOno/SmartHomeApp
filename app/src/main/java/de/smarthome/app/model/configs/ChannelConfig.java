@@ -37,7 +37,7 @@ public class ChannelConfig {
         Channel channel = findChannelByName(function);
 
         if(!channel.getDatapoints().isEmpty()) {
-            return channel.getDatapoints().get(0).getAccess().equals(DatapointAccess.READ_WRITE);
+            return channel.getDatapoints().get(0).getAccess().equals(DatapointAccess.READ);
         }
         return false;
     }
@@ -65,7 +65,7 @@ public class ChannelConfig {
                     return RoomOverviewAdapter.SWITCH_ARROW_HOLDER;
                 }
             }else{
-                if(channel.getDatapoints().get(0).getAccess().equals(DatapointAccess.READ_WRITE)){
+                if(channel.getDatapoints().get(0).getAccess().equals(DatapointAccess.READ)){
                     return RoomOverviewAdapter.STATUS_VIEW_HOLDER;
                 }
             }
@@ -91,6 +91,9 @@ public class ChannelConfig {
                 if(channelDatapoint.getAccess().equals(DatapointAccess.WRITE)){
                     return RegulationAdapter.STEP_VIEW_HOLDER;
                 }
+                if(channelDatapoint.getAccess().equals(DatapointAccess.READ)){
+                    return RegulationAdapter.READ_VIEW_HOLDER;
+                }
                 break;
             case PERCENT:
             case INTEGER:
@@ -100,6 +103,9 @@ public class ChannelConfig {
                 }
                 if(channelDatapoint.getAccess().equals(DatapointAccess.WRITE)){
                     return RegulationAdapter.STEP_VIEW_HOLDER;
+                }
+                if(channelDatapoint.getAccess().equals(DatapointAccess.READ)){
+                    return RegulationAdapter.READ_VIEW_HOLDER;
                 }
                 break;
             case STRING:

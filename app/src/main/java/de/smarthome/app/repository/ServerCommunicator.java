@@ -45,21 +45,24 @@ import de.smarthome.command.impl.UnRegisterAtCallbackServer;
 import de.smarthome.command.impl.UnRegisterCallbackServerAtGiraServer;
 import de.smarthome.server.ServerHandler;
 
+/**
+ * This class handles the entire communication of the repository with the gira and callbackserver.
+ */
 public class ServerCommunicator {
     private static final String TAG = "ServerCommunicator";
-    private ToastUtility toastUtility = ToastUtility.getInstance();
+    private final ToastUtility toastUtility = ToastUtility.getInstance();
 
     private static final String IP_OF_CALLBACK_SERVER = "192.168.132.222:9090";
     private final ServerHandler serverHandler;
 
-    private MutableLiveData<Boolean> requestStatusLoginUser = new MutableLiveData<>();
-    private MutableLiveData<Boolean> serverConnectionStatus = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> requestStatusLoginUser = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> serverConnectionStatus = new MutableLiveData<>();
     private ServerConnectionEvent callbackServerConnectionStatus;
     private ServerConnectionEvent giraServerConnectionStatus;
 
     private Application parentApplication = null;
     private int statusListSize = 0;
-    private Map<String, String> newStatusValuesMap = new LinkedHashMap<>();
+    private final Map<String, String> newStatusValuesMap = new LinkedHashMap<>();
 
     public ServerCommunicator(@NonNull ServerHandler serverHandler){
         this.serverHandler = serverHandler;
@@ -73,33 +76,45 @@ public class ServerCommunicator {
         SmartHomeApplication.EXECUTOR_SERVICE.execute(newThread);
     }
 
+    /**
+     * Depending on the given event sets the serverConnectionStatus and
+     * giraServerConnectionStatus or callbackServerConnectionStatus
+     * @param event Event that happened in the last connection attempt
+     */
     public void serverConnectionEvent(ServerConnectionEvent event){
         switch(event){
             case CALLBACK_CONNECTION_FAIL:
-                if(callbackServerConnectionStatus != ServerConnectionEvent.CALLBACK_CONNECTION_FAIL)
+                if(callbackServerConnectionStatus != ServerConnectionEvent.CALLBACK_CONNECTION_FAIL){
                     setCallbackServerConnectionStatus(event);
-                setServerConnectionStatus(false);
+                    setServerConnectionStatus(false);
+                }
                 break;
             case CALLBACK_CONNECTION_SUCCESS:
                 if(callbackServerConnectionStatus != ServerConnectionEvent.CALLBACK_CONNECTION_SUCCESS){
                     toastUtility.prepareToast("Successfully connected to CallbackServer");
                     setCallbackServerConnectionStatus(event);
+                    setServerConnectionStatus(true);
                 }
                 break;
             case GIRA_CONNECTION_FAIL:
-                if(giraServerConnectionStatus != ServerConnectionEvent.GIRA_CONNECTION_FAIL)
+                if(giraServerConnectionStatus != ServerConnectionEvent.GIRA_CONNECTION_FAIL){
                     setGiraServerConnectionStatus(event);
-                setServerConnectionStatus(false);
+                    setServerConnectionStatus(false);
+                }
                 break;
             case GIRA_CONNECTION_SUCCESS:
                 if(giraServerConnectionStatus != ServerConnectionEvent.GIRA_CONNECTION_SUCCESS){
                     toastUtility.prepareToast("Successfully connected to Gira.");
                     setGiraServerConnectionStatus(event);
+                    setServerConnectionStatus(true);
                 }
                 break;
         }
     }
 
+    /**
+     * Depending on connection status restarts connection to the servers
+     */
     public void retryConnectionToServer(){
         if(giraServerConnectionStatus == ServerConnectionEvent.GIRA_CONNECTION_FAIL){
             getSavedCredentialsForLoginAtGira();
@@ -109,6 +124,11 @@ public class ServerCommunicator {
         }
     }
 
+    /**
+     * Establishes a connection to the gira server
+     * @param userName Username that will be used for registration at gira
+     * @param pwd Password that will be used for registration at gira
+     */
     public void connectToGira(String userName, String pwd){
         Thread connectToGiraThread = new Thread(() -> {
             setGiraServerConnectionStatus(ServerConnectionEvent.GIRA_CONNECTION_ACTIVE);
@@ -121,6 +141,9 @@ public class ServerCommunicator {
         addToExecutorService(connectToGiraThread);
     }
 
+    /**
+     * Establishes a connection to the callbackserver
+     */
     public void connectToCallbackServer(){
         Thread connectToCallbackServerThread = new Thread(() -> {
             setCallbackServerConnectionStatus(ServerConnectionEvent.CALLBACK_CONNECTION_ACTIVE);
@@ -170,6 +193,9 @@ public class ServerCommunicator {
         multiCommandChain.add(new AdditionalConfigCommand(IP_OF_CALLBACK_SERVER, AdditionalConfig.BOUNDARIES), new ResponseReactorBoundariesConfig());
     }
 
+    /**
+     * Requests a uiconfig by gira
+     */
     public void requestOnlyUIConfig(){
         Thread requestOnlyUIConfigThread = new Thread(() -> {
             SingleReactorCommandChainImpl singleCommandChain = new SingleReactorCommandChainImpl(new ResponseReactorUIConfig());
@@ -179,6 +205,9 @@ public class ServerCommunicator {
         addToExecutorService(requestOnlyUIConfigThread);
     }
 
+    /**
+     * Requests a channelconfig, beaconlocations, and boundaryconfig from the callbackserver
+     */
     public void requestOnlyAdditionalConfigs() {
         Thread requestOnlyAdditionalConfigsThread = new Thread(() -> {
             MultiReactorCommandChainImpl multiCommandChain = new MultiReactorCommandChainImpl();
@@ -196,6 +225,11 @@ public class ServerCommunicator {
         addToExecutorService(requestUnregisterClientThread);
     }
 
+    /**
+     * Requests a given value to be set by gira
+     * @param id ID of the datapoint
+     * @param value Value of the datapoint that will be set
+     */
     public void requestSetValue(String id, String value) {
         Thread requestSetValueThread = new Thread(() -> {
             Command setValueCommand = new ChangeValueCommand(id, Float.parseFloat(value));
@@ -204,6 +238,10 @@ public class ServerCommunicator {
         addToExecutorService(requestSetValueThread);
     }
 
+    /**
+     * Requests the current status of the given datapoint ids by gira
+     * @param ids List containing the ids of the datapoints
+     */
     public synchronized void requestGetValue(List<String> ids) {
         statusListSize = ids.size();
         newStatusValuesMap.clear();
@@ -254,11 +292,17 @@ public class ServerCommunicator {
         }
     }
 
-    public void unsubscribeFromEverything() {
+    /**
+     * Unregisters the application from gira and the callbackserver
+     */
+    public void unregisterFromServers() {
         requestUnregisterClient();
         requestUnregisterCallbackServerAtGiraServer();
     }
 
+    /**
+     * Gets the saved user credentials form Google and starts the connection to gira on successful retrieval
+     */
     public void getSavedCredentialsForLoginAtGira() {
         CredentialRequest credentialRequest = new CredentialRequest.Builder()
                 .setPasswordLoginSupported(true)

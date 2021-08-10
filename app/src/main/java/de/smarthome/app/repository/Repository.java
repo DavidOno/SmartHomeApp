@@ -1,6 +1,7 @@
 package de.smarthome.app.repository;
 
 import android.app.Application;
+import android.content.Context;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -11,13 +12,13 @@ import com.google.android.gms.auth.api.credentials.Credential;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import de.smarthome.app.model.UIConfig;
 import de.smarthome.app.model.configs.BoundariesConfig;
 import de.smarthome.app.model.configs.BoundaryDataPoint;
 import de.smarthome.app.model.responses.Events;
 import de.smarthome.app.repository.responsereactor.ServerConnectionEvent;
+import de.smarthome.app.utility.ToastUtility;
 import de.smarthome.beacons.BeaconLocations;
 import de.smarthome.beacons.BeaconObserverImplementation;
 import de.smarthome.beacons.BeaconObserverSubscriber;
@@ -35,6 +36,11 @@ import de.smarthome.server.NoSSLRestTemplateCreator;
 import de.smarthome.server.SmartHomeFMS;
 import de.smarthome.server.gira.GiraServerHandler;
 
+/**
+ * This class handles the communication of the application with the servers through the servercommunicator class and
+ * the storage of the data with the configcontainer class.
+ * Additionally it subscribes to the firebasemessagingservice and the beaconobserver to handle their updates.
+ */
 public class Repository implements CallbackSubscriber, BeaconObserverSubscriber {
     private static final String TAG = "Repository";
     private static Repository INSTANCE;
@@ -45,10 +51,19 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     private BeaconObserverImplementation beaconObserver;
     private Application parentApplication;
     private Location beaconLocation = null;
-    private MutableLiveData<Boolean> beaconCheck = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> beaconCheck = new MutableLiveData<>();
+
+    //TODO: Remove after Testing
+    public void fillWithDummyValues(){
+        configContainer.fillWithDummyValueAllConfigs();
+    }
 
     private Repository(){}
 
+    /**
+     * Returns the current instance of the repository or creates a new repository
+     * @return current instance of the repository
+     */
     public static Repository getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new Repository();
@@ -58,13 +73,11 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         return INSTANCE;
     }
 
+    /**
+     * Deletes the current instance of the repository
+     */
     public static void destroyInstance(){
         INSTANCE = null;
-    }
-
-    //TODO: Remove after Testing
-    public void fillWithDummyValues(){
-        configContainer.fillWithDummyValueAllConfigs();
     }
 
     public void setParentApplication(Application parentApplication) {
@@ -81,11 +94,17 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         return serverCommunicator.getServerConnectionStatus();
     }
 
+    /**
+     * Restarts failed connection to the servers
+     */
     public void retryConnectionToServerAfterFailure(){
         serverCommunicator.setServerConnectionStatus(true);
         serverCommunicator.retryConnectionToServer();
     }
 
+    /**
+     * Restarts the connection to both servers
+     */
     public void restartConnectionToServer(){
         serverCommunicator.setGiraServerConnectionStatus(ServerConnectionEvent.GIRA_CONNECTION_FAIL);
         serverCommunicator.setCallbackServerConnectionStatus(ServerConnectionEvent.CALLBACK_CONNECTION_FAIL);
@@ -132,12 +151,18 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         return configContainer.getChannelConfig();
     }
 
+    /**
+     * Initialised the beaconLocation as the selectedLocation and then resets beaconLocation
+     */
     public void confirmBeaconLocation() {
         initSelectedLocation(beaconLocation);
         beaconLocation = null;
     }
 
-    public void initBeaconObserver() {
+    /**
+     * Initialises the beaconobserver so the repository can be updated
+     */
+    public synchronized void initBeaconObserver() {
         if(parentApplication != null && configContainer.getUIConfig() != null && configContainer.getBeaconLocations() != null){
             beaconObserver = new BeaconObserverImplementation(parentApplication, parentApplication.getApplicationContext(),
                     configContainer.getUIConfig(), configContainer.getBeaconLocations(),
@@ -148,6 +173,10 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         setBeaconCheckFalse();
     }
 
+    /**
+     * Starts a connection to gira and callbackserver and subscribes the repository to the firebasemessagingservice
+     * @param credential User credentials for the registration at gira
+     */
     public void requestRegisterUser(Credential credential) {
         serverCommunicator.connectToGira(credential.getId(), credential.getPassword());
         serverCommunicator.connectToCallbackServer();
@@ -175,6 +204,11 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         return configContainer.getFunctionMap();
     }
 
+    /**
+     * Requests the current status values of a functions of the selected location or the datapoint of the selected function.
+     * Input decides which will be requested.
+     * @param inputType Type of how the requests datapoints will be aggregated
+     */
     public void requestCurrentStatusValues(StatusRequestType inputType){
         List<String> requestList = new ArrayList<>();
         if(inputType == StatusRequestType.FUNCTION
@@ -260,6 +294,10 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         configContainer.initNewUIConfig(newUIConfig);
     }
 
+    /**
+     * Handles the updates from the callbackserver, either a status update or an event.
+     * @param input Contains the id of the updated datapoint and the value or an event
+     */
     @Override
     public void update(CallbackValueInput input) {
         if (input.getEvent() == null && input.getValue() != null) {
@@ -296,6 +334,9 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         }
     }
 
+    /**
+     * Handles the events from the callbackserver.
+     */
     @Override
     public void update(CallBackServiceInput input) {
         if (input.getServiceEvents() != null) {
@@ -324,6 +365,11 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         }
     }
 
+    /**
+     * Handles updates from the beaconobserver.
+     * Sets new beaconlocation and updates beaconcheck
+     * @param newLocation Location that will be the set as beaconlocation
+     */
     @Override
     public void update(Location newLocation) {
         if(newLocation != configContainer.getSelectedLocation()){
@@ -332,11 +378,14 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         }
     }
 
+    /**
+     * Unsubscribes and unregisters the application from all services
+     */
     public void unsubscribeFromEverything() {
         try {
             SmartHomeFMS.getValueObserver().unsubscribe(this);
             SmartHomeFMS.getServiceObserver().unsubscribe(this);
-            serverCommunicator.unsubscribeFromEverything();
+            serverCommunicator.unregisterFromServers();
             beaconObserver.unsubscribe();
         }catch (Exception e){
             Log.d(TAG, e.getMessage());

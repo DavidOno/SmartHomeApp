@@ -15,6 +15,10 @@ import de.smarthome.R;
 import de.smarthome.app.model.Datapoint;
 import de.smarthome.app.adapter.RegulationAdapter;
 
+/**
+ * RecyclerViewHolder for the regulationAdapter.
+ * Used to display a datapoint that get a string containing a boolean back as status value
+ */
 public class SwitchViewHolder extends RegulationAdapter.ViewHolder{
     private SwitchCompat binarySwitch;
     private TextView textViewName;
@@ -47,8 +51,13 @@ public class SwitchViewHolder extends RegulationAdapter.ViewHolder{
         binarySwitch = itemView.findViewById(R.id.switch_item);
     }
 
+    /**
+     * Displays name of the given datapoint in a textView and a given value on the switch
+     * @param datapoint Datapoint to be displayed by the viewHolder
+     * @param value Value to be displayed in the switch of the viewHolder
+     */
     @Override
-    public void onBindViewHolder(RegulationAdapter.ViewHolder holder, int position, Datapoint datapoint, Optional<String> value) {
+    public void onBindViewHolder(Datapoint datapoint, Optional<String> value) {
         textViewName.setText(datapoint.getName().replace("_", " "));
 
         if(value.isPresent()){

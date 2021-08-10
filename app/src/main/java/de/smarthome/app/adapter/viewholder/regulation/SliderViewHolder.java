@@ -1,5 +1,6 @@
 package de.smarthome.app.adapter.viewholder.regulation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -15,7 +16,12 @@ import de.smarthome.R;
 import de.smarthome.app.model.Datapoint;
 import de.smarthome.app.adapter.RegulationAdapter;
 
+/**
+ * RecyclerViewHolder for the regulationAdapter.
+ * Used to display a datapoint that get a strings containing a number back as status value
+ */
 public class SliderViewHolder extends RegulationAdapter.ViewHolder{
+    private final String TAG = "SliderViewHolder";
     private TextView textViewName;
     private Slider slider;
     private RegulationAdapter adapter;
@@ -61,10 +67,14 @@ public class SliderViewHolder extends RegulationAdapter.ViewHolder{
         slider = itemView.findViewById(R.id.sliderRange_item);
     }
 
+    /**
+     * Displays name of the given datapoint in a textView and a given value in the slider
+     * @param datapoint Datapoint to be displayed by the viewHolder
+     * @param value Value to be displayed in the slider of the viewHolder
+     */
     @Override
-    public void onBindViewHolder(RegulationAdapter.ViewHolder holder, int position, Datapoint datapoint, Optional<String> value) {
+    public void onBindViewHolder(Datapoint datapoint, Optional<String> value) {
         textViewName.setText(datapoint.getName().replace("_", " "));
-
         setCorrectValue(datapoint, value);
     }
 
@@ -87,15 +97,24 @@ public class SliderViewHolder extends RegulationAdapter.ViewHolder{
     private void setSliderWithinBoundary(Optional<String> value, float min, float max) {
         //Needed if Boundary gets changed and Server sends to high/low value for slider
         if(value.isPresent()){
-            Float inputValue = Float.parseFloat(value.get());
-            if(inputValue.compareTo(min) < 0 && min != -1){
+            float inputValue = convertStringToFloat(value);
+            if(inputValue <= min  && min != -1){
                 slider.setValue(min);
-            }else if(inputValue.compareTo(max) > 0 && max != -1){
+            }else if(inputValue >= max && max != -1){
                 slider.setValue(max);
             }else{
                 slider.setValue(inputValue);
             }
         }
+    }
+
+    private float convertStringToFloat(Optional<String> value) {
+        try{
+            return Float.parseFloat(value.get());
+        }catch (NumberFormatException ex){
+            Log.d(TAG, "Value is not a number, value: " + value.get());
+        }
+        return 0;
     }
 
     private float setSliderMax(Datapoint datapoint, float max) {

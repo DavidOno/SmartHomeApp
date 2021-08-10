@@ -20,6 +20,9 @@ import de.smarthome.app.utility.InternalStorageWriter;
 import de.smarthome.app.viewmodel.HomeOverviewViewModel;
 import de.smarthome.app.adapter.HomeOverviewAdapter;
 
+/**
+ * This fragment contains a recyclerview that handles the display all location in the uiconfig and their selection.
+ */
 public class HomeOverviewFragment extends Fragment {
     private static final String TAG = "HomeOverviewFragment";
     private RecyclerView recyclerView;

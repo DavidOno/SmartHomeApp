@@ -213,7 +213,7 @@ public class ServerCommunicatorTests {
         GiraServerHandler mockGsh = mock(GiraServerHandler.class);
         ServerCommunicator sc = new ServerCommunicator(mockGsh);
 
-        sc.unsubscribeFromEverything();
+        sc.unregisterFromServers();
         sleep();
 
         ArgumentCaptor<Command> argument1 = ArgumentCaptor.forClass(UnregisterClientCommand.class);

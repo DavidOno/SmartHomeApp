@@ -9,9 +9,12 @@ import de.smarthome.app.repository.Repository;
 import de.smarthome.command.ResponseReactor;
 import de.smarthome.app.utility.ToastUtility;
 
+/**
+ * Commandchainreactor to handle requests to check availability of gira send via a commandchain
+ */
 public class ResponseReactorCheckAvailability implements ResponseReactor {
     private static final String TAG = "ResponseReactorCheckAvailability";
-    private Repository repository;
+    private final Repository repository;
 
     public ResponseReactorCheckAvailability() {
         repository = Repository.getInstance();
