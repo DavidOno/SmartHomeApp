@@ -27,12 +27,7 @@ public class RoomOverviewViewModel extends AndroidViewModel {
         repository = Repository.getInstance();
     }
 
-    /**
-     * Requests the current status values and returns the functionMap
-     * @return map containing all functions of the selected location
-     */
     public LiveData<Map<Function, Function>> getFunctionMap(){
-        //TODO: EDIT JavaDoc
         return repository.getFunctionMap();
     }
 

@@ -32,12 +32,7 @@ public class RegulationViewModel extends AndroidViewModel {
         repository.requestSetValue(id, value);
     }
 
-    /**
-     * Requests the current status values and returns the datapointMap
-     * @return map containing all datapoints of the selected function
-     */
     public LiveData<Map<Datapoint, Datapoint>> getDataPointMap(){
-        repository.requestCurrentStatusValues(StatusRequestType.DATAPOINT);
         return repository.getDataPointMap();
     }
 
