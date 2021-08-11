@@ -291,7 +291,8 @@ public class ConfigContainerTests {
         Location location = new Location("l1", "1","dummy", functionIdList, loactionList,"dummy");
         cc.initSelectedLocation(location);
 
-        cc.initNewUIConfig(cc.getUIConfig());
+        UIConfig mockUIConfig = mock(UIConfig.class);
+        cc.initNewUIConfig(mockUIConfig);
 
         assertThat(ToastUtility.getInstance().getNewToast().getValue()).isTrue();
         assertThat(cc.getSelectedLocation()).isEqualTo(location);
@@ -308,7 +309,8 @@ public class ConfigContainerTests {
         Function function = new Function("f_notContained", "3", "dummy", "dummy", null);
         cc.setSelectedFunction(function);
 
-        cc.initNewUIConfig(cc.getUIConfig());
+        UIConfig mockUIConfig = mock(UIConfig.class);
+        cc.initNewUIConfig(mockUIConfig);
 
         assertThat(cc.getSelectedFunction()).isEqualTo(function);
         assertThat(ToastUtility.getInstance().getNewToast().getValue()).isTrue();
@@ -330,10 +332,11 @@ public class ConfigContainerTests {
         locationListParent.add(locationChild);
         Location parentLocation = new Location("lParent", "1","dummy", functionIdListParent, locationListParent,"dummy");
 
-        cc.getUIConfig().getFunctions().add(functionChild);
-        cc.getUIConfig().getFunctions().add(functionParent);
-        cc.getUIConfig().getLocations().add(parentLocation);
-        cc.initNewUIConfig(cc.getUIConfig());
+        UIConfig newUIConfig = new UIConfig(cc.getUIConfig().getFunctions(), cc.getUIConfig().getLocations(), "2");
+        newUIConfig.getFunctions().add(functionChild);
+        newUIConfig.getFunctions().add(functionParent);
+        newUIConfig.getLocations().add(parentLocation);
+        cc.initNewUIConfig(newUIConfig);
 
         cc.initSelectedLocation(locationChild);
 
