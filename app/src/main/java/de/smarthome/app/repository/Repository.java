@@ -55,7 +55,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
 
     //TODO: Remove after Testing
     public void fillWithDummyValues(){
-        //configContainer.fillWithDummyValueAllConfigs();
+        configContainer.fillWithDummyValueAllConfigs();
     }
 
     private Repository(){}
@@ -170,6 +170,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
                         new DefaultBeaconManagerCreator());
                 beaconObserver.subscribe(this);
                 beaconObserver.init();
+                ToastUtility.getInstance().prepareToast(TAG + " BeaconObserver created");
             }
         }catch(Exception e){
             ToastUtility.getInstance().prepareToast(TAG + " Crash initBeaconObserver");

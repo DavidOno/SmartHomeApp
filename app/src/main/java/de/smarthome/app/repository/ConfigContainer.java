@@ -110,9 +110,9 @@ public class ConfigContainer {
      * @param uiConfig UIConfig that should be initialised
      */
     public void initNewUIConfig(UIConfig uiConfig) {
+        uiConfig.initParentLocations();
         if(!uiConfig.equals(this.uiConfig)){
             setUIConfig(uiConfig);
-            this.uiConfig.initParentLocations();
 
             initLocationList();
             Repository.getInstance().initBeaconObserver();
@@ -550,10 +550,7 @@ public class ConfigContainer {
 
         ObjectMapper mapper = new ObjectMapper();
         try {
-            if(beaconLocations == null){
-                setBeaconLocations(mapper.readValue(locationConfigString, new TypeReference<BeaconLocations>() {}));
-                Repository.getInstance().initBeaconObserver();
-            }
+            initBeaconLocations(mapper.readValue(locationConfigString, new TypeReference<BeaconLocations>() {}));
         } catch (Exception e) {
             Log.d(TAG, "BeaconConfig Exception " + e.toString());
             e.printStackTrace();
