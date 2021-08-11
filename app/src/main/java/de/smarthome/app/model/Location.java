@@ -106,15 +106,32 @@ public class Location {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Location)) return false;
         Location location = (Location) o;
-        return Objects.equals(name, location.name) &&
-                Objects.equals(ID, location.ID) &&
-                Objects.equals(type, location.type) &&
-                Objects.equals(locationType, location.locationType) &&
-                Objects.equals(functionsID, location.functionsID) &&
-                Objects.equals(locations, location.locations) &&
-                Objects.equals(parentLocation, location.parentLocation);
+        boolean x1 = true;
+
+        if(name != null && location.name != null)
+            x1 = name.equals(location.name);
+
+        if(ID != null && location.ID != null)
+            x1 = x1 && ID.equals(location.ID);
+
+        if(type != null && location.type != null)
+            x1 = x1 && type.equals(location.type);
+
+        if(locationType != null && location.locationType != null)
+            x1 = x1 && locationType.equals(location.locationType);
+
+        if(functionsID != null && location.functionsID != null)
+            x1 = x1 && functionsID.equals(location.functionsID);
+
+        if(locations != null && location.locations != null)
+            x1 = x1 && locations.equals(location.locations);
+
+        if(parentLocation != null && location.parentLocation != null){
+            //x1 = x1 && parentLocation.hashCode() == location.parentLocation.hashCode();
+        }
+        return x1;
     }
 
     @Override

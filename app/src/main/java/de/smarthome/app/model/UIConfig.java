@@ -96,15 +96,12 @@ public class UIConfig {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof UIConfig)) return false;
         UIConfig uiConfig = (UIConfig) o;
-        return Objects.equals(functions, uiConfig.functions) &&
-                Objects.equals(locations, uiConfig.locations) &&
-                Objects.equals(uid, uiConfig.uid);
-    }
+        boolean result1 = functions.equals(uiConfig.functions);
+        boolean result2 =  locations.equals(uiConfig.locations);
+        boolean result3 =  uid.equals(uiConfig.uid);
+        return result1 && result2  && result3;
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(functions, locations, uid);
     }
 }

@@ -3,6 +3,7 @@ package de.smarthome.app.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 /**
  * Model class for the functions, stored in the ui-config.
@@ -70,5 +71,18 @@ public class Function {
                 "\n, functionType='" + functionType + '\'' +
                 "\n, datapoints=" + datapoints +
                 "\n}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Function)) return false;
+        Function function = (Function) o;
+        boolean x1  = this.name.equals(function.name);
+        x1  = x1 && this.ID.equals(function.ID);
+        x1  = x1 && this.channelType.equals(function.channelType) ;
+        x1  = x1 && this.functionType.equals(function.functionType);
+        x1  = x1 && this.datapoints.equals(function.datapoints);
+        return x1;
     }
 }

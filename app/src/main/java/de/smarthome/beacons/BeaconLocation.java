@@ -2,6 +2,8 @@ package de.smarthome.beacons;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Objects;
+
 /**
  * This class creates a unique location by combining the ids of a room and the associated beacon
  */
@@ -35,5 +37,14 @@ public class BeaconLocation {
                 "roomUID='" + roomUID + '\'' +
                 ", beaconId='" + beaconId + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BeaconLocation that = (BeaconLocation) o;
+        return this.roomUID.equals(that.roomUID) &&
+                this.beaconId.equals(that.beaconId);
     }
 }
