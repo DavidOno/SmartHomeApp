@@ -91,7 +91,7 @@ public class ServerCommunicator {
                 break;
             case CALLBACK_CONNECTION_SUCCESS:
                 if(callbackServerConnectionStatus != ServerConnectionEvent.CALLBACK_CONNECTION_SUCCESS){
-                    toastUtility.prepareToast("Successfully connected to CallbackServer");
+                    toastUtility.prepareToast("Successfully connected to CallbackServer.");
                     setCallbackServerConnectionStatus(event);
                     setServerConnectionStatus(true);
                 }
