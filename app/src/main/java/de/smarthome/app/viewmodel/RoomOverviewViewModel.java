@@ -32,10 +32,13 @@ public class RoomOverviewViewModel extends AndroidViewModel {
      * @return map containing all functions of the selected location
      */
     public LiveData<Map<Function, Function>> getFunctionMap(){
-        repository.requestCurrentStatusValues(StatusRequestType.FUNCTION);
+        //TODO: EDIT JavaDoc
         return repository.getFunctionMap();
     }
 
+    public void requestCurrentStatusValues(){
+        repository.requestCurrentStatusValues(StatusRequestType.FUNCTION);
+    }
     public void requestSetValue(String id, String value){
         repository.requestSetValue(id, value);
     }

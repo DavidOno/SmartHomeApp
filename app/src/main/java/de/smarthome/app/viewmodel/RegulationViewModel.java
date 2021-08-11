@@ -41,6 +41,10 @@ public class RegulationViewModel extends AndroidViewModel {
         return repository.getDataPointMap();
     }
 
+    public void requestCurrentStatusValues(){
+        repository.requestCurrentStatusValues(StatusRequestType.DATAPOINT);
+    }
+
     public LiveData<Map<String, String>> getStatusUpdateMap(){
         return repository.getStatusUpdateMap();
     }

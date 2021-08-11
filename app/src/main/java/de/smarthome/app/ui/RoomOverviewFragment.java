@@ -42,9 +42,6 @@ public class RoomOverviewFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if(viewViewModel.getSelectedLocation() != null)
-            requireActivity().setTitle(viewViewModel.getSelectedLocation().getName());
-
         recyclerViewRoom.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewRoom.setHasFixedSize(true);
 
@@ -61,6 +58,9 @@ public class RoomOverviewFragment extends Fragment {
 
     private void setFunctionObserver(RoomOverviewAdapter adapter) {
         viewViewModel.getFunctionMap().observe(getViewLifecycleOwner(), functionFunctionMap -> {
+            if(viewViewModel.getSelectedLocation() != null)
+                requireActivity().setTitle(viewViewModel.getSelectedLocation().getName());
+            viewViewModel.requestCurrentStatusValues();
             InternalStorageWriter.writeFileOnInternalStorage(this.getContext(), "GIRA", "5. RoomOverview Observer\n\n");
             adapter.initialiseAdapter(functionFunctionMap);
         });

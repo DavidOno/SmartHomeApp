@@ -71,6 +71,7 @@ public class RegulationFragment extends Fragment {
     private void setDataPointObserver(RegulationAdapter adapter) {
         viewModel.getDataPointMap().observe(getViewLifecycleOwner(), datapointDatapointMap -> {
             InternalStorageWriter.writeFileOnInternalStorage(this.getContext(), "GIRA", "5. Regulation Observer\n\n");
+            viewModel.requestCurrentStatusValues();
             adapter.initialiseAdapter(datapointDatapointMap);
         });
     }
