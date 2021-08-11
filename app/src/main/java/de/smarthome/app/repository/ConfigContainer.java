@@ -110,17 +110,19 @@ public class ConfigContainer {
      * @param uiConfig UIConfig that should be initialised
      */
     public void initNewUIConfig(UIConfig uiConfig) {
-        setUIConfig(uiConfig);
-        this.uiConfig.initParentLocations();
+        if(!uiConfig.equals(this.uiConfig)){
+            setUIConfig(uiConfig);
+            this.uiConfig.initParentLocations();
 
-        initLocationList();
-        Repository.getInstance().initBeaconObserver();
+            initLocationList();
+            Repository.getInstance().initBeaconObserver();
 
-        if (selectedLocation != null) {
-            checkForCurrentlySelectedLocation();
-        }
-        if (selectedFunction != null) {
-            checkForCurrentlySelectedFunction();
+            if (selectedLocation != null) {
+                checkForCurrentlySelectedLocation();
+            }
+            if (selectedFunction != null) {
+                checkForCurrentlySelectedFunction();
+            }
         }
     }
 
@@ -138,6 +140,13 @@ public class ConfigContainer {
 
     public BeaconLocations getBeaconLocations() {
         return beaconLocations;
+    }
+
+    public void initBeaconLocations(BeaconLocations newBeaconConfig){
+        if(!newBeaconConfig.equals(this.beaconLocations)){
+            setBeaconLocations(newBeaconConfig);
+            Repository.getInstance().initBeaconObserver();
+        }
     }
 
     public void setChannelConfig(ChannelConfig newChannelConfig) {
