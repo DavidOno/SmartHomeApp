@@ -28,11 +28,7 @@ public class BeaconID {
 
     @Override
     public String toString() {
-        return "BeaconID{" +
-                "uuid=" + uuid +
-                ", minor=" + minor +
-                ", major=" + major +
-                '}';
+        return uuid.toString()+major+minor;
     }
 
     public String getId() {

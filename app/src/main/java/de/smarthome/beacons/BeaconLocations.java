@@ -42,7 +42,7 @@ public class BeaconLocations {
      * @return true if the beaconID is registered, false otherwise.
      */
     public boolean isRegistered(BeaconID beaconID){
-        return beaconLocationList.stream().anyMatch(beaconLocation -> beaconLocation.getBeaconId().equals(beaconID));
+        return beaconLocationList.stream().anyMatch(beaconLocation -> beaconLocation.getBeaconId().equals(beaconID.toString()));
     }
 
     @Override

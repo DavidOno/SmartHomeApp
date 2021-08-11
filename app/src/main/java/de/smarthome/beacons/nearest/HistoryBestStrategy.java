@@ -22,10 +22,15 @@ public class HistoryBestStrategy implements NearestBeaconStrategy {
     public BeaconID getNearest(Map<BeaconID, Integer> newBeaconSignals) {
         updateHistory(newBeaconSignals);
         beaconSignalHistories.sort(new BeaconHistoryComparator());
-        if(isStrongestBeaconConsistent(beaconSignalHistories)){
+
+        if(isHistoryNotEmpty() && isStrongestBeaconConsistent(beaconSignalHistories)){
             return beaconSignalHistories.get(0).getBeaconID();
         }
         return null;
+    }
+
+    private boolean isHistoryNotEmpty() {
+        return !beaconSignalHistories.isEmpty();
     }
 
     private boolean isStrongestBeaconConsistent(List<BeaconSignalHistory> beaconSignalHistories) {
