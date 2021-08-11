@@ -108,24 +108,11 @@ public class Location {
         if (this == o) return true;
         if (!(o instanceof Location)) return false;
         Location location = (Location) o;
-        boolean x1 = true;
-
-        if(name != null && location.name != null)
-            x1 = name.equals(location.name);
-
-        if(ID != null && location.ID != null)
+        boolean x1 = name.equals(location.name);
             x1 = x1 && ID.equals(location.ID);
-
-        if(type != null && location.type != null)
             x1 = x1 && type.equals(location.type);
-
-        if(locationType != null && location.locationType != null)
             x1 = x1 && locationType.equals(location.locationType);
-
-        if(functionsID != null && location.functionsID != null)
             x1 = x1 && functionsID.equals(location.functionsID);
-
-        if(locations != null && location.locations != null)
             x1 = x1 && locations.equals(location.locations);
 
         if(parentLocation != null && location.parentLocation != null){
