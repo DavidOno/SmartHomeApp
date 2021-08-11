@@ -122,8 +122,6 @@ public class RepositoryTests {
     }
 
     @Test
-    //Have to set a selected Location for Function map +
-    //Brauchen noch eine ChannelConfig mit Switch and StatusViewHolder
     public void testRequestCurrentStatusValuesFunction(){
         LinkedList<String> functionIdList = new LinkedList<>();
         functionIdList.add("1");
@@ -283,7 +281,7 @@ public class RepositoryTests {
         channelList.add(c1);
 
         List<ChannelDatapoint> channelDatapoints2 = new ArrayList<>();
-        channelDatapoints2.add(new ChannelDatapoint("Current", "Float", "rwe"));
+        channelDatapoints2.add(new ChannelDatapoint("Current", "Float", "r"));
         channelDatapoints2.add(new ChannelDatapoint("Set-Point", "Float", "rwe"));
         channelDatapoints2.add(new ChannelDatapoint("OnOff", "Binary", "rwe"));
         Channel c2 = new Channel("de.gira.schema.channels.RoomTemperatureSwitchable", channelDatapoints2);
