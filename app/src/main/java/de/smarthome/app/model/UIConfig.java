@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -90,5 +91,20 @@ public class UIConfig {
             loc.getAllChildrenFromLocation(resultList);
         }
         return resultList;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UIConfig uiConfig = (UIConfig) o;
+        return Objects.equals(functions, uiConfig.functions) &&
+                Objects.equals(locations, uiConfig.locations) &&
+                Objects.equals(uid, uiConfig.uid);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(functions, locations, uid);
     }
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Model class for the locations, stored in the ui-config.
@@ -102,4 +103,22 @@ public class Location {
                 "\n}";
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Location location = (Location) o;
+        return Objects.equals(name, location.name) &&
+                Objects.equals(ID, location.ID) &&
+                Objects.equals(type, location.type) &&
+                Objects.equals(locationType, location.locationType) &&
+                Objects.equals(functionsID, location.functionsID) &&
+                Objects.equals(locations, location.locations) &&
+                Objects.equals(parentLocation, location.parentLocation);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, ID, type, locationType, functionsID, locations, parentLocation);
+    }
 }

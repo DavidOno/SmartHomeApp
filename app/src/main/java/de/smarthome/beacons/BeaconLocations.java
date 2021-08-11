@@ -5,6 +5,7 @@ import android.util.Log;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -49,5 +50,18 @@ public class BeaconLocations {
         return "BeaconLocations{" +
                 "beaconLocationList=" + beaconLocationList +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BeaconLocations that = (BeaconLocations) o;
+        return Objects.equals(beaconLocationList, that.beaconLocationList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(beaconLocationList);
     }
 }
