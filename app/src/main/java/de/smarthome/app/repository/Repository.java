@@ -55,7 +55,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
 
     //TODO: Remove after Testing
     public void fillWithDummyValues(){
-        configContainer.fillWithDummyValueAllConfigs();
+        //configContainer.fillWithDummyValueAllConfigs();
     }
 
     private Repository(){}
@@ -163,12 +163,16 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
      * Initialises the beaconobserver so the repository can be updated
      */
     public synchronized void initBeaconObserver() {
-        if(parentApplication != null && configContainer.getUIConfig() != null && configContainer.getBeaconLocations() != null){
-            beaconObserver = new BeaconObserverImplementation(parentApplication, parentApplication.getApplicationContext(),
-                    configContainer.getUIConfig(), configContainer.getBeaconLocations(),
-                    new DefaultBeaconManagerCreator());
-            beaconObserver.subscribe(this);
-            beaconObserver.init();
+        try{
+            if(parentApplication != null && configContainer.getUIConfig() != null && configContainer.getBeaconLocations() != null){
+                beaconObserver = new BeaconObserverImplementation(parentApplication, parentApplication.getApplicationContext(),
+                        configContainer.getUIConfig(), configContainer.getBeaconLocations(),
+                        new DefaultBeaconManagerCreator());
+                beaconObserver.subscribe(this);
+                beaconObserver.init();
+            }
+        }catch(Exception e){
+            ToastUtility.getInstance().prepareToast(TAG + " Crash initBeaconObserver");
         }
         setBeaconCheckFalse();
     }
@@ -278,8 +282,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     public void initBeaconObserverWithBeaconConfig(BeaconLocations newBeaconConfig){
-        configContainer.setBeaconLocations(newBeaconConfig);
-        initBeaconObserver();
+        configContainer.initBeaconLocations(newBeaconConfig);
     }
 
     public void setBoundaryConfig(BoundariesConfig newBoundariesConfig){
