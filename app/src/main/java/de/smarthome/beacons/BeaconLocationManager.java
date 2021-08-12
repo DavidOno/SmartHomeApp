@@ -8,7 +8,7 @@ import de.smarthome.app.model.UIConfig;
 import de.smarthome.beacons.nearest.NearestBeaconStrategy;
 
 /**
- * Handler for updating locations based on the information from the class nearestBeaconStrategy
+ * Handler for updating locations based on the information from the class NearestBeaconStrategy
  */
 public class BeaconLocationManager {
     private final UIConfig uiConfig;
