@@ -14,7 +14,7 @@
         <item>70</item>
     </string-array>
 
-    <string name="loginHintMail">E-Mail</string>
+    <string name="loginHintMail">E-Mail or Username</string>
     <string name="loginHintPassword">Password</string>
     <string name="loginButton">Login</string>
     <string name="loginButtonDmy">Dummy</string>
@@ -33,4 +33,5 @@
     <string name="title_login_fragment">Login</string>
     <string name="options_fragment_button_logout">Logout</string>
     <string name="options_fragment_button_restart_connection">Restart Connection</string>
+    <string name="room_fragment_title_default">No Room Selected</string>
 </resources>
