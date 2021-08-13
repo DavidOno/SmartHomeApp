@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 
 import de.smarthome.app.repository.Repository;
 import de.smarthome.command.ResponseReactor;
-import de.smarthome.app.utility.ToastUtility;
 
 /**
  * Commandchainreactor to handle requests to check availability of gira send via a commandchain
@@ -27,16 +26,16 @@ public class ResponseReactorCheckAvailability implements ResponseReactor {
                 Log.d(TAG, "response received " + TAG);
                 Log.d(TAG, responseEntity.getBody().toString());
                 Log.d(TAG, "Communication with Server possible.\nStatus: " + responseEntity.getStatusCode());
-                repository.serverConnectionEvent(ServerConnectionEvent.GIRA_CONNECTION_SUCCESS);
+                repository.setServerConnectionEvent(ServerConnectionEvent.GIRA_CONNECTION_SUCCESS);
             } else {
                 Log.d(TAG, "error occurred");
                 Log.d(TAG, responseEntity.getStatusCode().toString());
                 Log.d(TAG, "Problem when trying to reach Server.\nStatus: " + responseEntity.getStatusCode());
-                repository.serverConnectionEvent(ServerConnectionEvent.GIRA_CONNECTION_FAIL);
+                repository.setServerConnectionEvent(ServerConnectionEvent.GIRA_CONNECTION_FAIL);
             }
         }catch(Exception e){
             Log.d(TAG, "Exception: " + e.toString());
-            repository.serverConnectionEvent(ServerConnectionEvent.GIRA_CONNECTION_FAIL);
+            repository.setServerConnectionEvent(ServerConnectionEvent.GIRA_CONNECTION_FAIL);
             e.printStackTrace();
         }
     }

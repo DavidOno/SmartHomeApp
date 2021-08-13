@@ -84,7 +84,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         serverCommunicator.setParentApplication(parentApplication);
     }
 
-    public void serverConnectionEvent(ServerConnectionEvent type){
+    public void setServerConnectionEvent(ServerConnectionEvent type){
         serverCommunicator.serverConnectionEvent(type);
     }
 
@@ -96,8 +96,8 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
      * Restarts failed connection to the servers
      */
     public void retryConnectionToServerAfterFailure(){
-        serverCommunicator.setServerConnectionStatus(true);
-        serverCommunicator.retryConnectionToServer();
+       serverCommunicator.setServerConnectionStatus(true);
+       serverCommunicator.retryConnectionToServer();
     }
 
     /**
@@ -107,6 +107,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         serverCommunicator.setGiraServerConnectionStatus(ServerConnectionEvent.GIRA_CONNECTION_FAIL);
         serverCommunicator.setCallbackServerConnectionStatus(ServerConnectionEvent.CALLBACK_CONNECTION_FAIL);
         retryConnectionToServerAfterFailure();
+
     }
 
     public void setLoginStatus(boolean update){
@@ -181,8 +182,8 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
      * @param credential User credentials for the registration at gira
      */
     public void requestRegisterUser(Credential credential) {
-        serverCommunicator.connectToGira(credential.getId(), credential.getPassword());
-        serverCommunicator.connectToCallbackServer();
+        serverCommunicator.addToExecutorService(new Thread(() -> serverCommunicator.connectToGira(credential.getId(), credential.getPassword())));
+        serverCommunicator.addToExecutorService(new Thread(() -> serverCommunicator.connectToCallbackServer()));
         subscribeToMyFirebaseMessagingService();
     }
 
@@ -222,7 +223,8 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
                 requestList = requestCurrentDataPointValues(configContainer.getDataPointMap().getValue());
         }
         if(!requestList.isEmpty()){
-            requestGetValue(requestList);
+            List<String> finalRequestList = requestList;
+            serverCommunicator.addToExecutorService(new Thread(() -> requestGetValue(finalRequestList)));
         }
     }
 

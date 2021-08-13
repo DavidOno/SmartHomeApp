@@ -30,17 +30,17 @@ public class ResponseReactorUIConfig implements ResponseReactor {
                 UIConfig responseUIConfig = (UIConfig) responseEntity.getBody();
                 sendUIConfigToRepo(responseUIConfig);
 
-                repository.serverConnectionEvent(ServerConnectionEvent.GIRA_CONNECTION_SUCCESS);
+                repository.setServerConnectionEvent(ServerConnectionEvent.GIRA_CONNECTION_SUCCESS);
                 Log.d(TAG, "UIConfig successfully retrieved.\nStatus: " + responseEntity.getStatusCode());
             } else {
                 Log.d(TAG, "error occurred");
                 Log.d(TAG, responseEntity.getStatusCode().toString());
-                repository.serverConnectionEvent(ServerConnectionEvent.GIRA_CONNECTION_FAIL);
+                repository.setServerConnectionEvent(ServerConnectionEvent.GIRA_CONNECTION_FAIL);
                 Log.d(TAG, "Problem when trying to retrieve UIConfig.\nStatus: " + responseEntity.getStatusCode());
             }
         }catch(Exception e){
             Log.d(TAG, "Exception: " + e.toString());
-            repository.serverConnectionEvent(ServerConnectionEvent.GIRA_CONNECTION_FAIL);
+            repository.setServerConnectionEvent(ServerConnectionEvent.GIRA_CONNECTION_FAIL);
             e.printStackTrace();
         }
     }

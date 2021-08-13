@@ -29,20 +29,20 @@ public class ResponseReactorClient implements ResponseReactor {
                 Log.d(TAG, "response received " + TAG);
                 Log.d(TAG, responseEntity.getBody().toString());
                 Log.d(TAG, "No Problems when registering Client at Gira.\nStatus: " + responseEntity.getStatusCode());
-                repository.serverConnectionEvent(ServerConnectionEvent.GIRA_CONNECTION_SUCCESS);
+                repository.setServerConnectionEvent(ServerConnectionEvent.GIRA_CONNECTION_SUCCESS);
                 repository.setLoginStatus(true);
             } else {
                 Log.d(TAG, "error occurred");
                 Log.d(TAG, responseEntity.getStatusCode().toString());
                 Log.d(TAG, "Problem when registering Client at Gira.\nStatus: " + responseEntity.getStatusCode());
                 toastUtility.prepareToast("Unable to register User at Gira!");
-                repository.serverConnectionEvent(ServerConnectionEvent.GIRA_CONNECTION_FAIL);
+                repository.setServerConnectionEvent(ServerConnectionEvent.GIRA_CONNECTION_FAIL);
                 repository.setLoginStatus(false);
             }
         }catch(Exception e){
             Log.d(TAG, "Exception: " + e.toString());
             toastUtility.prepareToast("Unable to register User at Gira!");
-            repository.serverConnectionEvent(ServerConnectionEvent.GIRA_CONNECTION_FAIL);
+            repository.setServerConnectionEvent(ServerConnectionEvent.GIRA_CONNECTION_FAIL);
             e.printStackTrace();
         }
     }

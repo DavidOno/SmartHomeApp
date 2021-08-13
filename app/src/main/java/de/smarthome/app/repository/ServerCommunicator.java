@@ -72,7 +72,7 @@ public class ServerCommunicator {
         this.parentApplication = parentApplication;
     }
 
-    private void addToExecutorService(Thread newThread) {
+    public void addToExecutorService(Thread newThread) {
         SmartHomeApplication.EXECUTOR_SERVICE.execute(newThread);
     }
 
@@ -117,10 +117,16 @@ public class ServerCommunicator {
      */
     public void retryConnectionToServer(){
         if(giraServerConnectionStatus == ServerConnectionEvent.GIRA_CONNECTION_FAIL){
-            getSavedCredentialsForLoginAtGira();
+            Thread connectToGiraThread = new Thread(() -> {
+                getSavedCredentialsForLoginAtGira();
+            });
+            addToExecutorService(connectToGiraThread);
         }
         if(callbackServerConnectionStatus == ServerConnectionEvent.CALLBACK_CONNECTION_FAIL){
-            connectToCallbackServer();
+            Thread connectToCallbackServerThread = new Thread(() -> {
+                connectToCallbackServer();
+            });
+            addToExecutorService(connectToCallbackServerThread);
         }
     }
 
@@ -130,29 +136,23 @@ public class ServerCommunicator {
      * @param pwd Password that will be used for registration at gira
      */
     public void connectToGira(String userName, String pwd){
-        Thread connectToGiraThread = new Thread(() -> {
-            setGiraServerConnectionStatus(ServerConnectionEvent.GIRA_CONNECTION_ACTIVE);
-            MultiReactorCommandChainImpl multiCommandChain = new MultiReactorCommandChainImpl();
-            multiCommandChain.add(new RegisterClientCommand(userName, pwd), new ResponseReactorClient());
-            multiCommandChain.add(new RegisterCallbackServerAtGiraServer(IP_OF_CALLBACK_SERVER), new ResponseReactorGiraCallbackServer());
-            multiCommandChain.add(new UIConfigCommand(), new ResponseReactorUIConfig());
-            serverHandler.sendRequest(multiCommandChain);
-        });
-        addToExecutorService(connectToGiraThread);
+        setGiraServerConnectionStatus(ServerConnectionEvent.GIRA_CONNECTION_ACTIVE);
+        MultiReactorCommandChainImpl multiCommandChain = new MultiReactorCommandChainImpl();
+        multiCommandChain.add(new RegisterClientCommand(userName, pwd), new ResponseReactorClient());
+        multiCommandChain.add(new RegisterCallbackServerAtGiraServer(IP_OF_CALLBACK_SERVER), new ResponseReactorGiraCallbackServer());
+        multiCommandChain.add(new UIConfigCommand(), new ResponseReactorUIConfig());
+        serverHandler.sendRequest(multiCommandChain);
     }
 
     /**
      * Establishes a connection to the callbackserver
      */
     public void connectToCallbackServer(){
-        Thread connectToCallbackServerThread = new Thread(() -> {
-            setCallbackServerConnectionStatus(ServerConnectionEvent.CALLBACK_CONNECTION_ACTIVE);
-            MultiReactorCommandChainImpl multiCommandChain = new MultiReactorCommandChainImpl();
-            multiCommandChain.add(new RegisterCallback(IP_OF_CALLBACK_SERVER), new ResponseReactorCallbackServer());
-            getAdditionalConfigs(multiCommandChain);
-            serverHandler.sendRequest(multiCommandChain);
-        });
-        addToExecutorService(connectToCallbackServerThread);
+        setCallbackServerConnectionStatus(ServerConnectionEvent.CALLBACK_CONNECTION_ACTIVE);
+        MultiReactorCommandChainImpl multiCommandChain = new MultiReactorCommandChainImpl();
+        multiCommandChain.add(new RegisterCallback(IP_OF_CALLBACK_SERVER), new ResponseReactorCallbackServer());
+        getAdditionalConfigs(multiCommandChain);
+        serverHandler.sendRequest(multiCommandChain);
     }
 
     public void setServerConnectionStatus(Boolean status) {
@@ -197,32 +197,23 @@ public class ServerCommunicator {
      * Requests a uiconfig by gira
      */
     public void requestOnlyUIConfig(){
-        Thread requestOnlyUIConfigThread = new Thread(() -> {
-            SingleReactorCommandChainImpl singleCommandChain = new SingleReactorCommandChainImpl(new ResponseReactorUIConfig());
-            singleCommandChain.add(new UIConfigCommand());
-            serverHandler.sendRequest(singleCommandChain);
-        });
-        addToExecutorService(requestOnlyUIConfigThread);
+        SingleReactorCommandChainImpl singleCommandChain = new SingleReactorCommandChainImpl(new ResponseReactorUIConfig());
+        singleCommandChain.add(new UIConfigCommand());
+        serverHandler.sendRequest(singleCommandChain);
     }
 
     /**
      * Requests a channelconfig, beaconlocations, and boundaryconfig from the callbackserver
      */
     public void requestOnlyAdditionalConfigs() {
-        Thread requestOnlyAdditionalConfigsThread = new Thread(() -> {
-            MultiReactorCommandChainImpl multiCommandChain = new MultiReactorCommandChainImpl();
-            getAdditionalConfigs(multiCommandChain);
-            serverHandler.sendRequest(multiCommandChain);
-        });
-        addToExecutorService(requestOnlyAdditionalConfigsThread);
+        MultiReactorCommandChainImpl multiCommandChain = new MultiReactorCommandChainImpl();
+        getAdditionalConfigs(multiCommandChain);
+        serverHandler.sendRequest(multiCommandChain);
     }
 
     private void requestUnregisterClient() {
-        Thread requestUnregisterClientThread = new Thread(() -> {
-            AsyncCommand register = new UnRegisterAtCallbackServer(IP_OF_CALLBACK_SERVER);
-            serverHandler.sendRequest(register);
-        });
-        addToExecutorService(requestUnregisterClientThread);
+        AsyncCommand register = new UnRegisterAtCallbackServer(IP_OF_CALLBACK_SERVER);
+        serverHandler.sendRequest(register);
     }
 
     /**
@@ -231,11 +222,8 @@ public class ServerCommunicator {
      * @param value Value of the datapoint that will be set
      */
     public void requestSetValue(String id, String value) {
-        Thread requestSetValueThread = new Thread(() -> {
-            Command setValueCommand = new ChangeValueCommand(id, Float.parseFloat(value));
-            serverHandler.sendRequest(setValueCommand);
-        });
-        addToExecutorService(requestSetValueThread);
+        Command setValueCommand = new ChangeValueCommand(id, Float.parseFloat(value));
+        serverHandler.sendRequest(setValueCommand);
     }
 
     /**
@@ -245,21 +233,15 @@ public class ServerCommunicator {
     public synchronized void requestGetValue(List<String> ids) {
         statusListSize = ids.size();
         newStatusValuesMap.clear();
-        Thread requestGetValueThread = new Thread(() -> {
-            for(String id :ids) {
-                Command getValueCommand = new GetValueCommand(id);
-                handleResponseGetValue(serverHandler.sendRequest(getValueCommand));
-            }
-        });
-        addToExecutorService(requestGetValueThread);
+        for(String id :ids) {
+            Command getValueCommand = new GetValueCommand(id);
+            handleResponseGetValue(serverHandler.sendRequest(getValueCommand));
+        }
     }
 
     private void requestUnregisterCallbackServerAtGiraServer() {
-        Thread requestUnRegisterCallbackServerAtGiraServerThread = new Thread(() -> {
-            Command unregisterAtGira = new UnRegisterCallbackServerAtGiraServer();
-            serverHandler.sendRequest(unregisterAtGira);
-        });
-        addToExecutorService(requestUnRegisterCallbackServerAtGiraServerThread);
+        Command unregisterAtGira = new UnRegisterCallbackServerAtGiraServer();
+        serverHandler.sendRequest(unregisterAtGira);
     }
 
     private synchronized void handleResponseGetValue(ResponseEntity responseEntity) {
@@ -290,8 +272,11 @@ public class ServerCommunicator {
      * Unregisters the application from gira and the callbackserver
      */
     public void unregisterFromServers() {
-        requestUnregisterClient();
-        requestUnregisterCallbackServerAtGiraServer();
+        Thread unregisterFormServersThread = new Thread(() -> {
+            requestUnregisterClient();
+            requestUnregisterCallbackServerAtGiraServer();
+        });
+        addToExecutorService(unregisterFormServersThread);
     }
 
     /**

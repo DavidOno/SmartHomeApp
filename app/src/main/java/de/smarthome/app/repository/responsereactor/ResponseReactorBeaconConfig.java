@@ -30,17 +30,17 @@ public class ResponseReactorBeaconConfig implements ResponseReactor {
                 BeaconLocations responseBeaconConfig = (BeaconLocations) responseEntity.getBody();
                 sendBeaconLocationsToRepo(responseBeaconConfig);
 
-                repository.serverConnectionEvent(ServerConnectionEvent.CALLBACK_CONNECTION_SUCCESS);
+                repository.setServerConnectionEvent(ServerConnectionEvent.CALLBACK_CONNECTION_SUCCESS);
                 Log.d(TAG, "BeaconConfig successfully retrieved.\nStatus: " + responseEntity.getStatusCode());
             } else {
                 Log.d(TAG, "error occurred");
                 Log.d(TAG, responseEntity.getStatusCode().toString());
-                repository.serverConnectionEvent(ServerConnectionEvent.CALLBACK_CONNECTION_FAIL);
+                repository.setServerConnectionEvent(ServerConnectionEvent.CALLBACK_CONNECTION_FAIL);
                 Log.d(TAG, "Problem when trying retrieve BeaconConfig.\nStatus: " + responseEntity.getStatusCode());
             }
         }catch(Exception e){
             Log.d(TAG, "Exception: " + e.toString());
-            repository.serverConnectionEvent(ServerConnectionEvent.CALLBACK_CONNECTION_FAIL);
+            repository.setServerConnectionEvent(ServerConnectionEvent.CALLBACK_CONNECTION_FAIL);
             e.printStackTrace();
         }
     }

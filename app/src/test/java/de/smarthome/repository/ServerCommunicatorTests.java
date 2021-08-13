@@ -2,11 +2,15 @@ package de.smarthome.repository;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
@@ -16,7 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import de.smarthome.SmartHomeApplication;
 import de.smarthome.app.model.responses.GetValueResponse;
@@ -90,30 +96,7 @@ public class ServerCommunicatorTests {
         assertThat(sc.getGiraServerConnectionStatus()).isEqualTo(event);
     }
 
-    //single not ok
-
-    public void testRetryConnectionToServerCallbackFail() throws ExecutionException, InterruptedException {
-        ServerConnectionEvent event = ServerConnectionEvent.CALLBACK_CONNECTION_FAIL;
-        GiraServerHandler mockGsh = mock(GiraServerHandler.class);
-        ServerCommunicator sc = new ServerCommunicator(mockGsh);
-        sc.setCallbackServerConnectionStatus(event);
-
-        CompletableFuture<Void> y = CompletableFuture.runAsync(new Runnable() {
-            @Override
-            public void run() {
-                sc.retryConnectionToServer();
-            }
-        }).thenRun(new Runnable(){
-            @Override
-            public void run() {
-                assertThat(sc.getCallbackServerConnectionStatus()).isEqualTo(ServerConnectionEvent.CALLBACK_CONNECTION_ACTIVE);
-            }
-        });
-        y.get();
-    }
-
     //ok
-    @Test
     public void testRetryConnectionToServerGiraFail(){
         ServerConnectionEvent event = ServerConnectionEvent.GIRA_CONNECTION_FAIL;
         GiraServerHandler mockGsh = mock(GiraServerHandler.class);
@@ -125,101 +108,64 @@ public class ServerCommunicatorTests {
         assertThat(sc.getGiraServerConnectionStatus()).isEqualTo(ServerConnectionEvent.GIRA_CONNECTION_FAIL);
     }
 
-    //multi/single not ok
-
-    public void testConnectToGira() throws ExecutionException, InterruptedException {
+    //multi not ok
+    public void testRetryConnectionToServerCallbackFail(){
+        ServerConnectionEvent event = ServerConnectionEvent.CALLBACK_CONNECTION_FAIL;
         GiraServerHandler mockGsh = mock(GiraServerHandler.class);
         ServerCommunicator sc = new ServerCommunicator(mockGsh);
+        sc.setCallbackServerConnectionStatus(event);
 
-        CompletableFuture<Void> y = CompletableFuture.runAsync(new Runnable() {
-            @Override
-            public void run() {
-                sc.connectToGira("user", "pwd");
-                System.out.print("Hello1");
-            }
-        }).thenRun(new Runnable(){
-            @Override
-            public void run() {
-                assertThat(sc.getGiraServerConnectionStatus()).isEqualTo(ServerConnectionEvent.GIRA_CONNECTION_ACTIVE);
-                System.out.print("Hello2");
-            }
-        });
-        y.get();
-        System.out.print("Hello3");
+        sc.retryConnectionToServer();
 
+        assertThat(sc.getCallbackServerConnectionStatus()).isEqualTo(ServerConnectionEvent.CALLBACK_CONNECTION_ACTIVE);
     }
 
-    //multi/single not ok
-
-    public void testConnectToCallbackServer() throws ExecutionException, InterruptedException {
-        GiraServerHandler mockGsh = mock(GiraServerHandler.class);
-        ServerCommunicator sc = new ServerCommunicator(mockGsh);
-
-        CompletableFuture<Void> y = CompletableFuture.runAsync(new Runnable() {
-            @Override
-            public void run() {
-                sc.connectToCallbackServer();
-            }
-        }).thenRun(new Runnable(){
-            @Override
-            public void run() {
-                assertThat(sc.getCallbackServerConnectionStatus()).isEqualTo(ServerConnectionEvent.CALLBACK_CONNECTION_ACTIVE);
-            }
-        });
-        y.get();
-    }
-
-    //multi/single not ok
-
-    public void testRequestOnlyUIConfig() throws ExecutionException, InterruptedException {
-        GiraServerHandler mockGsh = mock(GiraServerHandler.class);
-        ServerCommunicator sc = new ServerCommunicator(mockGsh);
-
-        CompletableFuture<Void> y = CompletableFuture.runAsync(new Runnable() {
-            @Override
-            public void run() {
-                sc.requestOnlyUIConfig();
-                System.out.print("Hello1");
-            }
-        }).thenRun(new Runnable(){
-            @Override
-            public void run() {
-                System.out.print("Hello22");
-                ArgumentCaptor<CommandChain> argument = ArgumentCaptor.forClass(SingleReactorCommandChainImpl.class);
-                verify(mockGsh, times(1)).sendRequest(argument.capture());
-            }
-        });
-        y.get();
-        System.out.print("Hello3");
-    }
-
-    //sngle not ok
-
-    public void testRequestOnlyAdditionalConfigs() throws ExecutionException, InterruptedException {
-        GiraServerHandler mockGsh = mock(GiraServerHandler.class);
-        ServerCommunicator sc = new ServerCommunicator(mockGsh);
-
-        CompletableFuture<Void> y = CompletableFuture.runAsync(new Runnable() {
-            @Override
-            public void run() {
-                sc.requestOnlyAdditionalConfigs();
-                System.out.print("Hello1");
-            }
-        }).thenRun(new Runnable(){
-            @Override
-            public void run() {
-                System.out.print("Hello22");
-                ArgumentCaptor<CommandChain> argument = ArgumentCaptor.forClass(MultiReactorCommandChain.class);
-                verify(mockGsh, times(1)).sendRequest(argument.capture());
-            }
-        });
-        y.get();
-        System.out.print("Hello3");
-    }
-
-    //ok
     @Test
-    public void testRequestSetValue() throws ExecutionException, InterruptedException {
+    //multi not ok
+    public void testConnectToGira(){
+        GiraServerHandler mockGsh = mock(GiraServerHandler.class);
+        ServerCommunicator sc = new ServerCommunicator(mockGsh);
+
+        sc.connectToGira("user", "pwd");
+
+        assertThat(sc.getGiraServerConnectionStatus()).isEqualTo(ServerConnectionEvent.GIRA_CONNECTION_ACTIVE);
+    }
+
+    @Test
+    //multi not ok
+    public void testConnectToCallbackServer(){
+        GiraServerHandler mockGsh = mock(GiraServerHandler.class);
+        ServerCommunicator sc = new ServerCommunicator(mockGsh);
+
+        sc.connectToCallbackServer();
+
+        assertThat(sc.getCallbackServerConnectionStatus()).isEqualTo(ServerConnectionEvent.CALLBACK_CONNECTION_ACTIVE);
+    }
+    @Test
+    //multi not ok
+    public void testRequestOnlyUIConfig() throws InterruptedException {
+        GiraServerHandler mockGsh = mock(GiraServerHandler.class);
+        ServerCommunicator sc = new ServerCommunicator(mockGsh);
+
+        sc.requestOnlyUIConfig();
+
+        ArgumentCaptor<CommandChain> argument = ArgumentCaptor.forClass(SingleReactorCommandChainImpl.class);
+        verify(mockGsh, times(1)).sendRequest(argument.capture());
+    }
+    @Test
+    //multi not ok
+    public void testRequestOnlyAdditionalConfigs(){
+        GiraServerHandler mockGsh = mock(GiraServerHandler.class);
+        ServerCommunicator sc = new ServerCommunicator(mockGsh);
+
+        sc.requestOnlyAdditionalConfigs();
+
+        ArgumentCaptor<CommandChain> argument = ArgumentCaptor.forClass(MultiReactorCommandChain.class);
+        verify(mockGsh, times(1)).sendRequest(argument.capture());
+    }
+    @Test
+    //not ok
+    public void testRequestSetValue(){
         GiraServerHandler mockGsh = mock(GiraServerHandler.class);
         ServerCommunicator sc = new ServerCommunicator(mockGsh);
         String testID = "TestID";
@@ -229,24 +175,14 @@ public class ServerCommunicatorTests {
         ResponseEntity<Command> myEntity = new ResponseEntity<>(setValueCommand, HttpStatus.OK);
         Mockito.when(mockGsh.sendRequest(ArgumentMatchers.any(ChangeValueCommand.class))).thenReturn(myEntity);
 
-        CompletableFuture<Void> y = CompletableFuture.runAsync(new Runnable() {
-            @Override
-            public void run() {
-                sc.requestSetValue(testID, value);
-            }
-        }).thenRun(new Runnable(){
-            @Override
-            public void run() {
-                ArgumentCaptor<ChangeValueCommand> argument = ArgumentCaptor.forClass(ChangeValueCommand.class);
-                verify(mockGsh, times(1)).sendRequest(argument.capture());
-            }
-        });
-        y.get();
+        sc.requestSetValue(testID, value);
+
+        ArgumentCaptor<ChangeValueCommand> argument = ArgumentCaptor.forClass(ChangeValueCommand.class);
+        verify(mockGsh, times(1)).sendRequest(argument.capture());
     }
-
+    @Test
     //multi not ok
-
-    public void testRequestGetValue() throws ExecutionException, InterruptedException {
+    public void testRequestGetValue(){
         GiraServerHandler mockGsh = mock(GiraServerHandler.class);
         ServerCommunicator sc = new ServerCommunicator(mockGsh);
         String testID = "TestID";
@@ -260,45 +196,23 @@ public class ServerCommunicatorTests {
         List<String> requestList = new ArrayList<>();
         requestList.add(testID);
 
-        CompletableFuture<Void> y = CompletableFuture.runAsync(new Runnable() {
-            @Override
-            public void run() {
-                sc.requestGetValue(requestList);
-            }
-        }).thenRun(new Runnable(){
-            @Override
-            public void run() {
-                assertThat(Repository.getInstance().getStatusGetValueMap().getValue()).containsEntry(testID, value);
-                ArgumentCaptor<Command> argument = ArgumentCaptor.forClass(GetValueCommand.class);
-                verify(mockGsh, times(1)).sendRequest(argument.capture());
-            }
-        });
-        y.get();
+        sc.requestGetValue(requestList);
+
+        assertThat(Repository.getInstance().getStatusGetValueMap().getValue()).containsEntry(testID, value);
+        ArgumentCaptor<Command> argument = ArgumentCaptor.forClass(GetValueCommand.class);
+        verify(mockGsh, times(1)).sendRequest(argument.capture());
     }
 
-    //multi/single not ok
-
-    public void testUnsubscribeFromEverything() throws ExecutionException, InterruptedException {
+    //not ok
+    public void testUnsubscribeFromEverything(){
         GiraServerHandler mockGsh = mock(GiraServerHandler.class);
         ServerCommunicator sc = new ServerCommunicator(mockGsh);
 
-        CompletableFuture<Void> y = CompletableFuture.runAsync(new Runnable() {
-            @Override
-            public void run() {
-                sc.unregisterFromServers();
-                System.out.print("Hello1");
-            }
-        }).thenRun(new Runnable(){
-            @Override
-            public void run() {
-                ArgumentCaptor<Command> argument1 = ArgumentCaptor.forClass(UnregisterClientCommand.class);
-                ArgumentCaptor<Command> argument2 = ArgumentCaptor.forClass(UnRegisterCallbackServerAtGiraServer.class);
-                verify(mockGsh, times(1)).sendRequest(argument1.capture());
-                verify(mockGsh, times(2)).sendRequest(argument2.capture());
-                System.out.print("Hello2");
-            }
-        });
-        y.get();
-        System.out.print("Hello3");
+        sc.unregisterFromServers();
+
+        ArgumentCaptor<Command> argument1 = ArgumentCaptor.forClass(UnregisterClientCommand.class);
+        ArgumentCaptor<Command> argument2 = ArgumentCaptor.forClass(UnRegisterCallbackServerAtGiraServer.class);
+        verify(mockGsh, times(1)).sendRequest(argument1.capture());
+        verify(mockGsh, times(1)).sendRequest(argument2.capture());
     }
 }
