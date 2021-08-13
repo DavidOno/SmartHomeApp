@@ -96,7 +96,7 @@ public class ServerCommunicatorTests {
         assertThat(sc.getGiraServerConnectionStatus()).isEqualTo(event);
     }
 
-    //ok
+    //not ok
     public void testRetryConnectionToServerGiraFail(){
         ServerConnectionEvent event = ServerConnectionEvent.GIRA_CONNECTION_FAIL;
         GiraServerHandler mockGsh = mock(GiraServerHandler.class);
@@ -108,7 +108,7 @@ public class ServerCommunicatorTests {
         assertThat(sc.getGiraServerConnectionStatus()).isEqualTo(ServerConnectionEvent.GIRA_CONNECTION_FAIL);
     }
 
-    //multi not ok
+    //not ok
     public void testRetryConnectionToServerCallbackFail(){
         ServerConnectionEvent event = ServerConnectionEvent.CALLBACK_CONNECTION_FAIL;
         GiraServerHandler mockGsh = mock(GiraServerHandler.class);
@@ -120,8 +120,8 @@ public class ServerCommunicatorTests {
         assertThat(sc.getCallbackServerConnectionStatus()).isEqualTo(ServerConnectionEvent.CALLBACK_CONNECTION_ACTIVE);
     }
 
+    //ok
     @Test
-    //multi not ok
     public void testConnectToGira(){
         GiraServerHandler mockGsh = mock(GiraServerHandler.class);
         ServerCommunicator sc = new ServerCommunicator(mockGsh);
@@ -131,8 +131,8 @@ public class ServerCommunicatorTests {
         assertThat(sc.getGiraServerConnectionStatus()).isEqualTo(ServerConnectionEvent.GIRA_CONNECTION_ACTIVE);
     }
 
+    //ok
     @Test
-    //multi not ok
     public void testConnectToCallbackServer(){
         GiraServerHandler mockGsh = mock(GiraServerHandler.class);
         ServerCommunicator sc = new ServerCommunicator(mockGsh);
@@ -141,8 +141,9 @@ public class ServerCommunicatorTests {
 
         assertThat(sc.getCallbackServerConnectionStatus()).isEqualTo(ServerConnectionEvent.CALLBACK_CONNECTION_ACTIVE);
     }
+
+    //ok
     @Test
-    //multi not ok
     public void testRequestOnlyUIConfig() throws InterruptedException {
         GiraServerHandler mockGsh = mock(GiraServerHandler.class);
         ServerCommunicator sc = new ServerCommunicator(mockGsh);
@@ -152,8 +153,9 @@ public class ServerCommunicatorTests {
         ArgumentCaptor<CommandChain> argument = ArgumentCaptor.forClass(SingleReactorCommandChainImpl.class);
         verify(mockGsh, times(1)).sendRequest(argument.capture());
     }
+
+    //ok
     @Test
-    //multi not ok
     public void testRequestOnlyAdditionalConfigs(){
         GiraServerHandler mockGsh = mock(GiraServerHandler.class);
         ServerCommunicator sc = new ServerCommunicator(mockGsh);
@@ -163,8 +165,9 @@ public class ServerCommunicatorTests {
         ArgumentCaptor<CommandChain> argument = ArgumentCaptor.forClass(MultiReactorCommandChain.class);
         verify(mockGsh, times(1)).sendRequest(argument.capture());
     }
+
+    //ok
     @Test
-    //not ok
     public void testRequestSetValue(){
         GiraServerHandler mockGsh = mock(GiraServerHandler.class);
         ServerCommunicator sc = new ServerCommunicator(mockGsh);
@@ -180,8 +183,9 @@ public class ServerCommunicatorTests {
         ArgumentCaptor<ChangeValueCommand> argument = ArgumentCaptor.forClass(ChangeValueCommand.class);
         verify(mockGsh, times(1)).sendRequest(argument.capture());
     }
+
+    //ok
     @Test
-    //multi not ok
     public void testRequestGetValue(){
         GiraServerHandler mockGsh = mock(GiraServerHandler.class);
         ServerCommunicator sc = new ServerCommunicator(mockGsh);
@@ -203,7 +207,8 @@ public class ServerCommunicatorTests {
         verify(mockGsh, times(1)).sendRequest(argument.capture());
     }
 
-    //not ok
+    //ok
+    @Test
     public void testUnsubscribeFromEverything(){
         GiraServerHandler mockGsh = mock(GiraServerHandler.class);
         ServerCommunicator sc = new ServerCommunicator(mockGsh);

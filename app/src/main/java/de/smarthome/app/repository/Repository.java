@@ -107,7 +107,6 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         serverCommunicator.setGiraServerConnectionStatus(ServerConnectionEvent.GIRA_CONNECTION_FAIL);
         serverCommunicator.setCallbackServerConnectionStatus(ServerConnectionEvent.CALLBACK_CONNECTION_FAIL);
         retryConnectionToServerAfterFailure();
-
     }
 
     public void setLoginStatus(boolean update){
@@ -382,14 +381,17 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
      * Unsubscribes and unregisters the application from all services
      */
     public void unsubscribeFromEverything() {
-        try {
-            SmartHomeFMS.getValueObserver().unsubscribe(this);
-            SmartHomeFMS.getServiceObserver().unsubscribe(this);
-            serverCommunicator.unregisterFromServers();
-            beaconObserver.unsubscribe();
-        }catch (Exception e){
-            Log.d(TAG, e.getMessage());
-            e.printStackTrace();
-        }
+        Thread connectToGiraThread = new Thread(() -> {
+            try {
+                SmartHomeFMS.getValueObserver().unsubscribe(this);
+                SmartHomeFMS.getServiceObserver().unsubscribe(this);
+                serverCommunicator.unregisterFromServers();
+                beaconObserver.unsubscribe();
+            }catch (Exception e){
+                Log.d(TAG, e.getMessage());
+                e.printStackTrace();
+            }
+        });
+        serverCommunicator.addToExecutorService(connectToGiraThread);
     }
 }

@@ -117,16 +117,10 @@ public class ServerCommunicator {
      */
     public void retryConnectionToServer(){
         if(giraServerConnectionStatus == ServerConnectionEvent.GIRA_CONNECTION_FAIL){
-            Thread connectToGiraThread = new Thread(() -> {
-                getSavedCredentialsForLoginAtGira();
-            });
-            addToExecutorService(connectToGiraThread);
+            addToExecutorService(new Thread(this::getSavedCredentialsForLoginAtGira));
         }
         if(callbackServerConnectionStatus == ServerConnectionEvent.CALLBACK_CONNECTION_FAIL){
-            Thread connectToCallbackServerThread = new Thread(() -> {
-                connectToCallbackServer();
-            });
-            addToExecutorService(connectToCallbackServerThread);
+            addToExecutorService(new Thread(this::connectToCallbackServer));
         }
     }
 
@@ -272,11 +266,8 @@ public class ServerCommunicator {
      * Unregisters the application from gira and the callbackserver
      */
     public void unregisterFromServers() {
-        Thread unregisterFormServersThread = new Thread(() -> {
-            requestUnregisterClient();
-            requestUnregisterCallbackServerAtGiraServer();
-        });
-        addToExecutorService(unregisterFormServersThread);
+        requestUnregisterClient();
+        requestUnregisterCallbackServerAtGiraServer();
     }
 
     /**
