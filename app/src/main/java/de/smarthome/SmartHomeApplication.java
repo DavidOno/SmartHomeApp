@@ -104,7 +104,6 @@ public class SmartHomeApplication extends AppCompatActivity {
             if(aBoolean && !beaconDialogShown){
                     viewModel.setBeaconCheckFalse();
                     beaconDialogShown = true;
-                    //startBeaconDialog(viewModel.getBeaconLocation());
                     showBeaconSnackbar(viewModel.getBeaconLocation());
                 }
         });
@@ -129,7 +128,6 @@ public class SmartHomeApplication extends AppCompatActivity {
 
                     viewModel.confirmBeacon();
                     goToRoomFragment();
-                    //setStartFragment(R.id.roomOverviewFragment);
                 });
         snackbar.show();
         beaconDialogShown = false;

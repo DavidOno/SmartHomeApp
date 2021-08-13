@@ -1,6 +1,5 @@
 package de.smarthome.app.repository;
 
-import android.app.Application;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -52,13 +51,6 @@ public class ConfigContainer {
 
     private final MutableLiveData<Map<String, String>> statusUpdateMap = new MutableLiveData<>();
     private final MutableLiveData<Map<String, String>> statusGetValueMap = new MutableLiveData<>();
-
-    //TODO: Remove together with StorageWriter after testing
-    private Application parentApplication = null;
-    //TODO: Remove together with StorageWriter after testing
-    public void setParentApplication(Application parentApplication) {
-        this.parentApplication = parentApplication;
-    }
 
     /**
      * Sets the given function as selectedFunction and
@@ -246,7 +238,6 @@ public class ConfigContainer {
                 parent = parent.getParentLocation();
             }
         }
-        //InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(), "GIRA", "2. initFunctionMap\n");
         setFunctionMap(completeFunctionMap);
     }
 
@@ -320,7 +311,6 @@ public class ConfigContainer {
     }
 
     private void initDataPointMap(Function function) {
-        //InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(), "GIRA", "2. initDatapointMap\n");
         Map<Datapoint, Datapoint> newValue = new LinkedHashMap<>();
         if (functionMap != null && functionMap.getValue() != null && functionMap.getValue().get(function) != null) {
                 for (int i = 0; i < function.getDataPoints().size(); i++) {

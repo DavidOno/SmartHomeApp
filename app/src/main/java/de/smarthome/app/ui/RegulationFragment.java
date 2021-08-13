@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import de.smarthome.R;
-import de.smarthome.app.utility.InternalStorageWriter;
 import de.smarthome.app.viewmodel.RegulationViewModel;
 import de.smarthome.app.adapter.RegulationAdapter;
 
@@ -70,7 +69,6 @@ public class RegulationFragment extends Fragment {
 
     private void setDataPointObserver(RegulationAdapter adapter) {
         viewModel.getDataPointMap().observe(getViewLifecycleOwner(), datapointDatapointMap -> {
-            InternalStorageWriter.writeFileOnInternalStorage(this.getContext(), "GIRA", "5. Regulation Observer\n\n");
             viewModel.requestCurrentStatusValues();
             adapter.initialiseAdapter(datapointDatapointMap);
         });

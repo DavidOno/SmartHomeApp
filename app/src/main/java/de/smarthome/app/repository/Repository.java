@@ -1,7 +1,6 @@
 package de.smarthome.app.repository;
 
 import android.app.Application;
-import android.content.Context;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -83,7 +82,6 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     public void setParentApplication(Application parentApplication) {
         this.parentApplication = parentApplication;
         serverCommunicator.setParentApplication(parentApplication);
-        configContainer.setParentApplication(parentApplication);
     }
 
     public void serverConnectionEvent(ServerConnectionEvent type){
@@ -244,8 +242,6 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
                 }
             }
         }
-        //InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(),
-        //        "GIRA", "4.1 Repo RequestGetValueFunction, size: " + requestList.size() + "\n");
         return requestList;
     }
 
@@ -265,8 +261,6 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
                 requestList.add(dataPointMap.get(dp).getID());
             }
         }
-        //InternalStorageWriter.writeFileOnInternalStorage(parentApplication.getApplicationContext(),
-        //"GIRA", "4.1 Repo RequestGetValueDataPoint, size: " + requestList.size() + "\n");
         return requestList;
     }
 

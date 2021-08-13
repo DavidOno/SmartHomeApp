@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import de.smarthome.R;
-import de.smarthome.app.utility.InternalStorageWriter;
 import de.smarthome.app.viewmodel.HomeOverviewViewModel;
 import de.smarthome.app.adapter.HomeOverviewAdapter;
 
@@ -59,7 +58,6 @@ public class HomeOverviewFragment extends Fragment {
     private void setOnClickListener() {
         adapter.setOnItemClickListener(location -> {
             if(viewModel.isChannelConfigLoaded()) {
-                InternalStorageWriter.writeFileOnInternalStorage(this.getContext(), "GIRA", "1. Room Selected\n");
                 viewModel.initSelectedLocation(location);
                 navigateToRoomOverviewFragment();
             }

@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import de.smarthome.R;
-import de.smarthome.app.utility.InternalStorageWriter;
 import de.smarthome.app.viewmodel.RoomOverviewViewModel;
 import de.smarthome.app.adapter.RoomOverviewAdapter;
 
@@ -58,12 +57,18 @@ public class RoomOverviewFragment extends Fragment {
 
     private void setFunctionObserver(RoomOverviewAdapter adapter) {
         viewViewModel.getFunctionMap().observe(getViewLifecycleOwner(), functionFunctionMap -> {
-            if(viewViewModel.getSelectedLocation() != null)
-                requireActivity().setTitle(viewViewModel.getSelectedLocation().getName());
+            setFragmentTitle();
             viewViewModel.requestCurrentStatusValues();
-            InternalStorageWriter.writeFileOnInternalStorage(this.getContext(), "GIRA", "5. RoomOverview Observer\n\n");
             adapter.initialiseAdapter(functionFunctionMap);
         });
+    }
+
+    private void setFragmentTitle() {
+        if(viewViewModel.getSelectedLocation() != null){
+            requireActivity().setTitle(viewViewModel.getSelectedLocation().getName());
+        }else{
+            requireActivity().setTitle(R.string.room_fragment_title_default);
+        }
     }
 
     private void setStatusUpdateObserver(RoomOverviewAdapter adapter) {
@@ -80,7 +85,6 @@ public class RoomOverviewFragment extends Fragment {
 
     private void setOnClickListener(RoomOverviewAdapter adapter) {
         adapter.setOnItemClickListener(function -> {
-            InternalStorageWriter.writeFileOnInternalStorage(this.getContext(), "GIRA", "1. Function Selected\n");
             viewViewModel.setSelectedFunction(function);
             navigateToRegulationFragment();
         });
