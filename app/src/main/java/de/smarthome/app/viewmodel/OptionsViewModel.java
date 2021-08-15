@@ -10,6 +10,7 @@ import com.google.android.gms.auth.api.credentials.CredentialRequest;
 import com.google.android.gms.auth.api.credentials.Credentials;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
 
+import de.smarthome.SmartHomeApplication;
 import de.smarthome.app.repository.Repository;
 import de.smarthome.app.utility.ToastUtility;
 
@@ -42,19 +43,22 @@ public class OptionsViewModel extends AndroidViewModel {
      * Requests credentials saved by Google and deletes them by Google on successful retrieval
      */
     public void getDataFromGoogleAndDelete() {
-        repository.setLoginStatus(false);
-        CredentialRequest credentialRequest = new CredentialRequest.Builder()
-                .setPasswordLoginSupported(true)
-                .build();
+        Thread getCredentialFromGoogleAndDeleteThread = new Thread(() -> {
+            repository.setLoginStatus(false);
+            CredentialRequest credentialRequest = new CredentialRequest.Builder()
+                    .setPasswordLoginSupported(true)
+                    .build();
 
-        CredentialsClient credentialsClient = Credentials.getClient(getApplication());
-        credentialsClient.request(credentialRequest).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                deleteCredential(task.getResult().getCredential());
-            }else{
-                toastUtility.prepareToast("Not able to retrieve Login data.");
-            }
+            CredentialsClient credentialsClient = Credentials.getClient(getApplication());
+            credentialsClient.request(credentialRequest).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    deleteCredential(task.getResult().getCredential());
+                }else{
+                    toastUtility.prepareToast("Not able to retrieve Login data.");
+                }
+            });
         });
+        SmartHomeApplication.EXECUTOR_SERVICE.execute(getCredentialFromGoogleAndDeleteThread);
     }
 
     public void restartConnectionToServer() {

@@ -119,7 +119,7 @@ public class SmartHomeApplication extends AppCompatActivity {
 
     private void showBeaconSnackbar(Location location) {
         LinearLayout usedLayout = findViewById(R.id.smartHomeApplicationLinearLayout);
-        int snackBarDuration = 10000;
+        int snackBarDuration = 20000;
         Snackbar snackbar = Snackbar.make(usedLayout,
                 "Switch to " + location.getName(), snackBarDuration)
                 .setAction("ACCEPT", v -> {
@@ -283,18 +283,21 @@ public class SmartHomeApplication extends AppCompatActivity {
     }
 
     private void getSavedCredentials() {
-        CredentialRequest credentialRequest = new CredentialRequest.Builder()
-                .setPasswordLoginSupported(true)
-                .build();
+        Thread getSavedCredentialsFromGoogleThread = new Thread(() -> {
+            CredentialRequest credentialRequest = new CredentialRequest.Builder()
+                    .setPasswordLoginSupported(true)
+                    .build();
 
-        CredentialsClient credentialsClient = Credentials.getClient(this);
-        credentialsClient.request(credentialRequest).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                onCredentialRetrieved(task.getResult().getCredential());
-            }else{
-                setStartFragment(R.id.loginFragment);
-            }
+            CredentialsClient credentialsClient = Credentials.getClient(this);
+            credentialsClient.request(credentialRequest).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    onCredentialRetrieved(task.getResult().getCredential());
+                } else {
+                    setStartFragment(R.id.loginFragment);
+                }
+            });
         });
+        EXECUTOR_SERVICE.execute(getSavedCredentialsFromGoogleThread);
     }
 
     private void onCredentialRetrieved(Credential credential) {
