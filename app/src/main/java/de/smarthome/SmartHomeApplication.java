@@ -37,10 +37,14 @@ import java.util.concurrent.Executors;
 
 import de.smarthome.app.model.Location;
 import de.smarthome.app.ui.HomeOverviewFragment;
+import de.smarthome.app.ui.HomeOverviewFragmentDirections;
 import de.smarthome.app.ui.LoginFragment;
 import de.smarthome.app.ui.OptionsFragment;
+import de.smarthome.app.ui.OptionsFragmentDirections;
 import de.smarthome.app.ui.RegulationFragment;
+import de.smarthome.app.ui.RegulationFragmentDirections;
 import de.smarthome.app.ui.RoomOverviewFragment;
+import de.smarthome.app.ui.RoomOverviewFragmentDirections;
 import de.smarthome.app.utility.ToastUtility;
 import de.smarthome.app.viewmodel.SmartHomeApplicationViewModel;
 
@@ -238,13 +242,13 @@ public class SmartHomeApplication extends AppCompatActivity {
         Fragment currentFragment = navHostFragment.getChildFragmentManager().getFragments().get(0);
 
         if (currentFragment.getClass().equals(HomeOverviewFragment.class)){
-            navController.navigate(R.id.action_homeOverviewFragment_to_roomOverviewFragment);
+            navController.navigate(HomeOverviewFragmentDirections.actionHomeOverviewFragmentToRoomOverviewFragment());
 
         }else if(currentFragment.getClass().equals(RegulationFragment.class)){
-            navController.navigate(R.id.action_regulationFragment_to_roomOverviewFragment);
+            navController.navigate(RegulationFragmentDirections.actionRegulationFragmentToRoomOverviewFragment());
 
         }else if(currentFragment.getClass().equals(OptionsFragment.class) ){
-            navController.navigate(R.id.action_optionsFragment_to_roomOverviewFragment);
+            navController.navigate(OptionsFragmentDirections.actionOptionsFragmentToRoomOverviewFragment());
         }
     }
 
@@ -261,24 +265,24 @@ public class SmartHomeApplication extends AppCompatActivity {
         Fragment currentFragment = navHostFragment.getChildFragmentManager().getFragments().get(0);
 
         if (currentFragment.getClass().equals(HomeOverviewFragment.class) && pressedMenuItem == R.id.action_settings){
-            navController.navigate(R.id.action_homeOverviewFragment_to_optionsFragment);
+            navController.navigate(HomeOverviewFragmentDirections.actionHomeOverviewFragmentToOptionsFragment());
 
         }else if(currentFragment.getClass().equals(RoomOverviewFragment.class)){
             if(pressedMenuItem == R.id.action_settings){
-                navController.navigate(R.id.action_roomOverviewFragment_to_optionsFragment);
+                navController.navigate(RoomOverviewFragmentDirections.actionRoomOverviewFragmentToOptionsFragment());
             }else if(pressedMenuItem == R.id.action_home_overview){
-                navController.navigate(R.id.action_roomOverviewFragment_to_HomeOverviewFragment);
+                navController.navigate(RoomOverviewFragmentDirections.actionRoomOverviewFragmentToHomeOverviewFragment());
             }
 
         }else if(currentFragment.getClass().equals(RegulationFragment.class)){
             if(pressedMenuItem == R.id.action_settings){
-                navController.navigate(R.id.action_regulationFragment_to_optionsFragment);
+                navController.navigate(RegulationFragmentDirections.actionRegulationFragmentToOptionsFragment());
             }else if(pressedMenuItem == R.id.action_home_overview){
-                navController.navigate(R.id.action_regulationFragment_to_HomeOverviewFragment);
+                navController.navigate(RegulationFragmentDirections.actionRegulationFragmentToHomeOverviewFragment());
             }
 
         }else if(currentFragment.getClass().equals(OptionsFragment.class) && pressedMenuItem == R.id.action_home_overview){
-            navController.navigate(R.id.action_optionsFragment_to_HomeOverviewFragment);
+            navController.navigate(OptionsFragmentDirections.actionOptionsFragmentToHomeOverviewFragment() );
         }
     }
 

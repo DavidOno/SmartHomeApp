@@ -312,7 +312,7 @@ public class ConfigContainer {
 
     private void initDataPointMap(Function function) {
         Map<Datapoint, Datapoint> newValue = new LinkedHashMap<>();
-        if (functionMap != null && functionMap.getValue() != null && functionMap.getValue().get(function) != null) {
+        if (functionMap.getValue() != null && functionMap.getValue().get(function) != null) {
                 for (int i = 0; i < function.getDataPoints().size(); i++) {
                     if (functionMap.getValue().get(function).getDataPoints().size() > i) {
                         newValue.put(function.getDataPoints().get(i), functionMap.getValue().get(function).getDataPoints().get(i));
@@ -423,22 +423,25 @@ public class ConfigContainer {
 
             ArrayList<Datapoint> dataPoints = new ArrayList<>();
             dataPoints.add(new Datapoint("aauy", "OnOff"));
-
             funcList1.add(new Function("Tischleuchte_schalten", "aael", "de.gira.schema.channels.Switch", "de.gira.schema.functions.Switch", dataPoints));
 
             ArrayList<Datapoint> dataPoints2 = new ArrayList<>();
             dataPoints2.add(new Datapoint("aajc", "OnOff"));
-            funcList1.add(new Function("Tischleuchte_Status", "aae4", "de.gira.schema.channels.Switch", "de.gira.schema.functions.Switch", dataPoints2));
+            funcList1.add(new Function("Tischleuchte_Status", "aae4", "de.gira.schema.channels.Switch2", "de.gira.schema.functions.Switch", dataPoints2));
 
 
             ArrayList<Datapoint> dataPoints3 = new ArrayList<>();
-            dataPoints3.add(new Datapoint("aat8", "OnOff"));
-            funcList1.add(new Function("Stehleuchte_schalten", "aaet", "de.gira.schema.channels.Switch", "de.gira.schema.functions.Switch", dataPoints3));
+            dataPoints3.add(new Datapoint("aajfa11", "OnOff"));
+            dataPoints3.add(new Datapoint("aajf11", "Current"));
+            dataPoints3.add(new Datapoint("aajfd11", "Set-Point"));
+            funcList1.add(new Function("Stehleuchte_schalten", "aaet", "de.gira.schema.channels.Switch2", "de.gira.schema.functions.Switch", dataPoints3));
 
 
             ArrayList<Datapoint> dataPoints4 = new ArrayList<>();
-            dataPoints4.add(new Datapoint("aajb", "Set-Point"));
-            funcList1.add(new Function("Stehleuchte_Status", "aae2", "de.gira.schema.channels.Switch", "de.gira.schema.functions.Switch", dataPoints4));
+            dataPoints4.add(new Datapoint("aajfa11", "OnOff"));
+            dataPoints4.add(new Datapoint("aajf11", "Current"));
+            dataPoints4.add(new Datapoint("aajfd11", "Set-Point"));
+            funcList1.add(new Function("Stehleuchte_Status", "aae2", "de.gira.schema.channels.Switch2", "de.gira.schema.functions.Switch", dataPoints4));
 
 
             ArrayList<Datapoint> dataPoints5 = new ArrayList<>();
@@ -513,6 +516,13 @@ public class ConfigContainer {
             channelDatapoints3.add(new ChannelDatapoint("Slat-Position", "Percent", "rwe"));
             Channel c3 = new Channel("de.gira.schema.channels.BlindWithPos", channelDatapoints3);
             channelList.add(c3);
+
+            List<ChannelDatapoint> channelDatapoints4 = new ArrayList<>();
+            channelDatapoints4.add(new ChannelDatapoint("OnOff", "Binary", "rwe"));
+            channelDatapoints4.add(new ChannelDatapoint("Current", "Float", "re"));
+            channelDatapoints4.add(new ChannelDatapoint("Set-Point", "Float", "rwe"));
+            Channel c4 = new Channel("de.gira.schema.channels.Switch2", channelDatapoints4);
+            channelList.add(c4);
 
             ChannelConfig output = new ChannelConfig(channelList);
             //Log.d(TAG, output.toString());

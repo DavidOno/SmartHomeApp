@@ -52,7 +52,7 @@ public class ServerCommunicator {
     private static final String TAG = "ServerCommunicator";
     private final ToastUtility toastUtility = ToastUtility.getInstance();
 
-    private static final String IP_OF_CALLBACK_SERVER = "192.168.132.222:9090";
+    private static final String IP_OF_CALLBACK_SERVER = "192.168.132.218:9090";
     private final ServerHandler serverHandler;
 
     private final MutableLiveData<Boolean> requestStatusLoginUser = new MutableLiveData<>();
@@ -282,7 +282,7 @@ public class ServerCommunicator {
             CredentialsClient credentialsClient = Credentials.getClient(parentApplication);
             credentialsClient.request(credentialRequest).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    connectToGira(task.getResult().getCredential().getId(),task.getResult().getCredential().getPassword());
+                    addToExecutorService(new Thread(() -> connectToGira(task.getResult().getCredential().getId(),task.getResult().getCredential().getPassword())));
                 }else{
                     toastUtility.prepareToast("Not able to retrieve Login data from Google.");
                 }

@@ -161,17 +161,12 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
      * Initialises the beaconobserver so the repository can be updated
      */
     public synchronized void initBeaconObserver() {
-        try{
-            if(parentApplication != null && configContainer.getUIConfig() != null && configContainer.getBeaconLocations() != null){
-                beaconObserver = new BeaconObserverImplementation(parentApplication, parentApplication.getApplicationContext(),
-                        configContainer.getUIConfig(), configContainer.getBeaconLocations(),
-                        new DefaultBeaconManagerCreator());
-                beaconObserver.subscribe(this);
-                beaconObserver.init();
-                ToastUtility.getInstance().prepareToast(TAG + " BeaconObserver created");
-            }
-        }catch(Exception e){
-            ToastUtility.getInstance().prepareToast(TAG + " Crash initBeaconObserver");
+        if(parentApplication != null && configContainer.getUIConfig() != null && configContainer.getBeaconLocations() != null){
+            beaconObserver = new BeaconObserverImplementation(parentApplication, parentApplication.getApplicationContext(),
+                    configContainer.getUIConfig(), configContainer.getBeaconLocations(),
+                    new DefaultBeaconManagerCreator());
+            beaconObserver.subscribe(this);
+            beaconObserver.init();
         }
         setBeaconCheckFalse();
     }
@@ -192,11 +187,11 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     public void requestSetValue(String id, String value) {
-        serverCommunicator.requestSetValue(id, value);
+        serverCommunicator.addToExecutorService(new Thread(() -> serverCommunicator.requestSetValue(id, value)));
     }
 
     public void requestGetValue(List<String> ids) {
-        serverCommunicator.requestGetValue(ids);
+        serverCommunicator.addToExecutorService(new Thread(() -> serverCommunicator.requestGetValue(ids)));
     }
 
     public MutableLiveData<List<Location>> getLocationList() {
@@ -222,8 +217,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
                 requestList = requestCurrentDataPointValues(configContainer.getDataPointMap().getValue());
         }
         if(!requestList.isEmpty()){
-            List<String> finalRequestList = requestList;
-            serverCommunicator.addToExecutorService(new Thread(() -> requestGetValue(finalRequestList)));
+            requestGetValue(requestList);
         }
     }
 
@@ -313,18 +307,18 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
             switch (input) {
                 case STARTUP:
                     Log.d(TAG, "Server has started.");
-                    serverCommunicator.getSavedCredentialsForLoginAtGira();
+                    serverCommunicator.addToExecutorService(new Thread(() -> serverCommunicator.getSavedCredentialsForLoginAtGira()));
                     break;
                 case RESTART:
                     Log.d(TAG, "Server got restarted.");
                     break;
                 case UI_CONFIG_CHANGED:
                     Log.d(TAG, "UI_CONFIG_CHANGED");
-                    serverCommunicator.requestOnlyUIConfig();
+                    serverCommunicator.addToExecutorService(new Thread(() -> serverCommunicator.requestOnlyUIConfig()));
                     break;
                 case PROJECT_CONFIG_CHANGED:
                     Log.d(TAG, "PROJECT_CONFIG_CHANGED");
-                    serverCommunicator.requestOnlyAdditionalConfigs();
+                    serverCommunicator.addToExecutorService(new Thread(() -> serverCommunicator.requestOnlyAdditionalConfigs()));
                     break;
                 default:
                     Log.d(TAG, "Unknown CallBackServiceInputEvent");
@@ -343,18 +337,18 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
                 switch(serviceEvent.getEvent()) {
                     case STARTUP:
                         Log.d(TAG, "Server has started.");
-                        serverCommunicator.getSavedCredentialsForLoginAtGira();
+                        serverCommunicator.addToExecutorService(new Thread(() -> serverCommunicator.getSavedCredentialsForLoginAtGira()));
                         break;
                     case RESTART:
                         Log.d(TAG, "Server got restarted.");
                         break;
                     case UI_CONFIG_CHANGED:
                         Log.d(TAG, "UI_CONFIG_CHANGED");
-                        serverCommunicator.requestOnlyUIConfig();
+                        serverCommunicator.addToExecutorService(new Thread(() -> serverCommunicator.requestOnlyUIConfig()));
                         break;
                     case PROJECT_CONFIG_CHANGED:
                         Log.d(TAG, "PROJECT_CONFIG_CHANGED");
-                        serverCommunicator.requestOnlyAdditionalConfigs();
+                        serverCommunicator.addToExecutorService(new Thread(() -> serverCommunicator.requestOnlyAdditionalConfigs()));
                         break;
                     default:
                         Log.d(TAG, "Unknown CallBackServiceInputEvent");
@@ -371,7 +365,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
      */
     @Override
     public void update(Location newLocation) {
-        if(newLocation != configContainer.getSelectedLocation()){
+        if(!newLocation.equals(configContainer.getSelectedLocation())){
             beaconLocation = newLocation;
             beaconCheck.postValue(true);
         }
@@ -381,7 +375,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
      * Unsubscribes and unregisters the application from all services
      */
     public void unsubscribeFromEverything() {
-        Thread connectToGiraThread = new Thread(() -> {
+        Thread unsubscribeFromEverythingThread = new Thread(() -> {
             try {
                 SmartHomeFMS.getValueObserver().unsubscribe(this);
                 SmartHomeFMS.getServiceObserver().unsubscribe(this);
@@ -392,6 +386,6 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
                 e.printStackTrace();
             }
         });
-        serverCommunicator.addToExecutorService(connectToGiraThread);
+        serverCommunicator.addToExecutorService(unsubscribeFromEverythingThread);
     }
 }

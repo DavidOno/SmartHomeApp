@@ -73,6 +73,6 @@ public class HomeOverviewFragment extends Fragment {
 
     private void navigateToRoomOverviewFragment() {
         NavController navController = NavHostFragment.findNavController(this);
-        navController.navigate(R.id.action_homeOverviewFragment_to_roomOverviewFragment);
+        navController.navigate(HomeOverviewFragmentDirections.actionHomeOverviewFragmentToRoomOverviewFragment());
     }
 }

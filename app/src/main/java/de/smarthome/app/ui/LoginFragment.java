@@ -110,7 +110,7 @@ public class LoginFragment extends Fragment {
     private void navigateToHomeOverviewFragment() {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         NavController navController = NavHostFragment.findNavController(this);
-        navController.navigate(R.id.action_loginFragment_to_homeOverviewFragment);
+        navController.navigate(LoginFragmentDirections.actionLoginFragmentToHomeOverviewFragment());
     }
 
     private void findViewsByID(View view) {

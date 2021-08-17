@@ -103,6 +103,7 @@ public class RoomOverviewFragment extends Fragment {
 
     private void navigateToRegulationFragment() {
         NavController navController = NavHostFragment.findNavController(this);
-        navController.navigate(R.id.action_roomOverviewFragment_to_regulationFragment);
+        //navController.navigate(R.id.action_roomOverviewFragment_to_regulationFragment);
+        navController.navigate(RoomOverviewFragmentDirections.actionRoomOverviewFragmentToRegulationFragment());
     }
 }

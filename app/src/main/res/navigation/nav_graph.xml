@@ -40,7 +40,9 @@
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_optionsFragment_to_roomOverviewFragment"
-            app:destination="@id/roomOverviewFragment" />
+            app:destination="@id/roomOverviewFragment"
+            app:popUpTo="@id/roomOverviewFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/roomOverviewFragment"
@@ -75,6 +77,8 @@
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_regulationFragment_to_roomOverviewFragment"
-            app:destination="@id/roomOverviewFragment" />
+            app:destination="@id/roomOverviewFragment"
+            app:popUpTo="@id/roomOverviewFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>
