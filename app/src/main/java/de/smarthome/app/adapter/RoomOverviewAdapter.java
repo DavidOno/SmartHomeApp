@@ -1,5 +1,6 @@
 package de.smarthome.app.adapter;
 
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -9,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,8 +78,9 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
      */
     public void updateMultipleFunctionStatusValues(Map<String, String> newInput){
         if(newInput.size() == 1){
-            updateSingleFunctionStatusValue(newInput.keySet().iterator().next(),
-                    newInput.get(newInput.keySet().iterator().next()));
+            for(String key : newInput.keySet()){
+                updateSingleFunctionStatusValue(key, newInput.get(key));
+            }
         }else{
             notifyDataSetChanged();
             for(String key: newInput.keySet()) {

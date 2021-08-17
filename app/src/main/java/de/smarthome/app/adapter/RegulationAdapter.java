@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,8 +87,9 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
      */
     public void updateMultipleDatapointStatusValues(Map<String, String> newInput) {
         if (newInput.size() == 1) {
-            updateSingleDatapointStatusValue(newInput.keySet().iterator().next(),
-                    newInput.get(newInput.keySet().iterator().next()));
+            for(String key : newInput.keySet()){
+                updateSingleDatapointStatusValue(key, newInput.get(key));
+            }
         } else {
             notifyDataSetChanged();
             for (String key : newInput.keySet()) {
