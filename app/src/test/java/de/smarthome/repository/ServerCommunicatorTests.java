@@ -2,15 +2,11 @@ package de.smarthome.repository;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
@@ -18,13 +14,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
-import de.smarthome.SmartHomeApplication;
 import de.smarthome.app.model.responses.GetValueResponse;
 import de.smarthome.app.model.responses.UID_Value;
 import de.smarthome.app.repository.Repository;
@@ -94,30 +84,6 @@ public class ServerCommunicatorTests {
         sc.serverConnectionEvent(event);
 
         assertThat(sc.getGiraServerConnectionStatus()).isEqualTo(event);
-    }
-
-    //not ok
-    public void testRetryConnectionToServerGiraFail(){
-        ServerConnectionEvent event = ServerConnectionEvent.GIRA_CONNECTION_FAIL;
-        GiraServerHandler mockGsh = mock(GiraServerHandler.class);
-        ServerCommunicator sc = new ServerCommunicator(mockGsh);
-        sc.setGiraServerConnectionStatus(event);
-
-        sc.retryConnectionToServer();
-
-        assertThat(sc.getGiraServerConnectionStatus()).isEqualTo(ServerConnectionEvent.GIRA_CONNECTION_FAIL);
-    }
-
-    //not ok
-    public void testRetryConnectionToServerCallbackFail(){
-        ServerConnectionEvent event = ServerConnectionEvent.CALLBACK_CONNECTION_FAIL;
-        GiraServerHandler mockGsh = mock(GiraServerHandler.class);
-        ServerCommunicator sc = new ServerCommunicator(mockGsh);
-        sc.setCallbackServerConnectionStatus(event);
-
-        sc.retryConnectionToServer();
-
-        assertThat(sc.getCallbackServerConnectionStatus()).isEqualTo(ServerConnectionEvent.CALLBACK_CONNECTION_ACTIVE);
     }
 
     //ok

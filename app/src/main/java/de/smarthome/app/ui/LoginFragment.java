@@ -32,9 +32,6 @@ public class LoginFragment extends Fragment {
     private EditText editTextPwd;
     private Button buttonLogin;
 
-    //TODO: Remove at the end of testing
-    private Button buttonDummy;
-
     private String userName;
     private String password;
 
@@ -52,12 +49,7 @@ public class LoginFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         requireActivity().setTitle(R.string.title_login_fragment);
-
         buttonLogin.setOnClickListener(v -> registerNewUser());
-
-        //TODO: Remove at the end of testing
-        buttonDummy.setOnClickListener(v -> navigateToHomeOverviewFragment());
-
         setLoginStatusObserver();
     }
 
@@ -117,8 +109,5 @@ public class LoginFragment extends Fragment {
         editTextUserName = view.findViewById(R.id.editText_username);
         editTextPwd = view.findViewById(R.id.editText_password);
         buttonLogin = view.findViewById(R.id.button_login);
-
-        //TODO: Remove at the end of testing
-        buttonDummy = view.findViewById(R.id.button_dummy);
     }
 }

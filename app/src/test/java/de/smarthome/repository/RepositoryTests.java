@@ -9,7 +9,6 @@ import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -34,8 +33,6 @@ import de.smarthome.app.repository.Repository;
 import de.smarthome.app.repository.ServerCommunicator;
 import de.smarthome.app.repository.StatusRequestType;
 import de.smarthome.app.repository.responsereactor.ServerConnectionEvent;
-import de.smarthome.command.Command;
-import de.smarthome.command.impl.GetValueCommand;
 import de.smarthome.server.SmartHomeFMS;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -60,11 +57,11 @@ public class RepositoryTests {
         Repository.destroyInstance();
     }
 
-    //ok?
+    //ok
     @Test
     public void testRestartConnectionToServer(){
-        MutableLiveData<Boolean> x = new MutableLiveData<>(true);
-        Mockito.when(mockSc.getServerConnectionStatus()).thenReturn(x);
+        MutableLiveData<Boolean> returnLiveData = new MutableLiveData<>(true);
+        Mockito.when(mockSc.getServerConnectionStatus()).thenReturn(returnLiveData);
         Mockito.when(mockSc.getGiraServerConnectionStatus()).thenReturn(ServerConnectionEvent.GIRA_CONNECTION_FAIL);
         Mockito.when(mockSc.getCallbackServerConnectionStatus()).thenReturn(ServerConnectionEvent.CALLBACK_CONNECTION_FAIL);
 
@@ -97,11 +94,10 @@ public class RepositoryTests {
         assertThat(r.getBeaconCheck().getValue()).isFalse();
     }
 
+    //ok
     @Test
     public void testRequestRegisterUser(){
         Credential mockCredential = mock(Credential.class);
-        //Mockito.when(mockCredential.getId()).thenReturn("ID");
-        //Mockito.when(mockCredential.getPassword()).thenReturn("password");
 
         r.requestRegisterUser(mockCredential);
 
@@ -114,6 +110,7 @@ public class RepositoryTests {
         assertThat(r.getStatusUpdateMap().getValue()).containsEntry(testId, value);
     }
 
+    //ok
     @Test
     public void testRequestCurrentStatusValuesWithEmptyLists(){
         r.requestCurrentStatusValues(StatusRequestType.FUNCTION);
@@ -123,8 +120,7 @@ public class RepositoryTests {
         verify(mockSc,  times(0)).getSavedCredentialsForLoginAtGira();
     }
 
-    //TODO: Remove or rework assertions
-    //TODO: Add something to verify result
+    //ok
     @Test
     public void testRequestCurrentStatusValuesFunction(){
         LinkedList<String> functionIdList = new LinkedList<>();
@@ -169,11 +165,9 @@ public class RepositoryTests {
         resultList.add("4");
 
         verify(mockSc,  times(1)).addToExecutorService(ArgumentMatchers.any(Thread.class));
-        //verify(mockSc,  times(1)).requestGetValue(resultList);
     }
 
-    //TODO: Remove or rework assertions
-    //TODO: Add something to verify result
+    //ok
     @Test
     public void testRequestCurrentStatusValuesDataPoint() throws InterruptedException {
         LinkedList<String> functionIdList = new LinkedList<>();
@@ -205,7 +199,6 @@ public class RepositoryTests {
         resultList.add("2");
 
         verify(mockSc,  times(1)).addToExecutorService(ArgumentMatchers.any(Thread.class));
-        //verify(mockSc,  times(1)).requestGetValue(resultList);
     }
 
     //ok
@@ -220,24 +213,22 @@ public class RepositoryTests {
         assertThat(r.getStatusUpdateMap().getValue()).containsEntry(testId, value);
     }
 
-    //TODO: Remove or rework assertions
+    //ok
     @Test
     public void testUpdateCallbackValueInputWithEvent(){
         CallbackValueInput callbackValueInput = new CallbackValueInput(0, "token", null, null, "STARTUP");
         r.update(callbackValueInput);
-        //verify(mockSc,  times(1)).getSavedCredentialsForLoginAtGira();
 
         callbackValueInput = new CallbackValueInput(0, "token", null, null, "UICONFIGCHANGED");
         r.update(callbackValueInput);
-        //verify(mockSc,  times(1)).requestOnlyUIConfig();
 
         callbackValueInput = new CallbackValueInput(0, "token", null, null, "PROJECTCONFIGCHANGED");
         r.update(callbackValueInput);
-        //verify(mockSc,  times(1)).requestOnlyAdditionalConfigs();
+
         verify(mockSc,  times(3)).addToExecutorService(ArgumentMatchers.any(Thread.class));
     }
 
-    //TODO: Remove or rework assertions
+
     @Test
     public void testUpdateCallBackServiceInput(){
         List<ServiceEvent> eventList = new ArrayList<>();
@@ -247,9 +238,6 @@ public class RepositoryTests {
         CallBackServiceInput callBackServiceInput = new CallBackServiceInput(0, "token",  eventList);
 
         r.update(callBackServiceInput);
-        //verify(mockSc,  times(1)).getSavedCredentialsForLoginAtGira();
-        //verify(mockSc,  times(1)).requestOnlyUIConfig();
-        //verify(mockSc,  times(1)).requestOnlyAdditionalConfigs();
         verify(mockSc,  times(3)).addToExecutorService(ArgumentMatchers.any(Thread.class));
     }
 

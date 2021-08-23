@@ -17,7 +17,6 @@ import de.smarthome.app.model.configs.BoundariesConfig;
 import de.smarthome.app.model.configs.BoundaryDataPoint;
 import de.smarthome.app.model.responses.Events;
 import de.smarthome.app.repository.responsereactor.ServerConnectionEvent;
-import de.smarthome.app.utility.ToastUtility;
 import de.smarthome.beacons.BeaconLocations;
 import de.smarthome.beacons.BeaconObserverImplementation;
 import de.smarthome.beacons.BeaconObserverSubscriber;
@@ -51,11 +50,6 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     private Application parentApplication;
     private Location beaconLocation = null;
     private final MutableLiveData<Boolean> beaconCheck = new MutableLiveData<>();
-
-    //TODO: Remove after Testing
-    public void fillWithDummyValues(){
-        configContainer.fillWithDummyValueAllConfigs();
-    }
 
     private Repository(){}
 

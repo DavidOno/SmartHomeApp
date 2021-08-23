@@ -2,13 +2,14 @@ package de.smarthome.repository;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 
-import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 import de.smarthome.app.model.Datapoint;
 import de.smarthome.app.model.Function;
@@ -18,8 +19,9 @@ import de.smarthome.app.model.configs.BoundariesConfig;
 import de.smarthome.app.model.configs.Boundary;
 import de.smarthome.app.model.configs.BoundaryDataPoint;
 import de.smarthome.app.repository.ConfigContainer;
-import de.smarthome.app.repository.Repository;
 import de.smarthome.app.utility.ToastUtility;
+import de.smarthome.beacons.BeaconLocation;
+import de.smarthome.beacons.BeaconLocations;
 
 import static org.mockito.Mockito.mock;
 
@@ -287,8 +289,8 @@ public class ConfigContainerTests {
         ConfigContainer cc = setUpConfigContainerWithEmptyUIConfig();
         LinkedList<String> functionIdList = new LinkedList<>();
 
-        LinkedList<Location> loactionList = new LinkedList<>();
-        Location location = new Location("l1", "1","dummy", functionIdList, loactionList,"dummy");
+        LinkedList<Location> locationList = new LinkedList<>();
+        Location location = new Location("l1", "1","dummy", functionIdList, locationList,"dummy");
         cc.initSelectedLocation(location);
 
         UIConfig mockUIConfig = mock(UIConfig.class);
@@ -298,6 +300,7 @@ public class ConfigContainerTests {
         assertThat(cc.getSelectedLocation()).isEqualTo(location);
     }
 
+    //ok
     @Test
     public void testInitUiConfigSelectedFunctionNotContained(){
         ConfigContainer cc = setUpConfigContainerWithEmptyUIConfig();
@@ -316,6 +319,7 @@ public class ConfigContainerTests {
         assertThat(ToastUtility.getInstance().getNewToast().getValue()).isTrue();
     }
 
+    //ok
     @Test
     public void testInitFunctionMapWithParentLocation(){
         ConfigContainer cc = setUpConfigContainerWithEmptyUIConfig();
@@ -343,5 +347,23 @@ public class ConfigContainerTests {
         assertThat(cc.getSelectedLocation()).isEqualTo(locationChild);
         assertThat(cc.getLocationList().getValue()).hasSize(2);
         assertThat(cc.getFunctionMap().getValue()).hasSize(2);
+    }
+
+    //ok
+    @Test
+    public void testInitBeaconLocationWithChangedBeaconLocations(){
+        List<BeaconLocation> bl = new ArrayList<>();
+        BeaconLocations bls = new BeaconLocations(bl);
+
+        ConfigContainer cc = new ConfigContainer();
+        cc.initBeaconLocations(bls);
+
+        List<BeaconLocation> changedBl = new ArrayList<>();
+        changedBl.add(new BeaconLocation("roomUID", "BeaconID"));
+        BeaconLocations changedBls = new BeaconLocations(changedBl);
+
+        cc.initBeaconLocations(changedBls);
+
+        assertThat(cc.getBeaconLocations()).isEqualTo(changedBls);
     }
 }
