@@ -51,7 +51,6 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="10dp"
-                android:text="@string/light_regulation"
                 android:maxLines="1"
                 android:ellipsize="end"
                 android:textColor="@color/textPrimaryColor"

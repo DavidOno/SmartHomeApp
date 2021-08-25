@@ -25,13 +25,17 @@
     <string name="option_value">Value</string>
     <string name="option_description">Description</string>
     <string name="room_name">Room Name</string>
-    <string name="light_regulation">Light_regulation</string>
     <string name="item_status">Status</string>
     <string name="arrow_description">Shows more options</string>
-
     <string name="title_options_fragment">Option</string>
     <string name="title_login_fragment">Login</string>
     <string name="options_fragment_button_logout">Logout</string>
     <string name="options_fragment_button_restart_connection">Restart Connection</string>
     <string name="room_fragment_title_default">No Room Selected</string>
+    <string name="snackbar_beacon_layout">Switch to </string>
+    <string name="snackbar_beacon_button">ACCEPT</string>
+    <string name="snackbar_beacon_result">Switch successful</string>
+    <string name="snackbar_connection_layout">Connection to Server failed.</string>
+    <string name="snackbar_connection_button">RETRY</string>
+    <string name="snackbar_connection_result">Trying to connect to Server...</string>
 </resources>

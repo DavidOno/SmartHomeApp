@@ -1,7 +1,6 @@
 package de.smarthome.app.adapter.viewholder.regulation;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -17,15 +16,15 @@ import de.smarthome.app.adapter.RegulationAdapter;
 
 /**
  * RecyclerViewHolder for the regulationAdapter.
- * Used to display a datapoint that get a string containing a boolean back as status value
+ * Used to display a datapoint that is type binary and has read-write access
  */
-public class SwitchViewHolder extends RegulationAdapter.ViewHolder{
+public class SwitchDatapointViewHolder extends RegulationAdapter.DatapointViewHolder {
     private SwitchCompat binarySwitch;
     private TextView textViewName;
 
-    public SwitchViewHolder(@NonNull ViewGroup parent,
-                            @NonNull RegulationAdapter.OnItemClickListener onSwitchClickListener,
-                            @NonNull RegulationAdapter adapter) {
+    public SwitchDatapointViewHolder(@NonNull ViewGroup parent,
+                                     @NonNull RegulationAdapter.OnItemClickListener onSwitchClickListener,
+                                     @NonNull RegulationAdapter adapter) {
         super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_switch, parent, false));
 
         findViewsByID();

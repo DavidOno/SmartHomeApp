@@ -37,7 +37,7 @@ import de.smarthome.server.gira.GiraServerHandler;
 /**
  * This class handles the communication of the application with the servers through the servercommunicator class and
  * the storage of the data with the configcontainer class.
- * Additionally it subscribes to the firebasemessagingservice and the beaconobserver to handle their updates.
+ * Additionally it subscribes to the firebasemessagingservice and the beaconobserver and handles their updates.
  */
 public class Repository implements CallbackSubscriber, BeaconObserverSubscriber {
     private static final String TAG = "Repository";
@@ -79,7 +79,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     public void setServerConnectionEvent(ServerConnectionEvent type){
-        serverCommunicator.serverConnectionEvent(type);
+        serverCommunicator.setServerConnectionEvent(type);
     }
 
     public MutableLiveData<Boolean> getServerConnectionStatus(){
@@ -108,7 +108,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     public LiveData<Boolean> getLoginStatus() {
-        return serverCommunicator.getLoginStatusForUser();
+        return serverCommunicator.getLoginStatus();
     }
 
     public void initSelectedFunction(Function function) {
@@ -152,7 +152,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     /**
-     * Initialises the beaconobserver so the repository can be updated
+     * Initialises the beaconobserver so the repository can get updates
      */
     public synchronized void initBeaconObserver() {
         if(parentApplication != null && configContainer.getUIConfig() != null && configContainer.getBeaconLocations() != null){
@@ -166,7 +166,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     /**
-     * Starts a connection to gira and callbackserver and subscribes the repository to the firebasemessagingservice
+     * Starts a connection to the gira server and callbackserver and subscribes the repository to the firebasemessagingservice
      * @param credential User credentials for the registration at gira
      */
     public void requestRegisterUser(Credential credential) {
@@ -197,9 +197,9 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     /**
-     * Requests the current status values of a functions of the selected location or the datapoint of the selected function.
+     * Requests the current status values of the functions of the selected location or the datapoints of the selected function.
      * Input decides which will be requested.
-     * @param inputType Type of how the requests datapoints will be aggregated
+     * @param inputType Type of the current requests
      */
     public void requestCurrentStatusValues(StatusRequestType inputType){
         List<String> requestList = new ArrayList<>();
@@ -225,7 +225,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
                         requestList.add(functionMap.get(func).getDataPoints().get(0).getID());
                     }
                 }else{
-                    if(configContainer.getChannelConfig().isStatusViewHolder(func)){
+                    if(configContainer.getChannelConfig().hasFirstDataPointOnlyRead(func)){
                         requestList.add(functionMap.get(func).getDataPoints().get(0).getID());
                     }
                 }
@@ -265,8 +265,8 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         configContainer.setStatusGetValueMap(newStatusValuesMap);
     }
 
-    public void initBeaconObserverWithBeaconConfig(BeaconLocations newBeaconConfig){
-        configContainer.initBeaconLocations(newBeaconConfig);
+    public void initBeaconObserverWithBeaconLocations(BeaconLocations newBeaconLocations){
+        configContainer.initBeaconLocations(newBeaconLocations);
     }
 
     public void setBoundaryConfig(BoundariesConfig newBoundariesConfig){
@@ -283,7 +283,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
 
     /**
      * Handles the updates from the callbackserver, either a status update or an event.
-     * @param input Contains the id of the updated datapoint and the value or an event
+     * @param input Contains the id of the updated datapoint and its value or an event
      */
     @Override
     public void update(CallbackValueInput input) {
@@ -301,7 +301,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
             switch (input) {
                 case STARTUP:
                     Log.d(TAG, "Server has started.");
-                    serverCommunicator.addToExecutorService(new Thread(() -> serverCommunicator.getSavedCredentialsForLoginAtGira()));
+                    serverCommunicator.addToExecutorService(new Thread(() -> serverCommunicator.requestSavedCredentialsForLoginAtGira()));
                     break;
                 case RESTART:
                     Log.d(TAG, "Server got restarted.");
@@ -323,6 +323,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
 
     /**
      * Handles the events from the callbackserver.
+     * @param input Event send by the callbackserver
      */
     @Override
     public void update(CallBackServiceInput input) {
@@ -331,7 +332,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
                 switch(serviceEvent.getEvent()) {
                     case STARTUP:
                         Log.d(TAG, "Server has started.");
-                        serverCommunicator.addToExecutorService(new Thread(() -> serverCommunicator.getSavedCredentialsForLoginAtGira()));
+                        serverCommunicator.addToExecutorService(new Thread(() -> serverCommunicator.requestSavedCredentialsForLoginAtGira()));
                         break;
                     case RESTART:
                         Log.d(TAG, "Server got restarted.");

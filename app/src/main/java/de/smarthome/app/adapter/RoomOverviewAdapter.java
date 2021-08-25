@@ -1,6 +1,5 @@
 package de.smarthome.app.adapter;
 
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -10,7 +9,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,16 +16,16 @@ import java.util.Optional;
 
 import de.smarthome.app.model.Datapoint;
 import de.smarthome.app.model.Function;
-import de.smarthome.app.adapter.viewholder.roomoverview.DefaultViewHolder;
-import de.smarthome.app.adapter.viewholder.roomoverview.StatusViewHolder;
-import de.smarthome.app.adapter.viewholder.roomoverview.SwitchViewHolder;
-import de.smarthome.app.adapter.viewholder.roomoverview.SwitchArrowViewHolder;
+import de.smarthome.app.adapter.viewholder.roomoverview.DefaultFunctionViewHolder;
+import de.smarthome.app.adapter.viewholder.roomoverview.StatusFunctionViewHolder;
+import de.smarthome.app.adapter.viewholder.roomoverview.SwitchFunctionViewHolder;
+import de.smarthome.app.adapter.viewholder.roomoverview.SwitchArrowFunctionViewHolder;
 import de.smarthome.app.viewmodel.RoomOverviewViewModel;
 
 /**
  * Adapter for the display of functions in a recyclerView
  */
-public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapter.ViewHolder>{
+public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapter.FunctionViewHolder>{
     private List<Function> functionList;
     private Map<Function, Function> functionMap;
     private Map<String, String> statusValueMap = new LinkedHashMap<>();
@@ -64,7 +62,7 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
 
     /**
      * Checks if the adapter contains the datapoint that has been changed
-     * and notifies the adapter which item needs to be updated
+     * and notifies the adapter which item needs to be updated. Only notifies one item.
      */
     public void updateSingleFunctionStatusValue(String changedStatusFunctionUID, String changedStatusFunctionValue){
         if(hasStatusFunction(changedStatusFunctionUID, changedStatusFunctionValue)){
@@ -117,18 +115,18 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public FunctionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if(viewType == SWITCH_VIEW_HOLDER){
-            return new SwitchViewHolder(parent,switchClickListener,this);
+            return new SwitchFunctionViewHolder(parent,switchClickListener,this);
 
         }else if(viewType == SWITCH_ARROW_HOLDER){
-            return new SwitchArrowViewHolder(parent,listener,switchClickListener,this);
+            return new SwitchArrowFunctionViewHolder(parent,listener,switchClickListener,this);
 
         }else if(viewType == STATUS_VIEW_HOLDER){
-            return new StatusViewHolder(parent,listener,this);
+            return new StatusFunctionViewHolder(parent,listener,this);
 
         }else{
-            return new DefaultViewHolder(parent,listener,this);
+            return new DefaultFunctionViewHolder(parent,listener,this);
         }
     }
 
@@ -136,7 +134,7 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
      * Gives the viewHolder the function and the current value
      */
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull FunctionViewHolder holder, int position) {
         Function function = functionList.get(position);
 
         Optional<String> value = Optional.empty();
@@ -194,9 +192,9 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
         this.switchClickListener = listener;
     }
 
-    public abstract static class ViewHolder extends RecyclerView.ViewHolder {
+    public abstract static class FunctionViewHolder extends RecyclerView.ViewHolder {
 
-        protected ViewHolder(@NonNull View itemView) {
+        protected FunctionViewHolder(@NonNull View itemView) {
             super(itemView);
         }
 

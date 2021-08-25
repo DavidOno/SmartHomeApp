@@ -85,6 +85,10 @@ public class UIConfig {
         }
     }
 
+    /**
+     * Returns every location contained in the entire config.
+     * @return list containing every location contained in the uiconfig
+     */
     public List<Location> getAllLocations(){
         List<Location> resultList = locations;
         for(Location loc : locations){
@@ -98,10 +102,8 @@ public class UIConfig {
         if (this == o) return true;
         if (!(o instanceof UIConfig)) return false;
         UIConfig uiConfig = (UIConfig) o;
-        boolean result1 = functions.equals(uiConfig.functions);
-        boolean result2 =  locations.equals(uiConfig.locations);
-        boolean result3 =  uid.equals(uiConfig.uid);
-        return result1 && result2  && result3;
-
+        return functions.equals(uiConfig.functions)
+                && locations.equals(uiConfig.locations)
+                && uid.equals(uiConfig.uid);
     }
 }

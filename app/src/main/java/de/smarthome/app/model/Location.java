@@ -60,6 +60,12 @@ public class Location {
         return functionsID;
     }
 
+    /**
+     * Matches the function ids of the location with the function ids of the given uiconfig.
+     * Matches are added to list and return.
+     * @param uiConfig Uiconfig containing the functions
+     * @return list containing functions with matching ids
+     */
     public List<Function> getFunctions(UIConfig uiConfig) {
         List<Function> result = new ArrayList<>();
         List<Function> functions = uiConfig.getFunctions();
@@ -83,6 +89,10 @@ public class Location {
         }
     }
 
+    /**
+     * Adds all child locations to the given list.
+     * @param resultList List to be added to
+     */
     public void getAllChildrenFromLocation(List<Location> resultList) {
         for (Location loc : this.getLocations()) {
             if(!resultList.contains(loc))
@@ -108,21 +118,11 @@ public class Location {
         if (this == o) return true;
         if (!(o instanceof Location)) return false;
         Location location = (Location) o;
-        boolean x1 = name.equals(location.name);
-            x1 = x1 && ID.equals(location.ID);
-            x1 = x1 && type.equals(location.type);
-            x1 = x1 && locationType.equals(location.locationType);
-            x1 = x1 && functionsID.equals(location.functionsID);
-            x1 = x1 && locations.equals(location.locations);
-
-        if(parentLocation != null && location.parentLocation != null){
-            //x1 = x1 && parentLocation.hashCode() == location.parentLocation.hashCode();
-        }
-        return x1;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, ID, type, locationType, functionsID, locations, parentLocation);
+        return name.equals(location.name)
+                && ID.equals(location.ID)
+                && type.equals(location.type)
+                && locationType.equals(location.locationType)
+                && functionsID.equals(location.functionsID)
+                && locations.equals(location.locations);
     }
 }

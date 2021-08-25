@@ -18,14 +18,14 @@ import de.smarthome.app.adapter.RegulationAdapter;
  * RecyclerViewHolder for the regulationAdapter.
  * Used to display a datapoint that only has write access
  */
-public class StepViewHolder extends RegulationAdapter.ViewHolder{
+public class StepDatapointViewHolder extends RegulationAdapter.DatapointViewHolder {
     private TextView textViewName;
     private ImageButton plus;
     private ImageButton minus;
 
-    public StepViewHolder(@NonNull ViewGroup parent,
-                          @NonNull RegulationAdapter.OnItemClickListener onItemClickListener,
-                          @NonNull RegulationAdapter adapter) {
+    public StepDatapointViewHolder(@NonNull ViewGroup parent,
+                                   @NonNull RegulationAdapter.OnItemClickListener onItemClickListener,
+                                   @NonNull RegulationAdapter adapter) {
         super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_step, parent, false));
 
         findViewsByID();
@@ -52,7 +52,7 @@ public class StepViewHolder extends RegulationAdapter.ViewHolder{
     /**
      * Displays name of the given datapoint in a textView
      * @param datapoint Datapoint to be displayed by the viewHolder
-     * @param value Value to be displayed, but is never be used in this type of viewHolder
+     * @param value Is never be used in this type of viewHolder
      */
     @Override
     public void onBindViewHolder(Datapoint datapoint, Optional<String> value) {

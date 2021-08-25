@@ -49,11 +49,11 @@ public class Datapoint {
         if (this == o) return true;
         if (!(o instanceof Datapoint)) return false;
         Datapoint datapoint = (Datapoint) o;
-        boolean x1 = this.ID.equals(datapoint.ID);
-        x1 = x1 && this.name.equals(datapoint.name);
+        boolean result = this.ID.equals(datapoint.ID)
+                && this.name.equals(datapoint.name);
         if(value != null && datapoint.value != null) {
-            x1 = x1 && this.value.equals(datapoint.value);
+            result = result && this.value.equals(datapoint.value);
         }
-        return x1;
+        return result;
     }
 }

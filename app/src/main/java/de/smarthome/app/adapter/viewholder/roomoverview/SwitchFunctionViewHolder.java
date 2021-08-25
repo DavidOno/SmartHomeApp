@@ -16,38 +16,26 @@ import de.smarthome.app.adapter.RoomOverviewAdapter;
 
 /**
  * RecyclerViewHolder for the roomOverviewAdapter.
- * Used to display a function which first datapoint is a boolean with read/write access
+ * Used to display a function which first and only datapoint is type binary with read/write access
  */
-public class SwitchArrowViewHolder extends RoomOverviewAdapter.ViewHolder{
+public class SwitchFunctionViewHolder extends RoomOverviewAdapter.FunctionViewHolder {
     private SwitchCompat binarySwitch;
     private TextView textViewName;
 
-    public SwitchArrowViewHolder(@NonNull ViewGroup parent,
-                                 @NonNull RoomOverviewAdapter.OnItemClickListener onItemClickListener,
-                                 @NonNull RoomOverviewAdapter.OnSwitchClickListener onSwitchClickListener,
-                                 @NonNull RoomOverviewAdapter adapter) {
-        super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_switch_arrow, parent, false));
+    public SwitchFunctionViewHolder(@NonNull ViewGroup parent,
+                                    @NonNull RoomOverviewAdapter.OnSwitchClickListener onSwitchClickListener,
+                                    @NonNull RoomOverviewAdapter adapter) {
+        super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_switch, parent, false));
 
         findViewById();
-        setOnClickListenerSwitch(onSwitchClickListener, adapter);
-        setOnClickListener(onItemClickListener, adapter);
-
+        setOnClickListener(onSwitchClickListener, adapter);
     }
 
-    private void setOnClickListener(@NonNull RoomOverviewAdapter.OnItemClickListener onItemClickListener, @NonNull RoomOverviewAdapter adapter) {
-        itemView.setOnClickListener(v -> {
-            int position = getAdapterPosition();
-            if (onItemClickListener != null && position != RecyclerView.NO_POSITION) {
-                onItemClickListener.onItemClick(adapter.getFunctionAt(position));
-            }
-        });
-    }
-
-    private void setOnClickListenerSwitch(@NonNull RoomOverviewAdapter.OnSwitchClickListener onSwitchClickListener, @NonNull RoomOverviewAdapter adapter) {
+    private void setOnClickListener(@NonNull RoomOverviewAdapter.OnSwitchClickListener onSwitchClickListener, @NonNull RoomOverviewAdapter adapter) {
         binarySwitch.setOnClickListener(v -> {
             int position = getAdapterPosition();
             if (onSwitchClickListener != null && position != RecyclerView.NO_POSITION) {
-                onSwitchClickListener.onItemClick(adapter.getFunctionAt(position),  binarySwitch.isChecked());
+                onSwitchClickListener.onItemClick(adapter.getFunctionAt(position), binarySwitch.isChecked());
             }
         });
     }
@@ -69,7 +57,7 @@ public class SwitchArrowViewHolder extends RoomOverviewAdapter.ViewHolder{
     }
 
     private void setSwitchByValue(Optional<String> value) {
-        if(value.isPresent()) {
+        if(value.isPresent()){
             if (value.get().equals("true")) {
                 binarySwitch.setChecked(true);
 

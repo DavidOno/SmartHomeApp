@@ -66,7 +66,7 @@ public class HomeOverviewFragment extends Fragment {
 
     private void setLocationListObserver() {
         viewModel.getLocationList().observe(getViewLifecycleOwner(), rooms -> {
-            adapter.setRoomList(rooms);
+            adapter.setLocationList(rooms);
             requireActivity().setTitle(rooms.get(0).getName());
         });
     }

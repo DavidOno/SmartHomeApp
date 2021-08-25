@@ -49,7 +49,7 @@ import de.smarthome.app.utility.ToastUtility;
 import de.smarthome.app.viewmodel.SmartHomeApplicationViewModel;
 
 /**
- * This is the hostactivity of the entire application. It host the fragment container that displays the fragments
+ * This is the host activity of the entire application. It host the fragment container that displays the fragments
  * and a threadpool executorservice. It also handles the observers of events that are important during the entire runtime of the app.
  */
 public class SmartHomeApplication extends AppCompatActivity {
@@ -125,9 +125,9 @@ public class SmartHomeApplication extends AppCompatActivity {
         LinearLayout usedLayout = findViewById(R.id.smartHomeApplicationLinearLayout);
         int snackBarDuration = 20000;
         Snackbar snackbar = Snackbar.make(usedLayout,
-                "Switch to " + location.getName(), snackBarDuration)
-                .setAction("ACCEPT", v -> {
-                    Snackbar resultMessageSnackbar = Snackbar.make(usedLayout, "Switch successful", Snackbar.LENGTH_LONG);
+                R.string.snackbar_beacon_layout + location.getName(), snackBarDuration)
+                .setAction(R.string.snackbar_beacon_button, v -> {
+                    Snackbar resultMessageSnackbar = Snackbar.make(usedLayout, R.string.snackbar_beacon_result, Snackbar.LENGTH_LONG);
                     resultMessageSnackbar.show();
 
                     viewModel.confirmBeacon();
@@ -140,9 +140,9 @@ public class SmartHomeApplication extends AppCompatActivity {
     private void showConnectionSnackbar() {
         LinearLayout usedLayout = findViewById(R.id.smartHomeApplicationLinearLayout);
         Snackbar snackbar = Snackbar.make(usedLayout,
-                "Connection to Server failed.", Snackbar.LENGTH_INDEFINITE)
-                .setAction("RETRY", v -> {
-                    Snackbar resultMessageSnackbar = Snackbar.make(usedLayout, "Trying to connect to Server...", Snackbar.LENGTH_LONG);
+                R.string.snackbar_connection_layout, Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.snackbar_connection_button, v -> {
+                    Snackbar resultMessageSnackbar = Snackbar.make(usedLayout, R.string.snackbar_connection_result, Snackbar.LENGTH_LONG);
                     resultMessageSnackbar.show();
 
                     viewModel.retryConnectionToServerAfterFailure();
@@ -190,7 +190,6 @@ public class SmartHomeApplication extends AppCompatActivity {
         return true;
     }
 
-    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

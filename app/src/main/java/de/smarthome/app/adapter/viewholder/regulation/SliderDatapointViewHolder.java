@@ -18,18 +18,18 @@ import de.smarthome.app.adapter.RegulationAdapter;
 
 /**
  * RecyclerViewHolder for the regulationAdapter.
- * Used to display a datapoint that get a strings containing a number back as status value
+ * Used to display a datapoint that is type int or float and has read-write access
  */
-public class SliderViewHolder extends RegulationAdapter.ViewHolder{
-    private final String TAG = "SliderViewHolder";
+public class SliderDatapointViewHolder extends RegulationAdapter.DatapointViewHolder {
+    private final String TAG = "SliderDatapointViewHolder";
     private TextView textViewName;
     private Slider slider;
     private RegulationAdapter adapter;
 
-    public SliderViewHolder(@NonNull ViewGroup parent,
-                            @NonNull RegulationAdapter.OnItemClickListener onItemClickListener,
-                            @NonNull RegulationAdapter adapter,
-                            @NonNull int type) {
+    public SliderDatapointViewHolder(@NonNull ViewGroup parent,
+                                     @NonNull RegulationAdapter.OnItemClickListener onItemClickListener,
+                                     @NonNull RegulationAdapter adapter,
+                                     @NonNull int type) {
         super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_slider, parent, false));
 
         findViewsByID();

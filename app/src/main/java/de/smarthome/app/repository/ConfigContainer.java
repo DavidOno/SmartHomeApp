@@ -22,7 +22,7 @@ import de.smarthome.beacons.BeaconLocations;
 
 /**
  * This class is the data storage of the repository.
- * It contains f.e. all the configs send by gira and the callbackserver.
+ * It contains f.e. all the configs send the gira server and the callbackserver.
  * The data that is used by the ui is stored in livedata objects so any change can be propagated to ui
  */
 public class ConfigContainer {
@@ -69,7 +69,7 @@ public class ConfigContainer {
 
     /**
      * Sets the given location as selectedLocation and
-     * fills the functionMap with the functions of the Location and their corresponding status functions
+     * fills the functionMap with the functions of the location and their corresponding status functions
      * @param location Location that should initialised as selectedLocation
      */
     public void initSelectedLocation(Location location) {
@@ -90,8 +90,8 @@ public class ConfigContainer {
     /**
      * Sets the given uiconfig and initialises for the contained the parent location.
      * Initialises the locationList with every location contained in the config.
-     * Starts initialisation of beaconObserver in Repository
-     * Checks if selectedLocation/selectedFunction are contained in the new uiconfig
+     * Starts initialisation of beaconObserver in Repository.
+     * Checks if selectedLocation/selectedFunction are contained in the new uiconfig.
      * @param uiConfig UIConfig that should be initialised
      */
     public void initNewUIConfig(UIConfig uiConfig) {
@@ -119,17 +119,17 @@ public class ConfigContainer {
         return uiConfig;
     }
 
-    public void setBeaconLocations(BeaconLocations newBeaconConfig) {
-        beaconLocations = newBeaconConfig;
+    public void setBeaconLocations(BeaconLocations newBeaconLocations) {
+        beaconLocations = newBeaconLocations;
     }
 
     public BeaconLocations getBeaconLocations() {
         return beaconLocations;
     }
 
-    public void initBeaconLocations(BeaconLocations newBeaconConfig){
-        if(!newBeaconConfig.equals(this.beaconLocations)){
-            setBeaconLocations(newBeaconConfig);
+    public void initBeaconLocations(BeaconLocations newBeaconLocations){
+        if(!newBeaconLocations.equals(this.beaconLocations)){
+            setBeaconLocations(newBeaconLocations);
             Repository.getInstance().initBeaconObserver();
         }
     }
@@ -265,8 +265,8 @@ public class ConfigContainer {
         setBoundaryMap(completeFunctionMap);
     }
 
-    public void setBoundaryMap(Map<Datapoint, BoundaryDataPoint> completeFunctionMap) {
-        boundaryMap.postValue(completeFunctionMap);
+    public void setBoundaryMap(Map<Datapoint, BoundaryDataPoint> boundaryMap) {
+        this.boundaryMap.postValue(boundaryMap);
     }
 
     public LiveData<Map<Datapoint, BoundaryDataPoint>> getBoundaryMap() {

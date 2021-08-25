@@ -21,7 +21,7 @@ import de.smarthome.app.utility.ToastUtility;
 
 /**
  * This class is the viewmodel of the loginfragment.
- * It handles the communication with the repository.
+ * It handles the communication with the repository and can save the login data.
  */
 public class LoginViewModel extends AndroidViewModel {
     private static final String TAG = "LoginViewModel";

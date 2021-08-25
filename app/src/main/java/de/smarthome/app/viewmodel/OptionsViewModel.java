@@ -16,7 +16,7 @@ import de.smarthome.app.utility.ToastUtility;
 
 /**
  * This class is the viewmodel of the optionsfragment.
- * It handles the communication with the repository.
+ * It handles the communication with the repository and it can delete the login data.
  */
 public class OptionsViewModel extends AndroidViewModel {
     private static final String TAG = "OptionsViewModel";

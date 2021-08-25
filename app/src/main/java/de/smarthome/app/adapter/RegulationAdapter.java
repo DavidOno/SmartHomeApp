@@ -9,25 +9,24 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import de.smarthome.app.adapter.viewholder.regulation.ReadDatapointViewHolder;
+import de.smarthome.app.adapter.viewholder.regulation.SliderDatapointViewHolder;
+import de.smarthome.app.adapter.viewholder.regulation.StepDatapointViewHolder;
 import de.smarthome.app.model.configs.BoundaryDataPoint;
 import de.smarthome.app.model.Datapoint;
 import de.smarthome.app.model.configs.ChannelDatapoint;
-import de.smarthome.app.adapter.viewholder.regulation.ReadViewHolder;
-import de.smarthome.app.adapter.viewholder.regulation.SliderViewHolder;
-import de.smarthome.app.adapter.viewholder.regulation.StepViewHolder;
-import de.smarthome.app.adapter.viewholder.regulation.SwitchViewHolder;
+import de.smarthome.app.adapter.viewholder.regulation.SwitchDatapointViewHolder;
 import de.smarthome.app.viewmodel.RegulationViewModel;
 
 /**
  * Adapter for the display of datapoints in a recyclerView
  */
-public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.ViewHolder>{
+public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.DatapointViewHolder>{
     private List<Datapoint> dataPointList;
     private Map<Datapoint, Datapoint> dataPointMap;
     private Map<Datapoint, BoundaryDataPoint> boundaryMap;
@@ -73,7 +72,7 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
 
     /**
      * Checks if the adapter contains the datapoint that has been changed
-     * and notifies the adapter which item needs to be updated
+     * and notifies the adapter which item needs to be updated. Only notifies one item.
      */
     public void updateSingleDatapointStatusValue(String changedStatusFunctionUID, String changedStatusFunctionValue){
         if(hasStatusFunction(changedStatusFunctionUID, changedStatusFunctionValue)){
@@ -83,7 +82,7 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
 
     /**
      * Checks if the adapter contains the datapoints that have been changed
-     * and notifies the adapter which items need to be updated
+     * and notifies the adapter which items need to be updated.
      */
     public void updateMultipleDatapointStatusValues(Map<String, String> newInput) {
         if (newInput.size() == 1) {
@@ -121,21 +120,21 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public DatapointViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if(viewType == SWITCH_VIEW_HOLDER){
-            return new SwitchViewHolder(parent, listener,this);
+            return new SwitchDatapointViewHolder(parent, listener,this);
 
         }else if(viewType == STEP_VIEW_HOLDER){
-            return new StepViewHolder(parent, listener,this);
+            return new StepDatapointViewHolder(parent, listener,this);
 
         }else if(viewType == INT_SLIDER_VIEW_HOLDER){
-            return new SliderViewHolder(parent, listener,this, INT_SLIDER_VIEW_HOLDER);
+            return new SliderDatapointViewHolder(parent, listener,this, INT_SLIDER_VIEW_HOLDER);
 
         }else if(viewType == FLOAT_SLIDER_VIEW_HOLDER){
-            return new SliderViewHolder(parent, listener,this, FLOAT_SLIDER_VIEW_HOLDER);
+            return new SliderDatapointViewHolder(parent, listener,this, FLOAT_SLIDER_VIEW_HOLDER);
 
         }else if(viewType == READ_VIEW_HOLDER){
-            return new ReadViewHolder(parent);
+            return new ReadDatapointViewHolder(parent);
 
         }else {
             throw new IllegalArgumentException("Input type not known");
@@ -146,7 +145,7 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
      * Gives the viewHolder the datapoint and the current value
      */
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull DatapointViewHolder holder, int position) {
         Datapoint dp = getDataPointAt(position);
 
         Optional<String> value = Optional.empty();
@@ -195,9 +194,9 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Vi
         this.listener = listener;
     }
 
-    public abstract static class ViewHolder extends RecyclerView.ViewHolder {
+    public abstract static class DatapointViewHolder extends RecyclerView.ViewHolder {
 
-        protected ViewHolder(@NonNull View itemView) {
+        protected DatapointViewHolder(@NonNull View itemView) {
             super(itemView);
         }
 

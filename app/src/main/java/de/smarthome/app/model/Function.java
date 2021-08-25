@@ -78,11 +78,10 @@ public class Function {
         if (this == o) return true;
         if (!(o instanceof Function)) return false;
         Function function = (Function) o;
-        boolean x1  = this.name.equals(function.name);
-        x1  = x1 && this.ID.equals(function.ID);
-        x1  = x1 && this.channelType.equals(function.channelType) ;
-        x1  = x1 && this.functionType.equals(function.functionType);
-        x1  = x1 && this.datapoints.equals(function.datapoints);
-        return x1;
+        return this.name.equals(function.name)
+                && this.ID.equals(function.ID)
+                && this.channelType.equals(function.channelType)
+                && this.functionType.equals(function.functionType)
+                && this.datapoints.equals(function.datapoints);
     }
 }

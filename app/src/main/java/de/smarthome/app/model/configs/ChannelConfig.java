@@ -23,6 +23,11 @@ public class ChannelConfig {
         return channels;
     }
 
+    /**
+     * Returns true if the first datapoint of the given function is binary and has read-write access
+     * @param function Function to be checked
+     * @return true if is binary and read-write access, false if not
+     */
     public boolean isFirstDataPointBinary(Function function){
         Channel channel = findChannelByName(function);
 
@@ -33,7 +38,12 @@ public class ChannelConfig {
         return false;
     }
 
-    public boolean isStatusViewHolder(Function function){
+    /**
+     * Returns true if the first datapoint has only read access
+     * @param function Function to be checked
+     * @return true if has only read access
+     */
+    public boolean hasFirstDataPointOnlyRead(Function function){
         Channel channel = findChannelByName(function);
 
         if(!channel.getDatapoints().isEmpty()) {
@@ -42,6 +52,11 @@ public class ChannelConfig {
         return false;
     }
 
+    /**
+     * Returns the channel corresponding to the channelType of the given function
+     * @param function Function with channelType
+     * @return channel of function
+     */
     public Channel findChannelByName(Function function){
         String searchedChannel = function.getChannelType();
 
@@ -53,6 +68,11 @@ public class ChannelConfig {
         throw new IllegalArgumentException("Channel: "+ searchedChannel + " is unknown");
     }
 
+    /**
+     * Returns the constant of the RoomOverviewAdapter corresponding to the required viewHolder
+     * @param channel Channel to be checked
+     * @return int value corresponding to roomOverviewAdapter viewHolder
+     */
     public int getRoomOverviewItemViewType(Channel channel) {
         if(channel.getDatapoints().size() == 1){
             if(channel.getDatapoints().get(0).getType().equals(DatapointType.BINARY)
@@ -73,7 +93,11 @@ public class ChannelConfig {
         return RoomOverviewAdapter.DEFAULT_VIEW_HOLDER;
     }
 
-
+    /**
+     * Returns the constant of the RoomOverviewAdapter corresponding to the required viewHolder
+     * @param channelDatapoint ChannelDatapoint to be checked
+     * @return int value corresponding to regulationAdapter viewHolder
+     */
     public int getRegulationItemViewType(ChannelDatapoint channelDatapoint){
         switch (channelDatapoint.getType()){
             case BINARY:

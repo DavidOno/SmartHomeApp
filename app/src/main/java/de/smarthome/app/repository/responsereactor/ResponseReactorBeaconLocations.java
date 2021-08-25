@@ -12,11 +12,11 @@ import de.smarthome.command.ResponseReactor;
 /**
  * Commandchainreactor to handle requests for the beaconconfig send via a commandchain
  */
-public class ResponseReactorBeaconConfig implements ResponseReactor {
-    private static final String TAG = "ResponseReactorBeaconConfig";
+public class ResponseReactorBeaconLocations implements ResponseReactor {
+    private static final String TAG = "ResponseReactorBeaconLocations";
     private final Repository repository;
 
-    public ResponseReactorBeaconConfig() {
+    public ResponseReactorBeaconLocations() {
         repository = Repository.getInstance();
     }
 
@@ -27,8 +27,8 @@ public class ResponseReactorBeaconConfig implements ResponseReactor {
                 Log.d(TAG, "response received BeaconConfig");
                 Log.d(TAG, responseEntity.getBody().toString());
 
-                BeaconLocations responseBeaconConfig = (BeaconLocations) responseEntity.getBody();
-                sendBeaconLocationsToRepo(responseBeaconConfig);
+                BeaconLocations responseBeaconLocations = (BeaconLocations) responseEntity.getBody();
+                sendBeaconLocationsToRepo(responseBeaconLocations);
 
                 repository.setServerConnectionEvent(ServerConnectionEvent.CALLBACK_CONNECTION_SUCCESS);
                 Log.d(TAG, "BeaconConfig successfully retrieved.\nStatus: " + responseEntity.getStatusCode());
@@ -45,7 +45,7 @@ public class ResponseReactorBeaconConfig implements ResponseReactor {
         }
     }
 
-    private void sendBeaconLocationsToRepo(BeaconLocations newBeaconConfig){
-        repository.initBeaconObserverWithBeaconConfig(newBeaconConfig);
+    private void sendBeaconLocationsToRepo(BeaconLocations beaconLocations){
+        repository.initBeaconObserverWithBeaconLocations(beaconLocations);
     }
 }

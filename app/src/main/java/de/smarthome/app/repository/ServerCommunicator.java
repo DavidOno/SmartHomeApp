@@ -20,7 +20,7 @@ import java.util.Map;
 
 import de.smarthome.SmartHomeApplication;
 import de.smarthome.app.model.responses.GetValueResponse;
-import de.smarthome.app.repository.responsereactor.ResponseReactorBeaconConfig;
+import de.smarthome.app.repository.responsereactor.ResponseReactorBeaconLocations;
 import de.smarthome.app.repository.responsereactor.ResponseReactorBoundariesConfig;
 import de.smarthome.app.repository.responsereactor.ResponseReactorCallbackServer;
 import de.smarthome.app.repository.responsereactor.ResponseReactorChannelConfig;
@@ -46,7 +46,8 @@ import de.smarthome.command.impl.UnRegisterCallbackServerAtGiraServer;
 import de.smarthome.server.ServerHandler;
 
 /**
- * This class handles the entire communication of the repository with the gira and callbackserver.
+ * This class sends the requests of the repository to the gira and callbackserver.
+ * All of the results are handled by responsereactors classes, except in case of the getvalue request
  */
 public class ServerCommunicator {
     private static final String TAG = "ServerCommunicator";
@@ -81,7 +82,7 @@ public class ServerCommunicator {
      * giraServerConnectionStatus or callbackServerConnectionStatus
      * @param event Event that happened in the last connection attempt
      */
-    public void serverConnectionEvent(ServerConnectionEvent event){
+    public void setServerConnectionEvent(ServerConnectionEvent event){
         switch(event){
             case CALLBACK_CONNECTION_FAIL:
                 if(callbackServerConnectionStatus != ServerConnectionEvent.CALLBACK_CONNECTION_FAIL){
@@ -117,7 +118,7 @@ public class ServerCommunicator {
      */
     public void retryConnectionToServer(){
         if(giraServerConnectionStatus == ServerConnectionEvent.GIRA_CONNECTION_FAIL){
-            addToExecutorService(new Thread(this::getSavedCredentialsForLoginAtGira));
+            addToExecutorService(new Thread(this::requestSavedCredentialsForLoginAtGira));
         }
         if(callbackServerConnectionStatus == ServerConnectionEvent.CALLBACK_CONNECTION_FAIL){
             addToExecutorService(new Thread(this::connectToCallbackServer));
@@ -149,7 +150,7 @@ public class ServerCommunicator {
         serverHandler.sendRequest(multiCommandChain);
     }
 
-    public void setServerConnectionStatus(Boolean status) {
+    public void setServerConnectionStatus(boolean status) {
         serverConnectionStatus.postValue(status);
     }
 
@@ -173,22 +174,22 @@ public class ServerCommunicator {
         return giraServerConnectionStatus;
     }
 
-    public void setLoginStatus(Boolean status) {
+    public void setLoginStatus(boolean status) {
         requestStatusLoginUser.postValue(status);
     }
 
-    public LiveData<Boolean> getLoginStatusForUser() {
+    public LiveData<Boolean> getLoginStatus() {
         return requestStatusLoginUser;
     }
 
     private void getAdditionalConfigs(MultiReactorCommandChainImpl multiCommandChain) {
         multiCommandChain.add(new AdditionalConfigCommand(IP_OF_CALLBACK_SERVER, AdditionalConfig.CHANNEL), new ResponseReactorChannelConfig());
-        multiCommandChain.add(new AdditionalConfigCommand(IP_OF_CALLBACK_SERVER, AdditionalConfig.LOCATION), new ResponseReactorBeaconConfig());
+        multiCommandChain.add(new AdditionalConfigCommand(IP_OF_CALLBACK_SERVER, AdditionalConfig.LOCATION), new ResponseReactorBeaconLocations());
         multiCommandChain.add(new AdditionalConfigCommand(IP_OF_CALLBACK_SERVER, AdditionalConfig.BOUNDARIES), new ResponseReactorBoundariesConfig());
     }
 
     /**
-     * Requests a uiconfig by gira
+     * Requests the current uiconfig from the gira server
      */
     public void requestOnlyUIConfig(){
         SingleReactorCommandChainImpl singleCommandChain = new SingleReactorCommandChainImpl(new ResponseReactorUIConfig());
@@ -197,7 +198,7 @@ public class ServerCommunicator {
     }
 
     /**
-     * Requests a channelconfig, beaconlocations, and boundaryconfig from the callbackserver
+     * Requests the current channelconfig, beaconlocations, and boundaryconfig from the callbackserver
      */
     public void requestOnlyAdditionalConfigs() {
         MultiReactorCommandChainImpl multiCommandChain = new MultiReactorCommandChainImpl();
@@ -211,7 +212,7 @@ public class ServerCommunicator {
     }
 
     /**
-     * Requests a given value to be set by gira
+     * Requests a given value to be set by the gira server
      * @param id ID of the datapoint
      * @param value Value of the datapoint that will be set
      */
@@ -221,7 +222,7 @@ public class ServerCommunicator {
     }
 
     /**
-     * Requests the current status of the given datapoint ids by gira
+     * Requests the current status values of the given datapoint ids the gira server
      * @param ids List containing the ids of the datapoints
      */
     public synchronized void requestGetValue(List<String> ids) {
@@ -243,8 +244,8 @@ public class ServerCommunicator {
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
                 Log.d(TAG, "response received");
                 Log.d(TAG, responseEntity.getBody().toString());
-                GetValueResponse valueResponse = (GetValueResponse) responseEntity.getBody();
 
+                GetValueResponse valueResponse = (GetValueResponse) responseEntity.getBody();
                 String value = valueResponse.getValues().get(0).getValue();
                 String uID = valueResponse.getValues().get(0).getUid();
 
@@ -263,7 +264,7 @@ public class ServerCommunicator {
     }
 
     /**
-     * Unregisters the application from gira and the callbackserver
+     * Unregisters the application from the gira server and the callbackserver
      */
     public void unregisterFromServers() {
         requestUnregisterClient();
@@ -271,9 +272,9 @@ public class ServerCommunicator {
     }
 
     /**
-     * Gets the saved user credentials form Google and starts the connection to gira on successful retrieval
+     * Gets the saved user credentials form Google and starts the connection to the gira server on successful retrieval
      */
-    public void getSavedCredentialsForLoginAtGira() {
+    public void requestSavedCredentialsForLoginAtGira() {
         CredentialRequest credentialRequest = new CredentialRequest.Builder()
                 .setPasswordLoginSupported(true)
                 .build();

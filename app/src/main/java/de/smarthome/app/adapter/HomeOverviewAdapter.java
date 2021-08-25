@@ -17,42 +17,43 @@ import de.smarthome.app.model.Location;
 /**
  * Adapter for the display of locations in a recyclerView
  */
-public class HomeOverviewAdapter extends RecyclerView.Adapter<HomeOverviewAdapter.RoomHolder> {
-    private List<Location> roomList = new ArrayList<>();
+public class HomeOverviewAdapter extends RecyclerView.Adapter<HomeOverviewAdapter.LocationHolder> {
+    private List<Location> locationList = new ArrayList<>();
     private OnItemClickListener listener;
 
     @NonNull
     @Override
-    public RoomHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public LocationHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_home_overview, parent, false);
-        return new RoomHolder(itemView);
+        return new LocationHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RoomHolder holder, int position) {
-        Location currentWorkoutPosition = roomList.get(position);
+    public void onBindViewHolder(@NonNull LocationHolder holder, int position) {
+        Location currentWorkoutPosition = locationList.get(position);
         holder.textViewName.setText(currentWorkoutPosition.getName());
     }
+
     /**
      * Returns the amount of items in the roomList
-     * @return size of roomList
+     * @return size of locationList
      */
     @Override
     public int getItemCount() {
-        return roomList.size();
+        return locationList.size();
     }
 
     /**
      * Sets the dataset of the adapter and notifies the adapter that the dataset has changed
      */
-    public void setRoomList(List<Location> locations) {
-        roomList = locations;
+    public void setLocationList(List<Location> locations) {
+        locationList = locations;
         notifyDataSetChanged();
     }
 
-    public Location getRoomAt(int position) {
-        return roomList.get(position);
+    public Location getLocationAt(int position) {
+        return locationList.get(position);
     }
 
 
@@ -60,10 +61,10 @@ public class HomeOverviewAdapter extends RecyclerView.Adapter<HomeOverviewAdapte
      * RecyclerViewHolder for the homeOverviewAdapter.
      * Used to display a location in a recyclerView
      */
-    class RoomHolder extends RecyclerView.ViewHolder {
+    class LocationHolder extends RecyclerView.ViewHolder {
         TextView textViewName;
 
-        public RoomHolder(View itemView) {
+        public LocationHolder(View itemView) {
             super(itemView);
 
             textViewName = itemView.findViewById(R.id.text_view_name);
@@ -71,7 +72,7 @@ public class HomeOverviewAdapter extends RecyclerView.Adapter<HomeOverviewAdapte
             itemView.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if (listener != null && position != RecyclerView.NO_POSITION) {
-                    listener.onItemClick(roomList.get(position));
+                    listener.onItemClick(locationList.get(position));
                 }
             });
         }

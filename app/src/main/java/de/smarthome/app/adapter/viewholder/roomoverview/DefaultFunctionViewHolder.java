@@ -15,18 +15,17 @@ import de.smarthome.app.adapter.RoomOverviewAdapter;
 
 /**
  * RecyclerViewHolder for the roomOverviewAdapter.
- * Used to display a function which first datapoint has only read access
+ * Used to display a function
  */
-public class StatusViewHolder extends RoomOverviewAdapter.ViewHolder{
+public class DefaultFunctionViewHolder extends RoomOverviewAdapter.FunctionViewHolder {
     private TextView textViewName;
-    private TextView textViewStatus;
 
-    public StatusViewHolder(@NonNull ViewGroup parent,
-                            @NonNull RoomOverviewAdapter.OnItemClickListener onItemClickListener,
-                            @NonNull RoomOverviewAdapter adapter) {
-        super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_status, parent, false));
+    public DefaultFunctionViewHolder(@NonNull ViewGroup parent,
+                                     @NonNull RoomOverviewAdapter.OnItemClickListener onItemClickListener,
+                                     @NonNull RoomOverviewAdapter adapter) {
+        super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_default, parent, false));
 
-        findViewById();
+        textViewName = itemView.findViewById(R.id.textView_item);
         setOnClickListener(onItemClickListener, adapter);
     }
 
@@ -39,19 +38,13 @@ public class StatusViewHolder extends RoomOverviewAdapter.ViewHolder{
         });
     }
 
-    private void findViewById() {
-        textViewName = itemView.findViewById(R.id.textView_item);
-        textViewStatus = itemView.findViewById(R.id.textView_item_status);
-    }
-
     /**
-     * Displays name of the given function and a given value on the textViews
+     * Displays name of the given function in a textView
      * @param function Function to be displayed by the viewHolder
-     * @param value Value to be displayed in a textView of the viewHolder
+     * @param value Value to be displayed, but is never be used in this type of viewHolder
      */
     @Override
-    public void onBindViewHolder(Function function,  Optional<String> value) {
+    public void onBindViewHolder(Function function, Optional<String> value ) {
         textViewName.setText(function.getName().replace("_", " "));
-        value.ifPresent(s -> textViewStatus.setText(s));
     }
 }
