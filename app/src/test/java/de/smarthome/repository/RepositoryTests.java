@@ -114,10 +114,10 @@ public class RepositoryTests {
     @Test
     public void testRequestCurrentStatusValuesWithEmptyLists(){
         r.requestCurrentStatusValues(StatusRequestType.FUNCTION);
-        verify(mockSc,  times(0)).getSavedCredentialsForLoginAtGira();
+        verify(mockSc,  times(0)).requestSavedCredentialsForLoginAtGira();
 
         r.requestCurrentStatusValues(StatusRequestType.DATAPOINT);
-        verify(mockSc,  times(0)).getSavedCredentialsForLoginAtGira();
+        verify(mockSc,  times(0)).requestSavedCredentialsForLoginAtGira();
     }
 
     //ok

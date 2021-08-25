@@ -48,7 +48,7 @@ public class ServerCommunicatorTests {
         ServerConnectionEvent event = ServerConnectionEvent.CALLBACK_CONNECTION_FAIL;
         ServerCommunicator sc = new ServerCommunicator(null);
 
-        sc.serverConnectionEvent(event);
+        sc.setServerConnectionEvent(event);
 
         assertThat(sc.getCallbackServerConnectionStatus()).isEqualTo(event);
     }
@@ -59,7 +59,7 @@ public class ServerCommunicatorTests {
         ServerConnectionEvent event = ServerConnectionEvent.CALLBACK_CONNECTION_SUCCESS;
         ServerCommunicator sc = new ServerCommunicator(null);
 
-        sc.serverConnectionEvent(event);
+        sc.setServerConnectionEvent(event);
 
         assertThat(sc.getCallbackServerConnectionStatus()).isEqualTo(event);
     }
@@ -70,7 +70,7 @@ public class ServerCommunicatorTests {
         ServerConnectionEvent event = ServerConnectionEvent.GIRA_CONNECTION_FAIL;
         ServerCommunicator sc = new ServerCommunicator(null);
 
-        sc.serverConnectionEvent(event);
+        sc.setServerConnectionEvent(event);
 
         assertThat(sc.getGiraServerConnectionStatus()).isEqualTo(event);
     }
@@ -81,7 +81,7 @@ public class ServerCommunicatorTests {
         ServerConnectionEvent event = ServerConnectionEvent.GIRA_CONNECTION_SUCCESS;
         ServerCommunicator sc = new ServerCommunicator(null);
 
-        sc.serverConnectionEvent(event);
+        sc.setServerConnectionEvent(event);
 
         assertThat(sc.getGiraServerConnectionStatus()).isEqualTo(event);
     }
