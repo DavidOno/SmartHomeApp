@@ -52,6 +52,7 @@ public class HomeOverviewFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         setLocationListObserver();
         setOnClickListener();
+        requireActivity().setTitle(R.string.title_home_overview_fragment);
         super.onViewCreated(view, savedInstanceState);
     }
 
