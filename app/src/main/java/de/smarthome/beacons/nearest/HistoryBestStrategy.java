@@ -10,7 +10,6 @@ import de.smarthome.beacons.BeaconID;
  * Retrieves nearest beacon based on a history of beacon signals.
  */
 public class HistoryBestStrategy implements NearestBeaconStrategy {
-
     public static final int SIGNAL_HISTORY_LENGTH = 3;
 
     private final List<BeaconSignalHistory> beaconSignalHistories = new ArrayList<>();
@@ -44,7 +43,7 @@ public class HistoryBestStrategy implements NearestBeaconStrategy {
             if(signalStrength != null){
                 beaconSignalHistory.addSignal(signalStrength);
             }else{
-                beaconSignalHistory.addSignal(-100);
+                beaconSignalHistory.addSignal(BeaconSignalHistory.WEAKEST_SIGNAL_STRENGTH);
             }
         }
         for(Map.Entry<BeaconID, Integer> entry : updatedBeaconSignals.entrySet()){

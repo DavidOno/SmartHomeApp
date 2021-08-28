@@ -10,6 +10,7 @@ import de.smarthome.beacons.BeaconID;
  * Keeps record of last n beacon signals for a specific beaconID
  */
 public class BeaconSignalHistory {
+    public static final int WEAKEST_SIGNAL_STRENGTH = -100;
 
     private final BeaconID beaconID;
     private final List<Integer> signalHistory;
@@ -23,7 +24,7 @@ public class BeaconSignalHistory {
         List<Integer> history = new ArrayList<>();
         int numberOfTrailingZeros = HistoryBestStrategy.SIGNAL_HISTORY_LENGTH - signals.size();
         for(int i = 0; i < numberOfTrailingZeros; i++){
-            history.add(-100);
+            history.add(WEAKEST_SIGNAL_STRENGTH);
         }
         for(Integer signal: signals){
             history.add(signal);
