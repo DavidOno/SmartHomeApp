@@ -1,7 +1,6 @@
 package de.smarthome;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -211,6 +210,8 @@ public class SmartHomeApplication extends AppCompatActivity {
         }
     }
 
+    //This method can be used to start a dialog to accept or denie a "switch room" request
+    //Functionality has been replaced with a snackbar
     private void startBeaconDialog(Location newLocation){
         Dialog dialog = new Dialog(SmartHomeApplication.this);
         dialog.setContentView(R.layout.dialog_beacon);
