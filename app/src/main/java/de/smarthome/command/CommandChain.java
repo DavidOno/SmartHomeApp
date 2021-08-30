@@ -8,7 +8,15 @@ import org.springframework.http.ResponseEntity;
  */
 public interface CommandChain {
 
+    /**
+     * Checks if the chain has another element.
+     * @return true if the chain has one or more elements left, otherwise false
+     */
     boolean hasNext();
+
+    /*
+     * @return the next element in line.
+     */
     CommandChainable getNext();
 
     /**
