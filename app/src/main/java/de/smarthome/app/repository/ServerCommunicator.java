@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import de.smarthome.R;
 import de.smarthome.SmartHomeApplication;
 import de.smarthome.app.model.responses.GetValueResponse;
 import de.smarthome.app.repository.responsereactor.ResponseReactorBeaconLocations;
@@ -288,7 +289,7 @@ public class ServerCommunicator {
                 if (task.isSuccessful()) {
                     addToExecutorService(new Thread(() -> connectToGira(task.getResult().getCredential().getId(),task.getResult().getCredential().getPassword())));
                 }else{
-                    toastUtility.prepareToast("Not able to retrieve Login data from Google.");
+                    toastUtility.prepareToast(parentApplication.getString(R.string.server_communicator_data_not_retrieved));
                 }
             });
         }

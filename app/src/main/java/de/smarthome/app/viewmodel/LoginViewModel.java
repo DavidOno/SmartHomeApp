@@ -15,6 +15,7 @@ import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.auth.api.credentials.CredentialsOptions;
 import com.google.android.gms.common.api.ResolvableApiException;
 
+import de.smarthome.R;
 import de.smarthome.SmartHomeApplication;
 import de.smarthome.app.repository.Repository;
 import de.smarthome.app.utility.ToastUtility;
@@ -61,7 +62,7 @@ public class LoginViewModel extends AndroidViewModel {
             credentialsClient.save(userCredential).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     Log.d(TAG, "SAVE: OK");
-                    toastUtility.prepareToast("Credentials saved.");
+                    toastUtility.prepareToast(getApplication().getString(R.string.logion_viewmodel_save_successful));
                     return;
                 }
                 Exception e = task.getException();
@@ -71,11 +72,11 @@ public class LoginViewModel extends AndroidViewModel {
                         rae.startResolutionForResult(activity, 1);
                     } catch (IntentSender.SendIntentException exception) {
                         Log.e(TAG, "Failed to send resolution.", exception);
-                        toastUtility.prepareToast("Failed to save Login Data.");
+                        toastUtility.prepareToast(getApplication().getString(R.string.logion_viewmodel_save_failed));
                         e.printStackTrace();
                     }
                 } else {
-                    toastUtility.prepareToast("Failed to save Login Data.");
+                    toastUtility.prepareToast(getApplication().getString(R.string.logion_viewmodel_save_failed));
                 }
             });
         });

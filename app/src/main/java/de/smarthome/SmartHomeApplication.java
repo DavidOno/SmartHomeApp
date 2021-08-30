@@ -210,8 +210,8 @@ public class SmartHomeApplication extends AppCompatActivity {
         }
     }
 
-    //This method can be used to start a dialog to accept or denie a "switch room" request
-    //Functionality has been replaced with a snackbar
+    //This method can be used to start a dialog to accept or denie a "switch room" request.
+    //Functionality has been replaced with a snackbar.
     private void startBeaconDialog(Location newLocation){
         Dialog dialog = new Dialog(SmartHomeApplication.this);
         dialog.setContentView(R.layout.dialog_beacon);

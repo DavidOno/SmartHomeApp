@@ -60,7 +60,7 @@ public class LoginFragment extends Fragment {
                 navigateToHomeOverviewFragment();
             }else{
                 if(userName != null && password != null)
-                    toastUtility.prepareToast("Login Data incorrect!");
+                    toastUtility.prepareToast(getString(R.string.login_fragment_credentials_wrong));
             }
         });
     }
@@ -87,7 +87,7 @@ public class LoginFragment extends Fragment {
         password = editTextPwd.getText().toString();
 
         if(userName.isEmpty() || password.isEmpty()){
-            toastUtility.prepareToast("Username or Password is empty!");
+            toastUtility.prepareToast(getString(R.string.login_fragment_credentials_empty));
             return false;
         }
         return true;

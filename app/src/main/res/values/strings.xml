@@ -39,4 +39,11 @@
     <string name="snackbar_connection_layout">Connection to Server failed.</string>
     <string name="snackbar_connection_button">RETRY</string>
     <string name="snackbar_connection_result">Trying to connect to Server...</string>
+    <string name="options_viewmodel_data_deleted">Login data deleted.</string>
+    <string name="options_viewmodel_data_not_retrieved">Not able to retrieve Login data.</string>
+    <string name="logion_viewmodel_save_failed">Failed to save Login Data.</string>
+    <string name="logion_viewmodel_save_successful">Credentials saved.</string>
+    <string name="login_fragment_credentials_empty">Username or Password is empty!</string>
+    <string name="login_fragment_credentials_wrong">Login Data incorrect!</string>
+    <string name="server_communicator_data_not_retrieved">Not able to retrieve Login data from Google.</string>
 </resources>

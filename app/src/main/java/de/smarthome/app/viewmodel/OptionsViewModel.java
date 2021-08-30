@@ -10,6 +10,7 @@ import com.google.android.gms.auth.api.credentials.CredentialRequest;
 import com.google.android.gms.auth.api.credentials.Credentials;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
 
+import de.smarthome.R;
 import de.smarthome.SmartHomeApplication;
 import de.smarthome.app.repository.Repository;
 import de.smarthome.app.utility.ToastUtility;
@@ -37,7 +38,7 @@ public class OptionsViewModel extends AndroidViewModel {
         CredentialsClient credentialsClient = Credentials.getClient(getApplication());
         credentialsClient.delete(credential).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                toastUtility.prepareToast("Login data deleted.");
+                toastUtility.prepareToast(getApplication().getString(R.string.options_viewmodel_data_deleted));
             }
         });
 
@@ -58,7 +59,7 @@ public class OptionsViewModel extends AndroidViewModel {
                 if (task.isSuccessful()) {
                     deleteCredential(task.getResult().getCredential());
                 }else{
-                    toastUtility.prepareToast("Not able to retrieve Login data.");
+                    toastUtility.prepareToast(getApplication().getString(R.string.options_viewmodel_data_not_retrieved));
                 }
             });
         });
