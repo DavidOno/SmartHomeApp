@@ -124,7 +124,7 @@ public class SmartHomeApplication extends AppCompatActivity {
         LinearLayout usedLayout = findViewById(R.id.smartHomeApplicationLinearLayout);
         int snackBarDuration = 20000;
         Snackbar snackbar = Snackbar.make(usedLayout,
-                R.string.snackbar_beacon_layout + location.getName(), snackBarDuration)
+                getString(R.string.snackbar_beacon_layout) + " " + location.getName(), snackBarDuration)
                 .setAction(R.string.snackbar_beacon_button, v -> {
                     Snackbar resultMessageSnackbar = Snackbar.make(usedLayout, R.string.snackbar_beacon_result, Snackbar.LENGTH_LONG);
                     resultMessageSnackbar.show();

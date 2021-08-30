@@ -33,7 +33,7 @@
     <string name="options_fragment_button_logout">Logout</string>
     <string name="options_fragment_button_restart_connection">Restart Connection</string>
     <string name="room_fragment_title_default">No Room Selected</string>
-    <string name="snackbar_beacon_layout">Switch to </string>
+    <string name="snackbar_beacon_layout">Switch to</string>
     <string name="snackbar_beacon_button">ACCEPT</string>
     <string name="snackbar_beacon_result">Switch successful</string>
     <string name="snackbar_connection_layout">Connection to Server failed.</string>

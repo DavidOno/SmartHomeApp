@@ -53,7 +53,7 @@ public class ServerCommunicator {
     private static final String TAG = "ServerCommunicator";
     private final ToastUtility toastUtility = ToastUtility.getInstance();
 
-    private static final String IP_OF_CALLBACK_SERVER = "192.168.132.218:9090";
+    private static final String IP_OF_CALLBACK_SERVER = "192.168.132.222:9090";
     private final ServerHandler serverHandler;
 
     private final MutableLiveData<Boolean> requestStatusLoginUser = new MutableLiveData<>();
