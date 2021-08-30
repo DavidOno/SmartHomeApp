@@ -15,7 +15,7 @@ import de.smarthome.app.repository.Repository;
 import de.smarthome.app.repository.StatusRequestType;
 
 /**
- * This class is the viewmodel of the roomoverviewmodel.
+ * This class is the viewmodel of the roomoverviewfragment.
  * It handles the communication with the repository.
  */
 public class RoomOverviewViewModel extends AndroidViewModel {
@@ -31,9 +31,18 @@ public class RoomOverviewViewModel extends AndroidViewModel {
         return repository.getFunctionMap();
     }
 
+    /**
+     * Requests the current status values form the gira server for the functions of the selected location.
+     */
     public void requestCurrentStatusValues(){
         repository.requestCurrentStatusValues(StatusRequestType.FUNCTION);
     }
+
+    /**
+     * Sends a request to the gira server to set the value of a given datapoint to the given value.
+     * @param id ID of the datapoint
+     * @param value Value to be set to
+     */
     public void requestSetValue(String id, String value){
         repository.requestSetValue(id, value);
     }

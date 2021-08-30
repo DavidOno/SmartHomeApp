@@ -15,12 +15,18 @@ import de.smarthome.R;
 import de.smarthome.app.model.Location;
 
 /**
- * Adapter for the display of locations in a recyclerView
+ * Adapter for the display of locations in a recyclerView.
  */
 public class HomeOverviewAdapter extends RecyclerView.Adapter<HomeOverviewAdapter.LocationHolder> {
     private List<Location> locationList = new ArrayList<>();
     private OnItemClickListener listener;
 
+    /**
+     * Returns a locationviewholder object.
+     * @param parent ViewGroup holding the recyclerview
+     * @param viewType not used
+     * @return locationviewholder object
+     */
     @NonNull
     @Override
     public LocationHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -29,6 +35,11 @@ public class HomeOverviewAdapter extends RecyclerView.Adapter<HomeOverviewAdapte
         return new LocationHolder(itemView);
     }
 
+    /**
+     * Gives the viewHolder the location.
+     * @param holder ViewHolder of the item
+     * @param position Position of the item
+     */
     @Override
     public void onBindViewHolder(@NonNull LocationHolder holder, int position) {
         Location currentWorkoutPosition = locationList.get(position);
@@ -36,7 +47,7 @@ public class HomeOverviewAdapter extends RecyclerView.Adapter<HomeOverviewAdapte
     }
 
     /**
-     * Returns the amount of items in the roomList
+     * Returns the amount of items in the recyclerview.
      * @return size of locationList
      */
     @Override
@@ -52,14 +63,19 @@ public class HomeOverviewAdapter extends RecyclerView.Adapter<HomeOverviewAdapte
         notifyDataSetChanged();
     }
 
+    /**
+     * Returns the location in the recyclerview at the given position.
+     * @param position Position of the location
+     * @return Location at the given position
+     */
     public Location getLocationAt(int position) {
         return locationList.get(position);
     }
 
 
     /**
-     * RecyclerViewHolder for the homeOverviewAdapter.
-     * Used to display a location in a recyclerView
+     * RecyclerViewHolder for the homeoverviewadapter.
+     * Used to display a location in a recyclerView.
      */
     class LocationHolder extends RecyclerView.ViewHolder {
         TextView textViewName;
@@ -78,7 +94,15 @@ public class HomeOverviewAdapter extends RecyclerView.Adapter<HomeOverviewAdapte
         }
     }
 
+    /**
+     * This interface specifies how onitemclicklisteners behave in the viewholders of the homeoverviewadapter.
+     */
     public interface OnItemClickListener {
+
+        /**
+         * Handles the onclick action of the user.
+         * @param location Location that has been clicked on
+         */
         void onItemClick(Location location);
     }
 

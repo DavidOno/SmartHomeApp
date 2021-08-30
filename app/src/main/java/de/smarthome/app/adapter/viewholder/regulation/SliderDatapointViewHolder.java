@@ -18,7 +18,7 @@ import de.smarthome.app.adapter.RegulationAdapter;
 
 /**
  * RecyclerViewHolder for the regulationAdapter.
- * Used to display a datapoint that is type int or float and has read-write access
+ * Used to display a datapoint that is type int or float and has read-write access.
  */
 public class SliderDatapointViewHolder extends RegulationAdapter.DatapointViewHolder {
     private final String TAG = "SliderDatapointViewHolder";
@@ -68,7 +68,7 @@ public class SliderDatapointViewHolder extends RegulationAdapter.DatapointViewHo
     }
 
     /**
-     * Displays name of the given datapoint in a textView and a given value in the slider
+     * Displays name of the given datapoint in a textView and a given value in the slider.
      * @param datapoint Datapoint to be displayed by the viewHolder
      * @param value Value to be displayed in the slider of the viewHolder
      */

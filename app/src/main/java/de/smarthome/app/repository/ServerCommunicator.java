@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import de.smarthome.SmartHomeApplication;
 import de.smarthome.app.model.responses.GetValueResponse;
@@ -47,7 +48,7 @@ import de.smarthome.server.ServerHandler;
 
 /**
  * This class sends the requests of the repository to the gira and callbackserver.
- * All of the results are handled by responsereactors classes, except in case of the getvalue request
+ * All of the results are handled by responsereactors classes, except in case of the getvalue request.
  */
 public class ServerCommunicator {
     private static final String TAG = "ServerCommunicator";
@@ -79,7 +80,7 @@ public class ServerCommunicator {
 
     /**
      * Depending on the given event sets the serverConnectionStatus and
-     * giraServerConnectionStatus or callbackServerConnectionStatus
+     * giraServerConnectionStatus or callbackServerConnectionStatus.
      * @param event Event that happened in the last connection attempt
      */
     public void setServerConnectionEvent(ServerConnectionEvent event){
@@ -114,7 +115,7 @@ public class ServerCommunicator {
     }
 
     /**
-     * Depending on connection status restarts connection to the servers
+     * Depending on connection status restarts connection to the servers.
      */
     public void retryConnectionToServer(){
         if(giraServerConnectionStatus == ServerConnectionEvent.GIRA_CONNECTION_FAIL){
@@ -126,7 +127,7 @@ public class ServerCommunicator {
     }
 
     /**
-     * Establishes a connection to the gira server
+     * Establishes a connection to the gira server.
      * @param userName Username that will be used for registration at gira
      * @param pwd Password that will be used for registration at gira
      */
@@ -140,7 +141,7 @@ public class ServerCommunicator {
     }
 
     /**
-     * Establishes a connection to the callbackserver
+     * Establishes a connection to the callbackserver.
      */
     public void connectToCallbackServer(){
         setCallbackServerConnectionStatus(ServerConnectionEvent.CALLBACK_CONNECTION_ACTIVE);
@@ -189,7 +190,7 @@ public class ServerCommunicator {
     }
 
     /**
-     * Requests the current uiconfig from the gira server
+     * Requests the current uiconfig from the gira server.
      */
     public void requestOnlyUIConfig(){
         SingleReactorCommandChainImpl singleCommandChain = new SingleReactorCommandChainImpl(new ResponseReactorUIConfig());
@@ -198,7 +199,7 @@ public class ServerCommunicator {
     }
 
     /**
-     * Requests the current channelconfig, beaconlocations, and boundaryconfig from the callbackserver
+     * Requests the current channelconfig, beaconlocations, and boundaryconfig from the callbackserver.
      */
     public void requestOnlyAdditionalConfigs() {
         MultiReactorCommandChainImpl multiCommandChain = new MultiReactorCommandChainImpl();
@@ -212,7 +213,7 @@ public class ServerCommunicator {
     }
 
     /**
-     * Requests a given value to be set by the gira server
+     * Requests a given value to be set by the gira server.
      * @param id ID of the datapoint
      * @param value Value of the datapoint that will be set
      */
@@ -222,7 +223,7 @@ public class ServerCommunicator {
     }
 
     /**
-     * Requests the current status values of the given datapoint ids the gira server
+     * Requests the current status values of the given datapoint ids the gira server.
      * @param ids List containing the ids of the datapoints
      */
     public synchronized void requestGetValue(List<String> ids) {
@@ -251,7 +252,9 @@ public class ServerCommunicator {
 
                 newStatusValuesMap.put(uID, value);
                 if(statusListSize == newStatusValuesMap.size()) {
-                    Repository.getInstance().setStatusGetValueMap(newStatusValuesMap);
+                    Map<String, String> updateValueMap =  newStatusValuesMap.entrySet().stream()
+                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                    Repository.getInstance().setStatusGetValueMap(updateValueMap);
                 }
             } else {
                 Log.d(TAG, "error occurred");
@@ -264,7 +267,7 @@ public class ServerCommunicator {
     }
 
     /**
-     * Unregisters the application from the gira server and the callbackserver
+     * Unregisters the application from the gira server and the callbackserver.
      */
     public void unregisterFromServers() {
         requestUnregisterClient();
@@ -272,7 +275,7 @@ public class ServerCommunicator {
     }
 
     /**
-     * Gets the saved user credentials form Google and starts the connection to the gira server on successful retrieval
+     * Gets the saved user credentials form the google password manager and starts the connection to the gira server on successful retrieval.
      */
     public void requestSavedCredentialsForLoginAtGira() {
         CredentialRequest credentialRequest = new CredentialRequest.Builder()

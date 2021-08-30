@@ -15,7 +15,7 @@ import de.smarthome.app.adapter.RoomOverviewAdapter;
 
 /**
  * RecyclerViewHolder for the roomOverviewAdapter.
- * Used to display a function which first datapoint has only read access
+ * Used to display a function which first datapoint has only read access.
  */
 public class StatusFunctionViewHolder extends RoomOverviewAdapter.FunctionViewHolder {
     private TextView textViewName;
@@ -45,7 +45,7 @@ public class StatusFunctionViewHolder extends RoomOverviewAdapter.FunctionViewHo
     }
 
     /**
-     * Displays name of the given function and a given value on the textViews
+     * Displays name of the given function and a given value on the textViews.
      * @param function Function to be displayed by the viewHolder
      * @param value Value to be displayed in a textView of the viewHolder
      */

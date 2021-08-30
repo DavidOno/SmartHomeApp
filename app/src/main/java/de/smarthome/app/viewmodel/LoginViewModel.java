@@ -34,6 +34,10 @@ public class LoginViewModel extends AndroidViewModel {
         toastUtility = ToastUtility.getInstance();
     }
 
+    /**
+     * Request to register the user at the gira server.
+     * @param userCredential Credentials of the user
+     */
     public void registerUser(Credential userCredential) {
         repository.requestRegisterUser(userCredential);
     }
@@ -43,7 +47,7 @@ public class LoginViewModel extends AndroidViewModel {
     }
 
     /**
-     * Saves the credentials by Google
+     * Saves the credentials by the google password manager.
      * @param activity Activity that is required for error handling
      * @param userCredential Credentials that are saved
      */

@@ -16,7 +16,7 @@ import de.smarthome.app.adapter.RoomOverviewAdapter;
 
 /**
  * RecyclerViewHolder for the roomOverviewAdapter.
- * Used to display a function which first and only datapoint is type binary with read/write access
+ * Used to display a function which first and only datapoint is type binary with read/write access.
  */
 public class SwitchFunctionViewHolder extends RoomOverviewAdapter.FunctionViewHolder {
     private SwitchCompat binarySwitch;
@@ -46,7 +46,7 @@ public class SwitchFunctionViewHolder extends RoomOverviewAdapter.FunctionViewHo
     }
 
     /**
-     * Displays name of the given function in a textView and a given value on the switch
+     * Displays name of the given function in a textView and a given value on the switch.
      * @param function Function to be displayed by the viewHolder
      * @param value Value to be displayed in the switch of the viewHolder
      */

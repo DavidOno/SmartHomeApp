@@ -9,7 +9,7 @@ import de.smarthome.app.repository.Repository;
 import de.smarthome.command.ResponseReactor;
 
 /**
- * Commandchainreactor to handle requests to connect to the callbackserver send via a commandchain
+ * Commandchainreactor to handle requests to connect to the callbackserver send via a commandchain.
  */
 public class ResponseReactorCallbackServer implements ResponseReactor {
     private static final String TAG = "ResponseReactorCallbackServer";
@@ -19,6 +19,10 @@ public class ResponseReactorCallbackServer implements ResponseReactor {
         repository = Repository.getInstance();
     }
 
+    /**
+     * Informs the repository about the status of the connection to the callbackserver.
+     * @param responseEntity ResponseEntity send by the server
+     */
     @Override
     public void react(ResponseEntity responseEntity) {
         try {

@@ -29,6 +29,10 @@ public class OptionsViewModel extends AndroidViewModel {
         repository = Repository.getInstance();
     }
 
+    /**
+     * Deletes the given credentials at the google password manager.
+     * @param credential Credentials to be deleted at google password manager
+     */
     private void deleteCredential(Credential credential){
         CredentialsClient credentialsClient = Credentials.getClient(getApplication());
         credentialsClient.delete(credential).addOnCompleteListener(task -> {
@@ -40,7 +44,7 @@ public class OptionsViewModel extends AndroidViewModel {
     }
 
     /**
-     * Requests credentials saved by Google and deletes them by Google on successful retrieval
+     * Requests credentials saved by Google and deletes them by the google password manager on successful retrieval.
      */
     public void getDataFromGoogleAndDelete() {
         Thread getCredentialFromGoogleAndDeleteThread = new Thread(() -> {
@@ -61,6 +65,9 @@ public class OptionsViewModel extends AndroidViewModel {
         SmartHomeApplication.EXECUTOR_SERVICE.execute(getCredentialFromGoogleAndDeleteThread);
     }
 
+    /**
+     * Restarts the connections to both servers.
+     */
     public void restartConnectionToServer() {
         repository.restartConnectionToServer();
     }

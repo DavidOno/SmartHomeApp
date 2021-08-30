@@ -10,7 +10,7 @@ import de.smarthome.app.repository.Repository;
 import de.smarthome.command.ResponseReactor;
 
 /**
- * Commandchainreactor to handle requests for the boundaryconfig send via a commandchain
+ * Commandchainreactor to handle requests for the boundaryconfig send via a commandchain.
  */
 public class ResponseReactorBoundariesConfig implements ResponseReactor {
     private static final String TAG = "ResponseReactorBoundariesConfig";
@@ -19,6 +19,11 @@ public class ResponseReactorBoundariesConfig implements ResponseReactor {
     public ResponseReactorBoundariesConfig() {
         this.repository = Repository.getInstance();
     }
+
+    /**
+     * Extracts the boundaryconfig from the body of the responseentity and saves it in the repository.
+     * @param responseEntity ResponseEntity send by the server
+     */
     @Override
     public void react(ResponseEntity responseEntity) {
         try {

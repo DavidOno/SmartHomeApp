@@ -29,6 +29,9 @@ public class SmartHomeApplicationViewModel extends AndroidViewModel {
         return repository.getServerConnectionStatus();
     }
 
+    /**
+     * Restarts only the failed connection to the servers.
+     */
     public void retryConnectionToServerAfterFailure(){
         repository.retryConnectionToServerAfterFailure();
     }
@@ -45,6 +48,9 @@ public class SmartHomeApplicationViewModel extends AndroidViewModel {
         repository.setBeaconCheckFalse();
     }
 
+    /**
+     * Initialised the beaconlocation as the selectedlocation and then resets beaconlocation.
+     */
     public void confirmBeacon() {
         repository.confirmBeaconLocation();
     }
@@ -53,10 +59,18 @@ public class SmartHomeApplicationViewModel extends AndroidViewModel {
         return repository.getBeaconLocation();
     }
 
+    /**
+     * Unsubscribes and unregisters the application from all services.
+     */
     public void unsubscribeFromEverything() {
         repository.unsubscribeFromEverything();
     }
 
+
+    /**
+     * Request to register the user at the gira server.
+     * @param credential Credentials of the user
+     */
     public void requestRegisterUser(Credential credential) {
         repository.requestRegisterUser(credential);
     }

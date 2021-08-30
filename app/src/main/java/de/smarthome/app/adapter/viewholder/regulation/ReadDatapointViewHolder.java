@@ -14,7 +14,7 @@ import de.smarthome.app.adapter.RegulationAdapter;
 
 /**
  * RecyclerViewHolder for the regulationAdapter.
- * Used to display a datapoint that has only has read access and no functionality
+ * Used to display a datapoint that has only has read access and no functionality.
  */
 public class ReadDatapointViewHolder extends RegulationAdapter.DatapointViewHolder {
     private TextView textViewName;
@@ -31,7 +31,7 @@ public class ReadDatapointViewHolder extends RegulationAdapter.DatapointViewHold
     }
 
     /**
-     * Displays name of the given datapoint and a given value in the textViews
+     * Displays name of the given datapoint and a given value in the textViews.
      * @param datapoint Datapoint to be displayed by the viewHolder
      * @param value Value to be displayed in a textView of the viewHolder
      */

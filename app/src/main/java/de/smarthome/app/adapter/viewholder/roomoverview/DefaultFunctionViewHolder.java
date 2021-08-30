@@ -15,7 +15,7 @@ import de.smarthome.app.adapter.RoomOverviewAdapter;
 
 /**
  * RecyclerViewHolder for the roomOverviewAdapter.
- * Used to display a function
+ * Used to display a function.
  */
 public class DefaultFunctionViewHolder extends RoomOverviewAdapter.FunctionViewHolder {
     private TextView textViewName;
@@ -39,7 +39,7 @@ public class DefaultFunctionViewHolder extends RoomOverviewAdapter.FunctionViewH
     }
 
     /**
-     * Displays name of the given function in a textView
+     * Displays name of the given function in a textView.
      * @param function Function to be displayed by the viewHolder
      * @param value Value to be displayed, but is never be used in this type of viewHolder
      */

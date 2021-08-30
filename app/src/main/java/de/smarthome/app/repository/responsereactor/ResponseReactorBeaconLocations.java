@@ -10,7 +10,7 @@ import de.smarthome.beacons.BeaconLocations;
 import de.smarthome.command.ResponseReactor;
 
 /**
- * Commandchainreactor to handle requests for the beaconconfig send via a commandchain
+ * Commandchainreactor to handle requests for the beaconlocations send via a commandchain.
  */
 public class ResponseReactorBeaconLocations implements ResponseReactor {
     private static final String TAG = "ResponseReactorBeaconLocations";
@@ -20,6 +20,10 @@ public class ResponseReactorBeaconLocations implements ResponseReactor {
         repository = Repository.getInstance();
     }
 
+    /**
+     * Extracts the beaconlocations from the body of the responseentity and saves it in the repository.
+     * @param responseEntity ResponseEntity send by the server
+     */
     @Override
     public void react(ResponseEntity responseEntity) {
         try {

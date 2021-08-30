@@ -15,13 +15,16 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import de.smarthome.R;
 import de.smarthome.app.viewmodel.RoomOverviewViewModel;
 import de.smarthome.app.adapter.RoomOverviewAdapter;
 
 /**
- * This fragment contains a recyclerview that handles the display all functions in a selected location
- * and interactions of the user with them or their selection.
+ * This fragment contains a recyclerview that displays all functions in a selected location.
+ * It also handles the interactions of the user with them or their selection.
  */
 public class RoomOverviewFragment extends Fragment {
     private static final String TAG = "RoomOverviewFragment";
@@ -80,7 +83,10 @@ public class RoomOverviewFragment extends Fragment {
     }
 
     private void setGetValueMapObserver(RoomOverviewAdapter adapter) {
-        viewViewModel.getStatusGetValueMap().observe(getViewLifecycleOwner(), adapter::updateMultipleFunctionStatusValues);
+        viewViewModel.getStatusGetValueMap().observe(getViewLifecycleOwner(), stringStringMap -> {
+            Map<String, String> newValueMap = stringStringMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            adapter.updateMultipleFunctionStatusValues(newValueMap);
+        });
     }
 
     private void setOnClickListener(RoomOverviewAdapter adapter) {
@@ -103,7 +109,6 @@ public class RoomOverviewFragment extends Fragment {
 
     private void navigateToRegulationFragment() {
         NavController navController = NavHostFragment.findNavController(this);
-        //navController.navigate(R.id.action_roomOverviewFragment_to_regulationFragment);
         navController.navigate(RoomOverviewFragmentDirections.actionRoomOverviewFragmentToRegulationFragment());
     }
 }

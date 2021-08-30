@@ -10,7 +10,7 @@ import de.smarthome.command.ResponseReactor;
 import de.smarthome.app.model.configs.ChannelConfig;
 
 /**
- * Commandchainreactor to handle requests for the channelconfig send via a commandchain
+ * Commandchainreactor to handle requests for the channelconfig send via a commandchain.
  */
 public class ResponseReactorChannelConfig implements ResponseReactor {
     private static final String TAG = "ResponseReactorChannelConfig";
@@ -20,6 +20,10 @@ public class ResponseReactorChannelConfig implements ResponseReactor {
         repository = Repository.getInstance();
     }
 
+    /**
+     * Extracts the channelconfig from the body of the responseentity and saves it in the repository.
+     * @param responseEntity ResponseEntity send by the server
+     */
     @Override
     public void react(ResponseEntity responseEntity) {
         try {

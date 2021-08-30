@@ -9,7 +9,7 @@ import de.smarthome.app.repository.Repository;
 import de.smarthome.command.ResponseReactor;
 
 /**
- * Commandchainreactor to handle requests to check availability of gira send via a commandchain
+ * Commandchainreactor to handle requests to check availability of gira send via a commandchain.
  */
 public class ResponseReactorCheckAvailability implements ResponseReactor {
     private static final String TAG = "ResponseReactorCheckAvailability";
@@ -19,6 +19,10 @@ public class ResponseReactorCheckAvailability implements ResponseReactor {
         repository = Repository.getInstance();
     }
 
+    /**
+     * Informs the repository about the status of the connection to the gira server.
+     * @param responseEntity ResponseEntity send by the server
+     */
     @Override
     public void react(ResponseEntity responseEntity) {
         try {

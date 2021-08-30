@@ -63,7 +63,7 @@ public class SmartHomeApplication extends AppCompatActivity {
     private SmartHomeApplicationViewModel viewModel;
     private ToastUtility toastUtility;
 
-    private boolean beaconDialogShown;
+    private boolean beaconSnackBarShown;
     private boolean connectionSnackbarShown;
 
     @Override
@@ -73,7 +73,7 @@ public class SmartHomeApplication extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         checkBeaconPermissions();
-        beaconDialogShown = false;
+        beaconSnackBarShown = false;
         connectionSnackbarShown = false;
 
         viewModel = new ViewModelProvider(this).get(SmartHomeApplicationViewModel.class);
@@ -87,7 +87,7 @@ public class SmartHomeApplication extends AppCompatActivity {
         navController = NavHostFragment.findNavController(navHostFragment);
 
         if(savedInstanceState == null){
-            getSavedCredentials();
+            getSavedCredentialsAndSetStartFragment();
         }
     }
 
@@ -104,9 +104,9 @@ public class SmartHomeApplication extends AppCompatActivity {
 
     private void setBeaconObserver() {
         viewModel.checkBeacon().observe(this, aBoolean -> {
-            if(aBoolean && !beaconDialogShown){
+            if(aBoolean && !beaconSnackBarShown){
                     viewModel.setBeaconCheckFalse();
-                    beaconDialogShown = true;
+                    beaconSnackBarShown = true;
                     showBeaconSnackbar(viewModel.getBeaconLocation());
                 }
         });
@@ -133,7 +133,7 @@ public class SmartHomeApplication extends AppCompatActivity {
                     goToRoomFragment();
                 });
         snackbar.show();
-        beaconDialogShown = false;
+        beaconSnackBarShown = false;
     }
 
     private void showConnectionSnackbar() {
@@ -165,7 +165,7 @@ public class SmartHomeApplication extends AppCompatActivity {
     }
 
     /**
-     * Enables and disables menu items depending on the currently displayed fragment
+     * Enables and disables menu items depending on the currently displayed fragment.
      * @param menu Menu containing the menu items
      * @return true
      */
@@ -229,12 +229,12 @@ public class SmartHomeApplication extends AppCompatActivity {
             dialog.dismiss();
             viewModel.confirmBeacon();
             setStartFragment(R.id.roomOverviewFragment);
-            beaconDialogShown = false;
+            beaconSnackBarShown = false;
         });
 
         buttonNo.setOnClickListener(v -> {
             dialog.dismiss();
-            beaconDialogShown = false;
+            beaconSnackBarShown = false;
         });
     }
 
@@ -286,7 +286,7 @@ public class SmartHomeApplication extends AppCompatActivity {
         }
     }
 
-    private void getSavedCredentials() {
+    private void getSavedCredentialsAndSetStartFragment() {
         Thread getSavedCredentialsFromGoogleThread = new Thread(() -> {
             CredentialRequest credentialRequest = new CredentialRequest.Builder()
                     .setPasswordLoginSupported(true)

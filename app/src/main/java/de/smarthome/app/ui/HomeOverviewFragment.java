@@ -20,7 +20,7 @@ import de.smarthome.app.viewmodel.HomeOverviewViewModel;
 import de.smarthome.app.adapter.HomeOverviewAdapter;
 
 /**
- * This fragment contains a recyclerview that handles the display all location in the uiconfig and their selection.
+ * This fragment contains a recyclerview that displays all location in the uiconfig and handles their selection.
  */
 public class HomeOverviewFragment extends Fragment {
     private static final String TAG = "HomeOverviewFragment";

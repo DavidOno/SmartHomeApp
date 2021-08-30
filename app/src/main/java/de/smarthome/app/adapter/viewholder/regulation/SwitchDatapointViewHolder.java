@@ -16,7 +16,7 @@ import de.smarthome.app.adapter.RegulationAdapter;
 
 /**
  * RecyclerViewHolder for the regulationAdapter.
- * Used to display a datapoint that is type binary and has read-write access
+ * Used to display a datapoint that is type binary and has read-write access.
  */
 public class SwitchDatapointViewHolder extends RegulationAdapter.DatapointViewHolder {
     private SwitchCompat binarySwitch;
@@ -51,7 +51,7 @@ public class SwitchDatapointViewHolder extends RegulationAdapter.DatapointViewHo
     }
 
     /**
-     * Displays name of the given datapoint in a textView and a given value on the switch
+     * Displays name of the given datapoint in a textView and a given value on the switch.
      * @param datapoint Datapoint to be displayed by the viewHolder
      * @param value Value to be displayed in the switch of the viewHolder
      */

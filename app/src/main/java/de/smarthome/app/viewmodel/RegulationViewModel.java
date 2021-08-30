@@ -28,6 +28,11 @@ public class RegulationViewModel extends AndroidViewModel {
         repository = Repository.getInstance();
     }
 
+    /**
+     * Sends a request to the gira server to set the value of a given datapoint to the given value.
+     * @param id ID of the datapoint
+     * @param value Value to be set to
+     */
     public void requestSetValue(String id, String value){
         repository.requestSetValue(id, value);
     }
@@ -36,6 +41,9 @@ public class RegulationViewModel extends AndroidViewModel {
         return repository.getDataPointMap();
     }
 
+    /**
+     * Requests the current status values form the gira server for the datapoints of the selected function.
+     */
     public void requestCurrentStatusValues(){
         repository.requestCurrentStatusValues(StatusRequestType.DATAPOINT);
     }

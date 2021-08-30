@@ -10,7 +10,7 @@ import de.smarthome.command.ResponseReactor;
 import de.smarthome.app.model.UIConfig;
 
 /**
- * Commandchainreactor to handle requests for the uiconfigconfig send via a commandchain
+ * Commandchainreactor to handle requests for the uiconfigconfig send via a commandchain.
  */
 public class ResponseReactorUIConfig implements ResponseReactor {
     private static final String TAG = "ResponseReactorUIConfig";
@@ -20,6 +20,10 @@ public class ResponseReactorUIConfig implements ResponseReactor {
         this.repository = Repository.getInstance();
     }
 
+    /**
+     * Extracts the uiconfigconfig from the body of the responseentity and saves it in the repository.
+     * @param responseEntity ResponseEntity send by the server
+     */
     @Override
     public void react(ResponseEntity responseEntity) {
         try {

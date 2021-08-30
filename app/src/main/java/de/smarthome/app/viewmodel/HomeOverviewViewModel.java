@@ -28,6 +28,10 @@ public class HomeOverviewViewModel extends AndroidViewModel {
         return repository.getLocationList();
     }
 
+    /**
+     * Initialises a location as the selected location
+     * @param location Location to be initialised
+     */
     public void initSelectedLocation(Location location){
         repository.initSelectedLocation(location);
     }

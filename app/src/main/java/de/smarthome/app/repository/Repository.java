@@ -54,7 +54,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     private Repository(){}
 
     /**
-     * Returns the current instance of the repository or creates a new repository
+     * Returns the current instance of the repository or creates a new repository.
      * @return current instance of the repository
      */
     public static Repository getInstance() {
@@ -67,7 +67,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     /**
-     * Deletes the current instance of the repository
+     * Deletes the current instance of the repository.
      */
     public static void destroyInstance(){
         INSTANCE = null;
@@ -87,7 +87,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     /**
-     * Restarts failed connection to the servers
+     * Restarts only the failed connection to the servers.
      */
     public void retryConnectionToServerAfterFailure(){
        serverCommunicator.setServerConnectionStatus(true);
@@ -95,7 +95,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     /**
-     * Restarts the connection to both servers
+     * Restarts the connection to both servers.
      */
     public void restartConnectionToServer(){
         serverCommunicator.setGiraServerConnectionStatus(ServerConnectionEvent.GIRA_CONNECTION_FAIL);
@@ -111,6 +111,12 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         return serverCommunicator.getLoginStatus();
     }
 
+    /**
+     * Sets the given function as selectedFunction and
+     * fills the boundaryMap with the datapoints of the function and their corresponding boundarydatapoints and
+     * fills the datapointMap with the datapoints of the function and their corresponding datapoints of the status function.
+     * @param function Function that should initialised as selectedFunction
+     */
     public void initSelectedFunction(Function function) {
         configContainer.initSelectedFunction(function);
     }
@@ -119,6 +125,11 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         return configContainer.getSelectedFunction();
     }
 
+    /**
+     * Sets the given location as selectedLocation and
+     * fills the functionMap with the functions of the location and their corresponding status functions.
+     * @param newLocation Location that should initialised as selectedLocation
+     */
     public void initSelectedLocation(Location newLocation) {
         configContainer.initSelectedLocation(newLocation);
     }
@@ -144,7 +155,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     /**
-     * Initialised the beaconLocation as the selectedLocation and then resets beaconLocation
+     * Initialised the beaconlocation as the selectedlocation and then resets beaconlocation.
      */
     public void confirmBeaconLocation() {
         initSelectedLocation(beaconLocation);
@@ -152,7 +163,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     /**
-     * Initialises the beaconobserver so the repository can get updates
+     * Initialises the beaconobserver so the repository can get updates.
      */
     public synchronized void initBeaconObserver() {
         if(parentApplication != null && configContainer.getUIConfig() != null && configContainer.getBeaconLocations() != null){
@@ -166,7 +177,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     /**
-     * Starts a connection to the gira server and callbackserver and subscribes the repository to the firebasemessagingservice
+     * Starts a connection to the gira server and callbackserver and subscribes the repository to the firebasemessagingservice.
      * @param credential User credentials for the registration at gira
      */
     public void requestRegisterUser(Credential credential) {
@@ -265,6 +276,11 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         configContainer.setStatusGetValueMap(newStatusValuesMap);
     }
 
+    /**
+     * Sets the beaconlocations if the give one is different to the already existing one.
+     * Initialises the beaconobserver in the repository.
+     * @param newBeaconLocations Beaconlocations that have to be initialised
+     */
     public void initBeaconObserverWithBeaconLocations(BeaconLocations newBeaconLocations){
         configContainer.initBeaconLocations(newBeaconLocations);
     }
@@ -277,6 +293,13 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         configContainer.setChannelConfig(newChannelConfig);
     }
 
+    /**
+     * Sets the given uiconfig and initialises for the contained the parent location.
+     * Initialises the locationList with every location contained in the config.
+     * Starts initialisation of beaconObserver in Repository.
+     * Checks if selectedLocation/selectedFunction are contained in the new uiconfig.
+     * @param newUIConfig UIConfig that should be initialised
+     */
     public void initNewUIConfig(UIConfig newUIConfig){
         configContainer.initNewUIConfig(newUIConfig);
     }
@@ -367,7 +390,7 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
     }
 
     /**
-     * Unsubscribes and unregisters the application from all services
+     * Unsubscribes and unregisters the application from all services.
      */
     public void unsubscribeFromEverything() {
         Thread unsubscribeFromEverythingThread = new Thread(() -> {

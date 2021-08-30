@@ -23,7 +23,7 @@ import de.smarthome.beacons.BeaconLocations;
 /**
  * This class is the data storage of the repository.
  * It contains f.e. all the configs send the gira server and the callbackserver.
- * The data that is used by the ui is stored in livedata objects so any change can be propagated to ui
+ * The data that is used by the ui is stored in livedata objects so any change can be propagated to ui.
  */
 public class ConfigContainer {
     private static final String TAG = "ConfigContainer";
@@ -48,7 +48,7 @@ public class ConfigContainer {
     /**
      * Sets the given function as selectedFunction and
      * fills the boundaryMap with the datapoints of the function and their corresponding boundarydatapoints and
-     * fills the datapointMap with the datapoints of the function and their corresponding datapoints of the status function
+     * fills the datapointMap with the datapoints of the function and their corresponding datapoints of the status function.
      * @param function Function that should initialised as selectedFunction
      */
     public void initSelectedFunction(Function function) {
@@ -69,7 +69,7 @@ public class ConfigContainer {
 
     /**
      * Sets the given location as selectedLocation and
-     * fills the functionMap with the functions of the location and their corresponding status functions
+     * fills the functionMap with the functions of the location and their corresponding status functions.
      * @param location Location that should initialised as selectedLocation
      */
     public void initSelectedLocation(Location location) {
@@ -127,6 +127,11 @@ public class ConfigContainer {
         return beaconLocations;
     }
 
+    /**
+     * Sets the beaconlocations if the give one is different to the already existing one.
+     * Initialises the beaconobserver in the repository.
+     * @param newBeaconLocations Beaconlocations that have to be initialised
+     */
     public void initBeaconLocations(BeaconLocations newBeaconLocations){
         if(!newBeaconLocations.equals(this.beaconLocations)){
             setBeaconLocations(newBeaconLocations);
@@ -199,6 +204,9 @@ public class ConfigContainer {
         return locationList;
     }
 
+    /**
+     * Fills the locationlist with all locations contained in the uiconfig.
+     */
     private void initLocationList() {
         if(uiConfig != null){
             List<Location> allLocations = new ArrayList<>(uiConfig.getLocations());
@@ -221,6 +229,10 @@ public class ConfigContainer {
         return functionMap;
     }
 
+    /**
+     * Fills the functionmap with all functions mapped to their status functions contained in the given location.
+     * @param viewedLocation Location containing all required functions
+     */
     private void initFunctionMap(Location viewedLocation) {
         Map<Function, Function> completeFunctionMap = mapStatusFunctionToFunction(viewedLocation);
 
@@ -260,6 +272,9 @@ public class ConfigContainer {
                         comparedFunction.getName().split(regex)[0]);
     }
 
+    /**
+     * Fills the boundarymap with all datapoints of the selected funciton mapped to the corresponding boundarydatapoints.
+     */
     private void initBoundaryMap() {
         Map<Datapoint, BoundaryDataPoint> completeFunctionMap = mapBoundaryToFunction();
         setBoundaryMap(completeFunctionMap);
@@ -329,7 +344,7 @@ public class ConfigContainer {
     }
 
     /**
-     * Puts inputs into the statusUpdateMap
+     * Puts inputs into the statusUpdateMap.
      * @param functionUID ID of the datapoint that was updated
      * @param value Value of the datapoint that was updated
      */

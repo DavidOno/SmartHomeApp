@@ -9,7 +9,7 @@ import de.smarthome.app.repository.Repository;
 import de.smarthome.command.ResponseReactor;
 
 /**
- * Commandchainreactor to handle requests to register the callbackserver at gira send via a commandchain
+ * Commandchainreactor to handle requests to register the callbackserver at gira send via a commandchain.
  */
 public class ResponseReactorGiraCallbackServer implements ResponseReactor {
     private static final String TAG = "ResponseReactorGiraCallbackServer";
@@ -19,6 +19,10 @@ public class ResponseReactorGiraCallbackServer implements ResponseReactor {
         repository = Repository.getInstance();
     }
 
+    /**
+     * Informs the repository about the status of the connection to the gira server.
+     * @param responseEntity ResponseEntity send by the server
+     */
     @Override
     public void react(ResponseEntity responseEntity) {
         try {

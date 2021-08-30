@@ -13,13 +13,16 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import de.smarthome.R;
 import de.smarthome.app.viewmodel.RegulationViewModel;
 import de.smarthome.app.adapter.RegulationAdapter;
 
 /**
- * This fragment contains a recyclerview that handles the display all datapoints in a selected function
- * and interactions of the user with them.
+ * This fragment contains a recyclerview for the display all datapoints in a selected function.
+ * It also handles the interactions of the user with them.
  */
 public class RegulationFragment extends Fragment {
     private static final String TAG = "RegulationFragment";
@@ -64,7 +67,10 @@ public class RegulationFragment extends Fragment {
     }
 
     private void setStatusGetValueObserver(RegulationAdapter adapter) {
-        viewModel.getStatusGetValueMap().observe(getViewLifecycleOwner(), adapter::updateMultipleDatapointStatusValues);
+        viewModel.getStatusGetValueMap().observe(getViewLifecycleOwner(), stringStringMap -> {
+            Map<String, String> newValueMap = stringStringMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            adapter.updateMultipleDatapointStatusValues(newValueMap);
+        });
     }
 
     private void setDataPointObserver(RegulationAdapter adapter) {

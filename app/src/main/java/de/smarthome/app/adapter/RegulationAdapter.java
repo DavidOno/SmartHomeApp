@@ -13,6 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import de.smarthome.app.adapter.viewholder.regulation.ReadDatapointViewHolder;
 import de.smarthome.app.adapter.viewholder.regulation.SliderDatapointViewHolder;
@@ -24,7 +25,8 @@ import de.smarthome.app.adapter.viewholder.regulation.SwitchDatapointViewHolder;
 import de.smarthome.app.viewmodel.RegulationViewModel;
 
 /**
- * Adapter for the display of datapoints in a recyclerView
+ * Adapter for the display of datapoints in a recyclerView.
+ * Datapoints are displayed with different viewholders depending on their gira channel type.
  */
 public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.DatapointViewHolder>{
     private List<Datapoint> dataPointList;
@@ -54,7 +56,8 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Da
     }
 
     /**
-     * Initialises the dataset of the adapter and notifies the adapter that the dataset has changed
+     * Initialises the dataset of the adapter and notifies the adapter that the dataset has changed.
+     * @param dataPoints Map containing all datapoints mapped to their corresponding status datapoints
      */
     public void initialiseAdapter(Map<Datapoint, Datapoint> dataPoints) {
         setDataPointList(dataPoints);
@@ -73,6 +76,8 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Da
     /**
      * Checks if the adapter contains the datapoint that has been changed
      * and notifies the adapter which item needs to be updated. Only notifies one item.
+     * @param changedStatusFunctionUID Uid of the datapoint
+     * @param changedStatusFunctionValue Value of the update
      */
     public void updateSingleDatapointStatusValue(String changedStatusFunctionUID, String changedStatusFunctionValue){
         if(hasStatusFunction(changedStatusFunctionUID, changedStatusFunctionValue)){
@@ -83,16 +88,18 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Da
     /**
      * Checks if the adapter contains the datapoints that have been changed
      * and notifies the adapter which items need to be updated.
+     * @param newInput Map containing the uids and the values
      */
     public void updateMultipleDatapointStatusValues(Map<String, String> newInput) {
-        if (newInput.size() == 1) {
-            for(String key : newInput.keySet()){
-                updateSingleDatapointStatusValue(key, newInput.get(key));
+        Map<String, String> updateValueMap = newInput.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        if (updateValueMap.size() == 1) {
+            for(String key : updateValueMap.keySet()){
+                updateSingleDatapointStatusValue(key, updateValueMap.get(key));
             }
         } else {
             notifyDataSetChanged();
-            for (String key : newInput.keySet()) {
-                hasStatusFunction(key, newInput.get(key));
+            for (String key : updateValueMap.keySet()) {
+                hasStatusFunction(key, updateValueMap.get(key));
             }
         }
     }
@@ -118,6 +125,12 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Da
         return false;
     }
 
+    /**
+     * Returns a viewholder object corresponding to the given viewType.
+     * @param parent ViewGroup holding the recyclerview
+     * @param viewType Typ of the needed viewholder
+     * @return object corresponding to the given viewType
+     */
     @NonNull
     @Override
     public DatapointViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -143,6 +156,8 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Da
 
     /**
      * Gives the viewHolder the datapoint and the current value
+     *@param holder ViewHolder of the item
+     *@param position Position of the item
      */
     @Override
     public void onBindViewHolder(@NonNull DatapointViewHolder holder, int position) {
@@ -154,6 +169,12 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Da
         holder.onBindViewHolder(dp, value);
     }
 
+    /**
+     * Checks if the given datapoint has a update value and returns it.
+     * @param datapoint Datapoint has to be checked
+     * @param value Optional that will be filled
+     * @return Optional containing the value, can be empty
+     */
     private Optional<String> getStatusValueString(Datapoint datapoint, Optional<String> value) {
         if(!statusValueMap.isEmpty() && statusValueMap.containsKey(datapoint.getID())){
             value = Optional.ofNullable(statusValueMap.get(datapoint.getID()));
@@ -168,7 +189,7 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Da
     }
 
     /**
-     * Returns the amount of items in the dataPointList
+     * Returns the amount of items in the recyclerview.
      * @return size of dataPointList
      */
     @Override
@@ -176,17 +197,35 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Da
         return dataPointList.size();
     }
 
+    /**
+     * Returns an int value corresponding to the required viewholder type for the datapoint at the given positon.
+     * @param position Position of the datapoint that requires the viewholder
+     * @return int value corresponding to required viewholder type
+     */
     @Override
     public int getItemViewType(int position){
         Optional<ChannelDatapoint> channelDatapoint = viewModel.getChannelConfig().findChannelByName(viewModel.getSelectedFunction()).getCorrespondingChannelDataPoint(dataPointList.get(position));
         return channelDatapoint.map(datapoint -> viewModel.getChannelConfig().getRegulationItemViewType(datapoint)).orElse(-1);
     }
 
+    /**
+     * Returns the datapoint in the recyclerview at the given position.
+     * @param position Position of the datapoint
+     * @return Datapoint at the given position
+     */
     public Datapoint getDataPointAt(int position) {
         return dataPointList.get(position);
     }
 
+    /**
+     * This interface specifies how onitemclicklisteners behave in the viewholders of the regulationadapter.
+     */
     public interface OnItemClickListener {
+
+        /**
+         * Handles the onclick action of the user.
+         * @param datapoint Datapoint that has been clicked on
+         */
         void onItemClick(Datapoint datapoint, String value);
     }
 
@@ -194,12 +233,20 @@ public class RegulationAdapter extends RecyclerView.Adapter<RegulationAdapter.Da
         this.listener = listener;
     }
 
+    /**
+     * This class specifies the basic methods of all viewholders of the regulationadapter.
+     */
     public abstract static class DatapointViewHolder extends RecyclerView.ViewHolder {
 
         protected DatapointViewHolder(@NonNull View itemView) {
             super(itemView);
         }
 
+        /**
+         * Displays name of the given datapoint and a given value.
+         * @param datapoint Datapoint to be displayed by the viewHolder
+         * @param value Value to be displayed by element in the viewHolder
+         */
         public abstract void onBindViewHolder(Datapoint datapoint, Optional<String> value);
 
     }

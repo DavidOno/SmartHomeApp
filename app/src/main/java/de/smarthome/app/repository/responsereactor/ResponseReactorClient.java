@@ -10,7 +10,7 @@ import de.smarthome.command.ResponseReactor;
 import de.smarthome.app.utility.ToastUtility;
 
 /**
- * Commandchainreactor to handle requests to register the client at gira send via a commandchain
+ * Commandchainreactor to handle requests to register the client at gira send via a commandchain.
  */
 public class ResponseReactorClient implements ResponseReactor {
     private static final String TAG = "ResponseReactorClient";
@@ -22,6 +22,10 @@ public class ResponseReactorClient implements ResponseReactor {
         this.toastUtility = ToastUtility.getInstance();
     }
 
+    /**
+     * Sets the login status depending on the response of the gira server.
+     * @param responseEntity ResponseEntity send by the server
+     */
     @Override
     public void react(ResponseEntity responseEntity) {
         try {
