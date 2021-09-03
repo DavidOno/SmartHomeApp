@@ -107,7 +107,6 @@ public class RoomOverviewAdapter extends RecyclerView.Adapter<RoomOverviewAdapte
 
     private boolean hasStatusFunction(String changedStatusFunctionUID, String value) {
         for(Function function : functionList){
-            //Has to be this check because: No Status function => value of map is null! so it contains something
             if (functionMap.get(function) != null) {
                 for(Datapoint datapoint : functionMap.get(function).getDataPoints()){
                     if (changedStatusFunctionUID.equals(datapoint.getID())) {
