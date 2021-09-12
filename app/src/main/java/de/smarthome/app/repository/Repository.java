@@ -73,6 +73,10 @@ public class Repository implements CallbackSubscriber, BeaconObserverSubscriber 
         INSTANCE = null;
     }
 
+    public void fillWithDummyValues(){
+        configContainer.fillWithDummyValueAllConfigs();
+    }
+
     public void setParentApplication(Application parentApplication) {
         this.parentApplication = parentApplication;
         serverCommunicator.setParentApplication(parentApplication);

@@ -1,7 +1,12 @@
 package de.smarthome.app.repository;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,7 +21,9 @@ import de.smarthome.app.model.UIConfig;
 import de.smarthome.app.model.configs.BoundariesConfig;
 import de.smarthome.app.model.configs.Boundary;
 import de.smarthome.app.model.configs.BoundaryDataPoint;
+import de.smarthome.app.model.configs.Channel;
 import de.smarthome.app.model.configs.ChannelConfig;
+import de.smarthome.app.model.configs.ChannelDatapoint;
 import de.smarthome.app.utility.ToastUtility;
 import de.smarthome.beacons.BeaconLocations;
 
@@ -368,5 +375,217 @@ public class ConfigContainer {
 
     public MutableLiveData<Map<String, String>> getStatusGetValueMap() {
         return statusGetValueMap;
+    }
+
+
+
+
+
+    public void fillWithDummyValueAllConfigs() {
+        fillWithDummyValuesUIConfig();
+        fillWithDummyValuesChannelConfig();
+        fillWithDummyValueBeaconConfig();
+        fillWithDummyValueBoundaryConfig();
+    }
+
+    private Location createEssen() {
+        List<String> functionIDs = new ArrayList<>();
+        functionIDs.add("aael");
+        functionIDs.add("aae4");
+
+        functionIDs.add("aae8");
+        functionIDs.add("aae9");
+        functionIDs.add("aafe");
+        List<Location> loc = new ArrayList<>();
+
+        return new Location("Esszimmer", "aaej", "4", functionIDs, loc, "Room");
+    }
+
+    private Location createWohnen() {
+        List<String> functionIDs = new ArrayList<>();
+        functionIDs.add("aaet");
+        functionIDs.add("aae2");
+        functionIDs.add("aae8");
+        functionIDs.add("aae9");
+
+        functionIDs.add("aaafe");
+
+        List<Location> loc = new ArrayList<>();
+
+        return new Location("Wohnzimmer", "aaex", "4", functionIDs, loc, "Room");
+    }
+
+    private Location createTerrasse() {
+        List<String> functionIDs = new ArrayList<>();
+        functionIDs.add("aafe");
+        functionIDs.add("aafg");
+
+        functionIDs.add("aael");
+        functionIDs.add("aae8");
+        functionIDs.add("aae9");
+
+        List<Location> loc = new ArrayList<>();
+
+        return new Location("Terrasse", "aafb", "4", functionIDs, loc, "Room");
+    }
+
+    private void fillWithDummyValuesUIConfig() {
+        new Thread(() -> {
+            ArrayList<Function> funcList1 = new ArrayList<>();
+            List<String> functionIDs = new ArrayList<>();
+            functionIDs.add("aaab");
+
+            ArrayList<Datapoint> dataPoints = new ArrayList<>();
+            dataPoints.add(new Datapoint("aauy", "OnOff"));
+            funcList1.add(new Function("Tischleuchte_schalten", "aael", "de.gira.schema.channels.Switch", "de.gira.schema.functions.Switch", dataPoints));
+
+            ArrayList<Datapoint> dataPoints2 = new ArrayList<>();
+            dataPoints2.add(new Datapoint("aajc", "OnOff"));
+            funcList1.add(new Function("Tischleuchte_Status", "aae4", "de.gira.schema.channels.Switch2", "de.gira.schema.functions.Switch", dataPoints2));
+
+
+            ArrayList<Datapoint> dataPoints3 = new ArrayList<>();
+            dataPoints3.add(new Datapoint("aajfa11", "OnOff"));
+            dataPoints3.add(new Datapoint("aajf11", "Current"));
+            dataPoints3.add(new Datapoint("aajfd11", "Set-Point"));
+            funcList1.add(new Function("Stehleuchte_schalten", "aaet", "de.gira.schema.channels.Switch2", "de.gira.schema.functions.Switch", dataPoints3));
+
+
+            ArrayList<Datapoint> dataPoints4 = new ArrayList<>();
+            dataPoints4.add(new Datapoint("aajfa11", "OnOff"));
+            dataPoints4.add(new Datapoint("aajf11", "Current"));
+            dataPoints4.add(new Datapoint("aajfd11", "Set-Point"));
+            funcList1.add(new Function("Stehleuchte_Status", "aae2", "de.gira.schema.channels.Switch2", "de.gira.schema.functions.Switch", dataPoints4));
+
+
+            ArrayList<Datapoint> dataPoints5 = new ArrayList<>();
+            dataPoints5.add(new Datapoint("aajf", "Current"));
+            dataPoints5.add(new Datapoint("aajfd", "Set-Point"));
+            dataPoints5.add(new Datapoint("aajfa", "OnOff"));
+            funcList1.add(new Function("Temperatur_Wohnen", "aae8", "de.gira.schema.channels.RoomTemperatureSwitchable", "de.gira.schema.functions.KNX.HeatingCooling", dataPoints5));
+
+            ArrayList<Datapoint> dataPoints9 = new ArrayList<>();
+            dataPoints9.add(new Datapoint("aajf11", "Current"));
+            dataPoints9.add(new Datapoint("aajfd11", "Set-Point"));
+            dataPoints9.add(new Datapoint("aajfa11", "OnOff"));
+            funcList1.add(new Function("Temperatur_Status", "aae9", "de.gira.schema.channels.RoomTemperatureSwitchable", "de.gira.schema.functions.KNX.HeatingCooling", dataPoints9));
+
+            ArrayList<Datapoint> dataPoints6 = new ArrayList<>();
+            dataPoints6.add(new Datapoint("aajv", "Step-Up-Down"));
+            dataPoints6.add(new Datapoint("aaju", "Up-Down"));
+            dataPoints6.add(new Datapoint("aajw", "Position"));
+            funcList1.add(new Function("Markise_bewegen", "aafe", "de.gira.schema.channels.BlindWithPos", "de.gira.schema.functions.Covering", dataPoints6));
+
+            ArrayList<Datapoint> dataPoints7 = new ArrayList<>();
+            dataPoints7.add(new Datapoint("aajv", "Step-Up-Down"));
+            dataPoints7.add(new Datapoint("aaju", "Up-Down"));
+            dataPoints7.add(new Datapoint("aajx", "Position"));
+            funcList1.add(new Function("Markise_Status", "aafg", "de.gira.schema.channels.BlindWithPos", "de.gira.schema.functions.Covering", dataPoints7));
+
+            ArrayList<Datapoint> dataPoints8 = new ArrayList<>();
+            dataPoints8.add(new Datapoint("aajv", "Step-Up-Down"));
+            dataPoints8.add(new Datapoint("aaju", "Up-Down"));
+            dataPoints8.add(new Datapoint("aajx", "Position"));
+            funcList1.add(new Function("Alarmanlage", "aaab", "de.gira.schema.channels.BlindWithPos", "de.gira.schema.functions.Covering", dataPoints8));
+
+            List<Location> uiconfigloc = new ArrayList<>();
+            List<Location> uiconfigloc2 = new ArrayList<>();
+
+            uiconfigloc.add(createEssen());
+            uiconfigloc.add(createWohnen());
+            uiconfigloc.add(createTerrasse());
+
+            Location all = new Location("House", "aaaa", "4", functionIDs, uiconfigloc, "Room");
+            uiconfigloc2.add(all);
+
+            UIConfig newUiConfig = new UIConfig(funcList1, uiconfigloc2, "cczk");
+            //Log.d("Hello", "New UIConfig " + newUiConfig.toString());
+            initNewUIConfig(newUiConfig);
+        }).start();
+    }
+
+    private void fillWithDummyValuesChannelConfig() {
+        new Thread(() -> {
+            List<Channel> channelList = new ArrayList<>();
+            List<ChannelDatapoint> channelDatapoints = new ArrayList<>();
+
+            channelDatapoints.add(new ChannelDatapoint("OnOff", "Binary", "rwe"));
+            Channel c1 = new Channel("de.gira.schema.channels.Switch", channelDatapoints);
+            channelList.add(c1);
+
+
+            List<ChannelDatapoint> channelDatapoints2 = new ArrayList<>();
+            channelDatapoints2.add(new ChannelDatapoint("Current", "Float", "re"));
+            channelDatapoints2.add(new ChannelDatapoint("Set-Point", "Float", "rwe"));
+            channelDatapoints2.add(new ChannelDatapoint("OnOff", "Binary", "rwe"));
+            Channel c2 = new Channel("de.gira.schema.channels.RoomTemperatureSwitchable", channelDatapoints2);
+            channelList.add(c2);
+
+
+            List<ChannelDatapoint> channelDatapoints3 = new ArrayList<>();
+            channelDatapoints3.add(new ChannelDatapoint("Step-Up-Down", "Binary", "w"));
+            channelDatapoints3.add(new ChannelDatapoint("Up-Down", "Binary", "w"));
+            channelDatapoints3.add(new ChannelDatapoint("Movement", "Binary", "re"));
+            channelDatapoints3.add(new ChannelDatapoint("Position", "Percent", "rwe"));
+            channelDatapoints3.add(new ChannelDatapoint("Slat-Position", "Percent", "rwe"));
+            Channel c3 = new Channel("de.gira.schema.channels.BlindWithPos", channelDatapoints3);
+            channelList.add(c3);
+
+            List<ChannelDatapoint> channelDatapoints4 = new ArrayList<>();
+            channelDatapoints4.add(new ChannelDatapoint("OnOff", "Binary", "rwe"));
+            channelDatapoints4.add(new ChannelDatapoint("Current", "Float", "re"));
+            channelDatapoints4.add(new ChannelDatapoint("Set-Point", "Float", "rwe"));
+            Channel c4 = new Channel("de.gira.schema.channels.Switch2", channelDatapoints4);
+            channelList.add(c4);
+
+            ChannelConfig output = new ChannelConfig(channelList);
+            //Log.d(TAG, output.toString());
+            channelConfig = output;
+        }).start();
+    }
+
+    private void fillWithDummyValueBeaconConfig() {
+        String locationConfigString = "{\n" +
+                "\t\"locations\": [\n" +
+                "\t\t{\n" +
+                "\t\t\t\"roomUID\": \"aafb\",\n" +
+                "\t\t\t\"beaconId\": \"7b44b47b-52a1-5381-90c2-f09b6838c5d420\"\n" +
+                "\t\t},\n" +
+                "\t\t{\n" +
+                "\t\t\t\"roomUID\": \"aaej\",\n" +
+                "\t\t\t\"beaconId\": \"7b44b47b-52a1-5381-90c2-f09b6838c5d470\"\n" +
+                "\t\t},\n" +
+                "\t\t{\n" +
+                "\t\t\t\"roomUID\": \"aaex\",\n" +
+                "\t\t\t\"beaconId\": \"7b44b47b-52a1-5381-90c2-f09b6838c5d490\"\n" +
+                "\t\t}\n" +
+                "\t]\n" +
+                "}";
+
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            initBeaconLocations(mapper.readValue(locationConfigString, new TypeReference<BeaconLocations>() {}));
+        } catch (Exception e) {
+            Log.d(TAG, "BeaconConfig Exception " + e.toString());
+            e.printStackTrace();
+        }
+    }
+
+    private void fillWithDummyValueBoundaryConfig() {
+        BoundaryDataPoint dataPoint = new BoundaryDataPoint("Position", "20", "90");
+        List<BoundaryDataPoint> list = new ArrayList<>();
+        list.add(dataPoint);
+        Boundary x = new Boundary("Markise_Boundary", "Terrasse", list);
+
+        BoundaryDataPoint dataPoint2 = new BoundaryDataPoint("Position", "10", "30");
+        List<BoundaryDataPoint> list2 = new ArrayList<>();
+        list2.add(dataPoint2);
+        Boundary y = new Boundary("Alarmanlage_Boundary", "House", list2);
+
+        List<Boundary> z = new ArrayList<>();
+        z.add(y);
+        z.add(x);
+
+        boundariesConfig = new BoundariesConfig(z);
     }
 }
